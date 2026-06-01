@@ -1,0 +1,53 @@
+#Задача_design_workgraph_backlog_ui<[
+Базис:
+  Пользователю нужно сразу видеть состояние Work Graph: что готово, что в работе, что заблокировано и что завершено.
+  Backlog UI должен быть первым видимым интерфейсом новой системы, раньше сложного графа и доменного OneBase UI.
+  OneBase полезен как доменная вертикаль и источник задач, но не должен быть зависимостью базового Work Graph UI.
+Вектор:
+  Спроектировать backlog/task-board UI поверх Work Graph snapshot v1.
+  Показать колонки или фильтры: ready, in_progress, verify, blocked, done.
+  Добавить группировку по work.department, work.owner_role, work.priority и work.risk.
+  Описать минимальные действия: claim, transition status, record evidence, block with reason, open atom inspector.
+  Зафиксировать, что OneBase подключается позже как domain adapter/source, а не как общий UI-фреймворк.
+Цель:
+  Пользователь видит статус проекта и может управлять очередью задач без ручного чтения work/backlog.bvc.
+Анализ:
+  Целесообразность:
+  Стоит завести «спроектировать UI доски backlog/status» в бэклог.
+  Контекст и границы:
+  Спроектировать backlog/task-board UI поверх Work Graph snapshot v1.
+  Зависимости и готовность:
+  depends_on=implement-workgraph-minimal-runtime; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Пользователь видит статус проекта и может управлять очередью задач без ручного чтения work/backlog.bvc.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441026
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:36.264Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:36.272Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: implement-workgraph-minimal-runtime
+  work.id: design-workgraph-backlog-ui
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: product_designer
+  work.pipeline_stage: decided
+  work.priority: critical
+  work.risk: medium
+  work.status: done
+  work.target_files: work/backlog.bvc, src/workGraphRuntime.mjs, ui/workgraph-backlog-board.bvc
+  work.title: спроектировать UI доски backlog/status
+]>
+

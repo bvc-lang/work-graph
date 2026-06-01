@@ -1,0 +1,21 @@
+#!bvc lang=ru
+#Atom_badge<[
+Базис:
+  Marketplace badge/chip atoms для статусов listing и UI меток.
+Вектор:
+  Props: label, tone (default | accent | muted | danger | ok).
+  Размер: compact pill; без интерактива по умолчанию.
+Цель:
+  Статусные метки в WG (work.status, verify tier) и Marketplace (listing state).
+
+Проверки:
+  tone=accent использует --ui-accent-rgb
+  docs/ui/components.md содержит badge
+
+Метки:
+  atom.profile: ui_component
+  ui.layer: atom
+  ui.id: badge
+  ui.workgraph.module: src/ui/atoms/badge.mjs
+  trace.status: verified
+]>

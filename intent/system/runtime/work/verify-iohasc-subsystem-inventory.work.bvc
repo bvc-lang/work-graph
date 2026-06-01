@@ -1,0 +1,53 @@
+#Задача_verify_iohasc_subsystem_inventory<[
+Базис:
+  Фаза 0 требует сверить полный список подсистем старого ioHasC с пересобрать roadmap.
+  Задача «сверить inventory подсистем ioHasC» относится к контуру архитектуры продукта и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: phase-0-inventory-boundaries.
+Вектор:
+  Составить проверяемую таблицу подсистем, source docs/files, migration.strategy и first target phase.
+  Ближайший шаг исполнения: выполнить фазу 2 WorkGraph OS.
+Цель:
+  Roadmap не теряет крупные подсистемы ioHasC и не обещает перенос без стратегии.
+  Готово, когда выполнены проверки: inventory ссылается на docs/architecture-v2/IMPLEMENTATION_STATUS.md из старого ioHasC.
+Анализ:
+  Целесообразность:
+  Стоит завести «сверить inventory подсистем ioHasC» в бэклог.
+  Контекст и границы:
+  Составить проверяемую таблицу подсистем, source docs/files, migration.strategy и first target phase.
+  Зависимости и готовность:
+  depends_on=phase-0-inventory-boundaries; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Roadmap не теряет крупные подсистемы ioHasC и не обещает перенос без стратегии.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441062
+  migration.source_paths: docs/architecture-v2/IMPLEMENTATION_STATUS.md
+  migration.source_repo: ../project
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:37.760Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:37.769Z
+  work.decision.verdict: useful
+  work.department: product-architecture
+  work.depends_on: phase-0-inventory-boundaries
+  work.id: verify-iohasc-subsystem-inventory
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: system_architect
+  work.pipeline_stage: decided
+  work.priority: critical
+  work.risk: medium
+  work.status: done
+  work.target_files: docs/plan-iohasc-full-rebuild-backlog.md, work/backlog.bvc
+  work.title: сверить inventory подсистем ioHasC
+]>
+

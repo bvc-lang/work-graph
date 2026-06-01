@@ -1,0 +1,60 @@
+#Задача_ui_agent_scope_panel_poll<[
+Базис:
+  AN-28 R4/V4: живой список subtasks рядом с Agent Run dock, не в TodoWrite.
+  Home/dock уже shipped (AN-20 P0); расширить dock или sidebar scope.
+Вектор:
+  GET /api/epic-scope?epicId=… или reuse snapshot slice.
+  Poll 15–30s; клик → task drawer по work.id.
+  data-testid=agent-scope-panel; e2e smoke optional.
+Цель:
+  Оператор видит live rollup эпика без переключения на Доска и без chat todo.
+Проверки:
+  API epic-scope 200 + schema test
+  Agent dock или sidebar показывает scope list
+  Статус done на доске отражается после poll
+Анализ:
+  Целесообразность:
+  Стоит завести «UI: session scope panel (poll epic scope, P2)» в бэклог — по материалам AN-28 (work/analytics/chat-work-graph-todo-sync.md).
+  Контекст и границы:
+  GET /api/epic-scope?epicId=… или reuse snapshot slice.
+  Зависимости и готовность:
+  depends_on=epic-chat-work-scope-readonly, mcp-epic-rollup-scope-resource, ux-mission-control-p0; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Оператор видит live rollup эпика без переключения на Доска и без chat todo.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-28 (work/analytics/chat-work-graph-todo-sync.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-28
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/chat-work-graph-todo-sync.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-05-31T14:19:05.344Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T14:19:05.344Z
+  work.decision.verdict: useful
+  work.department: ui-dashboard
+  work.depends_on: epic-chat-work-scope-readonly, mcp-epic-rollup-scope-resource, ux-mission-control-p0
+  work.id: ui-agent-scope-panel-poll
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: frontend_architect
+  work.parent_id: epic-chat-work-scope-readonly
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: medium
+  work.status: done
+  work.target_files: src/workGraphBacklogUiServer.mjs, src/missionControlClient.mjs, src/homeSnapshotApi.mjs, work/analytics/chat-work-graph-todo-sync.md
+  work.title: UI: session scope panel (poll epic scope, P2)
+
+Свидетельства:
+  - Agent dock scope panel: GET /api/epic-scope poll 20s, data-testid=agent-scope-panel, click→task drawer; sessionEpicId in home snapshot; tests/missionControlUiClient.test.mjs agent scope panel 3/3 green
+]>

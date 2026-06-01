@@ -1,0 +1,51 @@
+#Задача_design_serialization_boundary<[
+Базис:
+  .bvc остаётся human/LLM источник истины для Work Graph.
+  JSON snapshot v1 стал первым стабильным runtime interchange.
+  Предварительно должны быть закрыты зависимости: implement-workgraph-minimal-runtime.
+Вектор:
+  Спроектировать нейтральную границу сериализации между canonical state, runtime snapshot и будущими export/cache форматами.
+  Зафиксировать требования к форматам: читаемость, стабильность, миграции, browser consumption, multi-language readers.
+  Не выбирать FlatBuffers/GBC внутри этой задачи.
+Цель:
+  Разделить источник истины, JSON snapshot и будущие derived formats без преждевременной привязки к технологии.
+Анализ:
+  Целесообразность:
+  Стоит завести «спроектировать границу сериализации» в бэклог.
+  Контекст и границы:
+  Спроектировать нейтральную границу сериализации между canonical state, runtime snapshot и будущими export/cache форматами.
+  Зависимости и готовность:
+  depends_on=implement-workgraph-minimal-runtime; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Разделить источник истины, JSON snapshot и будущие derived formats без преждевременной привязки к технологии.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441011
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:36.200Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:36.208Z
+  work.decision.verdict: useful
+  work.department: devops-runtime
+  work.depends_on: implement-workgraph-minimal-runtime
+  work.id: design-serialization-boundary
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: system_architect
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: plans/rebuild-start-plan.bvc, work/backlog.bvc, protocols/workgraph-serialization-boundary.bvc
+  work.title: спроектировать границу сериализации
+]>
+

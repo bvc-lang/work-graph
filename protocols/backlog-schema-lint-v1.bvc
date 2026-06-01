@@ -1,0 +1,21 @@
+#Протокол_Backlog_Schema_Lint_V1<[
+Базис:
+  Monolithic work/backlog.bvc растёт; bad edits (duplicate ids, broken depends_on, invalid status) должны падать до autonomous worker execution.
+Вектор:
+  lintBacklogItems() on parseWorkItems() output:
+  error: duplicate work.id, missing dependency target, invalid work.status, self-depends_on.
+  warning: ready/backlog/claimed without work.next_action, done without evidence (informational).
+  warning: short BVC sections (Базис/Вектор/Цель) below workItemBvcQuality limits; --strict-bvc promotes to error.
+  error: work.parent_id missing parent, self-parent, parent cycle, parent depends_on child; invalid work.item_kind.
+  warning: epic without derived children (work.item_kind=epic).
+  CLI: npm run lint:backlog reads intent tree; npm run expand:work-item-bvc aligns short descriptions.
+  Included in npm run ci:mandatory alongside test:deterministic.
+Цель:
+  Roadmap integrity gate для operators и CI.
+
+Метки:
+  atom.profile: prompt_rule
+  protocol.id: backlog-schema-lint-v1
+  work.source: define-backlog-schema-lint
+  trace.status: verified
+]>

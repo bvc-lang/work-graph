@@ -1,0 +1,57 @@
+#Задача_design_home_mission_control_view<[
+Базис:
+  Home требует канонического описания секций и refresh budget — иначе MVP размоется по чату.
+  ui/operator-dashboard-v2.bvc описывает sections, но без HERMES-pattern KPI tiles и Inbox.
+Вектор:
+  ui/home-mission-control-v1.bvc — BVC-спека секций (top KPI, Inbox, My queue, Active runs), layout grid, refresh.
+  Mapping секций на источники данных: cycle slice, runner queue, agent-run journal, daemon audit, analytics-records.
+Цель:
+  Канонический контракт Home view, на который опираются T2 (API) и T3 (UI mount).
+Проверки:
+  ui/home-mission-control-v1.bvc создан и линтуется
+  все секции имеют источники данных и refresh budget
+Анализ:
+  Целесообразность:
+  Стоит завести «спека Home (mission control): KPI tiles + Inbox + My queue + Active runs» в бэклог — по материалам work/analytics/ux-current-state-and-vector.md.
+  Контекст и границы:
+  ui/home-mission-control-v1.bvc — BVC-спека секций (top KPI, Inbox, My queue, Active runs), layout grid, refresh.
+  Зависимости и готовность:
+  depends_on=ux-mission-control-p0; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Канонический контракт Home view, на который опираются T2 (API) и T3 (UI mount).; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма work/analytics/ux-current-state-and-vector.md; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Свидетельства:
+  - ui/home-mission-control-v1.bvc — HERMES layout spec verified
+
+Метки:
+  atom.profile: work_item
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/ux-current-state-and-vector.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T12:01:46.991Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T12:01:46.991Z
+  work.decision.verdict: useful
+  work.department: ui-dashboard
+  work.depends_on: ux-mission-control-p0
+  work.id: design-home-mission-control-view
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: frontend_architect
+  work.parent_id: ux-mission-control-p0
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: low
+  work.status: done
+  work.target_files: ui/home-mission-control-v1.bvc, docs/plan-ux-mission-control-p0.md
+  work.title: спека Home (mission control): KPI tiles + Inbox + My queue + Active runs
+]>

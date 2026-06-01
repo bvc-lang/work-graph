@@ -1,0 +1,58 @@
+#Задача_epic_architecture_views_v1<[
+Базис:
+  AN-34: list-first mission control + tree для composition + pipeline для lineage.
+  AN-1: full diagram ломается без compact cards и layout hygiene.
+  AN-20: graph не home; drawer для глубины.
+Вектор:
+  Track A: ADR profiles + architecture blocks list tab.
+  Track B: workflow tree mode, pipeline default, matrix prototype.
+  Track C: mermaid export CLI + tests + AN-34 closing.
+Цель:
+  Оператор видит architecture и backlog в правильном view profile без canvas-only dead-end.
+Проверки:
+  ADR architecture-views-v1 опубликован
+  Architecture tab: list-rows + Tree/Pipeline toggle
+  workflow tree mode по work.parent_id
+  AN-34 closing + epic done
+Анализ:
+  Целесообразность:
+  Стоит завести «Architecture views v1: list + tree + pipeline graph + export» в бэклог — по материалам AN-34 (work/analytics/architecture-visualization-patterns-comparison.md).
+  Контекст и границы:
+  Track A: ADR profiles + architecture blocks list tab.
+  Зависимости и готовность:
+  depends_on=ux-mission-control-p0, implement-graph-canvas-svg-edges-v1; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Оператор видит architecture и backlog в правильном view profile без canvas-only dead-end.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-34 (work/analytics/architecture-visualization-patterns-comparison.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-34
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/architecture-visualization-patterns-comparison.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T19:21:12.850Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T19:21:12.850Z
+  work.decision.verdict: useful
+  work.department: ui-dashboard
+  work.depends_on: ux-mission-control-p0, implement-graph-canvas-svg-edges-v1
+  work.id: epic-architecture-views-v1
+  work.item_kind: epic
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: frontend_architect
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: work/analytics/architecture-visualization-patterns-comparison.md, docs/plan-architecture-views-v1.md, src/workGraphBacklogUiServer.mjs, src/architectureSnapshot.mjs, docs/adr-architecture-views-v1.md
+  work.title: Architecture views v1: list + tree + pipeline graph + export
+]>

@@ -1,0 +1,59 @@
+#Задача_write_an26_closing_agent_workgraph_enforcement<[
+Базис:
+  Правило epic closed_without_closing_analysis: closing AN после done эпика.
+  AN-23 — образец closing для pipeline canonization.
+Вектор:
+  work/analytics/closing-epic-agent-workgraph-enforcement.md + journal AN-26.
+  Метрики: воспроизведён ли инцидент dual backlog после rule; seed defaults.
+Цель:
+  Эпик закрыт с зафиксированными outcomes и уроками для следующих agent-policy задач.
+Проверки:
+  analytics-records.jsonl содержит AN-26
+  epic-agent-workgraph-enforcement closed с verified evidence
+Анализ:
+  Целесообразность:
+  Стоит завести «AN-26 closing analysis: epic-agent-workgraph-enforcement» в бэклог — по материалам AN-25 (work/analytics/agent-bypass-work-graph-dual-backlog.md).
+  Контекст и границы:
+  work/analytics/closing-epic-agent-workgraph-enforcement.md + journal AN-26.
+  Зависимости и готовность:
+  depends_on=epic-agent-workgraph-enforcement, add-cursor-rule-single-backlog, add-cursor-ide-workgraph-parity-step, fix-seed-default-status-backlog, lint-plan-work-id-mirror, document-agent-intake-vs-execute-policy; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Эпик закрыт с зафиксированными outcomes и уроками для следующих agent-policy задач.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-25 (work/analytics/agent-bypass-work-graph-dual-backlog.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Свидетельства:
+  - work/analytics/closing-epic-agent-workgraph-enforcement.md
+  - work/analytics-records.jsonl — AN-26
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-25
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/agent-bypass-work-graph-dual-backlog.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T12:17:11.995Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T12:17:11.995Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: epic-agent-workgraph-enforcement, add-cursor-rule-single-backlog, add-cursor-ide-workgraph-parity-step, fix-seed-default-status-backlog, lint-plan-work-id-mirror, document-agent-intake-vs-execute-policy
+  work.id: write-an26-closing-agent-workgraph-enforcement
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: product_owner
+  work.parent_id: epic-agent-workgraph-enforcement
+  work.pipeline_stage: closed
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: work/analytics/closing-epic-agent-workgraph-enforcement.md, work/analytics-records.jsonl
+  work.title: AN-26 closing analysis: epic-agent-workgraph-enforcement
+]>

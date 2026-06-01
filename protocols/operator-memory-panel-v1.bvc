@@ -1,0 +1,42 @@
+#Протокол_Operator_Memory_Panel_V1<[
+Базис:
+  Project Memory v1 и memoryRecordWriter уже формируют MemoryRecord candidates из done WorkItems.
+  В UI пункт «Память» disabled; пользователь не видит накопленный project context.
+Вектор:
+  MVP панель «Память» — read-only projection: type/status summary, список записей, sourceWorkItem, relatedFiles, confidence, reviewRequired.
+  API: GET /api/memory-projection → schema memory-panel.projection.v1.
+  Mutation/review flow (approve/retire) — deferred; MVP только просмотр derived candidates.
+Цель:
+  Project Memory видна как reviewable слой знаний без скрытого prompt-only context.
+
+Проверки:
+  projection schema зафиксирован
+  read-only MVP отделён от writer/review mutations
+  filters: type, status, text search client-side
+
+Метки:
+  atom.profile: architecture_decision
+  protocol.id: operator-memory-panel-v1
+  decision.id: operator-memory-panel-v1
+  work.source: design-operator-memory-panel-mvp
+  trace.status: verified
+]>
+
+#Projection_Schema_Memory_Panel_V1<[
+Базис:
+  UI и tests должны читать единый JSON contract без прямого парсинга backlog в browser.
+Вектор:
+  schema: memory-panel.projection.v1
+  summary: total, byType, byStatus, reviewRequired
+  records: MemoryRecord v1 entries from buildMemoryRecordCandidatesFromItems
+  filters.types, filters.statuses — derived distinct values
+  readOnly: true, reviewActionsEnabled: false in MVP
+Цель:
+  Dashboard получает deterministic memory panel payload из server-side builder.
+
+Метки:
+  atom.profile: trace
+  contract.id: memory-panel-projection-v1
+  protocol.id: operator-memory-panel-v1
+  trace.status: verified
+]>

@@ -1,0 +1,146 @@
+#Протокол_PVRG_Graph_RAG_Minimal<[
+Базис:
+  PVRG/Graph RAG нужен новой сборке как derived context layer для агента, dashboard and retrieval, но не как новый source of truth или wholesale порт старого PVRG.
+  Work Graph, Evidence v1, Project Memory v1, Language Adapter Layer, OneBase artifact mapping and derived graph viewer уже задают источники фактов и границы отображения.
+  Минимальный slice должен сначала отвечать на вопросы текущей задачи: что связано, почему связано, какие решения уже были приняты and what evidence exists.
+Вектор:
+  Build pvrg.graph_rag.slice.v1 as deterministic JSON derived from Work Graph snapshot, Evidence records, MemoryRecord export, language/domain adapter projections and OneBase mappings.
+  Include only node types WorkItem, file/artifact, Evidence, MemoryRecord, domain object and ProviderRun; include typed edges from target_files, depends_on, evidence refs, adapter facts and OneBase domain mappings.
+  Retrieval starts as graph expansion and ranked filtering over JSON nodes/edges; semantic vector index, ANN and binary GBC cache are deferred until volume/latency requires them.
+Цель:
+  Agent worker получает компактный связанный context slice for current WorkItem without reading the whole repo, replaying transcripts or copying the old PVRG implementation.
+
+Проверки:
+  graph/RAG scope ограничен derived context
+  описаны minimal node/edge types для first OneBase path
+  retrieval query связан с current WorkItem, related artifacts, blockers and previous decisions
+  first implementation is JSON derived graph/RAG slice, not full old PVRG
+  non-goals explicitly defer semantic vector index, ANN, GBC binary cache and old PVRG wholesale port
+
+Метки:
+  atom.profile: plan
+  protocol.id: pvrg-graph-rag-minimal
+  design.input: workgraph.snapshot.v1, evidence-record-v1, memory-record-v1, adapter-projection-v1, onebase-artifact-mapping, worker-output-v1
+  design.output: pvrg.graph_rag.slice.v1
+  work.source: design-pvrg-graph-rag-minimal
+  trace.status: verified
+]>
+
+#Minimal_Node_Types<[
+Базис:
+  Node types must mirror existing contracts so the slice can be rebuilt from source artifacts and inspected by the derived graph viewer.
+Вектор:
+  WorkItem node: id, title, status, ownerRole, department, priority, risk, dependsOn, targetFiles, traceRefs, blocker, nextAction and traceStatus from workgraph.snapshot.v1.
+  FileArtifact node: stable path or artifact id, kind, adapterId, language/domain profile, confidence, source ranges and optional hash when producer exposes it.
+  Evidence node: Evidence Record v1 id, taskId, type, source, status, summary, artifacts, command, provider, runId and time; legacy evidence strings can be imported as low-structure evidence summaries.
+  MemoryRecord node: MemoryRecord v1 id, type, status, confidence, summary, sourceWorkItem, evidenceIds, relatedFiles and relatedTasks.
+  DomainObject node: domain id plus kind/name/source file; for OneBase this covers document, catalog, register, report, widget, posting script, procedure and runtime artifact nodes from adapter mappings.
+  ProviderRun node: provider, runId, taskId, status, startedAt, finishedAt, producedEvidenceIds, failureReason and retryAdvice from Worker Output/provider run summaries.
+Цель:
+  The first slice connects operational work, source artifacts, domain facts, evidence, memory and provider execution without introducing a separate graph database schema.
+
+Метки:
+  atom.profile: trace
+  contract.id: pvrg-minimal-node-types-v1
+  protocol.id: pvrg-graph-rag-minimal
+  trace.status: verified
+]>
+
+#Minimal_Edge_And_Source_Signals<[
+Базис:
+  Edges must explain source fields and confidence, because retrieval results need to be reviewable and not just ranked guesses.
+Вектор:
+  depends_on: WorkItem dependency -> dependent WorkItem from work.depends_on and snapshot edges.
+  targets: WorkItem -> FileArtifact/DomainObject from work.target_files, structured evidence artifacts and adapter-resolved artifact refs.
+  has_evidence: WorkItem -> Evidence from Evidence Record v1 taskId or imported legacy evidence.
+  cites_evidence: MemoryRecord -> Evidence from memory.evidenceIds; Evidence -> FileArtifact from evidence.artifacts.
+  writes_memory: WorkItem/Evidence -> MemoryRecord from sourceWorkItem, relatedTasks and evidenceIds.
+  produced_by_run: ProviderRun -> Evidence and ProviderRun -> WorkItem from worker output/run summaries.
+  adapter_fact: FileArtifact -> DomainObject, FileArtifact -> FileArtifact or DomainObject -> DomainObject from language adapter symbols/imports/traceLinks/domainMetadata.
+  onebase_mapping: OneBase document -> posting script -> registers -> reports/widgets from domains/onebase/artifact-mapping.bvc and adapter projections.
+  blocked_by: WorkItem -> Evidence/MemoryRecord/WorkItem from blocker text, blocker evidence, unresolved open-question memory or unsatisfied dependency.
+Цель:
+  Source signals are target_files, depends_on, evidence refs, language adapter facts and OneBase mappings, each carrying sourceField, confidence and optional trace ref.
+
+Метки:
+  atom.profile: trace
+  contract.id: pvrg-minimal-edge-types-v1
+  protocol.id: pvrg-graph-rag-minimal
+  trace.status: verified
+]>
+
+#Retrieval_Use_Cases<[
+Базис:
+  MVP retrieval should serve agent context construction and operator explanation before trying broad semantic search.
+Вектор:
+  Current task context: start from current WorkItem, include direct dependencies, dependents, target files/artifacts, relevant adapter facts, recent evidence and active memory decisions/invariants.
+  Related artifacts: expand from target_files through adapter facts and OneBase mappings to domain objects, tests, reports, widgets, posting scripts and verification hints.
+  Blockers: retrieve blocked WorkItems, blocker evidence, failed ProviderRuns, open-question memory and dependency chains that prevent ready status.
+  Previous decisions: retrieve MemoryRecord type decision, invariant, architecture-fact and domain-fact records linked by sourceWorkItem, relatedFiles, relatedTasks, evidenceIds or domain object.
+  Verification context: retrieve Evidence and command/test hints for files/domain objects touched by the task, plus prior failed/succeeded runs for the same surface.
+Цель:
+  A worker can request a bounded retrieval slice for plan/act/verify without loading all protocols, all memory or all source files.
+
+Метки:
+  atom.profile: prompt_rule
+  rule.id: pvrg-minimal-retrieval-use-cases
+  protocol.id: pvrg-graph-rag-minimal
+  trace.status: verified
+]>
+
+#First_Implementation_JSON_Slice<[
+Базис:
+  Existing runtime already has JSON snapshots and the graph viewer already expects rebuildable derived graph data.
+Вектор:
+  Implement first as buildGraphRagSlice({ workgraphSnapshot, evidenceRecords, memoryRecords, adapterProjections, providerRuns }) returning JSON nodes, edges, indexes and retrieval helpers.
+  Required JSON fields: sliceVersion, generatedAt, nodes, edges, sourceInputs, warnings and retrievalProfiles.
+  Nodes and edges use stable ids, kind/type, label/summary, sourceRefs, confidence and sourceField; no persisted layout, no graph DB and no hidden provider session state.
+  Retrieval helpers can be deterministic functions over JSON: getCurrentTaskContext(taskId), getRelatedArtifacts(ref), getBlockers(taskId or all), getPreviousDecisions(scope).
+  UI relation: derived graph viewer consumes the same nodes/edges for visualization; Graph RAG adds retrieval profiles and ranking/filtering over that projection.
+Цель:
+  First implementation is small, testable and compatible with Work Graph snapshots, Project Memory and the read-only derived graph viewer.
+
+Метки:
+  atom.profile: architecture_decision
+  decision.id: pvrg-first-json-slice
+  protocol.id: pvrg-graph-rag-minimal
+  trace.status: verified
+]>
+
+#Relation_To_Memory_And_Graph_Viewer<[
+Базис:
+  Project Memory and derived graph viewer already cover durable context and visual explanation, so Graph RAG must compose them instead of replacing them.
+Вектор:
+  Project Memory remains the source for durable decisions, invariants, risks, open questions and domain facts; Graph RAG indexes MemoryRecord nodes as derived context only.
+  Evidence remains the proof layer; Graph RAG uses Evidence nodes to explain why a relation or decision is trusted.
+  Language/domain adapters remain the producers of structured file/domain facts; Graph RAG stores their projections with confidence and source refs, not raw parser internals.
+  Derived graph viewer renders nodes/edges for operator navigation; Graph RAG uses the same projection for agent retrieval and can add profile-specific ranking.
+  Work Graph remains canonical for task state, dependencies, target files, blocker and done/verify evidence gates.
+Цель:
+  Graph RAG is a context projection over existing contracts, not a competing memory store, graph editor or orchestration layer.
+
+Метки:
+  atom.profile: architecture_decision
+  decision.id: pvrg-memory-viewer-boundary
+  protocol.id: pvrg-graph-rag-minimal
+  trace.status: verified
+]>
+
+#Non_Goals_Deferred<[
+Базис:
+  Старый PVRG contained useful ideas, but copying it wholesale would overfit the rebuild before the minimal loop is proven.
+Вектор:
+  Non-goal: full semantic vector index as the first retrieval layer; lexical/typed graph filtering over JSON is enough for MVP.
+  Non-goal: ANN service, embeddings daemon or separate vector DB before measurable corpus size/latency need.
+  Non-goal: GBC binary cache or FlatBuffers schema for graph/RAG before JSON slice becomes too large or multi-language binary readers are required.
+  Non-goal: old PVRG wholesale port, graph database source of truth, persisted visual layout, provider transcript replay or prompt stuffing.
+  Deferred trigger: revisit vector/ANN/GBC only after JSON graph retrieval is correct, tested and too slow or too large for current use.
+Цель:
+  Keep the rebuild focused on a minimal, explainable and replaceable graph/RAG slice.
+
+Метки:
+  atom.profile: prompt_rule
+  rule.id: pvrg-minimal-nongoals
+  protocol.id: pvrg-graph-rag-minimal
+  trace.status: verified
+]>

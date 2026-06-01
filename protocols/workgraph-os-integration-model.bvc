@@ -1,0 +1,120 @@
+#Протокол_WorkGraph_OS_Integration_Model<[
+Базис:
+  Work Graph уже имеет отдельные контракты для task state, agent worker, evidence, project memory, dashboard snapshot and minimal graph/RAG.
+  PromptPilot полезен как reference runner queue/worker, а Claude Note полезен как reference memory extractor, но оба должны оставаться adapter patterns вокруг Work Graph.
+  Цель OS-модели — связать выполнение, проверку, память, retrieval и operator UI в один наблюдаемый цикл без переноса source of truth в очередь, provider session, notes vault or vector store.
+Вектор:
+  End-to-end loop: WorkItem выбирается из canonical Work Graph; runtime claims task; runner queue получает только runnable projection; worker строит Worker Input из свежего snapshot, policy, targetFiles and memorySlice; provider выполняет bounded run; adapter возвращает Worker Output; runtime нормализует Evidence Record v1; verification gate принимает или отклоняет transition; memory extractor создаёт MemoryRecord candidates; graph/RAG slice индексирует WorkItem/Evidence/Memory/ProviderRun as derived context; dashboard snapshot показывает current state, evidence, blockers, memory updates and next task.
+  Next task выбирается только после policy-gated update Work Graph: done/blocked/ready/verify status, evidence and trace labels обновлены в canonical .bvc, а UI/queue/RAG пересобраны из этого состояния.
+  Intent tree layout является следующей storage evolution: будущая canonical модель может разнести atoms по папкам намерений, но правила source of truth остаются теми же и должны быть спроектированы отдельной задачей.
+Цель:
+  Work Graph становится project operating system: он владеет задачами, gates and decisions, while runners, providers, memory, graph/RAG and UI are replaceable projections/adapters.
+
+Проверки:
+  loop покрывает task, claim, worker run, evidence, verification, memory, graph/RAG, UI and next task
+  boundaries не дают queue, provider session, notes vault, JSON snapshot, SQLite or vector index стать canonical state
+  failure/blocker and operator intervention points are explicit
+  PromptPilot and Claude Note patterns integrated as references, not replacements
+
+Метки:
+  atom.profile: prompt_rule
+  protocol.id: workgraph-os-integration-model
+  work.source: design-workgraph-os-integration-model
+  trace.status: verified
+]>
+
+#Границы_OS_Слоёв<[
+Базис:
+  Каждый слой должен иметь одну ответственность, иначе Work Graph снова превратится в смесь task queue, chat session, notes and dashboard state.
+Вектор:
+  Work Graph: canonical WorkItems, statuses, dependencies, target files, blocker, evidence summaries, trace refs and transition gates.
+  Runner queue: optional runtime projection with runId, taskId, providerId, nextRunAt, retryCount, timeout and queue status; it may be SQLite/WAL for durability, but can be rebuilt or reconciled from Work Graph and run logs.
+  Provider session: transient execution context for one run or resumable provider mechanics; it cannot be required to understand task status, done evidence, blocker reason or project memory.
+  Project Memory: canonical durable context records in .bvc memory atoms plus derived JSON export; it stores decisions/invariants/facts/outcomes linked to WorkItem and Evidence ids, not raw transcripts.
+  Graph/RAG: derived JSON context slice over Work Graph, Evidence, MemoryRecord, adapter facts and ProviderRun nodes; retrieval helps workers and UI but never authors state directly.
+  UI/dashboard: derived operator-dashboard.snapshot.v1 and views; UI proposes claim, block, transition or review actions through runtime APIs instead of editing hidden browser state.
+Цель:
+  Слои можно заменить независимо: provider, queue storage, memory reader, graph projection or dashboard renderer do not redefine Work Graph semantics.
+
+Метки:
+  atom.profile: architecture_decision
+  decision.id: workgraph-os-layer-boundaries
+  protocol.id: workgraph-os-integration-model
+  trace.status: verified
+]>
+
+#Правила_Source_Of_Truth_And_Storage<[
+Базис:
+  Обсуждение storage сводится к разделению canonical authoring, deterministic snapshot, runtime queue and retrieval cache.
+Вектор:
+  MVP source of truth: .bvc atoms remain canonical for Work Graph, protocols, evidence summaries and Project Memory records.
+  Future source of truth: intent tree may replace one monolithic backlog as canonical layout, but only as a structured .bvc atom tree with stable work.id, depends_on, evidence ids and trace refs.
+  JSON snapshot/export: deterministic derived interchange for dashboard, worker input, graph/RAG and tests; it is rebuildable and not directly authoritative.
+  SQLite: optional runtime queue/run-log/index when multi-process scheduling, crash recovery or efficient polling requires it; it stores projections and must reconcile back to .bvc/evidence.
+  NoSQL: not part of MVP because current needs are human-readable canonical atoms, deterministic JSON projection and optional local queue; revisit only when collaboration volume, query shape or remote multi-user operations exceed those boundaries.
+  Vector/ANN/GBC: derived retrieval/performance layers with rebuild path, not canonical storage.
+Цель:
+  Storage choices support the OS loop without hiding project truth in a database chosen before the shape of the work is stable.
+
+Метки:
+  atom.profile: prompt_rule
+  rule.id: workgraph-os-source-of-truth
+  protocol.id: workgraph-os-integration-model
+  trace.status: verified
+]>
+
+#Failure_Blocker_And_Verification_Semantics<[
+Базис:
+  Failed worker runs and blocked tasks must be understandable without replaying provider logs or chat history.
+Вектор:
+  Worker failure records worker-run evidence with provider, runId, failureReason, logs/artifact refs and retryAdvice; it does not imply done and does not silently mutate task status.
+  Retry starts from a fresh Work Graph snapshot plus prior evidence summaries, not from hidden provider memory; repeated retry requires new evidence, adjusted scope, changed provider or operator approval.
+  Rate limit, timeout and crash recovery are runner concerns that produce evidence and queue scheduling metadata; Work Graph sees blocked, ready or in_progress transitions only through explicit policy-gated requests.
+  Blocked status requires blocker evidence with reason and next unblock action; environment blockers, missing decisions, failed verification and dependency blockers should be distinguishable by summary and artifacts.
+  Verification gate requires successful command/test/manual-review/file/change evidence before done for tasks that change protocols, runtime code, memory, UI or domain artifacts.
+Цель:
+  Operator and scheduler can decide whether to retry, switch provider, narrow the task, ask for human input or promote the next task.
+
+Метки:
+  atom.profile: prompt_rule
+  rule.id: workgraph-os-failure-blocker-semantics
+  protocol.id: workgraph-os-integration-model
+  trace.status: verified
+]>
+
+#Operator_Intervention_Points<[
+Базис:
+  Пользователь в OS-модели является operator/reviewer, not manual graph maintainer.
+Вектор:
+  Before claim: reorder ready queue, change priority/risk, pause scheduling, assign provider policy or split task.
+  During run: cancel, pause queue, inspect logs/artifacts, deny unsafe tool request or switch provider after current run ends.
+  After worker output: approve/reject transition request, request verification, add manual-review evidence, mark blocked or return to ready with narrowed next_action.
+  During memory extraction: approve decisions/invariants/user-preferences, reject draft memory, merge duplicates or keep open questions as follow-up WorkItems.
+  In dashboard/graph: inspect current task, dependencies, blockers, evidence trail, memory updates, graph/RAG context and proposed next task; UI writes only through runtime proposals.
+Цель:
+  Human control remains explicit at state-changing boundaries while routine projections stay rebuildable and automated.
+
+Метки:
+  atom.profile: trace
+  contract.id: workgraph-os-operator-interventions
+  protocol.id: workgraph-os-integration-model
+  trace.status: verified
+]>
+
+#Fit_PromptPilot_And_ClaudeNote<[
+Базис:
+  PromptPilot and Claude Note solve useful adjacent problems, but Work Graph needs their patterns without inheriting their source-of-truth assumptions.
+Вектор:
+  PromptPilot fits as runner mechanics: queue/worker separation, provider registry, scheduling, retry/rate-limit handling, crash recovery and result UI; its queue is a derived dispatch layer over Work Graph tasks.
+  Claude Note fits as memory extraction mechanics: event hooks, debounced extraction queue, transcript/event reader, KnowledgePack-like staging, routing/dedup and readable notes; its notes/vault/transcripts are not canonical memory.
+  Both patterns enter the OS loop through neutral contracts: Worker Input/Output v1, Evidence Record v1, MemoryRecord v1, operator-dashboard.snapshot.v1 and pvrg.graph_rag.slice.v1.
+  Neither pattern replaces WorkItem transitions, evidence gates, project memory lifecycle, graph/RAG source refs or operator review.
+Цель:
+  External references improve execution reliability and knowledge capture while preserving Work Graph as the project OS.
+
+Метки:
+  atom.profile: architecture_decision
+  decision.id: promptpilot-claudenote-fit-workgraph-os
+  protocol.id: workgraph-os-integration-model
+  trace.status: verified
+]>

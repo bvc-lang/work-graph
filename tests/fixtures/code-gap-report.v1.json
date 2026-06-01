@@ -1,0 +1,22 @@
+{
+  "schema": "code-gap.report.v1",
+  "summary": {
+    "total": 2,
+    "untrackedExports": 1,
+    "missingImplementation": 1
+  },
+  "entries": [
+    {
+      "kind": "untracked_export",
+      "filePath": "src/runtime.mjs",
+      "symbol": "parseWorkItems",
+      "reason": "export without step coverage"
+    },
+    {
+      "kind": "missing_implementation",
+      "filePath": "steps/sample.bvc",
+      "stepGuid": "550e8400-e29b-41d4-a716-446655440001",
+      "reason": "TUR target missing in codebase"
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+#Протокол_Codegen_Evidence_Contract_V1<[
+Базис:
+  ioHasC codegen/compiler-mode steps производят generated code; Work Graph tasks должны доказывать integrity, round-trip и generated tests через Evidence v1.
+  protocols/evidence-model-v1.bvc задаёт базовые type/status; codegen contract добавляет специализированные evidence kinds для compiler pipeline.
+Вектор:
+  codegen.evidence.record.v1 kinds:
+  - integrity — generated output matches expected hash or diff is reviewed (artifacts: generated files, integrityHash)
+  - roundtrip — step/compiler-mode round-trip succeeded (command, exitCode, artifacts: step path + generated paths)
+  - generated_test — tests covering generated surface passed (command, exitCode, artifacts: test report)
+  Drift blocker: если integrity hash изменился без matching roundtrip evidence → verify gate blocked.
+  Mapping в Evidence v1: type=test|command, summary human-readable, details.codegenKind = integrity|roundtrip|generated_test.
+Цель:
+  Codegen становится deterministic verify step в Work Graph, а не ad-hoc CLI log.
+
+Метки:
+  atom.profile: prompt_rule
+  protocol.id: codegen-evidence-contract-v1
+  work.source: design-codegen-evidence-contract
+  trace.status: verified
+]>
+
+#Integrity_And_Drift_Gates<[
+Базис:
+  Generated file drift без evidence должно блокировать done/verify для codegen-facing WorkItems.
+Вектор:
+  WorkItem labels:
+  trace.codegen_integrity_hash — optional expected hash of generated artifact set
+  trace.codegen_source_step — compiler-mode or Vector DSL source .bvc path
+  evaluateCodegenVerifyGate() проверяет наличие integrity + roundtrip evidence перед done.
+  mismatch integrity → blocker evidence type blocker с code codegen.integrity_drift.
+Цель:
+  Regenerated code не попадает в done без явной verification chain.
+
+Метки:
+  atom.profile: trace
+  contract.id: codegen-integrity-gates-v1
+  protocol.id: codegen-evidence-contract-v1
+  trace.status: verified
+]>

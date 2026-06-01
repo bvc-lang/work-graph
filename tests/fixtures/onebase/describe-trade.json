@@ -1,0 +1,11 @@
+{
+  "documents": [
+    { "name": "РеализацияТоваров", "posting": true }
+  ],
+  "catalogs": [
+    { "name": "Номенклатура" }
+  ],
+  "registers": [
+    { "name": "ВаловаяПрибыль" }
+  ]
+}

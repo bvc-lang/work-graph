@@ -1,0 +1,19 @@
+#Протокол_WorkGraph_Release_Gate_Matrix_V1<[
+Базис:
+  ioHasC CI разделяет Vitest, Playwright, integrity, optional LLM; Work Graph rebuild нужен явный mandatory/optional release gate matrix без смешивания model quality и code correctness.
+Вектор:
+  Tiers:
+  mandatory — npm run test:deterministic + npm run lint:backlog (входит в ci:mandatory).
+  mandatory-integration — daemon/live-loop fixture tests в deterministic suite.
+  optional-env — npm run test:optional:onebase (Go toolchain).
+  optional-llm — npm run test:optional:golden-path-llm.
+  Matrix связывает gate id, command, phase registration и verificationLoop rows.
+Цель:
+  Каждая фаза регистрирует checks; CI pipeline reproducible из package.json scripts.
+
+Метки:
+  atom.profile: prompt_rule
+  protocol.id: workgraph-release-gate-matrix-v1
+  work.source: design-workgraph-release-gate-matrix
+  trace.status: verified
+]>

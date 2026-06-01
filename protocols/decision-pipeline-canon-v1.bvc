@@ -1,0 +1,37 @@
+#Протокол_Decision_Pipeline_Canon_V1<[
+Базис:
+  Work Graph уже реализует цепочку analytics → work item → kanban, но правила разбросаны по work-item-decision-pipeline-v1, work-item-hierarchy-v1 и коду (src/workItemDecisionPipeline.mjs, src/workItemHierarchy.mjs, src/backlogSchemaLint.mjs).
+  AN-22 (analytics:pipeline-analysis-to-board) фиксирует полный операторский пайплайн с обратным контуром learning и bypass для operational/charter.
+  Этот протокол — единый канон: не дублирует детали дочерних protocol, а связывает их в одну карту переходов.
+  Вектор:
+  Стадии pipeline (work.pipeline_stage, inferPipelineStage в src/workItemDecisionPipeline.mjs): intake → analyzed → decided → ready → executing → closed.
+  Agent intake vs execute: аналитический запрос («что дальше?», «проведи разбор») → только work/analytics/AN-XX.md + analytics-records.jsonl; без seed эпика и без TodoWrite backlog. Epic/subtasks seed — после явного «создавай задачи / делай» от оператора. Intake-only vs execute таблица — docs/decision-pipeline-canon.md §Agent intake vs execute.
+  Chat read-only scope (AN-28): запрет TodoWrite sync для списков subtasks эпика (>3 пунктов с work.id); mutate work.status только через atoms/MCP. Read-only проекция: MCP get_epic_work_scope, resource workgraph://epic/{id}/scope, GET /api/epic-scope, markdown блок «Scope (read-only, Work Graph)» (rules/agent-behavior/chat-work-scope-readonly.bvc). Ephemeral micro-todo без work.id — 1–3 шага на один turn внутри claimed work.id. Таблица поверхностей read/write — docs/decision-pipeline-canon.md §Chat read-only scope.
+  Вердикты решения (work.decision.verdict): useful | harmful | defer — promote/claim только при useful (protocols/work-item-decision-pipeline-v1.bvc).
+  Иерархия (protocols/work-item-hierarchy-v1.bvc): work.item_kind epic|task|subtask; work.parent_id — один родитель; children derived scan; depends_on — порядок исполнения, не parent.
+  Analytics intake: intake.analytics_key (один) или intake.analytics_keys (список через запятую) на work item; обратная связь analytics.feeds_epics: [<epic-slug>] в записи AN-XX (work/analytics-records.jsonl).
+  Operational bypass: work.intake.bypass: operational + operational.reason — задача без AN и без parent_id; analysis/decision блоки опциональны; видна на доске как operational swimlane.
+  AN → Charter: валидный финал анализа без work item — правка charter/main.bvc или ADR; в AN-XX поле «вывод: charter» + ссылка на изменённый файл.
+  No fake-epic: эпик только для инициатив с общей задумкой (basis/goal родителя); запрещено создавать epic ради группировки operational задач.
+  Closing loop: при закрытии эпика (work.item_kind=epic, status done|verified) предлагать work/analytics/closing-<epic-slug>.md с analytics.feeds_epics.
+Цель:
+  Один источник правды по пайплайну «Анализ → Эпик → Задачи → Беклог → Доска → Closing-анализ» для runtime, lint, MCP, UI и оператора.
+
+Проверки:
+  docs/decision-pipeline-canon.md содержит mermaid-схему и таблицу меток
+  docs/decision-pipeline-canon.md содержит §Chat read-only scope (AN-28)
+  rules/agent-behavior/chat-work-scope-readonly.bvc в agent behavior bundle
+  src/workItemDecisionPipeline.mjs экспортирует PIPELINE_STAGES и inferPipelineStage согласованно с этим протоколом
+  src/backlogSchemaLint.mjs lintPipelineStageIssues покрывает DoR/DoD из §4 AN-22
+  charter/main.bvc ссылается на этот protocol
+
+Метки:
+  atom.profile: protocol
+  protocol.id: decision-pipeline-canon-v1
+  protocol.supersedes: none
+  protocol.extends: work-item-decision-pipeline-v1, work-item-hierarchy-v1
+  protocol.analytics_key: AN-22
+  protocol.analytics_ref: analytics:pipeline-analysis-to-board
+  protocol.analytics_keys: AN-22, AN-28
+  trace.status: verified
+]>

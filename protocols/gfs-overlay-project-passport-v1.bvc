@@ -1,0 +1,57 @@
+#Протокол_GFS_Overlay_Project_Passport_v1<[
+Базис:
+  ioHasC использует GfsLiteMemory overlay для passport-slice, module registry, trace-link slices и UTF-8 JSON cache paths.
+  Work Graph rebuild строит project context из .bvc canon и JSON snapshots; GFS остаётся optional derived read path.
+  protocols/gbc-gvm-zig-deferral-boundary.bvc исключает GFS mount из MVP acceptance.
+Вектор:
+  Определить read contract: disk-first canonical paths, optional GFS overlay merge, UTF-8 JSON overlay paths, b64/gbc transport as deferred.
+  Fallback без GFS обязателен: intent tree .bvc, workgraph.snapshot.v1, operator-shell.snapshot.v2, architecture.snapshot.v1.
+  Overlay never becomes canonical state without explicit WorkItem and measured trigger.
+Цель:
+  Будущий port GFS overlay не ломает rebuild operator loop и не скрывает зависимость от binary layer.
+
+Проверки:
+  read contract paths documented in gfsOverlayProjectPassport.mjs
+  mandatoryFallback.required === true
+  overlay paths marked optional and deferred
+
+Метки:
+  atom.profile: architecture_decision
+  protocol.id: gfs-overlay-project-passport-v1
+  decision.id: gfs-overlay-project-passport-v1
+  work.source: design-gfs-overlay-project-passport
+  trace.status: verified
+]>
+
+#Read_Contract<[
+Базис:
+  GFS overlay в ioHasC — merge поверх logical workspace paths, не замена Git/disk canon.
+Вектор:
+  Read order: (1) disk canonical path if non-empty; (2) optional GFS bytes by canonical suffix match; (3) mandatory JSON snapshot projection from .bvc parse.
+  UTF-8 JSON overlay paths (registry, trace bundles, node descriptions) follow same disk-first rule.
+  FlatBuffers b64/gbc paths are deferred optional transport; rebuild MVP does not require GFS put/delete sync.
+Цель:
+  Agent and operator context remain correct when GFS is absent.
+
+Метки:
+  atom.profile: trace
+  contract.id: gfs-overlay-read-contract-v1
+  protocol.id: gfs-overlay-project-passport-v1
+  trace.status: verified
+]>
+
+#Mandatory_Fallback<[
+Базис:
+  Acceptance criteria must pass in repos without GFS runtime.
+Вектор:
+  Required projections: parseWorkItems(work/backlog.bvc), buildSnapshot, intent tree migration parity, buildOperatorShellProjection, buildArchitectureSnapshot when enabled.
+  Optional when GFS enabled: merge passport/trace slices from overlay paths listed in donor ADR matrix.
+Цель:
+  GFS adds derived context; absence of GFS is not a defect for MVP/post-MVP gates.
+
+Метки:
+  atom.profile: trace
+  contract.id: gfs-overlay-mandatory-fallback-v1
+  protocol.id: gfs-overlay-project-passport-v1
+  trace.status: verified
+]>

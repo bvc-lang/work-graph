@@ -1,0 +1,54 @@
+#Задача_wg_ui_wave3_detail_toolbar_atoms<[
+Базис:
+  renderDetailToolbar: .detail-toolbar-btn raw buttons.
+Вектор:
+  Просмотр/Редактор modes → wg-btn secondary + flat active state.
+  Preserve data-detail-mode hooks.
+Цель:
+  Detail drawer toolbar on Gripe buttons.
+Проверки:
+  detail-toolbar contains wg-btn
+  data-testid detail-mode-edit unchanged
+Анализ:
+  Целесообразность:
+  Стоит завести «Wave 3: detail drawer toolbar → renderUiButton» в бэклог — по материалам AN-33 (work/analytics/gripe-ds-visual-default-wave3.md).
+  Контекст и границы:
+  Просмотр/Редактор modes → wg-btn secondary + flat active state.
+  Зависимости и готовность:
+  depends_on=epic-gripe-ds-visual-default-wave3, backlog-default-gripe-theme-wireup; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Detail drawer toolbar on Gripe buttons.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-33 (work/analytics/gripe-ds-visual-default-wave3.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-33
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/gripe-ds-visual-default-wave3.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T17:42:31.271Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T17:42:31.271Z
+  work.decision.verdict: useful
+  work.department: ui-dashboard
+  work.depends_on: epic-gripe-ds-visual-default-wave3, backlog-default-gripe-theme-wireup
+  work.id: wg-ui-wave3-detail-toolbar-atoms
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: frontend_architect
+  work.parent_id: epic-gripe-ds-visual-default-wave3
+  work.pipeline_stage: closed
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: src/workGraphBacklogUiServer.mjs, work/analytics/gripe-ds-visual-default-wave3.md
+  work.title: Wave 3: detail drawer toolbar → renderUiButton
+]>

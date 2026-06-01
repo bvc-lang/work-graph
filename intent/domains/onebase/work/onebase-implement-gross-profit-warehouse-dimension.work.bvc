@@ -1,0 +1,50 @@
+#Задача_onebase_implement_gross_profit_warehouse_dimension<[
+Базис:
+  Пакет golden path для РеализацияТоваров завершён и явно откладывает изменения исходников OneBase до этой implementation task.
+  Бизнес-цель — добавить Склад как измерение аналитики gross-profit, сохранив FIFO, stock и settlement behavior.
+Вектор:
+  Изменить ограниченный набор OneBase artifacts из domains/onebase/golden-path.bvc: schema/movements регистра ВаловаяПрибыль, posting script РеализацияТоваров и только необходимую gross-profit report/query surface.
+  Добавить или обновить targeted fixture/test, если в OneBase есть подходящий test harness; иначе оставить go test ./... как MVP verification gate и записать отсутствие targeted assertion как residual risk.
+  Сначала запустить go version, затем go test ./... из ../onebase с timeout 120s; если Go отсутствует, отметить blocked с environment evidence вместо done.
+Цель:
+  Первый реальный патч OneBase доказывает сценарий gross-profit-by-warehouse с deterministic evidence.
+Анализ:
+  Целесообразность:
+  Стоит завести «реализовать Склад в ВаловаяПрибыль для РеализацияТоваров» в бэклог.
+  Контекст и границы:
+  Изменить ограниченный набор OneBase artifacts из domains/onebase/golden-path.bvc: schema/movements регистра ВаловаяПрибыль, posting script РеализацияТоваров и только необходимую gross-profit report/query surface.
+  Зависимости и готовность:
+  depends_on=onebase-posting-rule-golden-path; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Первый реальный патч OneBase доказывает сценарий gross-profit-by-warehouse с deterministic evidence.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441032
+  migration.strategy: port
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:37.317Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:37.324Z
+  work.decision.verdict: useful
+  work.department: product-architecture
+  work.depends_on: onebase-posting-rule-golden-path
+  work.id: onebase-implement-gross-profit-warehouse-dimension
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: feature_engineer
+  work.pipeline_stage: decided
+  work.priority: critical
+  work.risk: high
+  work.status: done
+  work.target_files: ../onebase/examples/trade/registers/валовая_прибыль.yaml, ../onebase/examples/trade/src/реализациятоваров.posting.os, ../onebase/examples/trade/reports/валовая_прибыль.yaml, ../onebase/examples/trade/widgets/валовая_прибыль_kpi.yaml, ../onebase/internal/project/trade_gross_profit_test.go
+  work.title: реализовать Склад в ВаловаяПрибыль для РеализацияТоваров
+]>
+

@@ -1,0 +1,55 @@
+#Задача_migrate_architecture_snapshot_from_canon<[
+Базис:
+  ARCHITECTURE_L1_BLOCKS / EDGES inline — drift risk (AN-35).
+Вектор:
+  buildArchitectureSnapshot imports canon loader.
+  Remove duplicate ARCHITECTURE_L1_* exports or re-export from loader for tests.
+  Snapshot includes l1Canon: { id, version, digest, sourcePath }.
+Цель:
+  architecture.snapshot.v1 отражает canon file, не hardcoded JS.
+Проверки:
+  architectureSnapshot.test.mjs green after migration
+  MCP get_architecture_snapshot returns l1Canon
+Анализ:
+  Целесообразность:
+  Стоит завести «Migrate architectureSnapshot.mjs to load L1 from canon file» в бэклог — по материалам AN-36 (work/analytics/architecture-main-bvc-canon-hub.md).
+  Контекст и границы:
+  buildArchitectureSnapshot imports canon loader.
+  Зависимости и готовность:
+  depends_on=epic-architecture-main-bvc-canon, implement-architecture-l1-canon-loader; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  architecture.snapshot.v1 отражает canon file, не hardcoded JS.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-36 (work/analytics/architecture-main-bvc-canon-hub.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-36
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/architecture-main-bvc-canon-hub.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T21:27:08.529Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T21:27:08.529Z
+  work.decision.verdict: useful
+  work.department: system-runtime
+  work.depends_on: epic-architecture-main-bvc-canon, implement-architecture-l1-canon-loader
+  work.id: migrate-architecture-snapshot-from-canon
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: integration_architect
+  work.parent_id: epic-architecture-main-bvc-canon
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: src/architectureSnapshot.mjs, src/architectureL1Canon.mjs, schemas/architecture-snapshot.v1.json, work/analytics/architecture-main-bvc-canon-hub.md
+  work.title: Migrate architectureSnapshot.mjs to load L1 from canon file
+]>

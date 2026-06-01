@@ -1,0 +1,53 @@
+#Задача_design_agent_worker_adapter<[
+Базис:
+  Cursor SDK, Claude SDK/API, OpenAI-compatible агенты и локальные runners могут быть исполнителями агентных задач.
+  Ни один provider не должен становиться ядром архитектуры.
+  Ядро новой сборки — Work Graph, StepAtomDraft, evidence и verification loop.
+Вектор:
+  Описать provider-neutral worker adapter, который claims Work Graph task и запускает внешний agent run.
+  Зафиксировать вход: task snapshot, memory slice, allowed tools, target files, policy.
+  Зафиксировать выход: patch summary, evidence, status запрос transition, logs, failure reason.
+  Сравнить adapter variants: Cursor SDK, Claude SDK/API, OpenAI-compatible endpoint, local CLI/runner.
+  Не переносить business state в provider session; источник истины остаётся в .bvc/Work Graph.
+Цель:
+  Любой agent provider можно подключить или заменить без изменения core Work Graph runtime.
+Анализ:
+  Целесообразность:
+  Стоит завести «спроектировать provider-neutral адаптер agent worker» в бэклог.
+  Контекст и границы:
+  Описать provider-neutral worker adapter, который claims Work Graph task и запускает внешний agent run.
+  Зависимости и готовность:
+  depends_on=implement-workgraph-minimal-runtime; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Любой agent provider можно подключить или заменить без изменения core Work Graph runtime.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441013
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:35.817Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:35.826Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: implement-workgraph-minimal-runtime
+  work.id: design-agent-worker-adapter
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: integration_architect
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: protocols/agent-worker-adapter.bvc, work/backlog.bvc
+  work.title: спроектировать provider-neutral адаптер agent worker
+]>
+

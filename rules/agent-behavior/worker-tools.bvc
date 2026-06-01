@@ -1,0 +1,97 @@
+#Правило_Worker_Tool_Policy<[
+Базис:
+  Work Graph worker не переносит Monaco-side инструменты ioHasC (writeFile, AGENT_TOOLS, MCP configure) в live-loop MVP.
+  Политика исполнения задаётся worker input: policy.mode, allowShell, allowNetwork, allowFileWrite и bounded targetFiles.
+Вектор:
+  Соблюдать policy из worker input; не предлагать обход через «свободный чат» или несуществующие tools.
+  Чтение контекста — только targetFiles и memorySlice; мутации файлов вне allowFileWrite запрещены.
+  Верификация кода — через verification matrix и evidence, не через выдуманные команды.
+Цель:
+  Worker остаётся provider-neutral и policy-bound без портирования orchestrator tool surface.
+
+Метки:
+  guid: 550e8400-e29b-41d4-a716-446655443101
+  atom.profile: prompt_rule
+  rule.id: worker-tool-policy
+  bundle.group: worker
+  migration.source: ../project/rules/agent-behavior/tool-rules-migrated.step
+  trace.status: verified
+]>
+
+#Правило_Worker_Provider_Neutrality<[
+Базис:
+  Provider registry (local, openai, planned cursor-sdk) выбирает исполнителя по capabilities и fallback trail.
+  Worker output и evidence не должны зависеть от vendor-specific полей вне agent-worker.output.v1.
+Вектор:
+  Не вшивать в ответ привязку к конкретному SDK/IDE; фиксировать providerId и selectionMode только в workerRunSummary/evidence.
+  При fallback — отражать в retryAdvice кратко, без повторного полного плана задачи.
+  OpenAI-compatible путь возвращает JSON worker output, не markdown tool blocks.
+Цель:
+  Смена provider не ломает контракт Work Graph и Operator Run panel.
+
+Метки:
+  guid: 550e8400-e29b-41d4-a716-446655443102
+  atom.profile: prompt_rule
+  rule.id: worker-provider-neutrality
+  bundle.group: worker
+  migration.source: ../project/rules/agent-behavior/tool-rules-migrated.step
+  trace.status: verified
+]>
+
+#Правило_Worker_Failure_Retry<[
+Базис:
+  Live-loop и provider fallback могут завершиться failed/needs_human; повтор без изменения стратегии бесполезен.
+  Старый orchestrator использовал LOOP_HINT; в rebuild retryAdvice и workerRunSummary.fallbackTrail — канон.
+Вектор:
+  При status failed или needs_human заполнять failureReason и retryAdvice конкретно (policy denial, model JSON, provider skip).
+  Не повторять тот же provider+task без новой evidence или смены policyPreset.
+  После usedFallback=true — не утверждать успех primary provider.
+Цель:
+  Оператор видит честный след отказа и следующий безопасный шаг.
+
+Метки:
+  guid: 550e8400-e29b-41d4-a716-446655443103
+  atom.profile: prompt_rule
+  rule.id: worker-failure-retry
+  bundle.group: worker
+  migration.source: ../project/rules/agent-behavior/tool-rules-migrated.step
+  trace.status: verified
+]>
+
+#Правило_Worker_Evidence_Gates<[
+Базис:
+  Work Graph done/verify требует evidence; worker output — один из источников свидетельств, не замена backlog transition policy.
+Вектор:
+  Всегда возвращать evidence[] с kind worker_run и кратким summary по факту run.
+  transitionRequest.status prefer verify после succeeded dry-run/execute; blocked — только с явной причиной в failureReason.
+  Не помечать задачу done из worker output без прохождения runtime transition gates.
+Цель:
+  Golden path charter → task → worker → evidence → verify остаётся проверяемым.
+
+Метки:
+  guid: 550e8400-e29b-41d4-a716-446655443104
+  atom.profile: prompt_rule
+  rule.id: worker-evidence-gates
+  bundle.group: worker
+  migration.source: ../project/rules/agent-behavior/tool-rules-migrated.step
+  trace.status: verified
+]>
+
+#Правило_Worker_Task_Bound_Run<[
+Базис:
+  Agent Run panel заменяет свободный agent chat; каждый run привязан к WorkItem id и live-loop phases.
+Вектор:
+  Фокус только на input.task (id, checks, targetFiles, nextAction); не расширять scope без нового WorkItem.
+  Не имитировать multi-turn диалог пользователя; один structured worker output на run.
+  После run с persistedBacklog=true backlog atom уже обновлён; при persistedBacklog=false или transitionError не утверждать, что work/backlog.bvc изменился.
+Цель:
+  Worker run остаётся task-bound операцией, а не переносом старого agent panel.
+
+Метки:
+  guid: 550e8400-e29b-41d4-a716-446655443105
+  atom.profile: prompt_rule
+  rule.id: worker-task-bound-run
+  bundle.group: worker
+  migration.source: ../project/rules/agent-behavior/tool-rules-migrated.step
+  trace.status: verified
+]>

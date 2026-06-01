@@ -1,0 +1,57 @@
+#Задача_schema_architecture_block_group_field<[
+Базис:
+  UI и MCP должны читать group без парсинга raw BVC.
+Вектор:
+  schemas/architecture-snapshot.v1.json: blocks[].group
+  architectureL1Canon loader → snapshot build.
+Цель:
+  Snapshot экспортирует architecture.group для consumers.
+Проверки:
+  schema validates blocks with group
+  buildArchitectureSnapshot includes group on domain blocks
+Анализ:
+  Целесообразность:
+  Стоит завести «Schema snapshot: optional group field on L1 blocks» в бэклог — по материалам AN-39 (work/analytics/architecture-domains-l1-hierarchy.md).
+  Контекст и границы:
+  schemas/architecture-snapshot.v1.json: blocks[].group
+  Зависимости и готовность:
+  depends_on=epic-architecture-domains-l1-hierarchy, update-architecture-main-bvc-domains-structure; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Snapshot экспортирует architecture.group для consumers.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-39 (work/analytics/architecture-domains-l1-hierarchy.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-39
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/architecture-domains-l1-hierarchy.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-01T08:36:55.102Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-01T08:36:55.102Z
+  work.decision.verdict: useful
+  work.department: system-runtime
+  work.depends_on: epic-architecture-domains-l1-hierarchy, update-architecture-main-bvc-domains-structure
+  work.id: schema-architecture-block-group-field
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: integration_architect
+  work.parent_id: epic-architecture-domains-l1-hierarchy
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: schemas/architecture-snapshot.v1.json, src/architectureL1Canon.mjs, src/architectureSnapshot.mjs, work/analytics/architecture-domains-l1-hierarchy.md
+  work.title: Schema snapshot: optional group field on L1 blocks
+
+Свидетельства:
+  - cascade: reconcile epic epic-architecture-domains-l1-hierarchy already done
+]>

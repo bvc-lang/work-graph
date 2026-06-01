@@ -1,0 +1,24 @@
+#Решение_Trace_Linkage_Scope_Level_0<[
+Базис:
+  Work Graph has Trace Links v1 protocol and MVP validator/linkage/code-gap but not ioHasC generate or mandatory trace-links CI.
+  Pre-decision analysis recorded in docs/analysis/2026-05-trace-linkage-necessity.md.
+Вектор:
+  Accept level 0: protocol + validator + optional code-gap; target_files-first authoring for code-facing work items.
+  Reject full ioHasC step-to-code codegen and mandatory trace CI parity in rebuild scope without a superseding ADR.
+  Defer level 1 trace label lint enforcement until recurring weak-target_files incidents justify it.
+Цель:
+  Stable decision memory for trace scope; avoid silent parity drift with ioHasC IDE.
+
+Проверки:
+  ADR-0001 accepted in docs/decisions/0001-trace-linkage-scope.md
+  analysis linked from docs/decisions/README.md timeline
+  audit-gap matrix references ADR-0001
+
+Метки:
+  atom.profile: architecture_decision
+  decision.id: trace-linkage-scope-level-0
+  decision.status: accepted
+  decision.adr: docs/decisions/0001-trace-linkage-scope.md
+  work.source: design-step-code-trace-links-v1
+  trace.status: verified
+]>

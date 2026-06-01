@@ -1,0 +1,60 @@
+#Задача_add_cursor_rule_proactive_pvrg_context<[
+Базис:
+  MCP даёт tools, но Cursor сам решает, что звать — без правила модель часто игнорирует graph RAG / memory и читает .work.bvc по одному.
+  AN-38 §8: usefulness Cursor surface поднимается, если в .cursor/rules жёстко прописать порядок вызовов перед claim/execute.
+Вектор:
+  Создать .cursor/rules/work-item-claim-context.mdc с alwaysApply=true: перед claim вызвать get_work_item, get_pvrg_task_scope, get_graph_rag_context, list_memory_records (по workId).
+  Связать с AGENTS.md и docs/agent-tool-capabilities (если есть в WG) — единый источник правды.
+  Lint: добавить упоминание правила в lint:cursor-rules или эквивалент.
+Цель:
+  Cursor агент детерминированно читает task-scoped context (PVRG + graph RAG + memory) перед началом работы без дополнительной подсказки оператора.
+Проверки:
+  Файл .cursor/rules/work-item-claim-context.mdc существует с alwaysApply=true
+  Правило ссылается на новые MCP tools
+  lint:backlog/lint:cursor-rules зелёные
+Анализ:
+  Целесообразность:
+  Стоит завести «Cursor rule: проактивно читать PVRG/graph RAG/memory перед claim» в бэклог — по материалам AN-38 (work/analytics/llm-pvrg-richir-memory-slices-usage-audit.md).
+  Контекст и границы:
+  Создать .cursor/rules/work-item-claim-context.mdc с alwaysApply=true: перед claim вызвать get_work_item, get_pvrg_task_scope, get_graph_rag_context, list_memory_records (по workId).
+  Зависимости и готовность:
+  depends_on=epic-cursor-mcp-context-surface-v1, implement-mcp-get-graph-rag-context, implement-mcp-memory-records-tools; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Cursor агент детерминированно читает task-scoped context (PVRG + graph RAG + memory) перед началом работы без дополнительной подсказки оператора.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-38 (work/analytics/llm-pvrg-richir-memory-slices-usage-audit.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Свидетельства:
+  .cursor/rules/work-item-claim-context.mdc создан с alwaysApply=true
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-38
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/llm-pvrg-richir-memory-slices-usage-audit.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T23:29:42.459Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T23:29:42.459Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: epic-cursor-mcp-context-surface-v1, implement-mcp-get-graph-rag-context, implement-mcp-memory-records-tools
+  work.id: add-cursor-rule-proactive-pvrg-context
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: agent_platform_architect
+  work.parent_id: epic-cursor-mcp-context-surface-v1
+  work.pipeline_stage: closed
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: .cursor/rules/work-item-claim-context.mdc, .cursor/rules/work-item-bvc-quality.mdc, AGENTS.md
+  work.title: Cursor rule: проактивно читать PVRG/graph RAG/memory перед claim
+]>

@@ -1,0 +1,52 @@
+#Задача_choose_runtime_substrate<[
+Базис:
+  В старом проекте есть GBC/GFS, Architecture Memory, JSON snapshots и .bvc как текстовый канон.
+  Задача «выбрать runtime-основу для новой сборки» относится к контуру Work Graph rebuild и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: define-workitem-v1.
+Вектор:
+  Решить, что является источник истины: .bvc или DB.
+  Решить, где хранить derived artifacts: GBC/GFS, SQLite, JSON-файлы или их комбинация.
+  Зафиксировать роль Zig: native reader/spike или будущий memory core.
+Цель:
+  Не смешивать canonical state и derived cache.
+  Готово, когда выполнены проверки: выбран canonical store для Work Graph.
+Анализ:
+  Целесообразность:
+  Стоит завести «выбрать runtime-основу для новой сборки» в бэклог.
+  Контекст и границы:
+  Решить, что является источник истины: .bvc или DB.
+  Зависимости и готовность:
+  depends_on=define-workitem-v1; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Не смешивать canonical state и derived cache.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441002
+  migration.strategy: defer
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:35.667Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:35.678Z
+  work.decision.verdict: useful
+  work.department: devops-runtime
+  work.depends_on: define-workitem-v1
+  work.id: choose-runtime-substrate
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: system_architect
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: high
+  work.status: done
+  work.target_files: protocols/runtime-substrate-decision.bvc, protocols/intent-tree-workgraph-layout.bvc, protocols/workgraph-os-integration-model.bvc, protocols/workgraph-serialization-boundary.bvc, protocols/flatbuffers-gbc-slice-evaluation.bvc, work/backlog.bvc, intent/system/storage/work/choose-runtime-substrate.work.bvc
+  work.title: выбрать runtime-основу для новой сборки
+]>
+

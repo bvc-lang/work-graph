@@ -1,0 +1,120 @@
+#Протокол_OneBase_Artifact_Mapping<[
+Базис:
+  OneBase хранит бизнес-смысл не в одном файле: YAML metadata задаёт документы, справочники, регистры, отчёты и widgets, .os scripts задают поведение, а Go runtime загружает и исполняет эти артефакты.
+  Work Graph должен видеть эти файлы как связанные domain artifacts, а не как случайный набор target_files.
+Вектор:
+  OneBase adapters создают StepAtomDraft candidates с profile=trace для domain artifacts и labels onebase.*, trace.*, work.target_files until schema adds a dedicated domain_artifact profile.
+  Artifact mapping is derived context: canonical sources остаются YAML, .os, Go files and Work Graph atoms; memory/evidence/snapshot получают короткие ссылки и facts with confidence.
+  Каждая связь должна иметь source file ref and artifact id/name; ambiguous or missing links stay degraded with trace.status=needs-review instead of invented dependencies.
+Цель:
+  OneBase artifacts become structured input for Work Graph planning, Project Memory domain facts, Evidence records and future graph/RAG.
+
+Проверки:
+  listed artifact kind -> StepAtomDraft profile/labels
+  РеализацияТоваров links document metadata, posting script and four registers
+  described memory/evidence/work graph split and degraded fallback
+
+Метки:
+  atom.profile: prompt_rule
+  protocol.id: onebase-artifact-mapping
+  domain.id: onebase
+  work.source: onebase-artifact-mapping
+  trace.status: verified
+]>
+
+#Маппинг_Artifact_Kinds<[
+Базис:
+  StepAtomDraft v1 currently has generic profiles, so OneBase artifacts must fit the existing contract before a future schema expands domain profiles.
+Вектор:
+  documents/*.yaml: profile=trace, labels onebase.kind=document, onebase.name, onebase.posting, onebase.fields, onebase.tableparts, work.target_files and trace.source.file.
+  catalogs/*.yaml, enums/*.yaml, constants/*.yaml, roles/*.yaml and subsystems/*.yaml: profile=trace, labels onebase.kind=catalog|enum|constant|role|subsystem, onebase.name and trace.source.file.
+  registers/*.yaml and inforegs/*.yaml: profile=trace, labels onebase.kind=register|inforeg, onebase.name, onebase.dimensions, onebase.resources, onebase.attributes and trace.source.file.
+  reports/*.yaml and widgets/*.yaml: profile=trace, labels onebase.kind=report|widget, onebase.name, onebase.query.refs, onebase.chart_proc when present and trace.source.file.
+  src/*.posting.os: profile=trace, labels onebase.kind=posting_script, onebase.document, onebase.procedure, onebase.register.refs, trace.symbol, trace.source.file and verification.hint.
+  src/*.os, src/*.module.os, src/*.proc.os and src/*.rep.os: profile=trace, labels onebase.kind=object_module|module|processor_script|report_script, trace.symbol, onebase.query.refs and trace.source.file.
+  Go code under internal/**: profile=trace for runtime facts or prompt_rule for stable adapter/verification rules, labels onebase.kind=runtime_go, go.package, trace.source.file and verification.command when known.
+Цель:
+  Adapter output can be validated by existing StepAtomDraft v1 while preserving enough domain labels for graph edges and memory records.
+
+Метки:
+  atom.profile: trace
+  contract.id: onebase-artifact-kind-map-v1
+  protocol.id: onebase-artifact-mapping
+  trace.status: verified
+]>
+
+#Trace_Labels_OneBase<[
+Базис:
+  Graph viewer, memory writer and evidence writer need stable labels that do not depend on natural language summaries.
+Вектор:
+  Required labels for OneBase domain artifacts: onebase.kind, onebase.name, trace.source.file, work.target_files and trace.status.
+  Relationship labels: onebase.document, onebase.posting_script, onebase.register.refs, onebase.report.refs, onebase.widget.refs, trace.symbol and trace.range when the adapter has line/range confidence.
+  Work labels: work.source for the WorkItem that imported or changed the artifact, work.related_tasks for follow-up tasks and work.verification_hint for proposed deterministic checks.
+  Evidence labels/artifacts: evidence.type=file|change|test|decision, evidence.artifacts with file refs, evidence.command only when an actual command was run or selected.
+Цель:
+  Labels are stable enough for Work Graph links and future graph/RAG without forcing OneBase-specific fields into the generic adapter registry.
+
+Метки:
+  atom.profile: trace
+  contract.id: onebase-trace-labels-v1
+  protocol.id: onebase-artifact-mapping
+  trace.status: verified
+]>
+
+#Связь_РеализацияТоваров<[
+Базис:
+  The trade demo document РеализацияТоваров is the first concrete golden path because metadata, FIFO posting script and registers are all visible in the example tree.
+Вектор:
+  Document metadata source: ../onebase/examples/trade/documents/реализация_товаров.yaml declares name=РеализацияТоваров, posting=true, fields Номер/Дата/Покупатель/Склад/Сумма and tablepart Товары with Номенклатура/Количество/Цена/Сумма.
+  Posting source: ../onebase/examples/trade/src/реализациятоваров.posting.os defines procedure ОбработкаПроведения, loops through this.Товары, calculates row sums, uses FIFO over РегистрНакопления.ПартииТоваров.Остатки() and writes movements.
+  Register links: ОстаткиТоваров gets расход by Номенклатура/Склад, ПартииТоваров gets FIFO расход by Номенклатура/ДатаПоставки, ВаловаяПрибыль gets выручка and себестоимость, Взаиморасчеты gets buyer debt by Контрагент/ТипКонтрагента.
+  Report/widget impact: reports/валовая_прибыль.yaml and widgets/валовая_прибыль_kpi.yaml read РегистрНакопления.ВаловаяПрибыль, so posting changes that alter Выручка or Себестоимость should trace to those read artifacts.
+  Verification hint before a dedicated command is selected: run OneBase deterministic checks later through onebase-verification-command; for this mapping task only npm test in Work Graph verifies the protocol update.
+Цель:
+  A Work Graph task changing the posting rule can retrieve the document YAML, posting script, affected registers, report/widget readers and verification hints as one connected context slice.
+
+Метки:
+  atom.profile: trace
+  trace.id: onebase-realization-golden-path
+  protocol.id: onebase-artifact-mapping
+  onebase.document: РеализацияТоваров
+  onebase.posting_script: ../onebase/examples/trade/src/реализациятоваров.posting.os
+  onebase.register.refs: ОстаткиТоваров, ПартииТоваров, ВаловаяПрибыль, Взаиморасчеты
+  trace.status: verified
+]>
+
+#Memory_Evidence_WorkGraph_Split<[
+Базис:
+  OneBase adapter facts must not duplicate source files or turn Project Memory into a transcript dump.
+Вектор:
+  Project Memory gets stable domain-fact records: artifact relationships, business rules such as FIFO posting, known downstream reports/widgets and accepted verification strategy, always with relatedFiles and sourceWorkItem.
+  Evidence gets proof of actions: file artifact refs, changed files, selected commands, test results, parser/import diagnostics and human review decisions; command output stays summarized.
+  Work Graph gets operational state: target_files, depends_on, trace_refs, next_action, status, evidence strings and task-specific verification hints.
+  Graph/RAG gets derived nodes and edges: WorkItem -> document YAML -> posting script -> registers -> report/widget readers -> evidence/memory records.
+Цель:
+  Each layer stores only its own responsibility and can be rebuilt or reviewed without hidden OneBase adapter state.
+
+Метки:
+  atom.profile: architecture_decision
+  decision.id: onebase-memory-evidence-workgraph-split
+  protocol.id: onebase-artifact-mapping
+  trace.status: verified
+]>
+
+#Fallback_Missing_Ambiguous_OneBase_Files<[
+Базис:
+  The target file labels may differ in case, transliteration or naming from the actual OneBase tree.
+Вектор:
+  Resolve candidate files by exact path first, then by normalized artifact name, extension and folder kind; e.g. реализация_товаров.yaml maps to name=РеализацияТоваров and реализациятоваров.posting.os maps to posting script by normalized document name.
+  If one side is missing, emit a degraded trace atom with found artifacts, missingArtifacts, confidence=low and trace.status=needs-review; do not infer register writes without a script or metadata source.
+  If several candidates match, keep all candidates in evidence.artifacts or labels onebase.candidate_files and require human/adapter review before memory becomes active.
+  Plaintext fallback may emit file refs and lexical chunks only; it must not invent onebase.register.refs, procedure names or verification commands.
+Цель:
+  Work Graph remains useful under partial OneBase knowledge while preventing false domain facts from entering memory as verified.
+
+Метки:
+  atom.profile: prompt_rule
+  rule.id: onebase-missing-ambiguous-fallback
+  protocol.id: onebase-artifact-mapping
+  trace.status: verified
+]>

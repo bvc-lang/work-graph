@@ -1,0 +1,54 @@
+#Задача_write_an32_closing_gripe_ds_adoption_phase2<[
+Базис:
+  Closing loop AN-22: metrics grep button migration, ui-kit, import command.
+Вектор:
+  work/analytics/closing-epic-gripe-ds-adoption-phase2.md + journal AN-32 closing key.
+  Explicit note: Gripe DS ≠ OneBase.
+Цель:
+  Эпик закрыт с метриками phase 2.
+Проверки:
+  analytics-records.jsonl содержит AN-32 closing
+  epic-gripe-ds-adoption-phase2 closed с evidence
+Анализ:
+  Целесообразность:
+  Стоит завести «AN-32 closing analysis: epic-gripe-ds-adoption-phase2» в бэклог — по материалам AN-32 (work/analytics/gripe-ds-adoption-phase2-post-an21.md).
+  Контекст и границы:
+  work/analytics/closing-epic-gripe-ds-adoption-phase2.md + journal AN-32 closing key.
+  Зависимости и готовность:
+  depends_on=epic-gripe-ds-adoption-phase2, wg-backlog-ui-button-migration-wave-2, wg-ui-molecules-rating-tabs-renderers, wg-ui-organism-modal-parity, docs-generator-molecules-organisms, onebase-odata-catalog-import-production, onebase-catalog-facets-listing-form-bridge; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Эпик закрыт с метриками phase 2.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-32 (work/analytics/gripe-ds-adoption-phase2-post-an21.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-32
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/gripe-ds-adoption-phase2-post-an21.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-05-31T17:04:02.582Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T17:04:02.582Z
+  work.decision.verdict: useful
+  work.department: product-integration
+  work.depends_on: epic-gripe-ds-adoption-phase2, wg-backlog-ui-button-migration-wave-2, wg-ui-molecules-rating-tabs-renderers, wg-ui-organism-modal-parity, docs-generator-molecules-organisms, onebase-odata-catalog-import-production, onebase-catalog-facets-listing-form-bridge
+  work.id: write-an32-closing-gripe-ds-adoption-phase2
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: product_owner
+  work.parent_id: epic-gripe-ds-adoption-phase2
+  work.pipeline_stage: closed
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: work/analytics/closing-epic-gripe-ds-adoption-phase2.md, work/analytics-records.jsonl, work/analytics/gripe-ds-adoption-phase2-post-an21.md
+  work.title: AN-32 closing analysis: epic-gripe-ds-adoption-phase2
+]>

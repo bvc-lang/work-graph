@@ -1,0 +1,16 @@
+{
+  "schema": "code-gap.report.v1",
+  "summary": {
+    "total": 1,
+    "untrackedExports": 1,
+    "missingImplementation": 0
+  },
+  "entries": [
+    {
+      "kind": "untracked_export",
+      "filePath": "src/sample-hybrid.mjs",
+      "symbol": "marker",
+      "reason": "export without step coverage"
+    }
+  ]
+}

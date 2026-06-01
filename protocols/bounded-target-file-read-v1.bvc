@@ -1,0 +1,24 @@
+#Протокол_Bounded_Target_File_Read_v1<[
+Базис:
+  workGraphToolSurfaceAudit откладывает ioHasC readFile; rebuild worker должен читать только work.target_files без произвольного доступа к дереву.
+  protocols/agent-worker-adapter.bvc и agent-state-machine-v1 требуют deny-by-default tool policy вне targetFiles.
+Вектор:
+  worker.boundedTargetFileRead читает только paths из Worker Input targetFiles после нормализации и reject path traversal.
+  Лимиты: maxBytesPerFile, maxTotalBytes, optional repoRoot; missing file → error entry, не silent skip всего batch.
+  Результат — workgraph.bounded-target-file-read.v1 для prompt/context assembly и evidence, без write/network.
+Цель:
+  OpenAI-compatible provider и live-loop могут включать bounded file facts в context без full readFile tool port.
+
+Проверки:
+  path вне targetFiles отклоняется
+  .. traversal отклоняется
+  truncate помечается truncated=true
+  tests покрывают allow/deny/truncate paths
+
+Метки:
+  atom.profile: architecture_decision
+  protocol.id: bounded-target-file-read-v1
+  decision.id: bounded-target-file-read-v1
+  work.source: implement-bounded-target-file-read
+  trace.status: verified
+]>

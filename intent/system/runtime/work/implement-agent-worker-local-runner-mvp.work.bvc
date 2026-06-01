@@ -1,0 +1,50 @@
+#Задача_implement_agent_worker_local_runner_mvp<[
+Базис:
+  Provider-neutral adapter contract уже отделяет Work Graph state от внешних agent providers.
+  Первый исполняемый worker лучше начать с локального runner-а, чтобы проверить lifecycle, evidence и status transition без зависимости от качества SDK вызов tools.
+Вектор:
+  Реализовать минимальный local runner, который читает WorkItem snapshot, применяет bounded policy, запускает deterministic command или заглушка provider и возвращает Worker Output v1.
+  Подключить runner к Work Graph runtime только через claim, evidence и запрос transition; не давать runner-у напрямую владеть бэклог state.
+  Покрыть happy path и сценарий ошибки тестами без реального LLM.
+Цель:
+  Получить первый проверяемый execution loop для Agent Worker Adapter до подключения Cursor SDK, Claude или OpenAI-compatible providers.
+Анализ:
+  Целесообразность:
+  Стоит завести «реализовать MVP локального runner для adapter agent worker» в бэклог.
+  Контекст и границы:
+  Реализовать минимальный local runner, который читает WorkItem snapshot, применяет bounded policy, запускает deterministic command или заглушка provider и возвращает Worker Output v1.
+  Зависимости и готовность:
+  depends_on=design-agent-worker-adapter; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Получить первый проверяемый execution loop для Agent Worker Adapter до подключения Cursor SDK, Claude или OpenAI-compatible providers.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441028
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:36.514Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:36.523Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: design-agent-worker-adapter
+  work.id: implement-agent-worker-local-runner-mvp
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: feature_engineer
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: src/agentWorkerLocalRunner.mjs, tests/agentWorkerLocalRunner.test.mjs, package.json, work/backlog.bvc
+  work.title: реализовать MVP локального runner для adapter agent worker
+]>
+

@@ -1,0 +1,59 @@
+#Задача_update_llm_bvc_atom_writer_multilingual<[
+Базис:
+  Источник: analytics:bvc-multilingual-keys-design §7 — протокол пишет «Formatter всегда Базис»; конфликт с atom.lang.
+  LLM-фрагмент без файла: обязателен @lang или Labels.lang.
+Вектор:
+  Обновить llm-step-atom-writer.bvc: выбор одного dialect; lang в draft/Labels.
+  Formatter пишет ключи dialect из registry, не hardcode RU.
+  Примеры EN и RU draft JSON.
+Цель:
+  LLM-контракт согласован с Detect-or-Declare; нет mixed inline aliases.
+Анализ:
+  Целесообразность:
+  Стоит завести «protocols/llm-step-atom-writer: один dialect на атом» в бэклог — по материалам AN-19 (analytics:bvc-multilingual-keys-design).
+  Контекст и границы:
+  Обновить llm-step-atom-writer.bvc: выбор одного dialect; lang в draft/Labels.
+  Зависимости и готовность:
+  depends_on=adr-bvc-multilingual-keys, extend-bvc-atom-draft-lang-field; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  LLM-контракт согласован с Detect-or-Declare; нет mixed inline aliases.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-19 (analytics:bvc-multilingual-keys-design); исполнять после вердикта «полезно» и готовности зависимостей.
+Проверки:
+  protocol описывает @lang и Labels.lang для фрагментов
+  npm run eval:mandatory-prompt не регрессит
+
+Свидетельства:
+  - protocols/llm-step-atom-writer.bvc: one-dialect-per-atom, @lang, draft.lang
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-19
+  intake.source_kind: analytics-record
+  intake.source_ref: analytics:bvc-multilingual-keys-design
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T08:11:06.085Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T08:11:06.085Z
+  work.decision.verdict: useful
+  work.department: architecture
+  work.depends_on: adr-bvc-multilingual-keys, extend-bvc-atom-draft-lang-field
+  work.id: update-llm-bvc-atom-writer-multilingual
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: frontend_architect
+  work.parent_id: bvc-multilingual-detect-or-declare
+  work.pipeline_stage: closed
+  work.priority: medium
+  work.risk: medium
+  work.status: done
+  work.target_files: protocols/llm-step-atom-writer.bvc, schemas/step-atom-draft.v1.json, docs/adr-bvc-multilingual-keys.md
+  work.title: protocols/llm-step-atom-writer: один dialect на атом
+]>

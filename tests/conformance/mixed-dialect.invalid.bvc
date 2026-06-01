@@ -1,0 +1,12 @@
+#Mixed_Invalid<[
+Basis:
+  - English basis key.
+Вектор:
+  - Russian vector key mixed in same atom.
+Цель:
+  - Should trigger E_BVC_DIALECT_MIX.
+
+Labels:
+  atom.profile: prompt_rule
+  trace.status: pending
+]>

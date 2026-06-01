@@ -1,0 +1,60 @@
+#Задача_document_agent_intake_vs_execute_policy<[
+Базис:
+  AN-25 R5: «что дальше?» → только analytics; seed эпик — после «создавай и делай».
+  Сейчас агент преждевременно создаёт seed эпиков на аналитический вопрос.
+Вектор:
+  Дополнить docs/decision-pipeline-canon.md §Agent intake vs execute.
+  protocols/decision-pipeline-canon-v1.bvc — блок agent-intake-policy.
+  Таблица: вопрос / команда пользователя → допустимый артеfact (AN only | epic seed | code).
+Цель:
+  Оператор и агент знают, когда писать только AN-XX, а когда создавать work items.
+Проверки:
+  docs/decision-pipeline-canon.md содержит §Agent intake vs execute
+  protocol обновлён или добавлен agent-intake-policy block
+Анализ:
+  Целесообразность:
+  Стоит завести «canon: intake-only vs execute (когда seed эпик, когда только AN)» в бэклог — по материалам AN-25 (work/analytics/agent-bypass-work-graph-dual-backlog.md).
+  Контекст и границы:
+  Дополнить docs/decision-pipeline-canon.md §Agent intake vs execute.
+  Зависимости и готовность:
+  depends_on=epic-agent-workgraph-enforcement, add-cursor-ide-workgraph-parity-step; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Оператор и агент знают, когда писать только AN-XX, а когда создавать work items.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-25 (work/analytics/agent-bypass-work-graph-dual-backlog.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Свидетельства:
+  - docs/decision-pipeline-canon.md §Agent intake vs execute
+  - protocols/decision-pipeline-canon-v1.bvc — agent intake vs execute в Вектор
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-25
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/agent-bypass-work-graph-dual-backlog.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T12:17:11.982Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T12:17:11.982Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: epic-agent-workgraph-enforcement, add-cursor-ide-workgraph-parity-step
+  work.id: document-agent-intake-vs-execute-policy
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: product_owner
+  work.parent_id: epic-agent-workgraph-enforcement
+  work.pipeline_stage: closed
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: docs/decision-pipeline-canon.md, protocols/decision-pipeline-canon-v1.bvc, work/analytics/agent-bypass-work-graph-dual-backlog.md
+  work.title: canon: intake-only vs execute (когда seed эпик, когда только AN)
+]>

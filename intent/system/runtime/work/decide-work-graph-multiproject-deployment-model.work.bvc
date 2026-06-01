@@ -1,0 +1,52 @@
+#Задача_decide_work_graph_multiproject_deployment_model<[
+Базис:
+  В AN-40 сравниваются три модели: встроенный WG в репо, отдельный хост с каноном у себя, гибрид (канон в проекте, консоль снаружи).
+  AN-8 требует канон рядом с кодом; AN-20 — пересмотреть догму «один WG на репо» для нескольких проектов.
+  Решение нужно до кода реестра и переключателя — иначе переделаем дважды.
+Вектор:
+  Написать docs/adr-work-graph-multiproject-host.md: выбран вариант C, почему A и B не подходят, схема реестра и границы pilot.
+Цель:
+  Модель развёртывания зафиксирована письменно; команда не спорит о базовой архитектуре во время реализации.
+Проверки:
+  ADR опубликован в docs/
+  Варианты A и B отклонены с понятным обоснованием
+  ADR ссылается на эпик epic-work-graph-multiproject-host
+Анализ:
+  Зачем:
+  ADR — опора для всех подзадач эпика; без него каждый таск тащит свою трактовку AN-40.
+  Когда:
+  Первая подзадача после старта эпика.
+Решение:
+  Вердикт:
+  полезно
+  Писать ADR до implement-workspace-registry-multiproject.
+
+Свидетельства:
+  - docs/adr-work-graph-multiproject-host.md
+  - docs/adr-work-graph-per-project-install.md
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-40
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-project-deployment-model.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-01T11:18:32.737Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-01T11:18:32.737Z
+  work.decision.verdict: useful
+  work.department: product-architecture
+  work.depends_on: epic-work-graph-multiproject-host
+  work.id: decide-work-graph-multiproject-deployment-model
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: system_architect
+  work.parent_id: epic-work-graph-multiproject-host
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: low
+  work.status: done
+  work.target_files: work/analytics/work-graph-project-deployment-model.md, docs/plan-work-graph-multiproject-host.md, docs/adr-work-graph-multiproject-host.md
+  work.title: ADR: гибридная модель развёртывания Work Graph
+]>

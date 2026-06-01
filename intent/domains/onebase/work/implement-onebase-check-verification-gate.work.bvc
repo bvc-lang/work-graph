@@ -1,0 +1,49 @@
+#Задача_implement_onebase_check_verification_gate<[
+Базис:
+  OneBase upstream добавляет onebase check; parity matrix и ioHasC MCP bridge готовы, но verification loop Work Graph ещё не вызывает check.
+  Задача «добавить onebase check в verification loop» относится к контуру Work Graph rebuild и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: wire-onebase-cli-tools-parity.
+Вектор:
+  Порт onebaseCliRunner, npm run test:optional:onebase-check, строка verification matrix optional-env; UI policy hint на вкладке Проверки.
+  Ближайший шаг исполнения: просмотреть и перевести в ready.
+Цель:
+  Оператор и CI optional tier могут запускать onebase check для trade project с graceful skip на старых сборках CLI.
+Анализ:
+  Целесообразность:
+  Стоит завести «добавить onebase check в verification loop» в бэклог.
+  Контекст и границы:
+  Порт onebaseCliRunner, npm run test:optional:onebase-check, строка verification matrix optional-env; UI policy hint на вкладке Проверки.
+  Зависимости и готовность:
+  depends_on=wire-onebase-cli-tools-parity; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Оператор и CI optional tier могут запускать onebase check для trade project с graceful skip на старых сборках CLI.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:37.000Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:37.007Z
+  work.decision.verdict: useful
+  work.department: domain-onebase
+  work.depends_on: wire-onebase-cli-tools-parity
+  work.id: implement-onebase-check-verification-gate
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: integration_architect
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: medium
+  work.status: done
+  work.target_files: scripts/run-onebase-config-check.mjs, src/onebaseCliRunner.mjs, src/verificationLoop.mjs, package.json, tests/onebaseCliRunner.test.mjs, protocols/rebuild-verification-loop.bvc
+  work.title: добавить onebase check в verification loop
+]>
+

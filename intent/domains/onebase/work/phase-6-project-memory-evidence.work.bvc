@@ -1,0 +1,50 @@
+#Задача_phase_6_project_memory_evidence<[
+Базис:
+  Rebuild уже имеет memory/evidence protocols, но ещё не имеет durable writers и projections уровня ioHasC memory/glue layer.
+  Задача «Фаза 6: Project Memory и Evidence» относится к контуру графа знаний и retrieval и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: phase-4-trace-pvrg-semantic-map.
+Вектор:
+  Построить MemoryRecord writer, structured Evidence v1 read model, извлечение из worker-output и dashboard projections для memory/evidence.
+  Ближайший шаг исполнения: выполнить фазу 7 OneBase vertical.
+Цель:
+  Done-задачи становятся устойчивым project knowledge, а не только строками evidence в бэклог.
+Анализ:
+  Целесообразность:
+  Стоит завести «Фаза 6: Project Memory и Evidence» в бэклог.
+  Контекст и границы:
+  Построить MemoryRecord writer, structured Evidence v1 read model, извлечение из worker-output и dashboard projections для memory/evidence.
+  Зависимости и готовность:
+  depends_on=phase-4-trace-pvrg-semantic-map; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Done-задачи становятся устойчивым project knowledge, а не только строками evidence в бэклог.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441056
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:37.487Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:37.496Z
+  work.decision.verdict: useful
+  work.department: knowledge-publishing
+  work.depends_on: phase-4-trace-pvrg-semantic-map
+  work.id: phase-6-project-memory-evidence
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: knowledge_architect
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: high
+  work.status: done
+  work.target_files: src/memoryRecordWriter.mjs, src/evidenceReadModel.mjs, tests/memoryRecordWriter.test.mjs, protocols/project-memory-v1.bvc, protocols/evidence-model-v1.bvc, work/backlog.bvc
+  work.title: Фаза 6: Project Memory и Evidence
+]>
+

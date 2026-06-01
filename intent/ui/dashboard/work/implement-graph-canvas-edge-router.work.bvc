@@ -1,0 +1,60 @@
+#Задача_implement_graph_canvas_edge_router<[
+Базис:
+  Источник: analytics:graph-edges-n8n-parity (AN-5), C1.
+  Обобщить intentRoadmapEdgeGeometry; intentRoadmapCanvas re-export для backward compat.
+Вектор:
+  buildGraphCanvasEdgeGeometry + buildGraphCanvasEdgeRoutes(projection).
+  LR horizontal spine, vertical parent→child cubic, hide «подзадача» label on vertical.
+Цель:
+  Router покрывает intent roadmap и generic projection nodes с x/y/width/height.
+Анализ:
+  Целесообразность:
+  Стоит завести «реализовать graphCanvasEdgeRouter (intent + architecture lanes)» в бэклог — по материалам AN-5 (analytics:graph-edges-n8n-parity).
+  Контекст и границы:
+  buildGraphCanvasEdgeGeometry + buildGraphCanvasEdgeRoutes(projection).
+  Зависимости и готовность:
+  depends_on=implement-graph-canvas-svg-edges-v1; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Router покрывает intent roadmap и generic projection nodes с x/y/width/height.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-5 (analytics:graph-edges-n8n-parity); исполнять после вердикта «полезно» и готовности зависимостей.
+Проверки:
+  tests/graphCanvasEdgeRouter.test.mjs: horizontal LR + vertical stack
+  intentRoadmapCanvas.test.mjs edge geometry не регрессирует
+
+Свидетельства:
+  - src/graphCanvasLitFlow/graphCanvasEdgeRouter.mjs — LR spine + vertical cubic
+  - tests/graphCanvasEdgeRouter.test.mjs — 4 cases pass
+  - intentRoadmapCanvas re-exports geometry for backward compat
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-5
+  intake.source_kind: analytics-record
+  intake.source_ref: analytics:graph-edges-n8n-parity
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T21:46:13.660Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-30T21:46:13.660Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: implement-graph-canvas-svg-edges-v1
+  work.id: implement-graph-canvas-edge-router
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: feature_engineer
+  work.parent_id: implement-graph-canvas-svg-edges-v1
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: src/graphCanvasLitFlow/graphCanvasEdgeRouter.mjs, src/intentRoadmapCanvas.mjs, tests/graphCanvasEdgeRouter.test.mjs
+  work.title: реализовать graphCanvasEdgeRouter (intent + architecture lanes)
+]>

@@ -1,0 +1,61 @@
+#Задача_document_chat_scope_readonly_canon<[
+Базис:
+  AN-28 §5–6: принцип «чат read, kanban write» не зафиксирован в canon отдельным §.
+  decision-pipeline-canon уже имеет Agent intake vs execute — расширить.
+Вектор:
+  docs/decision-pipeline-canon.md §Chat read-only scope.
+  protocols/decision-pipeline-canon-v1.bvc — блок chat-scope-readonly.
+  Таблица: поверхность → read/write; TodoWrite только micro-steps.
+Цель:
+  Канон явно запрещает TodoWrite sync и описывает допустимые read-only проекции.
+Проверки:
+  docs/decision-pipeline-canon.md содержит §Chat read-only scope
+  protocol обновлён
+Анализ:
+  Целесообразность:
+  Стоит завести «canon: Chat read-only scope (без TodoWrite sync)» в бэклог — по материалам AN-28 (work/analytics/chat-work-graph-todo-sync.md).
+  Контекст и границы:
+  docs/decision-pipeline-canon.md §Chat read-only scope.
+  Зависимости и готовность:
+  depends_on=epic-chat-work-scope-readonly, agent-behavior-chat-scope-block; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Канон явно запрещает TodoWrite sync и описывает допустимые read-only проекции.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-28 (work/analytics/chat-work-graph-todo-sync.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-28
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/chat-work-graph-todo-sync.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-05-31T14:19:05.332Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T14:19:05.332Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: epic-chat-work-scope-readonly, agent-behavior-chat-scope-block
+  work.id: document-chat-scope-readonly-canon
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: product_owner
+  work.parent_id: epic-chat-work-scope-readonly
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: docs/decision-pipeline-canon.md, protocols/decision-pipeline-canon-v1.bvc, work/analytics/chat-work-graph-todo-sync.md
+  work.title: canon: Chat read-only scope (без TodoWrite sync)
+
+Свидетельства:
+  - docs/decision-pipeline-canon.md — §Chat read-only scope (поверхности read/write, запрет TodoWrite sync)
+  - protocols/decision-pipeline-canon-v1.bvc — chat-scope-readonly в Вектор + проверки
+  - AN-28 R5 canon: chat read, kanban write зафиксирован
+]>

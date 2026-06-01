@@ -1,0 +1,14 @@
+#!bvc lang=ru
+
+#Sample_RU<[
+Базис:
+  - Canonical EN dialect sample.
+Вектор:
+  - Conformance fixture for parser.
+Цель:
+  - Identical normalized AST as RU counterpart.
+
+Метки:
+  atom.profile: prompt_rule
+  trace.status: pending
+]>

@@ -1,0 +1,54 @@
+#Задача_schema_architecture_snapshot_l1_bvc_fields<[
+Базис:
+  Drawer и MCP нужны structured BVC fields, не только summary string.
+Вектор:
+  schemas/architecture-snapshot.v1.json: l1Canon object + optional block BVC strings.
+  Validate in architectureSnapshot.test.mjs subset schema check.
+Цель:
+  Контракт snapshot документирует canon provenance и BVC.
+Проверки:
+  schema validates fixture snapshot with l1Canon + block BVC
+  breaking change documented in plan
+Анализ:
+  Целесообразность:
+  Стоит завести «Schema: block basis/vector/goal + l1Canon in architecture.snapshot.v1» в бэклог — по материалам AN-36 (work/analytics/architecture-main-bvc-canon-hub.md).
+  Контекст и границы:
+  schemas/architecture-snapshot.v1.json: l1Canon object + optional block BVC strings.
+  Зависимости и готовность:
+  depends_on=epic-architecture-main-bvc-canon, migrate-architecture-snapshot-from-canon; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Контракт snapshot документирует canon provenance и BVC.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-36 (work/analytics/architecture-main-bvc-canon-hub.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-36
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/architecture-main-bvc-canon-hub.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T21:27:08.544Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T21:27:08.544Z
+  work.decision.verdict: useful
+  work.department: system-runtime
+  work.depends_on: epic-architecture-main-bvc-canon, migrate-architecture-snapshot-from-canon
+  work.id: schema-architecture-snapshot-l1-bvc-fields
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: integration_architect
+  work.parent_id: epic-architecture-main-bvc-canon
+  work.pipeline_stage: closed
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: schemas/architecture-snapshot.v1.json, tests/architectureSnapshot.test.mjs, work/analytics/architecture-main-bvc-canon-hub.md
+  work.title: Schema: block basis/vector/goal + l1Canon in architecture.snapshot.v1
+]>

@@ -1,0 +1,56 @@
+#Задача_publish_work_graph_cli_npm<[
+Базис:
+  packages/work-graph-cli уже @work-graph/cli но private: true.
+  User-first требует npx @work-graph/cli init из registry.
+Вектор:
+  Снять private, Apache-2.0, files/bin корректны.
+  npm publish; GitHub release tag.
+  check:npm-pack-boundary зелёный.
+Цель:
+  @work-graph/cli доступен через npx без clone репо.
+Проверки:
+  npm view @work-graph/cli version
+  npx @work-graph/cli --help работает
+Анализ:
+  Зачем:
+  packages/work-graph-cli уже @work-graph/cli но private: true.
+  Контекст: User-first требует npx @work-graph/cli init из registry.
+  Когда:
+  После готовности: epic-work-graph-npm-first-distribution, decide-work-graph-npm-first-distribution-adr.
+  Готово, когда:
+  @work-graph/cli доступен через npx без clone репо.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: epic-work-graph-npm-first-distribution, decide-work-graph-npm-first-distribution-adr.
+
+Свидетельства:
+  - packages/work-graph-cli/package.json v0.2.0 public
+  - scripts/sync-work-graph-cli-vendor.mjs
+  - npm pack ready
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-43
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-npm-first-distribution.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-01T16:48:00.457Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-01T16:48:00.457Z
+  work.decision.verdict: useful
+  work.department: engineering
+  work.depends_on: epic-work-graph-npm-first-distribution, decide-work-graph-npm-first-distribution-adr
+  work.id: publish-work-graph-cli-npm
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: release_engineer
+  work.parent_id: epic-work-graph-npm-first-distribution
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: packages/work-graph-cli/package.json, PUBLIC_API.md
+  work.title: Опубликовать @work-graph/cli на npm (снять private)
+]>

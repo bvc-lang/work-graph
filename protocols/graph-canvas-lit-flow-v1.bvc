@@ -1,0 +1,22 @@
+#Протокол_Graph_Canvas_Lit_Flow_V1<[
+Базис:
+  AN-4 (analytics:graph-visualization-engine): product canvas = lit-flow (@xyflow/system + Lit Web Components), референс UX — n8n на Vue Flow.
+  Mermaid только docs/export; runtime UI — GraphCanvasLitFlowProjection → client island.
+Вектор:
+  Server: architecture / schematic / intent projection → workgraph.graph-canvas-lit-flow-projection.v1 JSON.
+  Client: mount flow-canvas + custom graph-card-node; graph-node-click → drawer bridge в backlog UI.
+  Pan/zoom, fitView, minimap, keyboard lineage traversal — в client bundle, не inline SVG.
+Цель:
+  Один graph canvas runtime на все graph views; кликабельные HTML-карточки; без legacy static HTML+SVG render path.
+
+Проверки:
+  schema graph-canvas-lit-flow-projection.v1.json согласован с mount contract
+  event graph-node-click документирован (detail: taskId | intentNodeId | blockId | schematicId)
+  nodesDraggable=false, nodesConnectable=false (read-only lineage viewer)
+
+Метки:
+  atom.profile: architecture_decision
+  protocol.id: graph-canvas-lit-flow-v1
+  work.source: analytics:graph-visualization-engine
+  trace.status: verified
+]>

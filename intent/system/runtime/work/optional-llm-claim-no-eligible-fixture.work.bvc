@@ -1,0 +1,49 @@
+#Задача_optional_llm_claim_no_eligible_fixture<[
+Базис:
+  Фикстура Tier B claim-no-eligible из prompt-eval-workgraph-flows-v1 не автоматизирован; модель может выдумать task при пустой очередь ready.
+  Задача «реализовать optional LLM fixture claim-no-eligible» относится к контуру платформы агента и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: design-prompt-eval-workgraph-flows, optional-live-llm-eval.
+Вектор:
+  Empty очередь ready snapshot + live LLM через worker/MCP; ожидание stop без hallucinated workId.
+  Ближайший шаг исполнения: просмотреть и перевести в ready.
+Цель:
+  Опциональная live LLM eval проверяет stop без выдуманного workId при пустой очередь ready.
+Анализ:
+  Целесообразность:
+  Стоит завести «реализовать optional LLM fixture claim-no-eligible» в бэклог.
+  Контекст и границы:
+  Empty очередь ready snapshot + live LLM через worker/MCP; ожидание stop без hallucinated workId.
+  Зависимости и готовность:
+  depends_on=design-prompt-eval-workgraph-flows, optional-live-llm-eval; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Опциональная live LLM eval проверяет stop без выдуманного workId при пустой очередь ready.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:37.377Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:37.386Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: optional-live-llm-eval, design-prompt-eval-workgraph-flows
+  work.id: optional-llm-claim-no-eligible-fixture
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: agent_platform_architect
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: medium
+  work.status: done
+  work.target_files: protocols/prompt-eval-workgraph-flows-v1.bvc, scripts/run-optional-golden-path-llm-eval.mjs, docs/plan-workgraph-llm-usefulness.md
+  work.title: реализовать optional LLM fixture claim-no-eligible
+]>
+

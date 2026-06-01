@@ -1,0 +1,21 @@
+#Задача_work_item_decision_pipeline_v1<[
+Базис:
+  Анализ и решение живут в атоме WorkItem (секции Анализ / Решение).
+  Сервер Work Graph не вызывает LLM — анализ пишет агент Cursor через MCP.
+  Анализ — только до исполнения: целесообразность, scope, deps, риски; не отчёт «что уже сделано».
+  Формулировки в настоящем/решении: «Стоит брать», не «было оправдано». Inline \`термины\` в backticks — только в Анализ/Решение, UI рендерит как code.
+Вектор:
+  record_work_item_analysis → record_work_item_decision → promote/claim только при useful.
+  create_work_item сразу заполняет секции Анализ и Решение (src/workItemCreateAnalysis.mjs) — не intake без pipeline.
+  claim_work_item и update_work_item_status(ready|claimed|doing) блокируются без gate.
+Цель:
+  Исполнение только после осознанного разбора в Cursor и явного утверждения.
+
+Проверки:
+  MCP prompts analyze_work_item описывает workflow
+  claim без analysis возвращает missing_analysis
+
+Метки:
+  atom.profile: protocol
+  trace.status: verified
+]>

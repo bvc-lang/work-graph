@@ -1,0 +1,52 @@
+#Задача_onebase_artifact_mapping<[
+Базис:
+  OneBase хранит бизнес-смысл в YAML metadata, .os scripts, registers, reports, widgets и Go runtime.
+  Golden path требует не просто читать файлы, а понимать связи документа, табличной части, регистров и проведения.
+  Предварительно должны быть закрыты зависимости: design-language-adapter-layer.
+Вектор:
+  Составить mapping OneBase artifact -> StepAtomDraft profile и labels.
+  Для РеализацияТоваров связать документировать YAML, posting .os, регистры Остатки/Партии/ВаловаяПрибыль/Взаиморасчёты и verification command.
+  Описать trace refs между YAML fields, .os procedures и Work Graph task.
+Цель:
+  OneBase artifacts становятся структурированным входом для Work Graph и memory.
+  Готово, когда выполнены проверки: есть таблица artifact kind -> atom profile/labels.
+Анализ:
+  Целесообразность:
+  Стоит завести «сопоставить artifacts OneBase со StepAtomDraft» в бэклог.
+  Контекст и границы:
+  Составить mapping OneBase artifact -> StepAtomDraft profile и labels.
+  Зависимости и готовность:
+  depends_on=design-language-adapter-layer; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  OneBase artifacts становятся структурированным входом для Work Graph и memory.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441017
+  migration.strategy: port
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:37.306Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:37.314Z
+  work.decision.verdict: useful
+  work.department: product-architecture
+  work.depends_on: design-language-adapter-layer
+  work.id: onebase-artifact-mapping
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: domain_architect
+  work.pipeline_stage: decided
+  work.priority: critical
+  work.risk: high
+  work.status: done
+  work.target_files: domains/onebase/artifact-mapping.bvc, domains/onebase/examples/realization-posting-step-atom-draft.example.json, ../onebase/examples/trade/documents/реализация_товаров.yaml, ../onebase/examples/trade/src/реализациятоваров.posting.os
+  work.title: сопоставить artifacts OneBase со StepAtomDraft
+]>
+

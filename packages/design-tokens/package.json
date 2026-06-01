@@ -1,0 +1,16 @@
+{
+  "name": "@iohasc/design-tokens",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Shared design tokens (JSON) → CSS/Tailwind for Work Graph and Marketplace",
+  "exports": {
+    ".": "./index.mjs",
+    "./tokens/base.json": "./tokens/base.json",
+    "./build/tokens-to-css": "./build/tokens-to-css.mjs",
+    "./build/applyTheme": "./build/applyTheme.mjs"
+  },
+  "scripts": {
+    "build": "node build/build-all.mjs"
+  }
+}

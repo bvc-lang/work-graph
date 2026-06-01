@@ -1,0 +1,59 @@
+#Задача_update_migration_plan_multilingual_an19<[
+Базис:
+  docs/plan-step-to-bvc-migration.md §«Что не мигрируем» устарело: «bilingual canon без изменений».
+  Источник: analytics:bvc-multilingual-keys-design — Detect-or-Declare, не inline aliases.
+Вектор:
+  Заменить формулировку bilingual на registered dialects + auto-detect.
+  Добавить todo фазы 1–2: registry, parser lang, conformance.
+  Cross-link AN-19 и adr-bvc-multilingual-keys.
+Цель:
+  Migration plan согласован с AN-19; исполнители не следуют старому §.
+Анализ:
+  Целесообразность:
+  Стоит завести «plan-step-to-bvc-migration: секция multilingual (AN-19)» в бэклог — по материалам AN-19 (analytics:bvc-multilingual-keys-design).
+  Контекст и границы:
+  Заменить формулировку bilingual на registered dialects + auto-detect.
+  Зависимости и готовность:
+  depends_on=adr-bvc-multilingual-keys; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Migration plan согласован с AN-19; исполнители не следуют старому §.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-19 (analytics:bvc-multilingual-keys-design); исполнять после вердикта «полезно» и готовности зависимостей.
+Проверки:
+  docs/plan-step-to-bvc-migration.md не содержит «bilingual canon без изменений»
+  todo multilingual tasks перечислены
+
+Свидетельства:
+  - docs/plan-step-to-bvc-migration.md: multilingual ADR + todo фазы 1
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-19
+  intake.source_kind: analytics-record
+  intake.source_ref: analytics:bvc-multilingual-keys-design
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T08:11:06.137Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T08:11:06.137Z
+  work.decision.verdict: useful
+  work.department: architecture
+  work.depends_on: adr-bvc-multilingual-keys
+  work.id: update-migration-plan-multilingual-an19
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: frontend_architect
+  work.parent_id: bvc-multilingual-detect-or-declare
+  work.pipeline_stage: closed
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: docs/plan-step-to-bvc-migration.md, docs/adr-bvc-multilingual-keys.md, work/analytics/bvc-multilingual-keys-design.md
+  work.title: plan-step-to-bvc-migration: секция multilingual (AN-19)
+]>

@@ -1,0 +1,77 @@
+#!bvc lang=ru
+
+#Устав_WorkGraph_Rebuild<[
+Базис:
+  AN-7 (product-self-audit-user): выбрана позиция C — vertical для 1С / OneBase, не general agentic OS.
+  ioHasC ядра (BVC canon, Work Graph, trace/evidence, OneBase) сохраняются; перегрузка IDE shell / GVM / multi-domain — в R&D (experimental/).
+  Прежний устав до pivot: charter/legacy/main-pre-an7.bvc.
+Вектор:
+  Golden path для 1С-разработчика: намерение → Work Graph task → agent claim → изменение конфигурации/обработки/отчёта OneBase → evidence → verification.
+  Primary scope: OneBase metadata (.yaml), posting (.os), MCP bridge, vertical verify gates — не конкурировать с Cursor/Devin/Linear в общей нише.
+  Step/BVC canon + Work Graph + Trace/Evidence + Memory — ядра; IDE shell и LLM adapters — готовые решения где возможно.
+  GVM/Genesis/Zig — experimental/R&D (protocols/gbc-gvm-zig-deferral-boundary.bvc), не блокируют 1С MVP.
+  Decision record: intent/product/positioning/decision-position-c-onebase-vertical.bvc.
+Цель:
+  Минимальная agentic OS для 1С/OneBase: задача проходит от намерения до verified evidence через Work Graph, не через свободный чат.
+
+Метки:
+  guid: 550e8400-e29b-41d4-a716-446655440101
+  project.slug: work-graph-rebuild
+  project.stage: vertical-pilot
+  atom.profile: charter
+  intake.analytics_key: AN-7
+  canon.primary: step
+  canon.public_format: bvc
+  canon.public_extension: .bvc
+  product.position: C-onebase-vertical
+  golden_path: onebase_charter_to_workgraph_to_verified_change
+  trace.status: verified
+
+Критерии_готовности:
+  - есть WorkItem v1 и lifecycle статусов
+  - есть memory/evidence contract
+  - есть первый agent execution loop без монолитного orchestrator
+  - есть test golden path на одну реальную задачу
+  - есть решение, какие старые слои переносить, заменить или отложить
+]>
+
+#Слои_Ядра<[
+Базис:
+  Новая сборка должна быть меньше старой, но не потерять уникальные слои.
+Вектор:
+  Step Canon: формат намерений, правил агента, планов, задач и trace.
+  Work Graph: операционная очередь задач, статусы, роли, evidence, journal, checkpoint.
+  Канон пайплайна analytics → epic → backlog → board → closing-анализ: protocols/decision-pipeline-canon-v1.bvc, docs/decision-pipeline-canon.md (AN-22).
+  Project Memory: durable facts, decisions, summaries, graph context, execution outcomes.
+  Trace/Evidence: связь задачи, кода, тестов, проверок и решений.
+  Agent Runtime: state-machine loop, tool policy, context assembly, verification.
+  Domain Vertical: OneBase/1C-like слой как первый прикладной wedge.
+  Architecture map (L1/L2): architecture/main.bvc — per-block BVC, edges, containers; derived-projections — ADR-блок UI/projections (7-й L1), не отдельная строка product layer в charter.
+Цель:
+  Каждый слой имеет проверяемый контракт и не дублирует соседний слой.
+
+Метки:
+  guid: 550e8400-e29b-41d4-a716-446655440102
+  atom.profile: charter_section
+  project.slug: work-graph-rebuild
+  architecture.ref: architecture/main.bvc
+  architecture.derived_projections.footnote: ADR derived layer — см. architecture/main.bvc#Architecture_Block_Derived_Projections
+  trace.status: pending
+]>
+
+#Анти_Цели<[
+Базис:
+  Старый проект стал ценным, но широким.
+Вектор:
+  Не конкурировать с Cursor / Devin / Linear как universal agent IDE (AN-7).
+  Не обещать multi-domain PM (Marketplace, generic IDE) в MVP vertical.
+  Не строить собственную IDE shell до доказательства 1С golden path.
+Цель:
+  MVP остаётся узким и проверяемым.
+
+Метки:
+  guid: 550e8400-e29b-41d4-a716-446655440103
+  atom.profile: charter_section
+  project.slug: work-graph-rebuild
+  trace.status: pending
+]>

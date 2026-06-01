@@ -1,0 +1,52 @@
+#Задача_implement_work_item_promote_ready_mvp<[
+Базис:
+  Доска делит planning queue (`work.status: backlog`) и execution queue (`work.status: ready`), но в work/backlog.bvc почти нет задач в ready — колонка «Готово к работе» пустая, а открытые WorkItem лежат на вкладке «Бэклог».
+  Agent Run и live-loop принимают только `ready`; смешивать статусы в UI без явного promote ломает согласованность с runtime и историей в .bvc.
+Вектор:
+  Server-side promote: POST API переводит один WorkItem `backlog` → `ready` с проверкой depends_on (как claimNext), патчит work.status в work/backlog.bvc через workGraphBacklogPersist.
+  UI: колонка «Готово к работе» показывает `ready` + claimable `backlog` (deps satisfied) с бейджом «в плане»; кнопка «Перевести в ready» в detail drawer и на карточке.
+  После promote — обновить snapshot; опционально позже «Promote & Run» из Agent Run panel (defer).
+  Покрыть API/UI-тестs без live LLM; не client-side rewrite бэклог.
+Цель:
+  Оператор видит pipeline исполнения на доске и явно переводит задачу в ready с записью в canonical бэклог и intent graph.
+Анализ:
+  Целесообразность:
+  Стоит завести «реализовать work item promote-ready mvp» в бэклог.
+  Контекст и границы:
+  Server-side promote: POST API переводит один WorkItem `backlog` → `ready` с проверкой depends_on (как claimNext), патчит work.status в work/backlog.bvc через workGraphBacklogPersist.
+  Зависимости и готовность:
+  depends_on=implement-agent-run-backlog-persist, implement-pvrg-graph-rag-context-slice, implement-workgraph-backlog-ui-mvp; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Оператор видит pipeline исполнения на доске и явно переводит задачу в ready с записью в canonical бэклог и intent graph.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441111
+  migration.strategy: replace
+  trace.artifact_refs: ui/operator-dashboard.bvc, src/workGraphBacklogPersist.mjs, protocols/operator-agent-run-panel-v1.bvc
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:37.182Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:37.191Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: implement-workgraph-backlog-ui-mvp, implement-agent-run-backlog-persist, implement-pvrg-graph-rag-context-slice
+  work.id: implement-work-item-promote-ready-mvp
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: frontend_architect
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: src/workGraphPromoteReadyApi.mjs, src/workGraphBacklogPersist.mjs, src/workGraphBacklogUiServer.mjs, src/workGraphRuntime.mjs, tests/workGraphPromoteReadyApi.test.mjs, tests/workGraphBacklogUiServer.test.mjs, work/backlog.bvc, intent/index.bvc
+  work.title: реализовать work item promote-ready mvp
+]>
+

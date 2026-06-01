@@ -1,0 +1,23 @@
+#!bvc lang=ru
+#Organism_modal<[
+Базис:
+  Gripe `<x-ui.organisms.modal>` — teleport overlay, body scroll lock, mobile scroll body.
+  AN-21 atoms/modal.bvc was atom layer mismatch; organism is canonical in Gripe.
+Вектор:
+  Props: name, title, maxWidthClass, closeOnOverlay, showCloseButton, contentPadding.
+  WG vanilla: no Alpine; static open/close for ui-kit + future confirm flows.
+Цель:
+  Organism modal contract aligned with Gripe DS (not OneBase).
+
+Проверки:
+  data-testid=ui-modal-organism
+  panel uses --ui-radius-modal
+
+Метки:
+  atom.profile: ui_component
+  ui.layer: organism
+  ui.id: modal
+  ui.marketplace.blade: resources/views/components/ui/organisms/modal.blade.php
+  ui.workgraph.module: src/ui/organisms/modal.mjs
+  trace.status: verified
+]>

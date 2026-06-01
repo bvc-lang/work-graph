@@ -1,0 +1,57 @@
+#Задача_extend_classify_work_item_block_domains<[
+Базис:
+  Сейчас marketplace → derived-projections по эвристике department/title.
+Вектор:
+  src/architectureSnapshot.mjs: department domain-marketplace, path intent/domains/marketplace.
+  Тесты на sample marketplace work items.
+Цель:
+  Matrix и L1 counters включают marketplace tasks в domain-marketplace.
+Проверки:
+  classifyWorkItemBlock(marketplace item) === domain-marketplace
+  architectureSnapshot.test.mjs green
+Анализ:
+  Целесообразность:
+  Стоит завести «classifyWorkItemBlock: domain-marketplace + snapshot block assignment» в бэклог — по материалам AN-39 (work/analytics/architecture-domains-l1-hierarchy.md).
+  Контекст и границы:
+  src/architectureSnapshot.mjs: department domain-marketplace, path intent/domains/marketplace.
+  Зависимости и готовность:
+  depends_on=epic-architecture-domains-l1-hierarchy, update-architecture-main-bvc-domains-structure; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Matrix и L1 counters включают marketplace tasks в domain-marketplace.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-39 (work/analytics/architecture-domains-l1-hierarchy.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-39
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/architecture-domains-l1-hierarchy.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-01T08:36:55.086Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-01T08:36:55.086Z
+  work.decision.verdict: useful
+  work.department: system-runtime
+  work.depends_on: epic-architecture-domains-l1-hierarchy, update-architecture-main-bvc-domains-structure
+  work.id: extend-classify-work-item-block-domains
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: integration_architect
+  work.parent_id: epic-architecture-domains-l1-hierarchy
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: low
+  work.status: done
+  work.target_files: src/architectureSnapshot.mjs, tests/architectureSnapshot.test.mjs, intent/domains/marketplace/work, work/analytics/architecture-domains-l1-hierarchy.md
+  work.title: classifyWorkItemBlock: domain-marketplace + snapshot block assignment
+
+Свидетельства:
+  - cascade: reconcile epic epic-architecture-domains-l1-hierarchy already done
+]>

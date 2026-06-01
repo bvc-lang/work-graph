@@ -1,0 +1,46 @@
+#Задача_done_task<[
+Базис:
+  Done task.
+Вектор:
+  Ship done task.
+Цель:
+  Done.
+Свидетельства:
+  node --test passed.
+
+Метки:
+  atom.profile: work_item
+  work.id: done-task
+  work.title: Done Task
+  work.status: done
+  work.owner_role: engineer
+  work.department: frontend-ui
+  work.priority: high
+  work.risk: medium
+  trace.status: verified
+]>
+
+#Задача_ready_task<[
+Базис:
+  Ready task.
+Вектор:
+  Ship ready task.
+Цель:
+  Ready.
+
+Метки:
+  atom.profile: work_item
+  work.id: ready-task
+  work.title: Ready Task
+  work.status: verify
+  work.depends_on: done-task
+  work.next_action: implement
+  work.target_files: src/sample-hybrid.mjs
+  trace.code_refs: src/sample-hybrid.mjs#marker
+  trace.source_step: protocols/ui-test.bvc
+  trace.status: pending
+
+Свидетельства:
+  - claim: ready-task lease until 2026-05-30T10:10:58.816Z
+  - worker-run runId=live-loop-ready-task kind=worker_run source=local-runner result=succeeded summary=Dry-run accepted Work Graph task ready-task.
+]>

@@ -1,0 +1,53 @@
+#Задача_wg_ui_wave3_client_badge_button_helpers<[
+Базис:
+  Client script duplicates server badge HTML; need DRY tone map.
+Вектор:
+  src/ui/atoms/badgeClient.mjs + workItemStatusTone.mjs shared map.
+  loadBrowserBadgeClientSource in backlog server.
+Цель:
+  Server/client badge rendering consistent.
+Проверки:
+  tests for status→tone map
+Анализ:
+  Целесообразность:
+  Стоит завести «Wave 3: badgeClient + shared tone map module» в бэклог — по материалам AN-33 (work/analytics/gripe-ds-visual-default-wave3.md).
+  Контекст и границы:
+  src/ui/atoms/badgeClient.mjs + workItemStatusTone.mjs shared map.
+  Зависимости и готовность:
+  depends_on=epic-gripe-ds-visual-default-wave3, wg-ui-wave3-status-badges-atoms; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Server/client badge rendering consistent.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-33 (work/analytics/gripe-ds-visual-default-wave3.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-33
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/gripe-ds-visual-default-wave3.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T17:42:31.287Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T17:42:31.287Z
+  work.decision.verdict: useful
+  work.department: ui-dashboard
+  work.depends_on: epic-gripe-ds-visual-default-wave3, wg-ui-wave3-status-badges-atoms
+  work.id: wg-ui-wave3-client-badge-button-helpers
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: frontend_architect
+  work.parent_id: epic-gripe-ds-visual-default-wave3
+  work.pipeline_stage: closed
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: src/ui/atoms/badgeClient.mjs, src/ui/workItemStatusTone.mjs, src/workGraphBacklogUiServer.mjs, work/analytics/gripe-ds-visual-default-wave3.md
+  work.title: Wave 3: badgeClient + shared tone map module
+]>

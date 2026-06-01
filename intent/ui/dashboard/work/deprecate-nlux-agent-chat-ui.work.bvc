@@ -1,0 +1,52 @@
+#Задача_deprecate_nlux_agent_chat_ui<[
+Базис:
+  NLUX был выбран как готовый chat UI слой, но он не закрывает agent-workbench сценарии: approvals, вызов tool cards, file/diff blocks, structured questions and execution steps.
+  Продолжение тюнинга NLUX ведёт к ручной достройке Cursor-like UI вокруг неподходящей основы.
+  Новая стратегия — использовать Cursor/Claude через MCP как главный агентный UI, а WorkGraph UI оставить как dashboard/backlog.
+Вектор:
+  Убрать NLUX как стратегическую зависимость и отменить follow-up tune-nlux-theme-and-real-streaming.
+  Вернуть вкладку «Агент» к минимальному secondary status/debug surface или скрыть её из primary flow до появления MCP route.
+  Удалить @nlux/core/@nlux/themes, vendor routes и NLUX mount/adapters после появления замещающего MCP path или в отдельном rollback PR.
+  Обновить тесты так, чтобы они проверяли MCP-first/secondary UI boundary, а не наличие NLUX.
+Цель:
+  Не тащить неподходящую chat library и не расходовать продуктовые усилия на имитацию Cursor внутри WorkGraph dashboard.
+Анализ:
+  Целесообразность:
+  Стоит завести «вывести NLUX из роли основного Agent UI» в бэклог.
+  Контекст и границы:
+  Убрать NLUX как стратегическую зависимость и отменить follow-up tune-nlux-theme-and-real-streaming.
+  Зависимости и готовность:
+  depends_on=design-workgraph-mcp-client-strategy; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Не тащить неподходящую chat library и не расходовать продуктовые усилия на имитацию Cursor внутри WorkGraph dashboard.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441134
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:35.786Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:35.794Z
+  work.decision.verdict: useful
+  work.department: ui-dashboard
+  work.depends_on: design-workgraph-mcp-client-strategy
+  work.id: deprecate-nlux-agent-chat-ui
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: frontend_ui_engineer
+  work.pipeline_stage: decided
+  work.priority: critical
+  work.risk: medium
+  work.status: done
+  work.target_files: package.json, package-lock.json, src/workGraphBacklogUiServer.mjs, tests/workGraphBacklogUiServer.test.mjs, work/backlog.bvc
+  work.title: вывести NLUX из роли основного Agent UI
+]>
+

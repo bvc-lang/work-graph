@@ -1,0 +1,55 @@
+#Задача_publish_work_graph_mcp_npm<[
+Базис:
+  MCP сейчас @iohasc/workgraph-mcp — не совпадает с брендом Work Graph.
+  User-first: MCP из node_modules, npx -y @work-graph/mcp.
+Вектор:
+  Rename package to @work-graph/mcp.
+  MCP резолвит engine через resolveEngineRoot / cwd project.
+  npm publish; обновить init template .cursor/mcp.json.
+Цель:
+  Cursor MCP подключается через @work-graph/mcp без путей к clone.
+Проверки:
+  npm view @work-graph/mcp
+  MCP tools работают на проекте после npm install
+Анализ:
+  Зачем:
+  MCP сейчас @iohasc/workgraph-mcp — не совпадает с брендом Work Graph.
+  Контекст: User-first: MCP из node_modules, npx -y @work-graph/mcp.
+  Когда:
+  После готовности: epic-work-graph-npm-first-distribution, implement-engine-root-resolver-npm-first.
+  Готово, когда:
+  Cursor MCP подключается через @work-graph/mcp без путей к clone.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: epic-work-graph-npm-first-distribution, implement-engine-root-resolver-npm-first.
+
+Свидетельства:
+  - packages/workgraph-mcp → @work-graph/mcp@0.2.0
+  - bin/workgraph-mcp.mjs
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-43
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-npm-first-distribution.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-01T16:48:00.470Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-01T16:48:00.470Z
+  work.decision.verdict: useful
+  work.department: engineering
+  work.depends_on: epic-work-graph-npm-first-distribution, implement-engine-root-resolver-npm-first
+  work.id: publish-work-graph-mcp-npm
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: release_engineer
+  work.parent_id: epic-work-graph-npm-first-distribution
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: packages/workgraph-mcp/package.json, packages/workgraph-mcp/src/
+  work.title: Переименовать и опубликовать @work-graph/mcp (ex @iohasc/workgraph-mcp)
+]>

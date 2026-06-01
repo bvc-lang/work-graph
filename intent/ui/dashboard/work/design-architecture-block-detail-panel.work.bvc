@@ -1,0 +1,50 @@
+#Задача_design_architecture_block_detail_panel<[
+Базис:
+  Верхний уровень architecture map показывает основные блоки, но детализация внутри блока остаётся неочевидной без отдельного UX contract.
+  Operator dashboard и atom inspector уже задают drawer/detail pattern; architecture view должен reuse его, а не создавать второй источник правды.
+Вектор:
+  Спроектировать block detail panel/drawer для architecture view: breadcrumb, focus mode, cross-block links.
+  Вкладки внутри блока: Схема (L2), Задачи, Протоколы/артефакты, Файлы/trace links, Memory/решения.
+  Описать filters by node kind и safe click-through targets: open task detail, open file path, open протокол atom, show orphan/broken trace diagnostics.
+Цель:
+  Оператор может понять состав блока и его связи без перехода в огромный task dependency graph.
+Анализ:
+  Целесообразность:
+  Стоит завести «спроектировать block detail panel для architecture view» в бэклог.
+  Контекст и границы:
+  Спроектировать block detail panel/drawer для architecture view: breadcrumb, focus mode, cross-block links.
+  Зависимости и готовность:
+  depends_on=design-architecture-graph-model-v1; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Оператор может понять состав блока и его связи без перехода в огромный task dependency graph.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441042
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:35.828Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:35.837Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: design-architecture-graph-model-v1
+  work.id: design-architecture-block-detail-panel
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: product_designer
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: protocols/architecture-graph-model-v1.bvc, ui/derived-graph-viewer.bvc, src/workGraphBacklogUiServer.mjs, work/backlog.bvc
+  work.title: спроектировать block detail panel для architecture view
+]>
+

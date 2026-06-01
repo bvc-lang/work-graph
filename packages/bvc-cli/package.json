@@ -1,0 +1,43 @@
+{
+  "name": "@bvc-lang/cli",
+  "version": "0.1.8",
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "BVC command-line tools — lint and format .bvc files",
+  "type": "module",
+  "bin": {
+    "bvc": "bin/bvc.mjs"
+  },
+  "files": [
+    "bin",
+    "lib",
+    "README.md",
+    "LICENSE"
+  ],
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bvc-lang/cli.git"
+  },
+  "homepage": "https://github.com/bvc-lang/cli#readme",
+  "bugs": {
+    "url": "https://github.com/bvc-lang/cli/issues"
+  },
+  "keywords": [
+    "bvc",
+    "basis-vector-goal",
+    "lint",
+    "format",
+    "cli"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@bvc-lang/spec": "^0.0.4"
+  },
+  "scripts": {
+    "prepack": "node ../../scripts/sync-bvc-cli-lib.mjs"
+  }
+}

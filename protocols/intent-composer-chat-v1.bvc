@@ -1,0 +1,61 @@
+#Протокол_Intent_Composer_Chat_V1<[
+Базис:
+  Пользователь формулирует намерение естественным языком до появления WorkItem в backlog.
+  Свободный chat transcript не является source of truth; canonical output — IntentDraft и StepAtomDraft после explicit apply.
+  Agent Run panel остаётся task-bound execution surface, не intake для новых намерений.
+Вектор:
+  Раздел «Замысел»: conversational UI + deterministic proposal + server-side apply.
+  IntentDraft v1 fields: message, questions[], suggestedWorkItems[], risks[], targetFiles[], criteria[], reviewRequired.
+  API: POST /api/intent-composer/proposal, POST /api/intent-composer/apply; без client-side rewrite work/backlog.bvc.
+Цель:
+  Намерение переводится в reviewable WorkItem без chat-as-canonical-state.
+
+Проверки:
+  chat transcript ephemeral
+  apply требует validation и duplicate work.id check
+  intake provenance labels на promoted atom
+
+Метки:
+  atom.profile: architecture_decision
+  protocol.id: intent-composer-chat-v1
+  decision.id: intent-composer-chat-v1
+  work.source: design-intent-composer-chat-contract
+  trace.status: verified
+]>
+
+#IntentDraft_V1<[
+Базис:
+  Proposal response must be structured for UI preview and Atom Inspector compatibility.
+Вектор:
+  schema: intent-composer.draft.v1
+  suggestedWorkId: kebab-case ASCII
+  draft: StepAtomDraft work_item profile
+  questions: optional clarifications when message too short or ambiguous
+  reviewRequired: true by default
+Цель:
+  UI показывает draft до apply; operator видит что попадёт в backlog.
+
+Метки:
+  atom.profile: trace
+  contract.id: intent-composer-draft-v1
+  protocol.id: intent-composer-chat-v1
+  trace.status: verified
+]>
+
+#Replacement_Matrix<[
+Базис:
+  Старый ioHasC agent chat смешивал intake и execution.
+Вектор:
+  | Старый agent chat | Intent Composer «Замысел» |
+  | free-form thread | bounded intake dialog |
+  | implicit task creation | explicit proposal + apply |
+  | chat history canonical | WorkItem atom canonical |
+  | Agent Run mixed | Agent Run only on ready WorkItem |
+Цель:
+  Разделение intake и execution явное в UI и protocols.
+
+Метки:
+  atom.profile: trace
+  protocol.id: intent-composer-chat-v1
+  trace.status: verified
+]>

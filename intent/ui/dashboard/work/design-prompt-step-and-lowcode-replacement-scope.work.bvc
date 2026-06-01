@@ -1,0 +1,50 @@
+#Задача_design_prompt_step_and_lowcode_replacement_scope<[
+Базис:
+  Старый ioHasC имеет prompt rules in .bvc, prompt-step panel и low-code слой; в пересобрать это было частично признано, но не превращено в честные replacement tasks.
+  На старте мы решили не тащить исторический low-code/UI монолит, но нужно определить, что именно заменить в Work Graph architecture.
+Вектор:
+  Составить boundary: prompt-as-step для agent behavior, prompt eval fixtures, low-code template/scaffold path, architecture guard, какие части остаются deferred.
+  Определить, нужен ли оператор UI для prompt-step review и low-code generation, или достаточно protocol/CLI в ближайшем цикле.
+  Завести follow-up implementation tasks по результатам scope.
+Цель:
+  Prompt-step и low-code не теряются как "старый сложный UI", а получают осознанный replacement path.
+Анализ:
+  Целесообразность:
+  Стоит завести «определить replacement scope для prompt-step и low-code» в бэклог.
+  Контекст и границы:
+  Составить boundary: prompt-as-step для agent behavior, prompt eval fixtures, low-code template/scaffold path, architecture guard, какие части остаются deferred.
+  Зависимости и готовность:
+  depends_on=reconcile-rebuild-scope-against-original-iohasc-plan; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Prompt-step и low-code не теряются как "старый сложный UI", а получают осознанный replacement path.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441104
+  migration.strategy: replace
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:36.116Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:36.124Z
+  work.decision.verdict: useful
+  work.department: product-architecture
+  work.depends_on: reconcile-rebuild-scope-against-original-iohasc-plan
+  work.id: design-prompt-step-and-lowcode-replacement-scope
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: product_architect
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: medium
+  work.status: done
+  work.target_files: protocols/prompt-step-lowcode-replacement-scope-v1.bvc, docs/plan-iohasc-full-rebuild-backlog.md, docs/plan-iohasc-rebuild-audit-gap-matrix.md, work/backlog.bvc
+  work.title: определить replacement scope для prompt-step и low-code
+]>
+

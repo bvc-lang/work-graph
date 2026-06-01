@@ -1,0 +1,50 @@
+#Задача_extend_llm_usefulness_eval_intent_graph_mcp<[
+Базис:
+  eval:llm-usefulness проверяет mcp-read-surface по WorkItem fields; graph tools не входят в scorecard.
+  Задача «Intent graph: метрика eval для MCP graph tools» относится к контуру платформы агента и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: implement-mcp-get-intent-hierarchy, implement-mcp-get-unified-linkage.
+Вектор:
+  Добавить fixture intent-graph-mcp-surface в workGraphLlmUsefulnessEval.mjs.
+  Ближайший шаг исполнения: просмотреть и перевести в ready.
+Цель:
+  Регрессия intent graph MCP ловится в ci:mandatory.
+  Готово, когда выполнены проверки: npm run eval:llm-usefulness учитывает graph MCP tools.
+Анализ:
+  Целесообразность:
+  Стоит завести «Intent graph: метрика eval для MCP graph tools» в бэклог.
+  Контекст и границы:
+  Добавить fixture intent-graph-mcp-surface в workGraphLlmUsefulnessEval.mjs.
+  Зависимости и готовность:
+  depends_on=implement-mcp-get-intent-hierarchy, implement-mcp-get-unified-linkage; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Регрессия intent graph MCP ловится в ci:mandatory.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:36.433Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:36.443Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: implement-mcp-get-intent-hierarchy, implement-mcp-get-unified-linkage
+  work.id: extend-llm-usefulness-eval-intent-graph-mcp
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: agent_platform_architect
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: medium
+  work.status: done
+  work.target_files: src/workGraphLlmUsefulnessEval.mjs, tests/workGraphLlmUsefulnessEval.test.mjs
+  work.title: Intent graph: метрика eval для MCP graph tools
+]>
+

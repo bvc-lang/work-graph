@@ -1,0 +1,52 @@
+#Задача_design_pvrg_graph_rag_minimal<[
+Базис:
+  Graph/RAG полезен только после появления language/domain adapters и evidence model.
+  Раннее внедрение полноценного PVRG может снова раздуть MVP.
+  Предварительно должны быть закрыты зависимости: design-language-adapter-layer, design-project-memory-v1.
+Вектор:
+  Описать минимальный graph/RAG slice: nodes для WorkItem, StepAtom, OneBase artifact, file, evidence.
+  Описать retrieval query для агента: current task -> relevant artifacts -> evidence -> memory records.
+  Зафиксировать, что PVRG v1 является derived context, не источник истины.
+Цель:
+  Агент получает полезный связанный контекст без полного переноса старого PVRG.
+  Готово, когда выполнены проверки: graph/RAG scope ограничен derived context.
+Анализ:
+  Целесообразность:
+  Стоит завести «спроектировать минимальный slice PVRG/Graph RAG» в бэклог.
+  Контекст и границы:
+  Описать минимальный graph/RAG slice: nodes для WorkItem, StepAtom, OneBase artifact, file, evidence.
+  Зависимости и готовность:
+  depends_on=design-language-adapter-layer, design-project-memory-v1; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Агент получает полезный связанный контекст без полного переноса старого PVRG.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441023
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:36.135Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:36.143Z
+  work.decision.verdict: useful
+  work.department: knowledge-publishing
+  work.depends_on: design-language-adapter-layer, design-project-memory-v1
+  work.id: design-pvrg-graph-rag-minimal
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: retrieval_architect
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: medium
+  work.status: done
+  work.target_files: protocols/pvrg-graph-rag-minimal.bvc, protocols/language-adapter-layer.bvc, protocols/project-memory-v1.bvc, ui/derived-graph-viewer.bvc, domains/onebase/artifact-mapping.bvc, work/backlog.bvc
+  work.title: спроектировать минимальный slice PVRG/Graph RAG
+]>
+

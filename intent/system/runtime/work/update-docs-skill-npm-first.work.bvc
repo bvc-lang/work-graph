@@ -1,0 +1,58 @@
+#Задача_update_docs_skill_npm_first<[
+Базис:
+  README и install-work-graph skill сейчас учат clone + engineRoot.
+  User-first: первый абзац README = npx @work-graph/cli init .
+Вектор:
+  README.md, runbook, skills/install-work-graph/SKILL.md.
+  CONTRIBUTING.md: WORKGRAPH_ENGINE_ROOT для contributors.
+  Deprecate user-facing engineRoot в adr per-project install (ссылка на npm-first ADR).
+Цель:
+  Новичок не видит ручной clone в основной документации.
+Проверки:
+  README начинается с npm init path
+  Skill: одна команда init, без engineRoot
+  engineRoot только в CONTRIBUTING
+Анализ:
+  Зачем:
+  README и install-work-graph skill сейчас учат clone + engineRoot.
+  Контекст: User-first: первый абзац README = npx @work-graph/cli init .
+  Когда:
+  После готовности: epic-work-graph-npm-first-distribution, refactor-init-npm-devdependencies.
+  Готово, когда:
+  Новичок не видит ручной clone в основной документации.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: epic-work-graph-npm-first-distribution, refactor-init-npm-devdependencies.
+
+Свидетельства:
+  - README.md
+  - docs/runbook-deploy-work-graph-on-project.md
+  - skills/install-work-graph/SKILL.md
+  - CONTRIBUTING.md
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-43
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-npm-first-distribution.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-01T16:48:00.499Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-01T16:48:00.499Z
+  work.decision.verdict: useful
+  work.department: product-architecture
+  work.depends_on: epic-work-graph-npm-first-distribution, refactor-init-npm-devdependencies
+  work.id: update-docs-skill-npm-first
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: technical_writer
+  work.parent_id: epic-work-graph-npm-first-distribution
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: low
+  work.status: done
+  work.target_files: README.md, skills/install-work-graph/SKILL.md, docs/runbook-work-graph-per-project.md, CONTRIBUTING.md
+  work.title: Документация и skill: npx work-graph init, engineRoot только в CONTRIBUTING
+]>

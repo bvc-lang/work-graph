@@ -1,0 +1,198 @@
+#Протокол_Step_Code_Trace_Links_V1<[
+Базис:
+  Work Graph currently links work to code mostly through work.target_files, which is useful for queueing but too weak for navigation, evidence, refactoring and Graph/RAG retrieval.
+  Intent tree WorkItems, Evidence v1, Language Adapter Layer and PVRG Graph/RAG already define source-of-truth and derived-projection boundaries.
+  Existing ioHasC provides donor patterns: typed trace-links JSON, iohasc-ref text refs, @iohasc-id reverse anchors, broken/orphan diagnostics, PVRG/file graph edges and optional TraceLinkSliceV1/GBC binary cache.
+Вектор:
+  Define trace-link.record.v1 as the canonical small record connecting Step atoms, WorkItems, evidence and code artifacts by stable ids.
+  Author minimal links inside .bvc labels/sections first; adapters and validators may derive JSON/PVRG/GBC projections, but those projections are never the source of truth.
+  Support forward navigation from atom/work/evidence to file/symbol/range and reverse navigation from code markers back to atom guid or work.id.
+Цель:
+  The rebuild gets a stable, reviewable step-to-code trace contract that survives file moves better than target_files and can power validators, UI navigation, evidence and future worker context.
+
+Проверки:
+  описан минимальный trace-link record v1
+  определены relation types and .bvc authoring labels
+  описаны reverse code markers
+  перечислены ioHasC donor patterns to reuse/defer
+  validator behavior covers broken links and UI navigation
+
+Метки:
+  atom.profile: prompt_rule
+  protocol.id: step-code-trace-links-v1
+  work.source: design-step-code-trace-links-v1
+  trace.status: verified
+]>
+
+#Trace_Link_Record_V1<[
+Базис:
+  A link must be explicit enough for deterministic validation and small enough to write in .bvc without creating a second database.
+Вектор:
+  Required fields: id, from, to, relation, evidence, status, source and confidence.
+  id is stable and deterministic where possible: trace:<from-id>:<relation>:<to-id> or a generated trace:<uuid> when endpoints are too long or many-to-many.
+  from and to are endpoint refs with kind, id and optional locator; valid endpoint kinds are atom, work, evidence, file, symbol, range, marker, domain_artifact and derived_artifact.
+  relation is one of edits, verifies, defines, references, depends_on, generated_from, tests or blocks.
+  evidence is an array of evidence ids or legacy evidence summaries that explain why the relation exists; design-only links may use evidence: [] with status pending.
+  status is pending, linked, verified, broken, orphaned or needs_review.
+  source records how the link was produced: author, adapter, validator, evidence_writer, migration or derived_projection.
+  confidence is high, medium or low and must be downgraded for regex/plaintext fallback or unresolved ranges.
+Цель:
+  Every trace link is inspectable as a typed edge with provenance, validation state and a bounded confidence signal.
+
+Метки:
+  atom.profile: trace
+  contract.id: trace-link-record-v1
+  protocol.id: step-code-trace-links-v1
+  trace.status: verified
+]>
+
+#Endpoint_Refs_And_Locators<[
+Базис:
+  Stable identity and concrete navigation are different concerns: work.id and atom guid identify meaning; path/range/symbol locators open code.
+Вектор:
+  Atom ref: kind=atom, id=<guid>, locator.path optional .bvc path, locator.block optional atom header.
+  Work ref: kind=work, id=<work.id>, locator.path optional intent/**/*.work.bvc path.
+  Evidence ref: kind=evidence, id=<evidence.id>, locator.path optional evidence atom or artifact path.
+  File ref: kind=file, id=<logical/path>, locator.path is the normalized workspace path with forward slashes.
+  Symbol ref: kind=symbol, id=<adapter-symbol-id>, locator.path plus locator.symbol, optional locator.exportName or domain name.
+  Range ref: kind=range, id=<path>#L<start>-L<end> or adapter stable range id, locator.path plus startLine/endLine/startColumn/endColumn when known.
+  Marker ref: kind=marker, id=<marker-token>, locator.path plus marker prefix and optional line.
+  Code marker refs SHOULD be redundant with a forward .bvc link: the marker helps reverse lookup, while the .bvc link remains the authoritative task/evidence relation.
+Цель:
+  Links can be resolved both by stable ids and by practical editor locations without treating fragile line numbers as the only identity.
+
+Метки:
+  atom.profile: trace
+  contract.id: trace-link-endpoint-refs-v1
+  protocol.id: step-code-trace-links-v1
+  trace.status: verified
+]>
+
+#Relation_Types_V1<[
+Базис:
+  Relation names must be few, directional and reusable by Work Graph, Evidence, adapters and Graph/RAG.
+Вектор:
+  edits: WorkItem or evidence changes a file, symbol or range.
+  verifies: evidence, test or command verifies work, file, symbol, range or domain artifact.
+  defines: atom, protocol, adapter fact or domain artifact defines a symbol, file section or concept.
+  references: atom, evidence, code marker or artifact cites another artifact without ownership.
+  depends_on: work, code artifact or derived artifact requires another work item, artifact, symbol or evidence.
+  generated_from: derived file, JSON snapshot, PVRG edge, GBC slice or code artifact was generated from a source atom/artifact.
+  tests: test file, command evidence or scenario covers a work item, symbol, range or domain artifact.
+  blocks: work item, evidence, missing artifact or failed validator blocks another work item or transition.
+Цель:
+  The first relation set covers authoring, implementation, verification and blocker flows without importing the broader old trace-link ontology.
+
+Метки:
+  atom.profile: trace
+  contract.id: trace-link-relations-v1
+  protocol.id: step-code-trace-links-v1
+  trace.status: verified
+]>
+
+#Step_Authoring_Labels_And_Sections<[
+Базис:
+  WorkItems and protocols need minimal authoring syntax before a full editor or JSON trace-link file exists.
+Вектор:
+  Use labels for compact refs when the relation is obvious:
+  trace.code_refs: src/workGraphRuntime.mjs#parseWorkItems, src/workGraphRuntime.mjs#L10-L40
+  trace.artifact_refs: protocols/evidence-model-v1.bvc#Evidence_Record_V1, domains/onebase/artifact-mapping.bvc
+  trace.evidence_refs: ev:npm-test-2026-05-29, ev:validator-step-code-links
+  trace.links: trace-link.record.v1 ids or inline compact records when the task needs multiple typed relations.
+  For richer links, add a section Trace_Links or Связи_Трассировки containing one YAML-like record per link with id/from/to/relation/evidence/status/source/confidence.
+  work.target_files remains a broad planning hint and UI filter; it does not imply verified trace coverage.
+  trace.status summarizes validation state for the atom: pending, linked, verified, missing, orphaned or needs_review.
+Цель:
+  Authors can add useful links with labels first and graduate to full records only when relation type, evidence or range precision matters.
+
+Метки:
+  atom.profile: prompt_rule
+  rule.id: step-trace-authoring-v1
+  protocol.id: step-code-trace-links-v1
+  trace.status: verified
+]>
+
+#Reverse_Code_Markers<[
+Базис:
+  Forward .bvc links help atom-to-code navigation, but code review and refactoring also need code-to-atom anchors.
+Вектор:
+  Preferred marker comments are intentionally simple and grep-friendly:
+  // iohasc-ref: work:<work.id>
+  // iohasc-ref: atom:<guid>
+  // iohasc-ref: evidence:<evidence.id>
+  // iohasc-ref: trace:<trace-link-id>
+  Legacy ioHasC @iohasc-id markers are accepted as donor-compatible aliases during migration:
+  // @iohasc-id: step:<step-ref>#<slot>
+  Reverse markers SHOULD live near the symbol/range they annotate and SHOULD NOT be required in every touched file if a precise adapter-resolved symbol link exists.
+  Markers in non-comment text formats may use backticked `iohasc-ref:<ref>` syntax, matching the old CM donor convention.
+  Validator must report markers whose work.id or atom guid no longer exists as orphaned, and links whose file/symbol/range target cannot be resolved as broken.
+Цель:
+  Code can point back to the Work Graph without making comments the only source of trace truth or requiring wholesale old @iohasc-id semantics.
+
+Метки:
+  atom.profile: prompt_rule
+  rule.id: reverse-code-markers-v1
+  protocol.id: step-code-trace-links-v1
+  trace.status: verified
+]>
+
+#Validator_And_UI_Navigation<[
+Базис:
+  Trace links are only useful if broken targets are visible before a task is marked done or verified.
+Вектор:
+  Validator inputs: parsed intent tree/work backlog, Step atoms, Evidence records, logical file list, adapter symbol/range facts and reverse marker scan.
+  Validate structure first: required fields, allowed relation/status/source/confidence values, unique ids and endpoint kind syntax.
+  Resolve endpoints second: work.id, atom guid, evidence id, file path, symbol id, range locator and marker token.
+  Emit diagnostics with code, severity, traceLinkId, endpoint, sourcePath, message and suggested repair.
+  Broken link: forward endpoint cannot be resolved. Orphan marker: code marker references missing work/atom/evidence/trace id. Stale range: file exists but range no longer matches adapter fact. Weak link: only target_files exists for high-risk done work.
+  Done/verified gate: a WorkItem with trace.status verified needs no broken/orphan diagnostics for its authored trace links and at least one evidence-backed verifies or edits/tests relation when it changed code.
+  UI navigation: atom detail opens linked file/symbol/range; file/symbol panel shows reverse markers and related WorkItems/evidence; graph viewer consumes derived edges with diagnostic badges.
+Цель:
+  Broken trace becomes actionable evidence for repair instead of silent metadata drift.
+
+Метки:
+  atom.profile: trace
+  contract.id: trace-link-validator-v1
+  protocol.id: step-code-trace-links-v1
+  trace.status: verified
+]>
+
+#Donor_Patterns_From_ioHasC<[
+Базис:
+  The rebuild should reuse proven ideas from ioHasC, not copy its full architecture or make GBC/PVRG mandatory for MVP.
+Вектор:
+  Reuse typed edge shape from trace-links.v1.json: explicit from, to, relation and validator-friendly enums.
+  Reuse iohasc-ref text syntax for human-authored references in documents and comments, normalized paths and broken-link diagnostics.
+  Reuse @iohasc-id as a migration-compatible reverse anchor pattern, but prefer new iohasc-ref work/atom/evidence/trace markers for Work Graph v1.
+  Reuse orphan/broken diagnostics behavior: resolve against known ids and logical paths, return warnings/errors that can fail CI or block trace.status verified.
+  Reuse PVRG/file graph edge idea as a derived graph projection that carries sourceRefs, confidence and diagnostics.
+  Reuse GBC TraceLinkSliceV1 only as optional derived binary cache when JSON trace edges need compact cross-language storage; its 64-hex endpoints and offsets are not the authoring format.
+  Defer old full trace-link matrix UI, semantic drift comparator, AST patch tooling and wholesale PVRG port until the minimal Work Graph trace validator and navigation prove value.
+Цель:
+  Donor patterns reduce design risk while keeping Work Graph .bvc atoms and Evidence records as the source of truth.
+
+Метки:
+  atom.profile: architecture_decision
+  decision.id: iohasc-trace-donor-patterns
+  protocol.id: step-code-trace-links-v1
+  trace.status: verified
+]>
+
+#Derived_Artifacts_Boundary<[
+Базис:
+  Graph/RAG and GBC are useful once links exist, but derived artifacts must not become the only place a relationship lives.
+Вектор:
+  PVRG edges MAY be derived from trace-link.record.v1, target_files, adapter facts, evidence artifacts and reverse markers.
+  Derived graph viewer MAY render trace edges and diagnostics alongside depends_on, target file and evidence edges.
+  GBC trace-link slice MAY encode verified high-confidence trace edges later for binary cache, GFS sharing or native readers.
+  JSON/PVRG/GBC outputs must include sourceRefs back to .bvc atom path/guid, work.id, evidence id and file/symbol locator.
+  If a derived artifact disagrees with .bvc source, validator reports stale projection and rebuilds the derived artifact; it does not mutate canonical trace records implicitly.
+Цель:
+  Trace Links v1 can feed future retrieval and binary caches without changing the source-of-truth boundary.
+
+Метки:
+  atom.profile: architecture_decision
+  decision.id: trace-links-derived-artifacts-boundary
+  protocol.id: step-code-trace-links-v1
+  trace.status: verified
+]>

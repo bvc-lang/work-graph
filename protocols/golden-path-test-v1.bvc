@@ -1,0 +1,86 @@
+#Протокол_Golden_Path_Test_V1<[
+Базис:
+  Первый релиз rebuild должен иметь один сквозной deterministic сценарий без качества LLM и один optional real LLM path позже.
+  golden-path-test опирается на agent-state-machine-v1, memory-contract-v1, evidence-model-v1 and rebuild-verification-loop.
+Вектор:
+  Deterministic path (Tier A): parse Work Graph items -> runDeterministicGoldenPath in src/goldenPath.mjs -> claim -> change evidence -> verify -> done with test evidence; executed by tests/goldenPath.test.mjs via npm run test:deterministic.
+  Optional LLM path (Tier B, future): agent worker discovers OneBase artifacts and proposes StepAtomDraft/WorkItem updates; success measured by native tool-call and recorded worker-run evidence; never mixed into CI deterministic gate.
+  Evidence format: WorkItem Свидетельства strings compatible with WorkItem v1; dashboard recentEvidence shows outcomes.
+Цель:
+  Operator and CI share one understandable end-to-end proof that Work Graph runtime gates work.
+
+Проверки:
+  deterministic test не зависит от качества модели
+  optional LLM test измеряет успешность tool-call
+  результат пишет evidence в Work Graph
+
+Метки:
+  atom.profile: architecture_decision
+  protocol.id: golden-path-test-v1
+  work.source: golden-path-test
+  trace.status: verified
+]>
+
+#Deterministic_Scenario_Steps<[
+Базис:
+  Golden path must mirror agent-state-machine phases without invoking a provider.
+Вектор:
+  1 observe: load workgraph.snapshot.v1 items.
+  2 plan: select claimable ready task (or explicit taskId).
+  3 claim: transitionStatus -> claimed.
+  4 act: recordEvidence change summary on target file.
+  5 verify: transitionStatus -> verify with verification proposal evidence.
+  6 record: transitionStatus -> done with test/command evidence.
+  7 stop: assert final status done and evidence count >= 3.
+  Fixture backlog in tests/goldenPath.test.mjs uses dependency chain similar to production samples.
+Цель:
+  tests/goldenPath.test.mjs is the executable contract for MVP golden path.
+
+Метки:
+  atom.profile: trace
+  contract.id: golden-path-deterministic-steps-v1
+  protocol.id: golden-path-test-v1
+  trace.status: verified
+]>
+
+#Optional_LLM_Scenario_Boundary<[
+Базис:
+  Real LLM golden path belongs in optional eval, not in default npm test.
+Вектор:
+  Command: npm run test:optional:golden-path-llm (scripts/run-optional-golden-path-llm-eval.mjs).
+  Requires IOHASC_E2E_REAL_LLM=1 and OpenAI-compatible endpoint configured; otherwise exits 0 with skip message (same pattern as optional Ollama E2E in ioHasC).
+  Input WorkItem slice: onebase-implement-gross-profit-warehouse-dimension or explicit taskId from domains/onebase/golden-path.bvc scenario.
+  Allowed tools (future worker): read target_files from OneBase slice, onebaseListMetadata, bounded file read; no unbounded shell/network outside policy.
+  Expected phases: observe snapshot -> plan OneBase artifact slice -> act via worker live-loop or agent worker -> verify via npm run test:optional:onebase -> record worker-run evidence.
+  Success metrics: native tool-call emitted (not text-only fallback); worker-run evidence recorded in work/worker-runs.jsonl; optional OneBase go test evidence referenced; task transition proposal is verify or blocked with explicit reason.
+  Failure semantics: model quality failure (wrong explanation, missing tool-call) records worker-run evidence with status failed and retryAdvice; does not fail npm run test:deterministic; distinguishes model_failure vs code_failure vs env_blocker in evidence summary.
+  Links: domains/onebase/golden-path.bvc (scenario), scripts/run-onebase-verification.mjs (Tier B env gate), src/agentWorkerLiveLoop.mjs (execution loop).
+Цель:
+  Live agent quality is measured separately from runtime policy correctness.
+
+Метки:
+  atom.profile: prompt_rule
+  rule.id: golden-path-optional-llm-v1
+  protocol.id: golden-path-test-v1
+  trace.status: verified
+]>
+
+#Optional_LLM_Eval_Command_V1<[
+Базис:
+  Optional eval must be reproducible without becoming a mandatory CI gate.
+Вектор:
+  npm run test:optional:golden-path-llm — entry point; delegates to scripts/run-optional-golden-path-llm-eval.mjs.
+  npm run eval:live-llm — live wrapper with env preflight (requires IOHASC_LLM_MODEL; sets IOHASC_E2E_REAL_LLM=1); exits 1 with env_blocker when misconfigured.
+  Env: IOHASC_E2E_REAL_LLM=1 enables run; IOHASC_LLM_BASE_URL and model id follow ioHasC local-llm-matrix conventions when live endpoint is used.
+  Dry-run path (default): prints eval contract and exits 0 — documents scenario without requiring LLM.
+  Live path: runs npm run worker:live-loop against golden-path WorkItem, then npm run test:optional:onebase if worker proposes verify; appends combined summary to work/worker-runs.jsonl.
+  Output JSON fields: ok, taskId, workerRunSummary, onebaseGate, failureClass (model_failure | code_failure | env_blocker | skipped).
+Цель:
+  Operator can run one documented optional command to exercise agent + OneBase golden path after live-loop exists.
+
+Метки:
+  atom.profile: trace
+  contract.id: golden-path-optional-llm-eval-v1
+  protocol.id: golden-path-test-v1
+  trace.status: verified
+]>

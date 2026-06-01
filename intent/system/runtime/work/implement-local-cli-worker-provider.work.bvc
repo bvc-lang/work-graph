@@ -1,0 +1,49 @@
+#Задача_implement_local_cli_worker_provider<[
+Базис:
+  Provider registry v1 перечисляет local-cli как deterministic shell runner для verification allowlist, но реализации не было — оставался единственный planned provider.
+  Work Graph policy требует allowShell + verification matrix gate, а не произвольный runCommand из agent orchestrator.
+Вектор:
+  Реализовать local-cli worker provider: env-gated (IOHASC_LOCAL_CLI_WORKER=1), resolve command через VERIFICATION_MATRIX gateTaskIds, execute только allowlisted commands, mock runner в tests.
+  Worker Output v1: verification_command evidence + verify transition при exit 0; blocked/skipped при policy/env mismatch.
+Цель:
+  QA/verification tasks могут выполняться через provider-neutral CLI path без sidecar и без live LLM.
+Анализ:
+  Целесообразность:
+  Стоит завести «реализовать local-cli worker provider» в бэклог.
+  Контекст и границы:
+  Реализовать local-cli worker provider: env-gated (IOHASC_LOCAL_CLI_WORKER=1), resolve command через VERIFICATION_MATRIX gateTaskIds, execute только allowlisted commands, mock runner в tests.
+  Зависимости и готовность:
+  depends_on=design-provider-registry-and-capability-selection, implement-provider-selection-fallback-runtime; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  QA/verification tasks могут выполняться через provider-neutral CLI path без sidecar и без live LLM.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441113
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:36.860Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:36.868Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: design-provider-registry-and-capability-selection, implement-provider-selection-fallback-runtime
+  work.id: implement-local-cli-worker-provider
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: agent_platform_architect
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: medium
+  work.status: done
+  work.target_files: src/agentWorkerLocalCliProvider.mjs, src/workGraphWorkerProvider.mjs, tests/agentWorkerLocalCliProvider.test.mjs, tests/workGraphWorkerProvider.test.mjs, protocols/agent-worker-provider-registry-v1.bvc, work/backlog.bvc
+  work.title: реализовать local-cli worker provider
+]>
+

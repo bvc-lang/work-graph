@@ -1,0 +1,57 @@
+#Задача_epic_gripe_ds_visual_default_wave3<[
+Базис:
+  AN-33: phase 2 не менял палитру — WG остался Cursor blue; пользователь не видит Gripe.
+  Gripe = marketplace-default amber brand; WG shell остаётся тёмным IDE.
+  Wave 3: kanban cards, view toolbar, status badges, detail toolbar → atoms.
+Вектор:
+  Track A: theme gripe-dark-default as single default CSS (no preview toggle).
+  Track B: renderUiBadge/renderUiButton в kanban, toolbar, badges.
+  Tests + AN-33 closing.
+Цель:
+  Backlog UI http://127.0.0.1:4177/ визуально Gripe-by-default; wave 3 atomify завершён.
+Проверки:
+  default CSS gripe-dark-default; accent amber 245 158 11
+  kanban/toolbar/badges через atoms
+  AN-33 closing опубликован
+Анализ:
+  Целесообразность:
+  Стоит завести «Gripe visual default + WG UI wave 3 (kanban, toolbar, badges)» в бэклог — по материалам AN-33 (work/analytics/gripe-ds-visual-default-wave3.md).
+  Контекст и границы:
+  Track A: theme gripe-dark-default as single default CSS (no preview toggle).
+  Зависимости и готовность:
+  depends_on=epic-gripe-ds-adoption-phase2; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Backlog UI http://127.0.0.1:4177/ визуально Gripe-by-default; wave 3 atomify завершён.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-33 (work/analytics/gripe-ds-visual-default-wave3.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-33
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/gripe-ds-visual-default-wave3.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T17:42:31.170Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T17:42:31.170Z
+  work.decision.verdict: useful
+  work.department: ui-dashboard
+  work.depends_on: epic-gripe-ds-adoption-phase2
+  work.id: epic-gripe-ds-visual-default-wave3
+  work.item_kind: epic
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: frontend_architect
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: work/analytics/gripe-ds-visual-default-wave3.md, docs/plan-gripe-ds-visual-default-wave3.md, packages/design-tokens/tokens/themes/gripe-dark-default.json, src/workGraphBacklogUiServer.mjs, src/ui/atoms/badge.mjs, src/ui/atoms/button.mjs
+  work.title: Gripe visual default + WG UI wave 3 (kanban, toolbar, badges)
+]>

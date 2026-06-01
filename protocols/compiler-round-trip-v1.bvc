@@ -1,0 +1,20 @@
+#Протокол_Compiler_Round_Trip_V1<[
+Базис:
+  ioHasC compiler-mode steps поддерживают round-trip: .bvc → generated code → re-ingest/compare; rebuild должен фиксировать результат как codegen.roundtrip evidence.
+  Phase 5 не портирует полный runCompilerStepRoundTrip.ts; contract описывает минимальный result shape для Work Graph verify.
+Вектор:
+  compiler.roundtrip.result.v1 fields:
+  - stepPath, generatedPaths[], status (passed|failed|skipped), command, exitCode, diffSummary, engineVersion
+  buildCodegenRoundtripEvidence() maps result → codegen.evidence.record.v1 + Evidence v1 test/command record.
+  skipped когда step не compiler-mode (explicit label compiler.mode absent).
+Цель:
+  Round-trip остаётся evidence-producing verify step, готовый к port из ../project без смены Work Graph gates.
+
+Метки:
+  atom.profile: prompt_rule
+  protocol.id: compiler-round-trip-v1
+  work.source: design-codegen-evidence-contract
+  migration.source_repo: ../project
+  migration.source_paths: src/iohasc/codeIngest/runCompilerStepRoundTrip.ts, scripts/iohasc-step-round-trip.ts
+  trace.status: verified
+]>

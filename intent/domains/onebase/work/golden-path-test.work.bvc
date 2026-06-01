@@ -1,0 +1,51 @@
+#Задача_golden_path_test<[
+Базис:
+  Старая кодовая база хорошо тестирует mocked agent flows, но слабее проверяет живой пользовательский путь.
+  Задача «описать первый тест golden path» относится к контуру Work Graph rebuild и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: define-memory-contract, design-agent-state-machine.
+Вектор:
+  Описать тест: создать charter, создать Work Graph task, claim task, изменить файл, записать evidence, перевести в verify/done.
+  Разделить deterministic test и optional real LLM test.
+Цель:
+  Первый релиз считается живым только если проходит один сквозной сценарий.
+  Готово, когда выполнены проверки: deterministic test не зависит от качества модели.
+Анализ:
+  Целесообразность:
+  Стоит завести «описать первый тест golden path» в бэклог.
+  Контекст и границы:
+  Описать тест: создать charter, создать Work Graph task, claim task, изменить файл, записать evidence, перевести в verify/done.
+  Зависимости и готовность:
+  depends_on=define-memory-contract, design-agent-state-machine; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Первый релиз считается живым только если проходит один сквозной сценарий.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441005
+  migration.strategy: port
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:36.459Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:36.470Z
+  work.decision.verdict: useful
+  work.department: qa
+  work.depends_on: design-agent-state-machine, define-memory-contract
+  work.id: golden-path-test
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: qa_automation
+  work.pipeline_stage: decided
+  work.priority: critical
+  work.risk: medium
+  work.status: done
+  work.target_files: protocols/golden-path-test-v1.bvc, src/goldenPath.mjs, tests/goldenPath.test.mjs
+  work.title: описать первый тест golden path
+]>
+

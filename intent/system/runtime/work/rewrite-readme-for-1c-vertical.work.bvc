@@ -1,0 +1,61 @@
+#Задача_rewrite_readme_for_1c_vertical<[
+Базис:
+  Источник: analytics:product-self-audit-user (AN-7) §3, §9 — нет «getting started», нет демо.
+  Сейчас README обрывается на seed-фазе и не объясняет, кому это нужно.
+Вектор:
+  «Зачем 1С-разработчику Work Graph» — одна страница, конкретный сценарий.
+  5-минутный quick start: charter → пример 1С-задачи → команда → результат.
+  Скриншот / GIF одного прогона golden path.
+Цель:
+  Внешний 1С-разработчик за 5 минут понимает, что это и зачем.
+Анализ:
+  Целесообразность:
+  Стоит завести «переписать README.md как Getting Started для 1С-разработчика» в бэклог — по материалам AN-7 (analytics:product-self-audit-user).
+  Контекст и границы:
+  «Зачем 1С-разработчику Work Graph» — одна страница, конкретный сценарий.
+  Зависимости и готовность:
+  depends_on=rewrite-charter-for-1c-vertical; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Внешний 1С-разработчик за 5 минут понимает, что это и зачем.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-7 (analytics:product-self-audit-user); исполнять после вердикта «полезно» и готовности зависимостей.
+Проверки:
+  README имеет секцию «Кому это нужно» с одним сегментом
+  README имеет «5-минутный quick start»
+  README не упоминает Genesis/GVM/multi-domain как первоочередное
+
+Свидетельства:
+  - README.md — 1С/OneBase vertical positioning
+  - golden path + anti-goals
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-7
+  intake.source_kind: analytics-record
+  intake.source_ref: analytics:product-self-audit-user
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T22:16:35.066Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-30T22:16:35.066Z
+  work.decision.verdict: useful
+  work.department: product
+  work.depends_on: rewrite-charter-for-1c-vertical
+  work.id: rewrite-readme-for-1c-vertical
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: product_owner
+  work.parent_id: pivot-to-1c-onebase-vertical
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: low
+  work.status: done
+  work.target_files: README.md
+  work.title: переписать README.md как Getting Started для 1С-разработчика
+]>

@@ -1,0 +1,63 @@
+#Задача_implement_pipeline_stage_dor_dod_gates<[
+Базис:
+  Источник: analytics:pipeline-analysis-to-board (AN-22) §4, §6 T3.
+  inferPipelineStage в src/workItemDecisionPipeline.mjs выводит стадию из меток, но не проверяет, что переходы выполнены корректно (DoR/DoD). Сегодня жёсткие гейты есть только для claim/promote в src/workItemExecutionGate.mjs; всё остальное держится на дисциплине оператора.
+Вектор:
+  Расширить src/backlogSchemaLint.mjs error-правилами на жёсткие переходы пайплайна: analyzed без блока Анализ, decided без work.decision.verdict, ready без owner_role или с открытыми depends_on, closed без evidence или без trace.status=verified для target_files.
+  Расширить src/backlogSchemaLint.mjs warning-правилами на мягкие нарушения: closed эпик без closing-analysis, задача с work.parent_id вне эпика, intake без intake.analytics_key и без work.intake.bypass=operational.
+  Реализовать operational bypass: задачи с work.intake.bypass=operational освобождаются от части errors (intake блок необязателен, analysis блок опционален), но остаются проверки status и evidence.
+  Покрыть каждое правило в tests/backlogSchemaLintPipelineGates.test.mjs с положительными и отрицательными фикстурами в tests/fixtures/pipeline-gates/.
+Цель:
+  Переходы пайплайна проверяемы; формальность исключена без блокировки operational потока.
+Анализ:
+  Целесообразность:
+  Без gates DoR/DoD canon из T1 становится декларацией; lint превращает canon в проверяемый контракт.
+  Контекст и границы:
+  Только lint-расширение, без изменения runtime поведения. Operational bypass — обязательная фича, иначе мелкие задачи будут проваливать lint.
+  Зависимости и готовность:
+  Зависит от T1 (canon описывает все правила) и от T4 (operational bypass конвенция).
+  Риски и альтернативы:
+  Риск избыточного шума на legacy-задачах. Закрывается классификацией error vs warning + lint:backlog --since-stage чтобы новые правила работали только на новых/изменённых задачах.
+  Критерии успеха:
+  Все правила покрыты тестами с положительными и отрицательными фикстурами; npm run lint:backlog зелёный на текущем дереве (legacy через warning); errors включаются только для задач, созданных после публикации T1.
+  Рекомендация для решения:
+  Полезно — превращает canon из текста в проверяемое поведение.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-22; стартует после T1 и T4.
+Проверки:
+  tests/backlogSchemaLintPipelineGates.test.mjs покрывает каждое error и warning правило
+  npm run lint:backlog проходит на основном дереве (legacy задачи через warning)
+  Фикстуры покрывают operational bypass
+
+Свидетельства:
+  - src/pipelineStageLint.mjs lintPipelineStageIssues подключён в backlogSchemaLint
+  - tests/pipelineStageLint.test.mjs: 5/5 pass
+  - npm run lint:backlog: ok (0 errors, pipeline warnings на legacy)
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-22
+  intake.source_kind: analytics-record
+  intake.source_ref: analytics:pipeline-analysis-to-board
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T09:59:00.000Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T09:59:00.000Z
+  work.decision.verdict: useful
+  work.department: system-runtime
+  work.depends_on: document-decision-pipeline-canon, document-operational-bypass-and-epic-policy
+  work.id: implement-pipeline-stage-dor-dod-gates
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: qa_automation
+  work.parent_id: epic-decision-pipeline-canonization
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: src/pipelineStageLint.mjs, src/backlogSchemaLint.mjs, tests/pipelineStageLint.test.mjs, docs/decision-pipeline-canon.md
+  work.title: DoR/DoD-гейты пайплайна в backlogSchemaLint
+]>

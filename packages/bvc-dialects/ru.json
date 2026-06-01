@@ -1,0 +1,17 @@
+{
+  "id": "ru",
+  "canonical": false,
+  "bvc": {
+    "basis": "Базис",
+    "vector": "Вектор",
+    "goal": "Цель",
+    "labels": "Метки"
+  },
+  "optional": {
+    "checks": "Проверки",
+    "evidence": "Свидетельства",
+    "analysis": "Анализ",
+    "decision": "Решение",
+    "uiRefs": "Референсы_UI"
+  }
+}

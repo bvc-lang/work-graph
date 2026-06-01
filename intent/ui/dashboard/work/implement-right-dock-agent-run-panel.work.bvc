@@ -1,0 +1,62 @@
+#Задача_implement_right_dock_agent_run_panel<[
+Базис:
+  Agent Run сейчас только через API/CLI; нет постоянного места в UI (B2).
+  Cursor-pattern: persistent right dock — лучшее место для long-running выполнения.
+Вектор:
+  Dock виден на всех страницах после toggle; width resizable 320–640px; collapse в иконку.
+  Body: live log + tool calls (poll 5s GET /api/agent-run/journal).
+  Footer: retry / cancel / open task / scroll-to-bottom toggle.
+  POST /api/agent-run уже есть — используется без правок.
+Цель:
+  Operator запускает и наблюдает agent run, не покидая текущий view.
+Проверки:
+  dock отображается на Home, Доске, Задачах
+  retry / cancel вызывают соответствующие API
+  live log обновляется без перезагрузки страницы
+Анализ:
+  Целесообразность:
+  Стоит завести «Persistent right dock: Agent Run panel + live log + retry» в бэклог — по материалам work/analytics/ux-current-state-and-vector.md.
+  Контекст и границы:
+  Dock виден на всех страницах после toggle; width resizable 320–640px; collapse в иконку.
+  Зависимости и готовность:
+  depends_on=ux-mission-control-p0, design-home-mission-control-view; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Operator запускает и наблюдает agent run, не покидая текущий view.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма work/analytics/ux-current-state-and-vector.md; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Свидетельства:
+  - #agent-run-dock persistent panel
+  - journal poll 5s
+  - retry/open task actions
+
+Метки:
+  atom.profile: work_item
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/ux-current-state-and-vector.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T12:01:47.078Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T12:01:47.078Z
+  work.decision.verdict: useful
+  work.department: ui-dashboard
+  work.depends_on: ux-mission-control-p0, design-home-mission-control-view
+  work.id: implement-right-dock-agent-run-panel
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: frontend_architect
+  work.parent_id: ux-mission-control-p0
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: src/workGraphBacklogUiServer.mjs, e2e/right-dock-agent-run-smoke.spec.js
+  work.title: Persistent right dock: Agent Run panel + live log + retry
+]>

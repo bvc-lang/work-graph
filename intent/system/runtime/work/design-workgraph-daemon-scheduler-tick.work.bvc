@@ -1,0 +1,51 @@
+#Задача_design_workgraph_daemon_scheduler_tick<[
+Базис:
+  WorkGraph OS нужен scheduler-owned tick вместо chat-owned execution.
+  Задача «спроектировать scheduler tick для WorkGraph OS daemon» относится к контуру платформы агента и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: phase-2-workgraph-os-daemon.
+Вектор:
+  Спроектировать контракт daemon tick: load snapshot, choose eligible task, прогнать once, record audit, без скрытого provider state.
+  Ближайший шаг исполнения: спроектировать recovery policy presets.
+Цель:
+  Фаза 2 получает конкретную первую design-задачу после live-loop.
+  Готово, когда выполнены проверки: input/output tick и audit events определены.
+Анализ:
+  Целесообразность:
+  Стоит завести «спроектировать scheduler tick для WorkGraph OS daemon» в бэклог.
+  Контекст и границы:
+  Спроектировать контракт daemon tick: load snapshot, choose eligible task, прогнать once, record audit, без скрытого provider state.
+  Зависимости и готовность:
+  depends_on=phase-2-workgraph-os-daemon; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Фаза 2 получает конкретную первую design-задачу после live-loop.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441064
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:36.274Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:36.298Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: phase-2-workgraph-os-daemon
+  work.id: design-workgraph-daemon-scheduler-tick
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: system_architect
+  work.pipeline_stage: decided
+  work.priority: critical
+  work.risk: high
+  work.status: done
+  work.target_files: protocols/workgraph-daemon-scheduler-tick.bvc, src/workGraphDaemonTick.mjs, tests/workGraphDaemonTick.test.mjs, package.json, work/backlog.bvc
+  work.title: спроектировать scheduler tick для WorkGraph OS daemon
+]>
+

@@ -1,0 +1,50 @@
+#Задача_analyze_claude_note_memory_extractor_reference<[
+Базис:
+  Claude Note показывает memory extractor loop: hooks -> queue -> transcript synthesis -> KnowledgePack -> MEMORY/Obsidian.
+  Work Graph уже отделяет Project Memory v1 от prompt stuffing и связывает memory с evidence.
+Вектор:
+  Сопоставить KnowledgePack entities: concepts, decisions, open questions, howtos и task outcomes с MemoryRecord v1.
+  Описать extraction trigger points после worker run, evidence record, verification result и human decision.
+  Зафиксировать, как сохранять смысл из чата без dumping transcript в память проекта.
+Цель:
+  Определить memory extraction loop для Work Graph, который превращает результаты работы в Project Memory v1 records с evidence links.
+Анализ:
+  Целесообразность:
+  Стоит завести «разобрать Claude Note как reference memory extractor» в бэклог.
+  Контекст и границы:
+  Сопоставить KnowledgePack entities: concepts, decisions, open questions, howtos и task outcomes с MemoryRecord v1.
+  Зависимости и готовность:
+  depends_on=design-evidence-model-v1, design-project-memory-v1; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Определить memory extraction loop для Work Graph, который превращает результаты работы в Project Memory v1 records с evidence links.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441030
+  migration.strategy: defer
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:35.616Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:35.628Z
+  work.decision.verdict: useful
+  work.department: knowledge-publishing
+  work.depends_on: design-project-memory-v1, design-evidence-model-v1
+  work.id: analyze-claude-note-memory-extractor-reference
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: knowledge_architect
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: protocols/claude-note-memory-patterns.bvc, protocols/project-memory-v1.bvc, protocols/evidence-model-v1.bvc, work/backlog.bvc
+  work.title: разобрать Claude Note как reference memory extractor
+]>
+

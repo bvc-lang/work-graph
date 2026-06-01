@@ -1,0 +1,51 @@
+#Задача_phase_1_agent_worker_live_loop<[
+Базис:
+  Local runner MVP есть, но live-loop ещё не выполняет автономный claim/run/evidence/proposal цикл.
+  Задача «Фаза 1: live-loop agent worker» относится к контуру платформы агента и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: phase-0-inventory-boundaries.
+Вектор:
+  Свести `implement-agent-worker-live-loop` и связанные тесты в границу фазы для первого post-MVP execution loop.
+  Ближайший шаг исполнения: спроектировать scheduler tick для WorkGraph OS daemon.
+Цель:
+  Agent Runtime получает первый не-чатовый цикл исполнения Work Graph task.
+  Готово, когда выполнены проверки: один live-loop прогнать выполняет claim/run/evidence/proposal.
+Анализ:
+  Целесообразность:
+  Стоит завести «Фаза 1: live-loop agent worker» в бэклог.
+  Контекст и границы:
+  Свести `implement-agent-worker-live-loop` и связанные тесты в границу фазы для первого post-MVP execution loop.
+  Зависимости и готовность:
+  depends_on=phase-0-inventory-boundaries; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Agent Runtime получает первый не-чатовый цикл исполнения Work Graph task.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441051
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:37.418Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:37.425Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: phase-0-inventory-boundaries
+  work.id: phase-1-agent-worker-live-loop
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: agent_platform_architect
+  work.pipeline_stage: decided
+  work.priority: critical
+  work.risk: high
+  work.status: done
+  work.target_files: src/agentWorkerLiveLoop.mjs, src/agentWorkerLocalRunner.mjs, tests/agentWorkerLiveLoop.test.mjs, package.json, work/backlog.bvc
+  work.title: Фаза 1: live-loop agent worker
+]>
+

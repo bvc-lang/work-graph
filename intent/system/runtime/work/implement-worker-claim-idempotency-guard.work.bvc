@@ -1,0 +1,49 @@
+#Задача_implement_worker_claim_idempotency_guard<[
+Базис:
+  Параллельный tick daemon и ручной запуск оператора могут дважды захватить одну задачу.
+  Задача «Фаза 1: защита от повторного claim в live-loop» относится к контуру платформы агента и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: phase-1-agent-worker-live-loop.
+Вектор:
+  Запретить повторный claim, пока статус in_progress и lease не истёк.
+  Ближайший шаг исполнения: просмотреть и перевести в ready.
+Цель:
+  Безопасное параллельное исполнение daemon и ручного запуска.
+  Готово, когда выполнены проверки: Тест: второй claim той же задачи отклоняется.
+Анализ:
+  Целесообразность:
+  Стоит завести «Фаза 1: защита от повторного claim в live-loop» в бэклог.
+  Контекст и границы:
+  Запретить повторный claim, пока статус in_progress и lease не истёк.
+  Зависимости и готовность:
+  depends_on=phase-1-agent-worker-live-loop; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Безопасное параллельное исполнение daemon и ручного запуска.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:37.194Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:37.201Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: phase-1-agent-worker-live-loop
+  work.id: implement-worker-claim-idempotency-guard
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: agent_platform_architect
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: medium
+  work.status: done
+  work.target_files: src/agentWorkerLiveLoop.mjs, src/workGraphRuntime.mjs, tests/agentWorkerLiveLoop.test.mjs
+  work.title: Фаза 1: защита от повторного claim в live-loop
+]>

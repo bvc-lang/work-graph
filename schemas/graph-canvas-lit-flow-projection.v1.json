@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "workgraph.graph-canvas-lit-flow-projection.v1",
+  "title": "Graph Canvas Lit Flow Projection V1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "nodes", "edges"],
+  "properties": {
+    "schema": {
+      "type": "string",
+      "const": "workgraph.graph-canvas-lit-flow-projection.v1"
+    },
+    "layoutDirection": {
+      "type": "string",
+      "enum": ["LR", "TB"]
+    },
+    "viewId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "nodes": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/node" }
+    },
+    "edges": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/edge" }
+    }
+  },
+  "$defs": {
+    "node": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "title", "x", "y", "width", "height"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "kind": { "type": "string", "minLength": 1 },
+        "title": { "type": "string" },
+        "layer": { "type": "string" },
+        "x": { "type": "number" },
+        "y": { "type": "number" },
+        "width": { "type": "number", "minimum": 40 },
+        "height": { "type": "number", "minimum": 32 },
+        "selected": { "type": "boolean" },
+        "rejected": { "type": "boolean" },
+        "focused": { "type": "boolean" },
+        "status": { "type": "string" },
+        "summary": { "type": "string" },
+        "taskId": { "type": "string" },
+        "intentNodeId": { "type": "string" },
+        "blockId": { "type": "string" },
+        "schematicId": { "type": "string" },
+        "doneChildCount": { "type": "integer", "minimum": 0 },
+        "childCount": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "edge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "from", "to"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "from": { "type": "string", "minLength": 1 },
+        "to": { "type": "string", "minLength": 1 },
+        "label": { "type": "string" },
+        "rejected": { "type": "boolean" },
+        "upstream": { "type": "boolean" }
+      }
+    }
+  }
+}

@@ -1,0 +1,50 @@
+#Задача_implement_semantic_search_vector_ann_phase2<[
+Базис:
+  Hybrid BM25 (фаза 1) закрыт; embeddings — следующий уровень поиска.
+  Задача «Фаза 4: векторный ANN для semantic search (фаза 2)» относится к контуру графа знаний и retrieval и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: implement-semantic-search-hybrid-llm-retrieval.
+Вектор:
+  Design + опциональный локальный/WASM embedding index для corpus WorkItem.
+  Ближайший шаг исполнения: просмотреть и перевести в ready.
+Цель:
+  Запросы по смыслу не зависят только от совпадения токенов.
+  Готово, когда выполнены проверки: Design doc или ADR для ANN phase-2.
+Анализ:
+  Целесообразность:
+  Стоит завести «Фаза 4: векторный ANN для semantic search (фаза 2)» в бэклог.
+  Контекст и границы:
+  Design + опциональный локальный/WASM embedding index для corpus WorkItem.
+  Зависимости и готовность:
+  depends_on=implement-semantic-search-hybrid-llm-retrieval; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Запросы по смыслу не зависят только от совпадения токенов.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  migration.strategy: replace
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:37.140Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:37.149Z
+  work.decision.verdict: useful
+  work.department: knowledge-publishing
+  work.depends_on: implement-semantic-search-hybrid-llm-retrieval
+  work.id: implement-semantic-search-vector-ann-phase2
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: retrieval_architect
+  work.pipeline_stage: decided
+  work.priority: low
+  work.risk: medium
+  work.status: done
+  work.target_files: src/semanticSearchWorkflow.mjs, docs/adr-workgraph-semantic-search-ann-phase2.md, docs/plan-workgraph-llm-usefulness.md
+  work.title: Фаза 4: векторный ANN для semantic search (фаза 2)
+]>
+

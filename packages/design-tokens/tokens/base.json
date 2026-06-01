@@ -1,0 +1,34 @@
+{
+  "schema": "design-tokens.v1",
+  "typography": {
+    "letterSpacingHeading": "0.01em",
+    "textXs": "0.6875rem",
+    "textXsLineHeight": "1rem",
+    "textSm": "0.8125rem",
+    "textSmLineHeight": "1.25rem",
+    "textBase": "0.9375rem",
+    "textBaseLineHeight": "1.5rem",
+    "textLg": "1.0625rem",
+    "textLgLineHeight": "1.625rem",
+    "textXl": "1.1875rem",
+    "textXlLineHeight": "1.75rem",
+    "text2xl": "1.4375rem",
+    "text2xlLineHeight": "1.875rem",
+    "fontWeightStrong": "600"
+  },
+  "brand": {
+    "fontSans": "'Graphik LCG', ui-sans-serif, system-ui, sans-serif",
+    "radiusSm": "0.25rem",
+    "radiusMd": "0.5rem",
+    "radiusLg": "0.75rem",
+    "primaryRgb": "245 158 11",
+    "primaryForegroundRgb": "15 23 42",
+    "bgRgb": "2 6 23",
+    "surfaceRgb": "15 23 42",
+    "borderRgb": "30 41 59",
+    "mutedRgb": "148 163 184",
+    "scrollbarTrack": "#f1f5f9",
+    "scrollbarThumb": "#cbd5e1",
+    "scrollbarThumbHover": "#94a3b8"
+  }
+}

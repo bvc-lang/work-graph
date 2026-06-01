@@ -1,0 +1,50 @@
+#Задача_design_optional_llm_golden_path_eval<[
+Базис:
+  Детерминированные gates зелёные, а OneBase implementation verified через `go test ./...`.
+  Остался optional слой качества: проверить, может ли реальная LLM по ограниченному OneBase slice найти и объяснить golden path без превращения результата в обязательный CI gate.
+Вектор:
+  Задокументировать optional LLM eval command и сценарий в `protocols/golden-path-test-v1.bvc`: входной WorkItem/OneBase slice, разрешённые tools, ожидаемые observation/plan/evidence, success metrics и запись failure evidence.
+  Связать сценарий с `domains/onebase/golden-path.bvc`, `scripts/run-onebase-verification.mjs` и будущим live-loop worker.
+  Не блокировать deterministic suite качеством модели; сохранять результат как optional evidence.
+Цель:
+  Команда получает воспроизводимый optional eval для проверки agent flow на реальном OneBase сценарии после появления live-loop.
+Анализ:
+  Целесообразность:
+  Стоит завести «описать optional LLM eval для OneBase golden path» в бэклог.
+  Контекст и границы:
+  Задокументировать optional LLM eval command и сценарий в `protocols/golden-path-test-v1.bvc`: входной WorkItem/OneBase slice, разрешённые tools, ожидаемые observation/plan/evidence, success metrics и запись failure evidence.
+  Зависимости и готовность:
+  depends_on=golden-path-test, implement-agent-worker-live-loop, onebase-implement-gross-profit-warehouse-dimension; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Команда получает воспроизводимый optional eval для проверки agent flow на реальном OneBase сценарии после появления live-loop.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441048
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:36.080Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:36.091Z
+  work.decision.verdict: useful
+  work.department: qa
+  work.depends_on: golden-path-test, onebase-implement-gross-profit-warehouse-dimension, implement-agent-worker-live-loop
+  work.id: design-optional-llm-golden-path-eval
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: qa_automation
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: protocols/golden-path-test-v1.bvc, domains/onebase/golden-path.bvc, scripts/run-optional-golden-path-llm-eval.mjs, scripts/run-onebase-verification.mjs, docs/plan-rebuild-post-mvp.md, work/backlog.bvc
+  work.title: описать optional LLM eval для OneBase golden path
+]>
+

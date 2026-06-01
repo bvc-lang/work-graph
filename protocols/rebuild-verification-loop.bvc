@@ -1,0 +1,95 @@
+#Протокол_Rebuild_Verification_Loop<[
+Базис:
+  Work Graph rebuild требует автоматической проверки formatter, runtime, trace links, UI и OneBase golden path без смешения deterministic CI и optional real LLM сценариев.
+  protocols/evidence-model-v1.bvc уже задаёт Evidence Record v1 и status gates; operator dashboard должен показывать результаты проверок оператору.
+Вектор:
+  Зафиксировать verification matrix с tier A deterministic (npm test, formatter roundtrip, runtime policy, trace validator, UI smoke) и tier B optional (OneBase go test, real LLM golden path).
+  Описать evidence policy: WorkItem Свидетельства хранит human-readable строку; structured evidence projection живёт в dashboard/verification snapshot; done требует non-empty evidence per WorkItem v1 policy.
+  Operator UI показывает matrix status, recent evidence feed и OneBase environment gate без ручного graph editor.
+Цель:
+  Рабочий контур проверяется автоматически и вручную понятен оператору.
+
+Проверки:
+  deterministic tests отделены от real LLM tests
+  evidence policy совместима с WorkItem v1
+  operator dashboard показывает результаты проверок
+
+Метки:
+  atom.profile: architecture_decision
+  protocol.id: rebuild-verification-loop
+  work.source: rebuild-verification-loop
+  trace.status: verified
+]>
+
+#Tier_A_Deterministic_Tests<[
+Базис:
+  CI и локальный gate rebuild должны быть стабильными без внешней сети и без качества LLM.
+Вектор:
+  npm run test:deterministic -> node --test tests/*.test.mjs — единый deterministic suite для formatter, Work Graph runtime, trace links, architecture/schematic UI hooks, intent migration parity.
+  Formatter roundtrip: tests/stepAtomFormatter paths inside deterministic suite; gate task implement-step-atom-formatter.
+  Runtime policy: tests/workGraphRuntime.test.mjs covers claimNext, transitionStatus, dashboard snapshot; gate task implement-workgraph-minimal-runtime.
+  Trace Links v1: tests/workGraphRuntime.test.mjs validator section; gate task implement-step-code-trace-link-validator.
+  UI server: tests/workGraphBacklogUiServer.test.mjs + createBacklogUiServer HTTP smoke; gate tasks operator dashboard / architecture / schematic views.
+  Deterministic suite не вызывает OpenAI/Ollama, не требует go в PATH и не меняет ../onebase.
+Цель:
+  Tier A даёт rebuild acceptance без model variance.
+
+Метки:
+  atom.profile: prompt_rule
+  rule.id: verification-tier-a-deterministic
+  protocol.id: rebuild-verification-loop
+  trace.status: verified
+]>
+
+#Tier_B_Optional_Tests<[
+Базис:
+  OneBase golden path и real LLM сценарии полезны, но не должны блокировать deterministic CI или маскировать environment blockers.
+Вектор:
+  npm run test:optional:onebase -> scripts/run-onebase-verification.mjs: preflight go version, then go test ./... from ../onebase or record blocked environment evidence per domains/onebase/verification-command.bvc.
+  npm run test:optional:onebase-check -> scripts/run-onebase-config-check.mjs: onebase check --project ../onebase/examples/trade; exit 0 skipped when CLI subcommand unavailable (graceful on older onebase builds).
+  Optional real LLM scenario (future): agent discovers OneBase YAML/.os artifacts and proposes WorkItem changes; measured separately from Tier A; never required for npm run test:deterministic.
+  Optional LLM tests записывают worker-run evidence и не переводят task в done без Tier A + domain verification evidence where applicable.
+Цель:
+  Environment and model quality risks stay visible without collapsing into one gate.
+
+Метки:
+  atom.profile: prompt_rule
+  rule.id: verification-tier-b-optional
+  protocol.id: rebuild-verification-loop
+  trace.status: verified
+]>
+
+#Evidence_Recording_In_WorkGraph<[
+Базис:
+  Verification loop must remain compatible with WorkItem v1 string evidence today while allowing structured dashboard projection.
+Вектор:
+  Authoring: Свидетельства section lines remain human-readable; include command, exit_code, cwd, summary and artifact refs where applicable (see domains/onebase/verification-command.bvc Evidence_Format).
+  Runtime transitionStatus: done requires non-empty evidence array; blocked requires blocker reason; verify may require proposed verification command in next_action or evidence summary.
+  Dashboard projection: buildRecentEvidence maps legacy evidence strings to feed rows; buildVerificationSummary adds matrix row status from done WorkItems and evidence keyword heuristics (npm test, go test, blocked, exit_code).
+  Future structuredEvidence array in workgraph.snapshot.v1 remains optional; verification loop must not require migration away from string evidence for MVP.
+Цель:
+  Operators and agents record proof in .bvc canon; UI explains gate state without parsing chat transcripts.
+
+Метки:
+  atom.profile: trace
+  contract.id: verification-evidence-recording-v1
+  protocol.id: rebuild-verification-loop
+  trace.status: verified
+]>
+
+#Operator_Dashboard_Verification_Surface<[
+Базис:
+  Operator must see verification state beside task board without opening raw backlog.bvc.
+Вектор:
+  /api/dashboard-snapshot returns operator-dashboard.snapshot.v1 plus verification summary: tier counts, matrix rows, recent evidence, OneBase gate status.
+  UI verification panel shows Tier A/B badges, matrix table, recent evidence list and link to blocked OneBase tasks when go is missing.
+  Panel is readonly; state changes only through Work Graph transitions and recorded evidence, not through dashboard edits.
+Цель:
+  Verification loop is observable in the same operator surface as board/backlog/architecture/schematic views.
+
+Метки:
+  atom.profile: prompt_rule
+  rule.id: operator-dashboard-verification-surface
+  protocol.id: rebuild-verification-loop
+  trace.status: verified
+]>

@@ -1,0 +1,22 @@
+#!bvc lang=ru
+#Molecule_tabs_trigger<[
+Базис:
+  Gripe `<x-ui.molecules.tabs.trigger>` — tab button; disabled → span.
+Вектор:
+  Props: selected, disabled, role=tab, aria-selected, data-tab id.
+  WG: maps to .workflow-subtab.board-tab.is-active pattern.
+Цель:
+  Tab trigger parity для WG panels.
+
+Проверки:
+  data-testid=ui-tabs-trigger
+  aria-selected reflects active tab
+
+Метки:
+  atom.profile: ui_component
+  ui.layer: molecule
+  ui.id: tabs-trigger
+  ui.marketplace.blade: resources/views/components/ui/molecules/tabs/trigger.blade.php
+  ui.workgraph.module: src/ui/molecules/tabs.mjs
+  trace.status: verified
+]>

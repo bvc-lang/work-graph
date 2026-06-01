@@ -1,0 +1,57 @@
+#Задача_simplify_agent_run_panel_ux<[
+Базис:
+  Текущий экран «Агент» выглядит как техническая консоль: одновременно показывает task selector, provider selector, live-loop steps, raw Worker Output и сырой Journal.
+  В продуктовой модели это аналог SCRUM-потока: главное окно — чат с LLM, где пользователь обсуждает работу, просит взять задачу в исполнение и получает результат.
+  Backlog/доска — не замена чата, а список задач и источник контекста; отправка в исполнение должна работать и из чата, и из карточки бэклог.
+  Выбор provider/model обычно находится внизу поля ввода чата как компактные селекты, а не отдельная runtime-форма.
+  Статус «Готово к работе» сейчас непонятен пользователю; нужно либо объяснить его как derived eligibility, либо заменить на более SCRUM-понятное состояние.
+  Raw JSON journal и внутренние термины provider-neutral/live-loop должны быть вторичными debug details, а не основной интерфейс.
+Вектор:
+  Переспроектировать вкладку «Агент» как chat-first окно: история сообщений, поле ввода снизу, селекты provider/model/режима рядом с composer controls.
+  Поддержать команду из чата: «возьми задачу <id> в работу», с привязкой к WorkItem и запуском agent прогнать через существующий API.
+  Добавить действие из backlog/card: «Отправить агенту» открывает чат с выбранной задачей как контекстом, а не запускает непонятный прогнать молча.
+  Перенести task selector/provider form в compact/advanced слой; основной CTA должен быть отправкой сообщения в чат.
+  Переименовать или убрать «Готово к работе»: если это технический очередь ready, показывать как «Доступно агенту» с пояснением, что это вычисляемое состояние без блокирующих зависимостей.
+  Скрыть технический журнал и raw output за раскрываемым блоком «Технические детали».
+Цель:
+  Экран «Агент» становится основным LLM-чатом продукта, связанным с backlog/SCRUM flow и агентным исполнением задач.
+Анализ:
+  Целесообразность:
+  Стоит завести «переделать экран «Агент» в chat-first SCRUM flow» в бэклог.
+  Контекст и границы:
+  Переспроектировать вкладку «Агент» как chat-first окно: история сообщений, поле ввода снизу, селекты provider/model/режима рядом с composer controls.
+  Зависимости и готовность:
+  depends_on=implement-operator-agent-run-panel-mvp, improve-agent-run-explainability-ux; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Экран «Агент» становится основным LLM-чатом продукта, связанным с backlog/SCRUM flow и агентным исполнением задач.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441130
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:37.703Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:37.712Z
+  work.decision.verdict: useful
+  work.department: ui-dashboard
+  work.depends_on: implement-operator-agent-run-panel-mvp, improve-agent-run-explainability-ux
+  work.id: simplify-agent-run-panel-ux
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: product_designer
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: src/workGraphBacklogUiServer.mjs, src/agentRunApi.mjs, tests/workGraphBacklogUiServer.test.mjs, work/backlog.bvc
+  work.title: переделать экран «Агент» в chat-first SCRUM flow
+]>
+

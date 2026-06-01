@@ -1,0 +1,69 @@
+#Протокол_WorkGraph_Daemon_Scheduler_Tick<[
+Базис:
+  Agent worker live-loop доказал claim/run/evidence/proposal для одной задачи, но WorkGraph OS нужен scheduler-owned tick вместо ручного CLI или chat-owned execution.
+  Daemon не владеет canonical Work Graph state: он читает snapshot, выбирает eligible projection, вызывает worker adapter и пишет audit/recovery metadata.
+Вектор:
+  Один tick = observe snapshot -> schedule eligible task -> run one bounded worker/live-loop -> recovery suggestion -> audit tick result -> stop.
+  Tick input: schema workgraph.daemon.tick.input.v1, backlogPath, optional taskId, schedulerPolicy (paused, maxRunsPerTick=1), workerInput policy, runId prefix.
+  Tick output: schema workgraph.daemon.tick.output.v1, tickId, selectedTaskId, workerRunSummary, auditRecord, recoverySuggestion, finalItems projection (backlog persist — через POST /api/agent-run / implement-agent-run-backlog-persist; daemon tick пока projection-only).
+  Audit journal: append-only work/daemon-audit.jsonl with tickId, phases, taskId, worker status, recovery class, recordedAt.
+  Live-loop link: tick run phase delegates to runAgentWorkerLiveLoop; daemon adds scheduling gate and audit wrapper, not duplicate worker logic.
+Цель:
+  Operator и future background daemon имеют один documented tick contract между Work Graph snapshot и worker execution.
+
+Метки:
+  atom.profile: prompt_rule
+  protocol.id: workgraph-daemon-scheduler-tick
+  work.source: design-workgraph-daemon-scheduler-tick
+  trace.status: verified
+]>
+
+#Контракт_Tick_Input_V1<[
+Базис:
+  Scheduler must rebuild from observable Work Graph state on every tick.
+Вектор:
+  Fields: schema, tickId, backlogPath, taskId?, schedulerPolicy { paused, dryRun }, workerInput options, journalPaths { audit, workerRuns }.
+  paused=true: tick returns skipped without claiming; dryRun=true: schedule selection only, no worker run.
+Цель:
+  Tick can be invoked safely from CLI --once, tests and future watch loop with the same shape.
+
+Метки:
+  atom.profile: trace
+  contract.id: workgraph-daemon-tick-input-v1
+  protocol.id: workgraph-daemon-scheduler-tick
+  trace.status: verified
+]>
+
+#Контракт_Tick_Output_V1<[
+Базис:
+  Tick result must be auditable without provider session replay.
+Вектор:
+  Fields: schema, ok, tickId, phases[], selectedTaskId, skippedReason?, workerOutput?, workerRunSummary?, auditRecord, recoverySuggestion?, error?.
+  auditRecord: { tickId, taskId, workerStatus, recoveryClass, recordedAt, phaseSummary }.
+  recoverySuggestion: { preset, action, reason, retryAdvice } from workgraph-recovery-policy-presets.
+Цель:
+  Dashboard and operator review can show last tick outcome from audit journal alone.
+
+Метки:
+  atom.profile: trace
+  contract.id: workgraph-daemon-tick-output-v1
+  protocol.id: workgraph-daemon-scheduler-tick
+  trace.status: verified
+]>
+
+#Audit_Events<[
+Базис:
+  Audit journal is derived projection, not canonical task state.
+Вектор:
+  Event types: tick_started, task_scheduled, worker_run_finished, tick_skipped, tick_failed, recovery_suggested.
+  Each line is JSON with tickId, event, taskId?, summary, recordedAt; stored in work/daemon-audit.jsonl alongside work/worker-runs.jsonl.
+  UI/dashboard may read recent audit lines via dashboard snapshot extension in a later task; MVP uses file journal only.
+Цель:
+  Scheduler behavior is reconstructable after crash or manual operator intervention.
+
+Метки:
+  atom.profile: trace
+  contract.id: workgraph-daemon-audit-events-v1
+  protocol.id: workgraph-daemon-scheduler-tick
+  trace.status: verified
+]>

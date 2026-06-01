@@ -1,0 +1,47 @@
+#Оценка_FlatBuffers_GBC_WorkGraph_Slice<[
+Базис:
+  Work Graph уже имеет canonical .bvc atoms и runtime JSON snapshot v1.
+  FlatBuffers/GBC может быть полезен как derived binary/cache layer, но не должен становиться source of truth для MVP.
+  Решение нужно принимать по требованиям потребления snapshot, а не по философии binary-first или названию GBC.
+Вектор:
+  JSON snapshot v1 остаётся первым interchange для UI, tools и tests: он читаемый, простой для diff/review, нативен для браузера и достаточен для текущего размера графа.
+  NDJSON подходит для append-only журналов evidence/action feed, где важны частичные записи, восстановление после сбоя и потоковая обработка.
+  SQLite cache оправдан, когда нужны локальные запросы, индексы, фильтры по задачам/evidence/trace и быстрый rebuild dashboard без чтения всех .bvc.
+  FlatBuffers/GBC оправдан только при доказанной потребности в zero-copy browser/native read path, multi-language readers, стабильной схеме, GFS overlay, больших snapshot или cross-process ABI.
+  FlatBuffers/GBC не оправдан сейчас как замена .bvc canon, как преждевременная оптимизация, как следствие названия Genesis/GBC или как обязательный слой до проверки UI/runtime.
+Цель:
+  Для MVP выбрать JSON snapshot first; FlatBuffers/GBC отложить как optional derived slice после появления измеримой нагрузки или внешнего reader contract.
+
+Проверки:
+  .bvc остаётся canonical storage
+  JSON snapshot v1 остаётся первым runtime interchange
+  FlatBuffers/GBC не реализуется в MVP без измеримого требования
+  Deferred scope связан с задачей defer-gbc-gvm-zig-scope
+
+Метки:
+  atom.profile: architecture_decision
+  decision.id: flatbuffers-gbc-slice-evaluation
+  decision.status: accepted
+  work.source: evaluate-flatbuffers-gbc-slice
+  mvp.recommendation: json-snapshot-first
+  deferred.optional_slice: flatbuffers-gbc
+  trace.status: verified
+]>
+
+#Граница_Возврата_К_FlatBuffers_GBC<[
+Базис:
+  Отложенное решение должно иметь понятные триггеры возврата, иначе GBC/GFS либо потеряется, либо незаметно станет обязательной сложностью.
+Вектор:
+  Вернуться к FlatBuffers/GBC стоит при одном из условий: snapshot стабильно становится большим для JSON parse/render loop; появляется native/Zig/Go/worker reader, которому нужен schema-stable ABI; GFS overlay требует binary slice mapping; dashboard или агенту нужен zero-copy read path; или появляется cross-process обмен, где JSON serialization становится bottleneck.
+  До этих условий Work Graph пишет и читает .bvc canon, строит deterministic JSON snapshot v1 и может отдельно накапливать NDJSON evidence/action log или SQLite cache.
+  Если FlatBuffers/GBC будет выбран позже, схема должна быть минимальной: WorkGraphSlice, WorkItem, DependencyEdge, EvidenceRef и SchemaVersion без попытки сериализовать весь Step Atom language.
+Цель:
+  Сохранить GBC/GFS как сильное направление derived artifacts, не блокируя первый operator dashboard и OneBase golden path.
+
+Метки:
+  atom.profile: trace
+  decision.id: flatbuffers-gbc-deferral-boundary
+  decision.depends_on: workgraph-serialization-boundary
+  deferred.next_work: defer-gbc-gvm-zig-scope
+  trace.status: verified
+]>

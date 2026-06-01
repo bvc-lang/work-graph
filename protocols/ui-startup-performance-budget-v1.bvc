@@ -1,0 +1,16 @@
+#UI_Startup_Performance_Budget_V1<[
+Базис:
+  Operator shell растёт (snapshot + dashboard + architecture + operator shell); startup не должен блокировать first paint.
+Вектор:
+  Budget: initial fetch chain (snapshot + dashboard + operator-shell) target ≤ 800ms local dev.
+  Lazy views: graph, architecture, schematic fetch/render deferred until tab first opened.
+  HTML shell + CSS inline; no React/bundler on critical path.
+Цель:
+  Board view usable quickly; heavy derived views load on demand.
+
+Метки:
+  atom.profile: prompt_rule
+  protocol.id: ui-startup-performance-budget-v1
+  work.source: phase-9-ui-operator-shell
+  trace.status: verified
+]>

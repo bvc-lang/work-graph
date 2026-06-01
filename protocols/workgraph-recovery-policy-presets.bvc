@@ -1,0 +1,39 @@
+#Протокол_WorkGraph_Recovery_Policy_Presets<[
+Базис:
+  Autonomous backlog execution needs explicit recovery semantics for failed worker output, repeated failure, missing dependency, verification failure and environment blockers.
+  Recovery presets do not silently mutate canonical .bvc; they produce evidence-backed transition suggestions consumed by operator or a future apply-transition API.
+Вектор:
+  Presets: worker_failed_first, worker_failed_repeated, env_blocker, verification_failed, rate_limit_retry, no_claimable_task.
+  worker_failed_first: first failure -> blocked or ready with retryAdvice; records worker-run evidence; distinguishes model_failure vs policy_denied.
+  worker_failed_repeated: retryCount >= maxRetries -> blocked with escalation summary and human_review hint.
+  env_blocker: missing Go, network, credentials -> blocked with env_blocker class; no automatic retry until evidence shows env fixed.
+  verification_failed: task in verify with failed Tier A command -> ready with narrowed next_action or blocked if repeated.
+  rate_limit_retry: schedule next tick with backoff metadata in audit; task stays claimed/ready per policy.
+  Each preset maps to transition suggestion: ready | verify | blocked | escalate_human with required evidence line template.
+Цель:
+  WorkGraph OS continues without silent loops; operator can see why retry, block or escalation happened.
+
+Метки:
+  atom.profile: prompt_rule
+  protocol.id: workgraph-recovery-policy-presets
+  work.source: design-recovery-policy-presets
+  trace.status: verified
+]>
+
+#Preset_Matrix<[
+Базис:
+  Presets must be testable pure functions over worker output and retry context.
+Вектор:
+  classifyFailure(output, context) -> failureClass: model_failure | policy_denied | code_failure | env_blocker | no_task | succeeded.
+  suggestRecovery(failureClass, { retryCount, maxRetries, taskStatus }) -> { preset, action, reason, retryAdvice }.
+  Default maxRetries=2 for worker_failed before worker_failed_repeated escalation.
+  action enum: retry_ready, stay_blocked, stay_verify, escalate_human, noop.
+Цель:
+  src/workGraphRecoveryPolicy.mjs implements the matrix; daemon tick and live-loop consume the same suggestions.
+
+Метки:
+  atom.profile: trace
+  contract.id: workgraph-recovery-preset-matrix-v1
+  protocol.id: workgraph-recovery-policy-presets
+  trace.status: verified
+]>

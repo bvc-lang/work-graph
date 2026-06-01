@@ -1,0 +1,52 @@
+#Задача_implement_workgraph_minimal_runtime<[
+Базис:
+  Work Graph должен быть инструментом агента, а не ручной доской.
+  Задача «реализовать минимальный runtime Work Graph» относится к контуру платформы агента и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: implement-step-atom-formatter.
+Вектор:
+  Описать минимальные операции: upsert, claimNext, recordEvidence, transitionStatus.
+  Зафиксировать transition policy: done требует evidence, blocked требует reason.
+  Описать JSON snapshot для dashboard как первый стабильный runtime interchange.
+Цель:
+  Агент может вести задачу от ready до verify/done без ручной правки файла.
+  Готово, когда выполнены проверки: описан контракт операций.
+Анализ:
+  Целесообразность:
+  Стоит завести «реализовать минимальный runtime Work Graph» в бэклог.
+  Контекст и границы:
+  Описать минимальные операции: upsert, claimNext, recordEvidence, transitionStatus.
+  Зависимости и готовность:
+  depends_on=implement-step-atom-formatter; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Агент может вести задачу от ready до verify/done без ручной правки файла.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441007
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:37.260Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:37.269Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: implement-step-atom-formatter
+  work.id: implement-workgraph-minimal-runtime
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: feature_engineer
+  work.pipeline_stage: decided
+  work.priority: critical
+  work.risk: high
+  work.status: done
+  work.target_files: src/workGraphRuntime.mjs, tests/workGraphRuntime.test.mjs, work/backlog.bvc, plans/rebuild-start-plan.bvc
+  work.title: реализовать минимальный runtime Work Graph
+]>
+

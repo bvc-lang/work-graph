@@ -1,0 +1,20 @@
+#Протокол_Unified_Linkage_Projection_V1<[
+Базис:
+  Старый ioHasC хранит unified linkage как derived JSON (`.iohasc/unified-linkage.v1.json`); rebuild уже имеет Trace Links v1 parser/validator в src/workGraphRuntime.mjs.
+  Canonical source остаётся `.bvc` atoms и Work Graph snapshot; linkage JSON — read model для architecture map, verification и PVRG scope.
+Вектор:
+  unified-linkage.projection.v1 собирается из:
+  - parseTraceLinksV1(items) — forward links from trace.* labels
+  - scanReverseTraceMarkers(fileContentsByPath) — reverse code markers
+  - work.target_files и depends_on как weak planning edges (confidence low, relation targets/depends_on)
+  Output path convention: work/unified-linkage.v1.json (rebuild) или `.iohasc/unified-linkage.v1.json` при port в sibling repo.
+  Consumers: architectureSnapshot L2, verification loop trace tier, pvrgTaskScope seed expansion, backlog UI derived graph.
+Цель:
+  Step-code relations доступны как stable derived artifact без второго authoring surface.
+
+Метки:
+  atom.profile: prompt_rule
+  protocol.id: unified-linkage-projection-v1
+  work.source: port-unified-linkage-serialization
+  trace.status: verified
+]>

@@ -1,0 +1,60 @@
+#Задача_decide_an9_rich_ir_runtime_or_deferred<[
+Базис:
+  AN-38 §5: identifier RichIR/TurIr в src/ Work Graph отсутствует — только analytics docs (AN-9 ir-rich-ir-open-canon, unique-tech-stack-meta-review, pvrg-verified-reference-graph).
+  Существование research-only концепта без runtime hook вводит в заблуждение читателей backlog и плодит ложные ожидания.
+Вектор:
+  Опубликовать ADR или decision-note: runtime wiring (use case + integration point) ИЛИ закрыть AN-9 как deferred research с явным статусом.
+  Если deferred — обновить ссылки в AN-38 §5 и meta-review docs, чтобы было видно: только roadmap.
+  Если runtime — отдельный epic с buildRichIrSliceForWorkerInput или MCP tool.
+Цель:
+  AN-9 RichIR имеет недвусмысленный статус (runtime epic ИЛИ deferred) и читатель backlog не путает research analytics с production capability.
+Проверки:
+  ADR или decision-note опубликован
+  Ссылки в AN-38 §5 и unique-tech-stack-meta-review обновлены
+  analytics-records.jsonl содержит запись о решении
+Анализ:
+  Целесообразность:
+  Стоит завести «AN-9 RichIR: решение runtime hook или deferred close» в бэклог — по материалам AN-38 (work/analytics/llm-pvrg-richir-memory-slices-usage-audit.md).
+  Контекст и границы:
+  Опубликовать ADR или decision-note: runtime wiring (use case + integration point) ИЛИ закрыть AN-9 как deferred research с явным статусом.
+  Зависимости и готовность:
+  depends_on=epic-cursor-mcp-context-surface-v1; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  AN-9 RichIR имеет недвусмысленный статус (runtime epic ИЛИ deferred) и читатель backlog не путает research analytics с production capability.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-38 (work/analytics/llm-pvrg-richir-memory-slices-usage-audit.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Свидетельства:
+  docs/adr-an9-rich-ir-deferred.md опубликован; AN-38 feeds_epics обновлён
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-38
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/llm-pvrg-richir-memory-slices-usage-audit.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T23:29:42.488Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T23:29:42.488Z
+  work.decision.verdict: useful
+  work.department: product-architecture
+  work.depends_on: epic-cursor-mcp-context-surface-v1
+  work.id: decide-an9-rich-ir-runtime-or-deferred
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: system_architect
+  work.parent_id: epic-cursor-mcp-context-surface-v1
+  work.pipeline_stage: closed
+  work.priority: low
+  work.risk: low
+  work.status: done
+  work.target_files: work/analytics/ir-rich-ir-open-canon.md, work/analytics/unique-tech-stack-meta-review.md, work/analytics/llm-pvrg-richir-memory-slices-usage-audit.md, work/analytics-records.jsonl
+  work.title: AN-9 RichIR: решение runtime hook или deferred close
+]>

@@ -1,0 +1,49 @@
+#Задача_phase_9_ui_operator_shell<[
+Базис:
+  Rebuild UI сейчас локальный и без тяжёлых зависимостей, а старый ioHasC имеет более крупный IDE shell с panels, semantic map, agent panel и workspace.
+  Задача «Фаза 9: UI оболочка оператора» относится к контуру Work Graph rebuild и должна быть понятна агенту без чтения всего backlog.
+Вектор:
+  Спланировать перенос UI оболочка оператора: dashboard v2, intent tree sidebar, semantic map/backlog перекрёстная подсветка, kanban projection и startup performance budget.
+  Ближайший шаг исполнения: выполнить фазу 10 CI/E2E release gates.
+Цель:
+  UI растёт из MVP-доски в оболочке оператора без немедленного воссоздания старой монолитной IDE.
+Анализ:
+  Целесообразность:
+  Стоит завести «Фаза 9: UI оболочка оператора» в бэклог.
+  Контекст и границы:
+  Спланировать перенос UI оболочка оператора: dashboard v2, intent tree sidebar, semantic map/backlog перекрёстная подсветка, kanban projection и startup performance budget.
+  Зависимости и готовность:
+  depends_on=phase-8-agent-prompt-eval-tools; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  UI растёт из MVP-доски в оболочке оператора без немедленного воссоздания старой монолитной IDE.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441059
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:37.518Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:37.527Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: phase-8-agent-prompt-eval-tools
+  work.id: phase-9-ui-operator-shell
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: frontend_architect
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: src/operatorShellProjection.mjs, src/workGraphCycleSlice.mjs, src/workGraphBacklogUiServer.mjs, ui/operator-dashboard-v2.bvc, protocols/ui-startup-performance-budget-v1.bvc, work/backlog.bvc
+  work.title: Фаза 9: UI оболочка оператора
+]>
+

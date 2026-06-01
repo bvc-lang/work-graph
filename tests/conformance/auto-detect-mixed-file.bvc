@@ -1,0 +1,25 @@
+#EnglishAtom@en<[
+Basis:
+  - First atom EN.
+Vector:
+  - Auto-detect file without pragma.
+Goal:
+  - Standalone EN atom.
+
+Labels:
+  atom.profile: prompt_rule
+  trace.status: pending
+]>
+
+#РусскийАтом<[
+Базис:
+  - Second atom RU.
+Вектор:
+  - Auto-detect per atom.
+Цель:
+  - Standalone RU atom.
+
+Метки:
+  atom.profile: prompt_rule
+  trace.status: pending
+]>

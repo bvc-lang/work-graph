@@ -1,0 +1,51 @@
+#Задача_port_pvrg_task_scope_tools<[
+Базис:
+  PVRG должен помогать выбирать task context вместо принудительного чтения всего repository.
+  Задача «перенести PVRG task-scope tools» относится к контуру графа знаний и retrieval и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: phase-4-trace-pvrg-semantic-map.
+Вектор:
+  Определить PVRG subgraph task-scope tools для WorkItem target_files, OneBase artifacts и trace refs.
+  Ближайший шаг исполнения: описать evidence contract для codegen.
+Цель:
+  Live-loop и agent tasks могут запрашивать bounded project graph context.
+  Готово, когда выполнены проверки: mapping target_files -> subgraph query определён.
+Анализ:
+  Целесообразность:
+  Стоит завести «перенести PVRG task-scope tools» в бэклог.
+  Контекст и границы:
+  Определить PVRG subgraph task-scope tools для WorkItem target_files, OneBase artifacts и trace refs.
+  Зависимости и готовность:
+  depends_on=phase-4-trace-pvrg-semantic-map; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Live-loop и agent tasks могут запрашивать bounded project graph context.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441071
+  migration.strategy: port
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:37.597Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:37.606Z
+  work.decision.verdict: useful
+  work.department: knowledge-publishing
+  work.depends_on: phase-4-trace-pvrg-semantic-map
+  work.id: port-pvrg-task-scope-tools
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: retrieval_architect
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: high
+  work.status: done
+  work.target_files: protocols/pvrg-task-scope-v1.bvc, src/pvrgTaskScope.mjs, tests/workItemTraceEnvelope.test.mjs, work/backlog.bvc
+  work.title: перенести PVRG task-scope tools
+]>
+

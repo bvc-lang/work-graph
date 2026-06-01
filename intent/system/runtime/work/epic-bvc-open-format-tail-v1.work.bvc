@@ -1,0 +1,60 @@
+#Задача_epic_bvc_open_format_tail_v1<[
+Базис:
+  AN-37: после trilogy AN-33/34/36 остались хвосты plan-step-to-bvc фазы 2–3.
+  WG repo на .bvc; ioHasC ../project — отдельный трек.
+  npm readme/CDN отстают от GitHub (@bvc-lang/cli 0.1.6).
+Вектор:
+  Track A: parser deprecation warning для legacy .step read.
+  Track B: deterministic test regressions post embedded UI fix.
+  Track C: npm/github publishables sync.
+  Track D: plan-iohasc-project-bvc-bridge + lint:backlog green.
+Цель:
+  Открытый BVC контур стабилен: CI green, npm/docs актуальны, ioHasC bridge спланирован.
+Проверки:
+  Deprecation warning в bvcFileFormat
+  npm test deterministic green
+  @bvc-lang/spec/cli версии согласованы
+  plan-iohasc-project-bvc-bridge.md
+  AN-37 closing
+Анализ:
+  Целесообразность:
+  Стоит завести «BVC open format tail v1: deprecation, tests, npm sync, ioHasC bridge plan» в бэклог — по материалам AN-37 (work/analytics/bvc-open-format-tail-v1.md).
+  Контекст и границы:
+  Track A: parser deprecation warning для legacy .step read.
+  Зависимости и готовность:
+  depends_on=epic-architecture-main-bvc-canon, epic-architecture-views-v1, epic-gripe-ds-visual-default-wave3; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Открытый BVC контур стабилен: CI green, npm/docs актуальны, ioHasC bridge спланирован.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-37 (work/analytics/bvc-open-format-tail-v1.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-37
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/bvc-open-format-tail-v1.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T22:43:17.518Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T22:43:17.518Z
+  work.decision.verdict: useful
+  work.department: system-runtime
+  work.depends_on: epic-architecture-main-bvc-canon, epic-architecture-views-v1, epic-gripe-ds-visual-default-wave3
+  work.id: epic-bvc-open-format-tail-v1
+  work.item_kind: epic
+  work.next_action: —
+  work.owner_role: integration_architect
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: low
+  work.status: done
+  work.target_files: work/analytics/bvc-open-format-tail-v1.md, docs/plan-bvc-open-format-tail-v1.md, src/bvcFileFormat.mjs, docs/plan-step-to-bvc-migration.md, packages/bvc-spec/, packages/bvc-cli/
+  work.title: BVC open format tail v1: deprecation, tests, npm sync, ioHasC bridge plan
+]>

@@ -1,0 +1,146 @@
+#Протокол_Agent_Worker_Adapter<[
+Базис:
+  Work Graph является операционной моделью задач, статусов, evidence и решений.
+  Cursor SDK, Claude SDK/API, OpenAI-compatible endpoint и локальный runner являются исполнителями, а не владельцами business state.
+  Provider session может хранить только временный run context; source of truth остаётся в .bvc/Work Graph.
+Вектор:
+  Agent worker adapter claims одну WorkItem task, строит provider prompt/context из snapshot и policy, запускает provider run и возвращает структурированный результат.
+  Adapter не меняет Work Graph напрямую: он предлагает status transition request, evidence и patch summary, а Work Graph runtime применяет policy gates.
+  Повторный запуск всегда строится из текущего Work Graph snapshot, а не из скрытой истории provider session.
+Цель:
+  Любой agent provider можно заменить без изменения Work Graph runtime, evidence policy и operator dashboard.
+
+Проверки:
+  provider ограничен ролью executor adapter
+  вход и выход worker-а описаны без Cursor-only полей
+  failure/retry/cancel не зависят от скрытого session state
+
+Метки:
+  atom.profile: prompt_rule
+  protocol.id: agent-worker-adapter
+  work.source: design-agent-worker-adapter
+  trace.status: verified
+]>
+
+#Контракт_Worker_Input_V1<[
+Базис:
+  Worker должен получать только тот контекст, который можно восстановить из Work Graph, memory и policy.
+Вектор:
+  Conceptual payload: schema, runId, task snapshot, memorySlice, allowedTools, targetFiles, policy and providerHints.
+  task включает id, title, status, checks, evidence, dependsOn, targetFiles, traceStatus и nextAction.
+  policy включает toolPolicy, security boundary, status gates, verification commands, timeout and cancellation limits.
+  providerHints включает budget и required capabilities, но не является business state.
+Цель:
+  Worker run можно воспроизвести, отменить или повторить из наблюдаемого состояния Work Graph.
+
+Метки:
+  atom.profile: trace
+  contract.id: agent-worker-input-v1
+  protocol.id: agent-worker-adapter
+  trace.status: verified
+]>
+
+#Контракт_Worker_Output_V1<[
+Базис:
+  Provider может отвечать текстом, tool calls, patches или logs, но Work Graph должен получать единый результат.
+Вектор:
+  Conceptual payload: schema, runId, taskId, status, patchSummary, evidence, transitionRequest, logs, failureReason and retryAdvice.
+  status принимает succeeded, failed, cancelled или needs_human.
+  transitionRequest просит verify, done, blocked или ready; Work Graph runtime решает, допустим ли переход.
+  evidence должно быть достаточным для gates и operator review без replay provider session.
+Цель:
+  Runtime can record evidence, apply transition policy and show operator-readable history without provider-specific parsing.
+
+Метки:
+  atom.profile: trace
+  contract.id: agent-worker-output-v1
+  protocol.id: agent-worker-adapter
+  trace.status: verified
+]>
+
+#Матрица_Provider_Capabilities<[
+Базис:
+  Первый adapter contract должен выбрать provider по capability и policy fit, а не по бренду SDK.
+Вектор:
+  Cursor SDK: IDE-local file context, native tool use and user-visible workspace actions; vendor coupling is contained by neutral input/output.
+  Claude SDK/API: strong reasoning, tool-use flows and long context variants; task state and evidence stay externalized.
+  OpenAI-compatible endpoint: hosted or proxy models through chat/tool-call compatibility; requires verified JSON/tool_call behavior and timeout handling.
+  Local CLI/runner: deterministic scripts, local LLMs, smoke tests and offline execution; requires explicit sandbox, stdout/stderr capture and bounded command policy.
+  Selection criteria: required tools, structured output quality, timeout/cancel support, logs/evidence access, security fit, context budget, cost and deterministic retry path.
+Цель:
+  Scheduler can select the cheapest safe provider that satisfies task capability requirements and fall back predictably.
+
+Метки:
+  atom.profile: architecture_decision
+  decision.id: agent-worker-provider-capabilities
+  protocol.id: agent-worker-adapter
+  trace.status: verified
+]>
+
+#Жизненный_Цикл_Worker_Run<[
+Базис:
+  Work Graph state transitions must remain observable and policy-gated.
+Вектор:
+  Lifecycle: claim task; build task snapshot, memory slice, tools, target files and policy; select provider; run with bounded permissions; collect patch summary, evidence, logs and failure reason; validate output; request transition; let Work Graph runtime record evidence and apply policy.
+  Adapter never silently marks done and never mutates source-of-truth files outside declared tools.
+Цель:
+  Agent execution becomes a repeatable Work Graph operation instead of an opaque chat session.
+
+Метки:
+  atom.profile: trace
+  protocol.id: agent-worker-lifecycle
+  trace.status: verified
+]>
+
+#Семантика_Failure_Retry_Cancel<[
+Базис:
+  Failure semantics must not be hidden in SDK sessions or chat history.
+Вектор:
+  Failed run returns failed with failureReason, logs and retryAdvice; Work Graph may stay claimed, move to blocked, or return to ready by explicit transition.
+  Retry starts from fresh Work Graph snapshot and prior evidence/log summaries, not provider conversation memory.
+  Cancellation returns cancelled with partial evidence and no implicit status change except an explicit transition request.
+  Repeated failures should add visible evidence or blocker reason before another automatic retry.
+Цель:
+  Operator and scheduler can understand whether to retry, narrow scope, switch provider or ask for human input.
+
+Метки:
+  atom.profile: prompt_rule
+  protocol.id: agent-worker-failure-retry-cancel
+  trace.status: verified
+]>
+
+#Граница_Security_Tool_Policy<[
+Базис:
+  Provider must only execute capabilities granted by Work Graph runtime and operator policy.
+Вектор:
+  Tool policy is deny-by-default outside targetFiles and declared commands.
+  Secret material is never copied into provider prompts unless explicitly allowed by policy.
+  Network, shell, file write and destructive actions require separate capability flags.
+  Provider logs are evidence artifacts, but may be redacted before storage.
+Цель:
+  Provider neutrality does not weaken workspace safety or evidence quality.
+
+Метки:
+  atom.profile: prompt_rule
+  protocol.id: agent-worker-security-tool-policy
+  trace.status: verified
+]>
+
+#Правила_Provider_Selection_Fallback<[
+Базис:
+  Provider choice should be deterministic enough for audit and flexible enough for local development.
+Вектор:
+  Select provider by task-required capabilities first, then policy compatibility, then reliability, cost and latency.
+  Prefer local CLI/runner for deterministic verification and smoke tasks.
+  Prefer provider with native tool calls for file-changing agent tasks.
+  Fall back only when output contract validation fails, provider is unavailable, timeout occurs, or policy denies a required capability.
+  Fallback records evidence that includes previous provider, failure class and reason for switching.
+Цель:
+  Provider replacement is visible, bounded and explainable through Work Graph evidence.
+
+Метки:
+  atom.profile: architecture_decision
+  decision.id: agent-worker-provider-selection-fallback
+  protocol.id: agent-worker-adapter
+  trace.status: verified
+]>

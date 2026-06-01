@@ -1,0 +1,73 @@
+#Правило_Работы_В_Rebuild<[
+Базис:
+  Этот каталог создаётся как новая сборка подхода ioHasC.
+  Проект должен использовать собственные принципы: .bvc как канон, Work Graph как очередь, evidence как условие завершения.
+Вектор:
+  Перед изменениями читать charter/main.bvc и work/backlog.bvc.
+  Новые продуктовые решения сначала фиксировать в .bvc, затем при необходимости пояснять в Markdown.
+  Для новых атомов сначала формировать Step Atom Draft JSON по schemas/step-atom-draft.v1.json; raw .bvc писать только через deterministic formatter или по каноническому образцу.
+  Машинные поля новых атомов писать в Метки, а не legacy-строками id/status/trace_status.
+  Не переносить старые модули автоматически; каждое заимствование классифицировать как take, replace или defer.
+  Для задач использовать Work Graph statuses: backlog, ready, in_progress, verify, blocked, done.
+  Done разрешён только при наличии evidence.
+Цель:
+  Агент не превращает новую сборку в копию старого монолита.
+
+Метки:
+  guid: 550e8400-e29b-41d4-a716-446655443001
+  atom.profile: prompt_rule
+  rule.id: rebuild-working-rule
+  trace.status: pending
+]>
+
+#Правило_LLM_Не_Пишет_Raw_Step<[
+Базис:
+  LLM нестабильно соблюдает синтаксис .bvc, особенно закрытие блока, Метки и distinction между Markdown и HasC.
+Вектор:
+  Для создания нового атома использовать Step Atom Draft JSON.
+  Проверять draft по schemas/step-atom-draft.v1.json.
+  Преобразовывать draft в .bvc deterministic formatter-ом.
+  Если formatter ещё не реализован, писать raw .bvc только малыми блоками и сверять с protocols/llm-step-atom-writer.bvc.
+Цель:
+  .bvc остаётся каноном хранения, но LLM работает через устойчивую структурированную форму.
+
+Метки:
+  guid: 550e8400-e29b-41d4-a716-446655443002
+  atom.profile: prompt_rule
+  rule.id: llm-no-raw-step
+  trace.status: pending
+]>
+
+#Правило_Классификации_Наследия<[
+Базис:
+  Старый проект содержит ценные ядра и экспериментальные слои.
+Вектор:
+  take: Step Canon, Work Graph model, trace/evidence, prompt-as-step, low-code bridge idea, GBC/GFS substrate.
+  replace: IDE shell, LLM transport glue, monolithic orchestrator, custom vector storage, board UI.
+  defer: full GVM/Genesis, Zig primary memory core, autonomous SDLC daemon, intent graph, full visual low-code.
+Цель:
+  Каждое архитектурное решение явно указывает судьбу старого слоя.
+
+Метки:
+  guid: 550e8400-e29b-41d4-a716-446655443003
+  atom.profile: prompt_rule
+  rule.id: legacy-classification
+  trace.status: pending
+]>
+
+#Правило_Golden_Path<[
+Базис:
+  Новая сборка должна доказать один сценарий раньше широкой платформы.
+Вектор:
+  Главный сценарий: charter -> Work Graph task -> agent claim -> code change -> evidence -> verify -> memory update.
+  Любая новая подсистема должна объяснить, какую часть этого сценария она улучшает.
+  Если подсистема не нужна golden path, она остаётся deferred.
+Цель:
+  MVP остаётся проверяемым и не расползается.
+
+Метки:
+  guid: 550e8400-e29b-41d4-a716-446655443004
+  atom.profile: prompt_rule
+  rule.id: golden-path
+  trace.status: pending
+]>

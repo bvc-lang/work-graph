@@ -1,0 +1,145 @@
+#Протокол_Project_Memory_V1<[
+Базис:
+  Project Memory является устойчивым слоем структурированного контекста проекта: решений, инвариантов, доменных и архитектурных фактов, рисков, открытых вопросов и кратких итогов evidence.
+  Memory не заменяет Work Graph, Evidence v1, StepAtomDraft или исходные файлы; она связывает их в компактный контекст для агента, dashboard и будущего retrieval.
+  Цель слоя памяти — не увеличить prompt, а уменьшить случайное перечитывание transcript/repo за счёт проверяемых записей с источниками.
+Вектор:
+  MemoryRecord v1 имеет минимальные поля id, type, summary, basisLink, vectorLink, goalLink, sourceWorkItem, evidenceIds, confidence, status, updatedAt, relatedFiles and relatedTasks.
+  Допустимые type: decision, invariant, domain-fact, architecture-fact, risk, open-question, evidence-summary, provider-capability and user-preference.
+  Memory writers получают материал из done Work Graph tasks, Evidence Record v1, StepAtomDraft imports, language/domain adapters and explicit human decisions.
+  Readers получают bounded memory slice по current WorkItem, related files/tasks, evidence ids, domain tags and operator-selected focus.
+Цель:
+  Агент получает durable project context без replay chat transcript, prompt stuffing или превращения vector store в source of truth.
+
+Проверки:
+  описаны MemoryRecord kinds
+  writers/readers связаны с Work Graph и Evidence v1
+  memory отделена от prompt text и chat transcript
+  storage MVP остаётся human-readable .bvc с derived JSON export
+
+Метки:
+  atom.profile: prompt_rule
+  protocol.id: project-memory-v1
+  work.source: design-project-memory-v1
+  trace.status: verified
+]>
+
+#Контракт_Memory_Record_V1<[
+Базис:
+  Dashboard, agent worker и будущий graph/RAG слой должны читать память как записи с источниками, а не как произвольные summary-блоки.
+Вектор:
+  Required fields: id, type, summary, sourceWorkItem, confidence, status and updatedAt.
+  Recommended fields: basisLink, vectorLink, goalLink, evidenceIds, relatedFiles, relatedTasks and supersedes.
+  id должен быть стабильным в пределах project memory; type выбирается из Project Memory v1 kinds; summary хранит короткий human-readable смысл записи.
+  confidence принимает low, medium or high; status принимает active, draft, needs-review or retired.
+  basisLink/vectorLink/goalLink могут ссылаться на BVC конкретной задачи, протокола или StepAtomDraft, если запись возникла из аргумента, направления или цели.
+  evidenceIds ссылается на Evidence Record v1 ids; relatedFiles and relatedTasks связывают запись с code artifacts, protocols, Work Graph tasks and domain artifacts.
+Цель:
+  Каждая memory-запись объясняет, откуда она появилась, насколько ей можно доверять и когда её нужно обновить или убрать.
+
+Метки:
+  atom.profile: trace
+  contract.id: memory-record-v1
+  protocol.id: project-memory-v1
+  trace.status: verified
+]>
+
+#Типы_Memory_Record_V1<[
+Базис:
+  Память должна различать устойчивые правила, факты, решения и временные вопросы, чтобы agent context slice не смешивал их в один prompt dump.
+Вектор:
+  decision: принятое архитектурное, продуктовоe или операционное решение с sourceWorkItem и evidenceIds.
+  invariant: правило, которое должно сохраняться при будущих изменениях; обычно влияет на verification или review.
+  domain-fact: факт доменной модели, например OneBase artifact relation, business rule or workflow constraint.
+  architecture-fact: факт о слоях, runtime boundaries, storage, adapters or protocol contracts.
+  risk: известный риск с relatedTasks, confidence and mitigation hint in summary.
+  open-question: вопрос, который блокирует или направляет будущую задачу; status часто draft or needs-review.
+  evidence-summary: короткий вывод из одной или нескольких Evidence Record v1 записей, без копирования log/transcript.
+  provider-capability: проверенная способность или ограничение worker/provider, например native tools, timeout, structured output quality.
+  user-preference: явно подтверждённое предпочтение пользователя, релевантное проекту; не извлекается скрытно из случайной фразы.
+Цель:
+  Type помогает readers выбирать нужный срез: decisions/invariants для coding task, domain facts для OneBase path, risks/questions для planning and review.
+
+Метки:
+  atom.profile: trace
+  contract.id: memory-record-types-v1
+  protocol.id: project-memory-v1
+  trace.status: verified
+]>
+
+#Жизненный_Цикл_Project_Memory<[
+Базис:
+  Memory должна обновляться из наблюдаемых действий Work Graph, а не из скрытой истории provider session.
+Вектор:
+  Extract: после done/verified tasks writer создаёт или обновляет записи из WorkItem BVC, Evidence Record v1, protocol artifacts, StepAtomDraft imports and domain adapter outputs.
+  Review: новые или конфликтующие записи могут входить как draft/needs-review до human или deterministic validation.
+  Update: при новом evidence или изменении протокола запись получает updatedAt, новые evidenceIds and relatedTasks; summary остаётся коротким.
+  Retire: superseded or false records переводятся в retired с supersedes/supersededBy relation; удаление не является основным lifecycle действием.
+  Context build: agent worker получает bounded memorySlice, восстановимый из Project Memory source и Work Graph snapshot, а не из provider conversation.
+Цель:
+  Project Memory накапливает durable context итеративно и проверяемо, сохраняя возможность объяснить каждый фрагмент памяти.
+
+Метки:
+  atom.profile: prompt_rule
+  rule.id: project-memory-lifecycle-v1
+  protocol.id: project-memory-v1
+  trace.status: verified
+]>
+
+#Связь_Project_Memory_With_Core<[
+Базис:
+  Project Memory должна быть рядом с Work Graph, Evidence v1, StepAtomDraft, snapshot/UI и будущим graph/RAG, но не становиться их скрытым дублем.
+Вектор:
+  Work Graph остаётся операционной моделью задач, статусов, dependencies and evidence gates; memory хранит выводы и устойчивый контекст после выполнения задач.
+  Evidence v1 остаётся проверяемым следом команд, изменений, решений и review; memory evidence-summary ссылается на evidence ids и не копирует полный лог.
+  StepAtomDraft остаётся structured write/read contract для атомов; memory writers могут создавать memory atoms или JSON export из тех же нормализованных полей.
+  Snapshot/UI получает derived memory summary для dashboard, current task context and graph viewer, но не редактирует source-of-truth без memory writer.
+  Future graph/RAG can index memory records as derived nodes; vector index ускоряет retrieval, но не является authoritative storage.
+Цель:
+  Core остаётся разделённым: Work Graph отвечает за work state, Evidence за proof, StepAtomDraft за atom IO, Memory за durable context.
+
+Метки:
+  atom.profile: architecture_decision
+  decision.id: project-memory-core-boundary-v1
+  protocol.id: project-memory-v1
+  trace.status: verified
+]>
+
+#Граница_Storage_Project_Memory_MVP<[
+Базис:
+  Ранний выбор DB может снова смешать canonical state, cache и retrieval index.
+Вектор:
+  MVP storage recommendation: human-readable .bvc memory atoms first, with deterministic JSON export for dashboard, agent context and tests.
+  JSON snapshot/export является derived/interchange format; его можно пересобрать из canonical memory .bvc и связанных Work Graph/Evidence artifacts.
+  DB, vector store, SQLite cache or GBC slice допускаются позже только при явной потребности: объём, latency, multi-process access, advanced query or binary interchange.
+  Даже при появлении vector index source of truth остаётся .bvc/structured export, а embeddings хранятся как derived cache with rebuild path.
+Цель:
+  Project Memory остаётся читаемой, reviewable и мигрируемой до появления реальной необходимости в отдельном storage engine.
+
+Метки:
+  atom.profile: architecture_decision
+  decision.id: project-memory-storage-mvp
+  protocol.id: project-memory-v1
+  source.canonical: step
+  export.derived: json
+  trace.status: verified
+]>
+
+#Не_Цели_Project_Memory_V1<[
+Базис:
+  Без явных non-goals memory layer легко превращается в transcript dump, prompt cache или преждевременный RAG subsystem.
+Вектор:
+  Не хранить полный chat transcript, provider logs или command output как memory records; для этого есть evidence artifacts and logs.
+  Не использовать vector store как source of truth; он может быть только derived retrieval index.
+  Не копировать весь repo summary в одну запись; каждая запись должна иметь type, sourceWorkItem, evidenceIds или related artifacts.
+  Не записывать user preference без явного сигнала, что это устойчивое проектное предпочтение.
+  Не требовать DB/daemon для MVP Project Memory, пока .bvc plus JSON export покрывают writer/reader scenarios.
+Цель:
+  Project Memory остаётся компактным, проверяемым и проектным слоем знаний, а не ещё одним неуправляемым контекстным буфером.
+
+Метки:
+  atom.profile: prompt_rule
+  rule.id: project-memory-non-goals-v1
+  protocol.id: project-memory-v1
+  trace.status: verified
+]>

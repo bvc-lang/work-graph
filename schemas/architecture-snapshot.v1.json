@@ -1,0 +1,405 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "iohasc.architecture-snapshot.v1",
+  "title": "Architecture Snapshot V1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "sourceSchema",
+    "source",
+    "l1Canon",
+    "blocks",
+    "edges",
+    "focusBlockId",
+    "counts"
+  ],
+  "properties": {
+    "schema": { "const": "architecture.snapshot.v1" },
+    "sourceSchema": { "const": "workgraph.snapshot.v1" },
+    "source": { "type": "string", "minLength": 1 },
+    "l1Canon": { "$ref": "#/$defs/l1Canon" },
+    "focusBlockId": {
+      "anyOf": [
+        { "type": "string", "minLength": 1 },
+        { "type": "null" }
+      ]
+    },
+    "blocks": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/block" }
+    },
+    "edges": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/edge" }
+    },
+    "counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["blocks", "edges", "tasks", "containers"],
+      "properties": {
+        "blocks": { "type": "integer", "minimum": 0 },
+        "edges": { "type": "integer", "minimum": 0 },
+        "tasks": { "type": "integer", "minimum": 0 },
+        "containers": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "layoutProfile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["profile"],
+      "properties": {
+        "profile": {
+          "type": "string",
+          "enum": ["layered-dag-v1", "pipeline-v1"]
+        },
+        "ranks": {
+          "type": "object",
+          "additionalProperties": { "type": "integer", "minimum": 0 }
+        },
+        "manualOverrides": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "col": { "type": "integer", "minimum": 0 },
+              "row": { "type": "integer", "minimum": 0 },
+              "colSpan": { "type": "integer", "minimum": 1 }
+            }
+          }
+        },
+        "pipelineNodeIds": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "l1Canon": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "digest", "sourcePath"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "version": { "type": "integer", "minimum": 1 },
+        "digest": { "type": "string", "minLength": 1 },
+        "sourcePath": { "type": "string", "minLength": 1 },
+        "charterRef": {
+          "anyOf": [
+            { "type": "string", "minLength": 1 },
+            { "type": "null" }
+          ]
+        },
+        "protocolRef": {
+          "anyOf": [
+            { "type": "string", "minLength": 1 },
+            { "type": "null" }
+          ]
+        }
+      }
+    },
+    "block": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "summary",
+        "layer",
+        "intentRoots",
+        "taskIds",
+        "taskCounts",
+        "containers",
+        "artifactPaths",
+        "l2Graph"
+      ],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "title": { "type": "string", "minLength": 1 },
+        "summary": { "type": "string" },
+        "group": { "type": "string", "minLength": 1 },
+        "basis": { "type": "string" },
+        "vector": { "type": "string" },
+        "goal": { "type": "string" },
+        "analysis": { "type": "string" },
+        "decision": { "type": "string" },
+        "labels": {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        },
+        "layer": { "const": "L1" },
+        "intentRoots": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "taskIds": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "taskCounts": { "$ref": "#/$defs/countMap" },
+        "containers": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/container" }
+        },
+        "artifactPaths": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "l2Graph": { "$ref": "#/$defs/l2Graph" },
+        "onebaseGraph": { "$ref": "#/$defs/onebaseGraph" }
+      }
+    },
+    "onebaseGraph": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "nodes", "edges", "counts"],
+      "properties": {
+        "schema": { "const": "onebase.pvrg_graph_nodes.v1" },
+        "projectRoot": {
+          "anyOf": [
+            { "type": "string" },
+            { "type": "null" }
+          ]
+        },
+        "nodes": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/onebaseArtifactNode" }
+        },
+        "edges": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/onebaseGraphEdge" }
+        },
+        "counts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["nodes", "edges", "documents", "catalogs", "postingScripts"],
+          "properties": {
+            "nodes": { "type": "integer", "minimum": 0 },
+            "edges": { "type": "integer", "minimum": 0 },
+            "documents": { "type": "integer", "minimum": 0 },
+            "catalogs": { "type": "integer", "minimum": 0 },
+            "postingScripts": { "type": "integer", "minimum": 0 }
+          }
+        }
+      }
+    },
+    "onebaseArtifactNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "onebaseKind", "title", "subtitle", "path", "traceId"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "kind": { "const": "onebase_artifact" },
+        "onebaseKind": { "type": "string", "minLength": 1 },
+        "title": { "type": "string", "minLength": 1 },
+        "subtitle": { "type": "string" },
+        "path": { "type": "string" },
+        "traceId": { "type": "string", "minLength": 1 },
+        "posting": { "type": "boolean" }
+      }
+    },
+    "onebaseGraphEdge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "to", "type"],
+      "properties": {
+        "from": { "type": "string", "minLength": 1 },
+        "to": { "type": "string", "minLength": 1 },
+        "type": {
+          "type": "string",
+          "enum": ["onebase_posting"]
+        }
+      }
+    },
+    "container": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "kind", "paths"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "title": { "type": "string", "minLength": 1 },
+        "kind": {
+          "type": "string",
+          "enum": ["runtime", "protocol", "ui", "schema", "domain", "research", "storage"]
+        },
+        "paths": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "basis": { "type": "string" },
+        "vector": { "type": "string" },
+        "goal": { "type": "string" },
+        "analysis": { "type": "string" },
+        "decision": { "type": "string" },
+        "labels": {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        }
+      }
+    },
+    "edge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "to", "type"],
+      "properties": {
+        "from": { "type": "string", "minLength": 1 },
+        "to": { "type": "string", "minLength": 1 },
+        "type": {
+          "type": "string",
+          "enum": ["feeds", "uses", "validates", "implements", "defines", "maps_to", "relates_file"]
+        }
+      }
+    },
+    "countMap": {
+      "type": "object",
+      "additionalProperties": { "type": "integer", "minimum": 0 }
+    },
+    "l2Graph": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "blockId",
+        "nodes",
+        "edges",
+        "capped",
+        "hiddenCount",
+        "counts",
+        "layoutNodes",
+        "layoutEdges",
+        "width",
+        "height"
+      ],
+      "properties": {
+        "schema": { "const": "architecture.block_l2_graph.v1" },
+        "blockId": { "type": "string", "minLength": 1 },
+        "nodes": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/l2Node" }
+        },
+        "edges": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/l2Edge" }
+        },
+        "capped": { "type": "boolean" },
+        "hiddenCount": { "type": "integer", "minimum": 0 },
+        "counts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["nodes", "edges", "containers", "files"],
+          "properties": {
+            "nodes": { "type": "integer", "minimum": 0 },
+            "edges": { "type": "integer", "minimum": 0 },
+            "containers": { "type": "integer", "minimum": 0 },
+            "files": { "type": "integer", "minimum": 0 },
+            "onebaseArtifacts": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "layoutNodes": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/l2LayoutNode" }
+        },
+        "layoutEdges": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/l2LayoutEdge" }
+        },
+        "width": { "type": "integer", "minimum": 0 },
+        "height": { "type": "integer", "minimum": 0 },
+        "onebaseMerged": { "type": "boolean" }
+      }
+    },
+    "l2Node": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "title", "subtitle"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "kind": { "type": "string", "enum": ["container", "file", "onebase_artifact"] },
+        "title": { "type": "string", "minLength": 1 },
+        "subtitle": { "type": "string" },
+        "paths": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "path": { "type": "string" },
+        "onebaseKind": { "type": "string" },
+        "traceId": { "type": "string" },
+        "posting": { "type": "boolean" },
+        "basis": { "type": "string" },
+        "vector": { "type": "string" },
+        "goal": { "type": "string" },
+        "analysis": { "type": "string" },
+        "decision": { "type": "string" },
+        "labels": {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        }
+      }
+    },
+    "l2Edge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "to", "type"],
+      "properties": {
+        "from": { "type": "string", "minLength": 1 },
+        "to": { "type": "string", "minLength": 1 },
+        "type": {
+          "type": "string",
+          "enum": ["defines", "implements", "uses", "relates_file", "hosts_onebase", "onebase_posting"]
+        }
+      }
+    },
+    "l2LayoutNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "title", "subtitle", "depth", "x", "y", "width", "height"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "kind": { "type": "string", "enum": ["container", "file", "onebase_artifact"] },
+        "title": { "type": "string", "minLength": 1 },
+        "subtitle": { "type": "string" },
+        "paths": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "path": { "type": "string" },
+        "onebaseKind": { "type": "string" },
+        "traceId": { "type": "string" },
+        "posting": { "type": "boolean" },
+        "basis": { "type": "string" },
+        "vector": { "type": "string" },
+        "goal": { "type": "string" },
+        "analysis": { "type": "string" },
+        "decision": { "type": "string" },
+        "labels": {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        },
+        "depth": { "type": "integer", "minimum": 0 },
+        "x": { "type": "integer", "minimum": 0 },
+        "y": { "type": "integer", "minimum": 0 },
+        "width": { "type": "integer", "minimum": 0 },
+        "height": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "l2LayoutEdge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "to", "type", "fromNode", "toNode", "inLane", "inLaneCount"],
+      "properties": {
+        "from": { "type": "string", "minLength": 1 },
+        "to": { "type": "string", "minLength": 1 },
+        "type": {
+          "type": "string",
+          "enum": ["defines", "implements", "uses", "relates_file", "hosts_onebase", "onebase_posting"]
+        },
+        "fromNode": { "$ref": "#/$defs/l2LayoutNode" },
+        "toNode": { "$ref": "#/$defs/l2LayoutNode" },
+        "inLane": { "type": "integer", "minimum": 0 },
+        "inLaneCount": { "type": "integer", "minimum": 1 }
+      }
+    }
+  }
+}

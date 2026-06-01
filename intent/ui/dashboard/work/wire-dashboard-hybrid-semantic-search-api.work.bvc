@@ -1,0 +1,50 @@
+#Задача_wire_dashboard_hybrid_semantic_search_api<[
+Базис:
+  MCP semantic_search поддерживает hybrid; GET /api/semantic-search — только lexical.
+  Задача «Фаза 9: hybrid semantic search в API dashboard» относится к контуру Work Graph rebuild и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: implement-semantic-search-hybrid-llm-retrieval.
+Вектор:
+  Async hybrid mode в UI server + переключатель mode в search box.
+  Ближайший шаг исполнения: закрыто.
+Цель:
+  Поиск оператора = MCP hybrid-lexical-bm25-v1.
+  Готово, когда выполнены проверки: API ?mode=hybrid-lexical-bm25-v1 → BM25 hits.
+Анализ:
+  Целесообразность:
+  Стоит завести «Фаза 9: hybrid semantic search в API dashboard» в бэклог.
+  Контекст и границы:
+  Async hybrid mode в UI server + переключатель mode в search box.
+  Зависимости и готовность:
+  depends_on=implement-semantic-search-hybrid-llm-retrieval; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Поиск оператора = MCP hybrid-lexical-bm25-v1.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:37.805Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:37.813Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: implement-semantic-search-hybrid-llm-retrieval
+  work.id: wire-dashboard-hybrid-semantic-search-api
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: frontend_architect
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: medium
+  work.status: done
+  work.target_files: src/semanticSearchWorkflow.mjs, src/workGraphBacklogUiServer.mjs
+  work.title: Фаза 9: hybrid semantic search в API dashboard
+]>
+

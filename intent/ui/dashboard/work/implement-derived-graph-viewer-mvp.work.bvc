@@ -1,0 +1,50 @@
+#Задача_implement_derived_graph_viewer_mvp<[
+Базис:
+  Дизайн derived graph viewer завершён и явно отклоняет ручной редактор графа как основной путь.
+  Существующий UI-сервер уже отдаёт небольшую поверхность в стиле backlog/dashboard без зависимостей из Work Graph snapshots.
+Вектор:
+  Реализовать маленькое представление графа только для чтения или adjacency explorer, полученное из workgraph.snapshot.v1 и optional operator-dashboard.snapshot.v1.
+  Включить рёбра зависимостей WorkItem, ноды target files, legacy evidence nodes, базовые фильтры, focused task view и возможности открыть задачу/файл.
+  Сохранять состояние графа одноразовым: без ручного создания нод, без persisted layout и без зависимости от React Flow-like editor.
+Цель:
+  Operator может открыть первый derived graph view из локального UI и посмотреть связи task/file/evidence без редактирования состояния графа.
+Анализ:
+  Целесообразность:
+  Стоит завести «реализовать MVP derived graph viewer» в бэклог.
+  Контекст и границы:
+  Реализовать маленькое представление графа только для чтения или adjacency explorer, полученное из workgraph.snapshot.v1 и optional operator-dashboard.snapshot.v1.
+  Зависимости и готовность:
+  depends_on=design-derived-graph-viewer; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Operator может открыть первый derived graph view из локального UI и посмотреть связи task/file/evidence без редактирования состояния графа.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441033
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:36.650Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:36.659Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: design-derived-graph-viewer
+  work.id: implement-derived-graph-viewer-mvp
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: feature_engineer
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: src/workGraphBacklogUiServer.mjs, tests/workGraphBacklogUiServer.test.mjs, ui/derived-graph-viewer.bvc, work/backlog.bvc
+  work.title: реализовать MVP derived graph viewer
+]>
+

@@ -1,0 +1,60 @@
+#Задача_migrate_repo_step_files_to_bvc_bulk<[
+Базис:
+  docs/plan-step-to-bvc-migration.md фаза 3: bulk rename после dual-read и new-write MVP.
+  AN-36: architecture/main.bvc — первый новый canon; остальные protocols/charter/rules ещё .bvc.
+  Публичный canon = BVC + .bvc (charter canon.public_format); .bvc — legacy read-only.
+Вектор:
+  Инвентарь всех *.bvc в repo (charter/, protocols/, rules/, intent legacy, plans/).
+  npm run migrate:step-to-bvc -- --dry-run, затем phased PR: protocols → charter → rules → residual work.bvc.
+  Обновить ссылки: intent/index.bvc, target_files, MCP prompts, тесты, CI bvc lint.
+  Deprecation warning в parser для .bvc (не error до v2).
+Цель:
+  Work Graph repo: новые и канонические артефакты на .bvc; .bvc только где явно legacy до v2.
+Проверки:
+  migrate:step-to-bvc dry-run без неожиданных путей
+  charter + protocols + architecture canon на .bvc
+  npm test + bvc lint green после phased apply
+  plan-step-to-bvc-migration.md фаза 3 отмечена
+Анализ:
+  Целесообразность:
+  Стоит завести «Bulk migration: все legacy .bvc → .bvc (charter, protocols, rules, work)» в бэклог — по материалам AN-36 (work/analytics/architecture-main-bvc-canon-hub.md).
+  Контекст и границы:
+  Инвентарь всех *.bvc в repo (charter/, protocols/, rules/, intent legacy, plans/).
+  Зависимости и готовность:
+  depends_on=epic-architecture-main-bvc-canon, author-architecture-main-bvc-v1, implement-parser-dual-extension-step-bvc; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Work Graph repo: новые и канонические артефакты на .bvc; .bvc только где явно legacy до v2.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-36 (work/analytics/architecture-main-bvc-canon-hub.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-36
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/architecture-main-bvc-canon-hub.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T21:36:02.781Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T21:36:02.781Z
+  work.decision.verdict: useful
+  work.department: system-runtime
+  work.depends_on: epic-architecture-main-bvc-canon, author-architecture-main-bvc-v1, implement-parser-dual-extension-step-bvc
+  work.id: migrate-repo-step-files-to-bvc-bulk
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: integration_architect
+  work.parent_id: epic-architecture-main-bvc-canon
+  work.pipeline_stage: closed
+  work.priority: medium
+  work.risk: high
+  work.status: done
+  work.target_files: docs/plan-step-to-bvc-migration.md, scripts/migrate-step-to-bvc.mjs, charter/main.bvc, protocols/, rules/, architecture/main.bvc, intent/index.bvc, package.json, work/analytics/architecture-main-bvc-canon-hub.md
+  work.title: Bulk migration: все legacy .bvc → .bvc (charter, protocols, rules, work)
+]>

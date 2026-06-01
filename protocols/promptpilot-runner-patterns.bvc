@@ -1,0 +1,102 @@
+#Референс_PromptPilot_Runner_Patterns<[
+Базис:
+  PromptPilot is a practical runner layer for AI CLI tools: interfaces enqueue work, a worker polls a SQLite/WAL queue, providers map to command templates, and results are visible in web or Telegram UI.
+  Work Graph already has a stronger source-of-truth model: WorkItem state, Worker Input/Output v1, Evidence v1 and policy-gated transitions.
+  Therefore PromptPilot is a reference for runner mechanics, not a replacement state model.
+Вектор:
+  Adopt queue/worker separation as an implementation boundary: UI, scheduler and integrations propose runnable work, while a worker performs one bounded run and returns structured output.
+  Keep provider registry ideas: provider id, command/API capability, model/options, timeout, cost/log extraction and capability flags, but map them into providerHints and selection policy rather than task state.
+  Adopt scheduling, pause/resume, retry and rate-limit handling as runner concerns: nextRunAt, retryCount, exponential backoff with jitter, timeout and crash recovery produce worker-run/blocker evidence.
+  Treat task result UI as an operator dashboard pattern: show status, run summary, logs, provider, cost/tokens when available, artifacts, evidence and proposed transition.
+  Consider SQLite/WAL only as a derived runner queue/cache for runnable projections and durable run logs; .bvc Work Graph remains canonical.
+Цель:
+  Work Graph runner layer should gain practical scheduling and provider execution mechanics without becoming a prompt queue whose database owns project truth.
+
+Метки:
+  atom.profile: architecture_decision
+  decision.id: promptpilot-runner-patterns
+  work.source: analyze-promptpilot-task-runner-reference
+  trace.status: verified
+]>
+
+#Паттерны_Взять<[
+Базис:
+  PromptPilot separates interfaces, queue, worker and providers clearly enough to keep runner operations observable.
+Вектор:
+  Queue/worker separation: use a small runner queue only for executable WorkItem projections, not for authoring or deciding Work Graph state.
+  Provider registry: record provider command/API adapter, capabilities, model/options, timeout, structured log support and rate-limit detection.
+  Scheduling: support run-after time, recurring task proposals and worker pause/resume as runtime controls.
+  Retry/rate-limit: detect known rate-limit failures, compute exponential backoff with jitter, cap retries and record retry evidence before requeue.
+  Crash recovery: recover abandoned running projections to retryable state with evidence that the previous run was interrupted.
+  Result UI: surface provider, run duration, cost/tokens if available, logs, artifacts, patch summary and transition proposal.
+  Optional integrations: Telegram, tray and notifications are useful operator channels but should remain adapters above the runner core.
+Цель:
+  Reuse PromptPilot's operational lessons while keeping Work Graph contracts provider-neutral and evidence-first.
+
+Метки:
+  atom.profile: trace
+  reference.id: promptpilot-patterns-to-adopt
+  decision.id: promptpilot-runner-patterns
+  trace.status: verified
+]>
+
+#Паттерны_Не_Брать_Или_Отложить<[
+Базис:
+  PromptPilot optimizes for prompt execution through external CLI tools, while Work Graph optimizes for project state, evidence and decisions.
+Вектор:
+  Do not make the queue or SQLite database the source of truth for tasks; it is only a derived dispatch/log layer.
+  Do not model WorkItems as prompt-only records; WorkItem keeps role, dependencies, target files, DoD, evidence, trace refs and transition policy.
+  Do not store provider-specific session state as business state; session_id/resume tokens are transient run metadata and must not be required to understand project status.
+  Defer Telegram, tray, mobile reply flows, recurring tasks and cost dashboard until runner core and operator dashboard snapshot exist.
+  Defer provider-specific skill discovery until provider registry capabilities need it; it must not leak Claude-only concepts into Worker Input v1.
+  Avoid unsafe skip-permissions style controls as defaults; Work Graph policy remains deny-by-default with explicit tool/network/file-write capabilities.
+Цель:
+  Prevent a useful runner reference from weakening Work Graph's canonical state, safety and evidence boundaries.
+
+Метки:
+  atom.profile: prompt_rule
+  rule.id: promptpilot-patterns-deferred-or-rejected
+  decision.id: promptpilot-runner-patterns
+  trace.status: verified
+]>
+
+#Маппинг_WorkGraph_Runner_Layer<[
+Базис:
+  Existing contracts already define Worker Input v1, Worker Output v1 and Evidence Record v1.
+Вектор:
+  WorkItem -> runnable projection: scheduler selects a ready/in_progress task from current Work Graph snapshot and creates a runner queue item with task id, runId, nextRunAt, provider requirements and policy hash.
+  Runnable projection -> Worker Input: runtime rebuilds task snapshot, memorySlice, allowedTools, targetFiles, policy and providerHints from canonical state immediately before execution.
+  Provider run: selected provider adapter executes CLI/API/local runner with bounded timeout, cancellation and tool policy.
+  Provider result -> Worker Output: adapter returns status, patchSummary, evidence array, logs, failureReason, retryAdvice and transitionRequest.
+  Worker Output -> Evidence: runtime normalizes worker-run, command/test/file/change/blocker records using Evidence v1 fields.
+  Evidence -> transition proposal: Work Graph runtime applies gates; success can move to verify/done, rate-limit can schedule retry, repeated failure can block, and needs_human can request operator input.
+  Dashboard snapshot: UI reads Work Graph and runner log projection to show current run, queue, evidence, retry state and proposed next action.
+Цель:
+  The runner becomes an execution projection around Work Graph, not an independent task manager.
+
+Метки:
+  atom.profile: trace
+  contract.id: promptpilot-workgraph-runner-mapping
+  decision.id: promptpilot-runner-patterns
+  trace.status: verified
+]>
+
+#MVP_Recommendation_And_Deferrals<[
+Базис:
+  The current local runner proves Worker Input/Output shape but does not yet cover durable scheduling, retry or provider registry.
+Вектор:
+  MVP next step: add a minimal runner registry/config shape with provider id, type, command/API adapter, capabilities, timeout and rate-limit classifier.
+  MVP next step: add a derived runner log or queue projection with runId, taskId, providerId, status, nextRunAt, retryCount, startedAt, finishedAt and evidence ids.
+  MVP next step: implement retry/rate-limit evidence semantics before adding remote channels.
+  MVP next step: feed runner records into operator dashboard snapshot rather than building a separate PromptPilot-like task UI.
+  Deferred: Telegram bot, tray exe, mobile reply/resume flow, recurring tasks, cost aggregation and provider skill discovery.
+  Deferred storage choice: SQLite/WAL is attractive for local durable queue/logs, but choose it only after serialization/runtime substrate decisions confirm it as a derived cache.
+Цель:
+  Ship scheduling and provider execution reliability first; add operator conveniences after Work Graph remains visibly in control.
+
+Метки:
+  atom.profile: architecture_decision
+  decision.id: promptpilot-runner-mvp-scope
+  work.source: analyze-promptpilot-task-runner-reference
+  trace.status: verified
+]>

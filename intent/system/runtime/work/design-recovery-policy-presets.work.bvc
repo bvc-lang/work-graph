@@ -1,0 +1,51 @@
+#Задача_design_recovery_policy_presets<[
+Базис:
+  Большому автономному бэклог нужна recovery semantics для retry, blocker и human escalation.
+  Задача «спроектировать recovery policy presets» относится к контуру Work Graph rebuild и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: phase-2-workgraph-os-daemon.
+Вектор:
+  Определить recovery presets для failed worker output, repeated failure, missing dependency и verification failure.
+  Ближайший шаг исполнения: спроектировать приём черновиков в бэклог.
+Цель:
+  WorkGraph OS может продолжать работу без silent loops.
+  Готово, когда выполнены проверки: transitions retry/block/escalate определены.
+Анализ:
+  Целесообразность:
+  Стоит завести «спроектировать recovery policy presets» в бэклог.
+  Контекст и границы:
+  Определить recovery presets для failed worker output, repeated failure, missing dependency и verification failure.
+  Зависимости и готовность:
+  depends_on=phase-2-workgraph-os-daemon; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  WorkGraph OS может продолжать работу без silent loops.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441065
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:36.145Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:36.156Z
+  work.decision.verdict: useful
+  work.department: qa
+  work.depends_on: phase-2-workgraph-os-daemon
+  work.id: design-recovery-policy-presets
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: qa_architect
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: high
+  work.status: done
+  work.target_files: protocols/workgraph-recovery-policy-presets.bvc, src/workGraphRecoveryPolicy.mjs, tests/workGraphRecoveryPolicy.test.mjs, work/backlog.bvc
+  work.title: спроектировать recovery policy presets
+]>
+

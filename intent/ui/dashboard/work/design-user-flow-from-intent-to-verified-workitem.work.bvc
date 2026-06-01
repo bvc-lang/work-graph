@@ -1,0 +1,49 @@
+#Задача_design_user_flow_from_intent_to_verified_workitem<[
+Базис:
+  В системе уже есть отдельные части: бэклог, Atom Inspector, Agent Run, Evidence, Memory, но нет одного описанного пользовательского сценария от замысла до verified результата.
+  Стратегический разбор показал, что удобство продукта зависит от связки этих частей в один flow.
+Вектор:
+  Описать product flow: Замысел → черновик → бэклог → ready → Agent Run → verification → done/verified → MemoryRecord.
+  Зафиксировать состояния UI, ошибки, точки ручного review и какие данные переходят между разделами.
+Цель:
+  Команда получает продуктовую карту, по которой можно довести dashboard до удобного ежедневного workflow.
+Анализ:
+  Целесообразность:
+  Стоит завести «описать flow от замысла до verified WorkItem» в бэклог.
+  Контекст и границы:
+  Описать product flow: Замысел → черновик → бэклог → ready → Agent Run → verification → done/verified → MemoryRecord.
+  Зависимости и готовность:
+  depends_on=design-intent-composer-chat-contract, design-operator-agent-run-panel, design-operator-memory-panel-mvp; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Команда получает продуктовую карту, по которой можно довести dashboard до удобного ежедневного workflow.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441128
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:36.255Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:36.262Z
+  work.decision.verdict: useful
+  work.department: ui-dashboard
+  work.depends_on: design-intent-composer-chat-contract, design-operator-memory-panel-mvp, design-operator-agent-run-panel
+  work.id: design-user-flow-from-intent-to-verified-workitem
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: product_architect
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: docs/plan-workgraph-intent-to-verified-flow.md, work/backlog.bvc
+  work.title: описать flow от замысла до verified WorkItem
+]>
+

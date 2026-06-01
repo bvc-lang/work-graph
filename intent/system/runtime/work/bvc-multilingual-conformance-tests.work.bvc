@@ -1,0 +1,60 @@
+#Задача_bvc_multilingual_conformance_tests<[
+Базис:
+  Источник: analytics:bvc-multilingual-keys-design §7 — conformance suite дублируется для EN и RU.
+  AN-8 §6 #6 conformance tests — часть артефактного набора.
+Вектор:
+  tests/conformance/*.en.bvc и *.ru.bvc с expected AST JSON.
+  Round-trip test: parse → format → parse identical dialect.
+  CI gate в npm test или lint:backlog hook.
+Цель:
+  Регрессии multilingual ловятся автоматически.
+Анализ:
+  Целесообразность:
+  Стоит завести «conformance: EN/RU .bvc → identical AST + dialect preserve» в бэклог — по материалам AN-19 (analytics:bvc-multilingual-keys-design).
+  Контекст и границы:
+  tests/conformance/*.en.bvc и *.ru.bvc с expected AST JSON.
+  Зависимости и готовность:
+  depends_on=implement-parser-detect-or-declare; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Регрессии multilingual ловятся автоматически.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-19 (analytics:bvc-multilingual-keys-design); исполнять после вердикта «полезно» и готовности зависимостей.
+Проверки:
+  ≥2 EN и ≥2 RU conformance fixtures green
+  dialect-preserve round-trip test green
+
+Свидетельства:
+  - tests/conformance/*.bvc + tests/bvcConformance.test.mjs — 4 кейса pass
+  - EN/RU identical AST + dialect round-trip
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-19
+  intake.source_kind: analytics-record
+  intake.source_ref: analytics:bvc-multilingual-keys-design
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T08:11:06.111Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T08:11:06.111Z
+  work.decision.verdict: useful
+  work.department: architecture
+  work.depends_on: implement-parser-detect-or-declare
+  work.id: bvc-multilingual-conformance-tests
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: frontend_architect
+  work.parent_id: bvc-multilingual-detect-or-declare
+  work.pipeline_stage: closed
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: tests/conformance/, docs/adr-bvc-multilingual-keys.md
+  work.title: conformance: EN/RU .bvc → identical AST + dialect preserve
+]>

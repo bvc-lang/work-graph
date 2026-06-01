@@ -1,0 +1,64 @@
+#Задача_wire_roadmap_canvas_epic_grouping_rollup<[
+Базис:
+  Источник: analytics:pipeline-analysis-to-board (AN-22) §6 T5; AN-20 ux-current-state-and-vector (mission-control vector).
+  Intent Roadmap Canvas (src/intentRoadmapCanvas.mjs, src/intentRoadmapProjection.mjs) уже умеет рендерить интерактивную dagre-схему, но эпики в нём не выделены как сворачиваемая группа, и нет rollup «N/M детей closed» на узле эпика. Сейчас оператор не видит «карту эпиков», только граф intent.
+Вектор:
+  Расширить intentRoadmapProjection: для каждого work item с work.item_kind=epic собирать derived children по work.parent_id и считать rollup (closed/total, in_progress/total).
+  В intentRoadmapCanvas: рисовать узел эпика как контейнер с badge прогресса (N/M); по клику expand/collapse подзадач; visual differentiator для closed/ready/blocked эпиков.
+  В workGraphBacklogUiServer: новый endpoint /api/roadmap/epics возвращает projection с rollup; UI читает оттуда.
+Цель:
+  В Intent Roadmap Canvas видна карта эпиков с прогрессом подзадач — без новой вкладки и без новой страницы.
+Анализ:
+  Целесообразность:
+  Без epic grouping дорожная карта читается как плоский граф; оператор не видит «что прогрессирует». AN-20 явно требует mission-control vector.
+  Контекст и границы:
+  Только UI-расширение существующего canvas; не вводится новая вкладка и не меняется data store. Rollup только display-only (без жёсткого gate «эпик done только когда все дети done» — это уровень canon в T1).
+  Зависимости и готовность:
+  Зависит от T1 (canon описывает item_kind=epic как первый класс) и от T3 (rollup корректен только при валидных гейтах). Без T3 можно показывать наивный rollup как warning.
+  Риски и альтернативы:
+  Риск перегрузки визуала. Закрывается фильтрами «только эпики», «только active», «только с детьми».
+  Критерии успеха:
+  Узел эпика в canvas виден как контейнер с badge «N/M closed»; expand/collapse работает; новый endpoint покрыт тестом intentRoadmapEpicProjection.test.mjs; e2e сценарий в playwright проходит на фикстуре с одним эпиком и тремя подзадачами.
+  Рекомендация для решения:
+  Полезно — поднимает видимость эпиков на доске без новой UI поверхности.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-22; стартует после T1 и T3 (или ранний draft параллельно с T1).
+Проверки:
+  tests/intentRoadmapEpicProjection.test.mjs покрывает rollup для эпика с разными статусами детей
+  e2e: открыть intent roadmap, увидеть epic-узел epic-decision-pipeline-canonization с rollup 0/5, кликнуть expand, увидеть T1..T5
+  visual diff: closed эпик отличается от ready/blocked
+
+Свидетельства:
+  - src/intentRoadmapEpicProjection.mjs: buildEpicRoadmapProjection с rollup closed/total/inProgress/blocked
+  - GET /api/roadmap/epics?collapsed=&active=1&withChildren=1
+  - intentRoadmapCanvas: kind work_epic, buildEpicRoadmapCanvasModel, collapse через collapsedEpicIds
+  - UI «Граф намерений»: секция Эпики с badge N/M closed и toggle свернуть/развернуть
+  - tests/intentRoadmapEpicProjection.test.mjs — 6 кейсов, все pass
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-22
+  intake.source_kind: analytics-record
+  intake.source_ref: analytics:pipeline-analysis-to-board
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T09:59:00.000Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T09:59:00.000Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: document-decision-pipeline-canon, implement-pipeline-stage-dor-dod-gates
+  work.id: wire-roadmap-canvas-epic-grouping-rollup
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: frontend_engineer
+  work.parent_id: epic-decision-pipeline-canonization
+  work.pipeline_stage: closed
+  work.priority: medium
+  work.risk: medium
+  work.status: done
+  work.target_files: src/intentRoadmapProjection.mjs, src/intentRoadmapCanvas.mjs, src/workGraphBacklogUiServer.mjs, tests/intentRoadmapEpicProjection.test.mjs, e2e/intent-roadmap-epic-grouping.spec.mjs
+  work.title: epic grouping и rollup N/M в Intent Roadmap Canvas
+]>

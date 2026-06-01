@@ -1,0 +1,51 @@
+#Задача_design_agent_state_machine<[
+Базис:
+  Старый agent orchestrator богатый, но монолитный.
+  Задача «спроектировать машину состояний агента» относится к контуру платформы агента и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: define-workitem-v1.
+Вектор:
+  Описать состояния: observe, plan, claim, act, verify, record, stop.
+  Описать tool policy отдельно от LLM transport.
+  Описать контекст: Work Graph task, memory slice, trace evidence, file facts.
+Цель:
+  Получить agent loop, который выполняет Work Graph task без накопления эвристик в одном файле.
+Анализ:
+  Целесообразность:
+  Стоит завести «спроектировать машину состояний агента» в бэклог.
+  Контекст и границы:
+  Описать состояния: observe, plan, claim, act, verify, record, stop.
+  Зависимости и готовность:
+  depends_on=define-workitem-v1; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Получить agent loop, который выполняет Work Graph task без накопления эвристик в одном файле.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441003
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:35.805Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:35.815Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: define-workitem-v1
+  work.id: design-agent-state-machine
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: agent_platform_architect
+  work.pipeline_stage: decided
+  work.priority: critical
+  work.risk: high
+  work.status: done
+  work.target_files: protocols/agent-state-machine-v1.bvc, src/goldenPath.mjs
+  work.title: спроектировать машину состояний агента
+]>
+

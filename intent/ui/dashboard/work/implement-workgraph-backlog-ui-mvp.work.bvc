@@ -1,0 +1,49 @@
+#Задача_implement_workgraph_backlog_ui_mvp<[
+Базис:
+  Пользователю нужен локально открываемый экран Work Graph бэклог без OneBase и без тяжёлого UI-фреймворка.
+  work/backlog.bvc остаётся источник истины, а JSON snapshot v1 является derived interchange для UI.
+Вектор:
+  Реализовать маленький Node HTTP-сервер, который читает work/backlog.bvc через parseWorkItems/buildSnapshot.
+  Отдать /api/snapshot и тёмную страницу только для чтения со статусами, карточками задач и поиском.
+Цель:
+  Пользователь может запустить локальный backlog/status board и увидеть текущее состояние задач Work Graph.
+Анализ:
+  Целесообразность:
+  Стоит завести «реализовать MVP UI доски backlog/status» в бэклог.
+  Контекст и границы:
+  Реализовать маленький Node HTTP-сервер, который читает work/backlog.bvc через parseWorkItems/buildSnapshot.
+  Зависимости и готовность:
+  depends_on=design-workgraph-backlog-ui; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Пользователь может запустить локальный backlog/status board и увидеть текущее состояние задач Work Graph.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441027
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:37.215Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:37.222Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: design-workgraph-backlog-ui
+  work.id: implement-workgraph-backlog-ui-mvp
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: feature_engineer
+  work.pipeline_stage: decided
+  work.priority: critical
+  work.risk: medium
+  work.status: done
+  work.target_files: src/workGraphBacklogUiServer.mjs, tests/workGraphBacklogUiServer.test.mjs, package.json, work/backlog.bvc
+  work.title: реализовать MVP UI доски backlog/status
+]>
+

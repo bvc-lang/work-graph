@@ -1,0 +1,56 @@
+#Задача_refactor_run_ui_mcp_from_node_modules<[
+Базис:
+  backlog:ui и MCP handlers сейчас assume monorepo cwd или engineRoot.
+  После npm install движок и ui-server должны стартовать из установленных пакетов.
+Вектор:
+  work-graph ui → resolve runtime + ui-server paths from node_modules.
+  Bundling MVP или отдельный @work-graph/runtime publish.
+  doctor проверяет node_modules, не только config paths.
+Цель:
+  npm run workgraph:ui поднимает backlog UI без внешнего clone.
+Проверки:
+  Проект с только devDeps WG поднимает UI на 4177
+  doctor pass на npm-first install
+Анализ:
+  Зачем:
+  backlog:ui и MCP handlers сейчас assume monorepo cwd или engineRoot.
+  Контекст: После npm install движок и ui-server должны стартовать из установленных пакетов.
+  Когда:
+  После готовности: epic-work-graph-npm-first-distribution, implement-engine-root-resolver-npm-first, refactor-init-npm-devdependencies.
+  Готово, когда:
+  npm run workgraph:ui поднимает backlog UI без внешнего clone.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: epic-work-graph-npm-first-distribution, implement-engine-root-resolver-npm-first, refactor-init-npm-devdependencies.
+
+Свидетельства:
+  - resolveEngineRoot + vendor layout
+  - run-ui.mjs / run-mcp.mjs npm-first
+  - workGraphInstallLayout asset paths
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-43
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-npm-first-distribution.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-01T16:48:00.484Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-01T16:48:00.484Z
+  work.decision.verdict: useful
+  work.department: engineering
+  work.depends_on: epic-work-graph-npm-first-distribution, implement-engine-root-resolver-npm-first, refactor-init-npm-devdependencies
+  work.id: refactor-run-ui-mcp-from-node-modules
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: backend_engineer
+  work.parent_id: epic-work-graph-npm-first-distribution
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: packages/work-graph-cli/, src/workGraphBacklogUiServer.mjs, src/workGraphProjectInit.mjs
+  work.title: run-ui / run-mcp: запуск из node_modules пакетов
+]>

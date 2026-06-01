@@ -1,0 +1,14 @@
+#Compiler_Sample_Roundtrip<[
+Базис:
+  Fixture compiler-mode step for Work Graph round-trip CLI.
+Вектор:
+  bracket: (define sample 1)
+Цель:
+  Verify format(parse(format(draft))) stability.
+
+Метки:
+  atom.profile: compiler
+  compiler.mode: roundtrip
+  work.id: fixture-compiler-roundtrip
+  trace.status: verified
+]>

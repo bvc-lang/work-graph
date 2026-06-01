@@ -1,0 +1,57 @@
+#Задача_epic_work_graph_open_publication<[
+Базис:
+  Разбор AN-42: в эпоху LLM защита через секретность алгоритмов не работает — код и prompts быстро копируются.
+  Публиковать проект нужно как open core: открытые форматы и reference implementations, коммерческая ценность — в packs и сервисе.
+  BVC — единственный универсальный человекочитаемый формат; IR и PVRG — машинные спецификации второго уровня.
+Вектор:
+  Принять ADR по лицензиям: CC BY 4.0 для specs, Apache-2.0 для core code, commercial для domain packs.
+  Разметить репозиторий и пакеты на public / private / experimental.
+  Опубликовать draft specs и лицензии для BVC, IR/RichIR, PVRG.
+  Разделить Work Graph core и коммерческие packs; оформить trademark/conformance policy.
+  Legal hygiene, CI guard npm pack, закрытие разбора AN-42.
+Цель:
+  Work Graph готов к публичному релизу: понятно что открыто, под какой лицензией, что продаётся отдельно, и как защищён бренд.
+Проверки:
+  ADR open publication принят и ссылается на AN-42
+  У BVC, IR и PVRG есть draft spec и лицензии на reference code
+  Core и commercial packs разделены; trademark/conformance policy опубликована
+  CI не пускает private paths в npm pack; разбор AN-42 закрыт итоговой записью
+Анализ:
+  Зачем:
+  Без явной лицензионной стратегии публикация либо отдаст всё конкурентам без moat, либо убьёт доверие к форматам.
+  Границы:
+  Юридические решения по патентам — отдельный review с специалистом; в эпике — документирование решения, не юридическая услуга.
+  Зависимости:
+  Связано с AN-8 (BVC), AN-9 (IR), AN-10 (PVRG), AN-16 (стек технологий).
+Решение:
+  Вердикт:
+  полезно
+  Исполнять по плану docs/plan-work-graph-open-publication.md после ADR.
+
+Свидетельства:
+  - AN-42 open publication strategy implemented
+  - closing doc published
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-42
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/open-publication-technology-holdback-strategy.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-01T14:37:53.753Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-01T14:37:53.753Z
+  work.decision.verdict: useful
+  work.department: product-architecture
+  work.id: epic-work-graph-open-publication
+  work.item_kind: epic
+  work.next_action: —
+  work.owner_role: system_architect
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: work/analytics/open-publication-technology-holdback-strategy.md, docs/plan-work-graph-open-publication.md, docs/adr-work-graph-open-publication.md, packages/bvc-spec/, packages/bvc-cli/, PUBLIC_API.md
+  work.title: Публикация Work Graph: лицензии, открытые форматы и open core (AN-42)
+]>

@@ -1,0 +1,57 @@
+#Задача_align_intent_hierarchy_domain_labels<[
+Базис:
+  «Домен OneBase» vs «Домены › OneBase» — единый словарь в intent tree и architecture UI.
+Вектор:
+  src/intentHierarchy.mjs: domain/onebase, domain/marketplace labels.
+  Optional prefix «Домены ›» только в architecture view, не ломая intent sidebar.
+Цель:
+  Нет противоречивых подписей между intent roadmap и architecture list.
+Проверки:
+  intent tree label для marketplace согласован
+  lint:intent-tree green
+Анализ:
+  Целесообразность:
+  Стоит завести «intentHierarchy: labels согласованы с architecture domain titles» в бэклог — по материалам AN-39 (work/analytics/architecture-domains-l1-hierarchy.md).
+  Контекст и границы:
+  src/intentHierarchy.mjs: domain/onebase, domain/marketplace labels.
+  Зависимости и готовность:
+  depends_on=epic-architecture-domains-l1-hierarchy, update-architecture-main-bvc-domains-structure; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Нет противоречивых подписей между intent roadmap и architecture list.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-39 (work/analytics/architecture-domains-l1-hierarchy.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-39
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/architecture-domains-l1-hierarchy.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-01T08:36:55.132Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-01T08:36:55.132Z
+  work.decision.verdict: useful
+  work.department: product-architecture
+  work.depends_on: epic-architecture-domains-l1-hierarchy, update-architecture-main-bvc-domains-structure
+  work.id: align-intent-hierarchy-domain-labels
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: system_architect
+  work.parent_id: epic-architecture-domains-l1-hierarchy
+  work.pipeline_stage: decided
+  work.priority: low
+  work.risk: low
+  work.status: done
+  work.target_files: src/intentHierarchy.mjs, tests/intentHierarchy.test.mjs, work/analytics/architecture-domains-l1-hierarchy.md
+  work.title: intentHierarchy: labels согласованы с architecture domain titles
+
+Свидетельства:
+  - cascade: reconcile epic epic-architecture-domains-l1-hierarchy already done
+]>

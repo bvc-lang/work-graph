@@ -1,0 +1,24 @@
+#Протокол_Prompt_Eval_WorkGraph_Flows_V1<[
+Базис:
+  ioHasC имеет prompt eval и E2E agent matrix; Work Graph rebuild нужны deterministic fixtures до real LLM rollout.
+  Golden path и live-loop уже покрывают success/deny paths в Vitest; prompt eval фиксирует LLM-facing failure modes отдельно.
+Вектор:
+  Mandatory Tier A (no LLM): claimNext empty queue, policy denial, trace gate block, blocked evidence format — уже в tests/*.test.mjs.
+  Optional Tier B (LLM): fixtures prompt-eval-workgraph-flows.v1:
+  - claim-no-eligible: model must stop without inventing task
+  - loop-hint-repeat: same tool args → LOOP_HINT behavior (defer port from ioHasC)
+  - trace-gate-failure: done without evidence → policy error text
+  - blocked-onebase-go: preflight go version fails → blocked evidence not failed verify
+  - worker-output-verify: dry-run success → verify transition proposal
+  Each fixture: input snapshot excerpt, allowed tools, expected observation keywords, failureClass (model_failure|code_failure|env_blocker).
+Цель:
+  LLM regressions в Work Graph flows измеримы; optional eval не блокирует npm run test:deterministic.
+
+Метки:
+  atom.profile: prompt_rule
+  protocol.id: prompt-eval-workgraph-flows-v1
+  work.source: design-prompt-eval-workgraph-flows
+  migration.source_repo: ../project
+  migration.source_paths: e2e/agent-scenarios/agent-matrix.json, docs/plan-agent-testing.md
+  trace.status: verified
+]>

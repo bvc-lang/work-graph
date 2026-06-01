@@ -1,0 +1,61 @@
+#Задача_implement_lit_flow_custom_node_cards<[
+Базис:
+  Источник: analytics:graph-visualization-engine (AN-4).
+  Карточки должны сохранить тёмную тему Cursor и data-* атрибуты для drawer routing.
+Вектор:
+  Lit components: GraphBlockNode, GraphIntentNode, GraphWorkNode — CSS из --cursor-* / intent-canvas-node.
+  node-click → CustomEvent с nodeId, kind, taskId/intentId/blockId.
+  Selected / rejected / done states как в текущем canvas.
+Цель:
+  Клик по карточке на lit-flow canvas открывает тот же drawer, что и сейчас.
+Анализ:
+  Целесообразность:
+  Стоит завести «реализовать custom Lit-узлы (карточки architecture / intent / work)» в бэклог — по материалам AN-4 (analytics:graph-visualization-engine).
+  Контекст и границы:
+  Lit components: GraphBlockNode, GraphIntentNode, GraphWorkNode — CSS из --cursor-* / intent-canvas-node.
+  Зависимости и готовность:
+  depends_on=implement-lit-flow-package-and-build; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Клик по карточке на lit-flow canvas открывает тот же drawer, что и сейчас.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-4 (analytics:graph-visualization-engine); исполнять после вердикта «полезно» и готовности зависимостей.
+Проверки:
+  unit test на node template render
+  e2e или manual: click work node → task drawer
+
+Свидетельства:
+  - protocols/graph-canvas-lit-flow-v1.bvc + schemas/graph-canvas-lit-flow-projection.v1.json
+  - public/graph-canvas-lit-flow.js (lit-flow client island)
+  - src/graphCanvasLitFlow/* + tests/graphCanvasLitFlow.test.mjs
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-4
+  intake.source_kind: analytics-record
+  intake.source_ref: analytics:graph-visualization-engine
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T19:39:18.333Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-30T19:39:18.333Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: implement-lit-flow-package-and-build
+  work.id: implement-lit-flow-custom-node-cards
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.parent_id: implement-lit-flow-graph-canvas-v1
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: src/graphCanvasLitFlow/nodes/, src/workGraphBacklogUiServer.mjs, src/style.css
+  work.title: реализовать custom Lit-узлы (карточки architecture / intent / work)
+]>

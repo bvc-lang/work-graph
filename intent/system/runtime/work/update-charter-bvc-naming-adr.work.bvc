@@ -1,0 +1,58 @@
+#Задача_update_charter_bvc_naming_adr<[
+Базис:
+  ADR docs/adr-bvc-format-naming.md принят; charter должен отражать naming для всех агентов.
+Вектор:
+  Блок Метки или Паспорт: public_canon_format: bvc, extension: .bvc.
+  Ссылка на ADR и AN-18 в relatedFiles / basis.
+  .bvc остаётся internal legacy — явно указать.
+Цель:
+  Charter — source of truth для naming; агент не продвигает .bvc наружу.
+Анализ:
+  Целесообразность:
+  Стоит завести «charter/main.bvc: public format BVC .bvc + ссылка на ADR» в бэклог — по материалам AN-18 (analytics:bvc-naming-branding-review).
+  Контекст и границы:
+  Блок Метки или Паспорт: public_canon_format: bvc, extension: .bvc.
+  Зависимости и готовность:
+  depends_on=reserve-bvc-spec-npm-package; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Charter — source of truth для naming; агент не продвигает .bvc наружу.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-18 (analytics:bvc-naming-branding-review); исполнять после вердикта «полезно» и готовности зависимостей.
+Проверки:
+  charter/main.bvc содержит bvc и ссылку на adr-bvc-format-naming.md
+  npm run lint:backlog green
+
+Свидетельства:
+  - charter/main.bvc: canon.public_format=bvc, canon.public_extension=.bvc, adr links
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-18
+  intake.source_kind: analytics-record
+  intake.source_ref: analytics:bvc-naming-branding-review
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T07:43:54.423Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T07:43:54.423Z
+  work.decision.verdict: useful
+  work.department: product
+  work.depends_on: reserve-bvc-spec-npm-package
+  work.id: update-charter-bvc-naming-adr
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: product_owner
+  work.parent_id: bvc-open-canon-naming
+  work.pipeline_stage: closed
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: charter/main.bvc, docs/adr-bvc-format-naming.md
+  work.title: charter/main.bvc: public format BVC .bvc + ссылка на ADR
+]>

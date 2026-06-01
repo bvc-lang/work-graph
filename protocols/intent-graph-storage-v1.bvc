@@ -1,0 +1,19 @@
+#Протокол_Intent_Graph_Storage_V1<[
+Базис:
+  Work Graph хранит исполнение в WorkItem, но цепочка question → options → decision → tasks теряется без отдельного графа намерений.
+  AN-3 (analytics:intent-graph-storage-roadmap) выбрал canon intent_node, а не markdown-only и не UI-only roadmap storage.
+Вектор:
+  atom.profile=intent_node с intent.id, intent.node_kind (question|option|decision|work_ref|evidence_ref), intent.parent_id, intent.link.*.
+  Canonical links: analyzes, offers_option, selects, creates_work, parent_of, depends_on, verified_by.
+  WorkItem хранит execution; labels intent.question_id, intent.option_id, intent.decision_id связывают задачу с решением.
+  «Дорожная карта» (architecture view) — projection выбранной ветки intent graph, не primary storage.
+  JSON projection: workgraph.intent-graph.projection.v1 и workgraph.intent-roadmap.projection.v1.
+Цель:
+  Восстановить lineage question → options → selected decision → epic/task → subtasks → evidence из intent tree и snapshot.
+
+Метки:
+  atom.profile: prompt_rule
+  protocol.id: intent-graph-storage-v1
+  work.source: design-intent-graph-storage-v1
+  trace.status: verified
+]>

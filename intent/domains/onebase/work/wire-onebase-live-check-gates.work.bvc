@@ -1,0 +1,49 @@
+#Задача_wire_onebase_live_check_gates<[
+Базис:
+  onebase check/describe/ai-guide отсутствуют в текущей сборке OneBase; gates сейчас skip.
+  Задача «включить live onebase check gates после обновления CLI» относится к контуру Work Graph rebuild и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: sync-onebase-cli-parity-evidence.
+Вектор:
+  После probe с check=available перепрогнать verification loop и записать non-skip evidence.
+  Ближайший шаг исполнения: просмотреть и перевести в ready.
+Цель:
+  onebase-config-check gate проходит на trade project без cli_command_unavailable.
+Анализ:
+  Целесообразность:
+  Стоит завести «включить live onebase check gates после обновления CLI» в бэклог.
+  Контекст и границы:
+  После probe с check=available перепрогнать verification loop и записать non-skip evidence.
+  Зависимости и готовность:
+  depends_on=sync-onebase-cli-parity-evidence; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  onebase-config-check gate проходит на trade project без cli_command_unavailable.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:37.858Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:37.867Z
+  work.decision.verdict: useful
+  work.department: domain-onebase
+  work.depends_on: sync-onebase-cli-parity-evidence
+  work.id: wire-onebase-live-check-gates
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: integration_architect
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: medium
+  work.status: done
+  work.target_files: scripts/run-onebase-config-check.mjs, src/verificationLoop.mjs, work/onebase-cli-capabilities.v1.json
+  work.title: включить live onebase check gates после обновления CLI
+]>
+

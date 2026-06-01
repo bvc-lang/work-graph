@@ -1,0 +1,19 @@
+#Манифест_Agent_Behavior_Bundle_v1<[
+Базис:
+  Work Graph port minimal agent behavior rules without copying full tool-rules-migrated.step from ../project.
+  rebuild.bvc — принципы сборки; worker-tools.bvc — policy для live-loop/worker providers.
+Вектор:
+  Worker prompt slice rule ids: golden-path, worker-tool-policy, worker-provider-neutrality, worker-failure-retry, worker-evidence-gates, worker-task-bound-run, mcp-read-guardrails, mcp-loop-planning, mcp-editing-policy, cursor-ide-workgraph-parity, chat-work-scope-readonly, work-item-create-analysis-decision.
+  Loader: src/agentBehaviorRulesBundle.mjs → providerHints.behaviorRuleIds + behaviorRulesPrompt.
+  Audit: src/agentBehaviorRulesAudit.mjs vs ../project/rules/agent-behavior/tool-rules-migrated.step (npm run audit:agent-behavior-rules).
+  Deferred from port: AGENT_TOOLS markdown, MCP UI configure, Monaco writeFile/applyPatch, LSP-after-edit, Composer chat style.
+Цель:
+  Worker/agent path ссылается на rule ids без orchestrator.js.
+
+Метки:
+  atom.profile: prompt_rule
+  rule.id: agent-behavior-bundle-manifest-v1
+  protocol.id: prompt-step-lowcode-replacement-scope-v1
+  bundle.version: v1
+  trace.status: verified
+]>

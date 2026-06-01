@@ -1,0 +1,60 @@
+#Задача_adr_bvc_multilingual_keys<[
+Базис:
+  Источник: analytics:bvc-multilingual-keys-design (AN-19) §10 — решения без ADR остаются только в аналитике.
+  Naming ADR docs/adr-bvc-format-naming.md не покрывает canon language.
+Вектор:
+  Создать docs/adr-bvc-multilingual-keys.md: EN canonical, Detect-or-Declare, bvc-lang/dialects.
+  Один dialect per atom; E_BVC_DIALECT_MIX; round-trip preserve dialect.
+  Cross-link: docs/adr-bvc-format-naming.md, AN-8, AN-19.
+Цель:
+  Governance-слой для multilingual совпадает с AN-19; команда может ссылаться на ADR.
+Анализ:
+  Целесообразность:
+  Стоит завести «принять ADR docs/adr-bvc-multilingual-keys.md (Detect-or-Declare)» в бэклог — по материалам AN-19 (analytics:bvc-multilingual-keys-design).
+  Контекст и границы:
+  Создать docs/adr-bvc-multilingual-keys.md: EN canonical, Detect-or-Declare, bvc-lang/dialects.
+  Зависимости и готовность:
+  depends_on=bvc-multilingual-detect-or-declare; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Governance-слой для multilingual совпадает с AN-19; команда может ссылаться на ADR.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-19 (analytics:bvc-multilingual-keys-design); исполнять после вердикта «полезно» и готовности зависимостей.
+Проверки:
+  docs/adr-bvc-multilingual-keys.md status Accepted
+  AN-8 и AN-19 ссылаются на ADR
+
+Свидетельства:
+  - docs/adr-bvc-multilingual-keys.md принят (status Принято 2026-05-31)
+  - AN-19 и migration plan ссылаются на ADR
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-19
+  intake.source_kind: analytics-record
+  intake.source_ref: analytics:bvc-multilingual-keys-design
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T08:11:06.027Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T08:11:06.027Z
+  work.decision.verdict: useful
+  work.department: architecture
+  work.depends_on: bvc-multilingual-detect-or-declare
+  work.id: adr-bvc-multilingual-keys
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: frontend_architect
+  work.parent_id: bvc-multilingual-detect-or-declare
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: low
+  work.status: done
+  work.target_files: docs/adr-bvc-multilingual-keys.md, docs/adr-bvc-format-naming.md, work/analytics/step-as-open-canon-standard.md, work/analytics/bvc-multilingual-keys-design.md
+  work.title: принять ADR docs/adr-bvc-multilingual-keys.md (Detect-or-Declare)
+]>

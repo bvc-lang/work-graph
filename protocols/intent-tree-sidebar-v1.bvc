@@ -1,0 +1,16 @@
+#Intent_Tree_Sidebar_V1<[
+Базис:
+  Intent tree canonical в intent/**; operator UI должен показывать domain buckets отдельно от kanban status.
+Вектор:
+  Read model: intent.sidebar.read.v1 из buildIntentHierarchySnapshot().
+  Sidebar domains кликабельны — фильтруют список задач по intent domain или открывают WorkItem drawer.
+  Navigation отделена от status columns (ready/doing/done).
+Цель:
+  Semantic project structure видна без file tree explorer.
+
+Метки:
+  atom.profile: plan
+  design.id: intent-tree-sidebar-v1
+  work.source: design-intent-tree-sidebar
+  trace.status: verified
+]>

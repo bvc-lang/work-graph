@@ -1,0 +1,116 @@
+#Протокол_Prompt_Step_LowCode_Replacement_Scope_v1<[
+Базис:
+  Старый ioHasC (../project) содержит: prompt-step panel (#panel-prompt-step-root), rules/agent-behavior/*.bvc → agent system prompt, prompt eval / E2E matrix, low-code generateFromCharter + verify:low-code + templates/arch-low-code.
+  Work Graph rebuild сознательно не переносит Monaco-side prompt editor и visual low-code UI; нужен осознанный replacement path вместо «потеряли как сложный UI».
+  Agent Run panel заменяет agent chat window; prompt-step и low-code требуют отдельной классификации port/rebuild/replace/defer.
+Вектор:
+  Классифицировать каждый подконтур по strategy и replacement surface (operator UI / CLI / defer to ../project / evidence-only).
+  Prompt-step: read-only review UI в operator dashboard (MVP), editing через Atom Inspector proposal позже.
+  Low-code: CLI + verification gates в rebuild; полный template engine и sidecar generateFromCharter остаются port/defer из ../project до sidecar boundary.
+  Agent behavior rules: canonical copy в work graph rules/agent-behavior/rebuild.bvc + protocols; полный bundle port optional.
+Цель:
+  Prompt-step и low-code имеют честный replacement scope и связанные follow-up WorkItems без ложного «done» по phase-8.
+
+Проверки:
+  classification table покрывает prompt-step UI, agent behavior rules, prompt eval, low-code scaffold, arch guard, Bracket IR editor
+  UI/CLI/API boundary явно выбран для ближайшего цикла
+  follow-up WorkItems перечислены в work/backlog.bvc
+
+Метки:
+  atom.profile: architecture_decision
+  protocol.id: prompt-step-lowcode-replacement-scope-v1
+  decision.id: prompt-step-lowcode-replacement-scope-v1
+  work.source: design-prompt-step-and-lowcode-replacement-scope
+  trace.status: verified
+]>
+
+#Матрица_Replacement<[
+Базис:
+  Каждый подконтур старого ioHasC получает strategy label и replacement surface.
+Вектор:
+  | Подконтур ioHasC | Strategy | Rebuild state | Replacement surface | Follow-up WorkItem |
+  |---|---|---|---|---|
+  | Prompt-step panel (Code to Step prompts) | replace | missing | Operator dashboard «Промпты» read-only view | implement-prompt-step-review-ui-mvp |
+  | Agent behavior rules (rules/agent-behavior/*.bvc) | port + rebuild | implemented | rules/agent-behavior/rebuild.bvc + worker-tools.bvc + src/agentBehaviorRulesBundle.mjs | — |
+  | Prompt eval / agent matrix | port | contract-only | protocols/prompt-eval-workgraph-flows-v1.bvc + optional npm scripts | optional eval; no UI MVP |
+  | Step atom formatter / prompt_rule canon | rebuild | implemented | src/stepAtomFormatter.mjs, npm run lint:backlog | — |
+  | Low-code generateFromCharter (agent tool) | defer + port | not in rebuild | Sidecar/CLI in ../project; rebuild documents boundary only | design-sidecar-mcp-execution-boundary |
+  | Low-code scaffold CLI (arch-rules → skeleton) | port | missing | npm run scaffold:arch-rules (new CLI MVP) | implement-lowcode-scaffold-cli-mvp |
+  | verify:low-code / arch guard | port | missing | npm run verify:lowcode in rebuild CI optional gate | implement-lowcode-scaffold-cli-mvp (verify hook) |
+  | Bracket IR / visual low-code editor | defer | contract-only | protocols/bracket-ir-trace-envelope-v1.bvc | deferred; no operator UI |
+  | Template engine (Handlebars arch-low-code) | defer | not ported | Reference ../project/templates/arch-low-code | deferred |
+Цель:
+  Ни один подконтур не исчезает без явного owner и surface.
+
+Метки:
+  atom.profile: trace
+  protocol.id: prompt-step-lowcode-replacement-scope-v1
+  trace.status: verified
+]>
+
+#Boundary_UI_CLI_API<[
+Базис:
+  Ближайший цикл не должен тащить Monaco prompt editor или visual scaffold designer.
+Вектор:
+  Prompt-step MVP:
+  - Surface: operator dashboard view «Промпты» (read-only)
+  - Data: scan protocols/*.bvc + rules/**/*.bvc for atom.profile: prompt_rule
+  - API: GET /api/prompt-rules-projection (list + detail by protocol.id/rule.id)
+  - Editing: deferred → Atom Inspector proposal (implement-atom-inspector-form-mvp)
+  Low-code MVP:
+  - Surface: CLI only (no dashboard UI in first slice)
+  - Commands: npm run scaffold:arch-rules -- --charter path [--output dir] (wrap or port minimal from ../project pattern)
+  - Verification: npm run verify:lowcode as optional gate in release matrix (not ci:mandatory)
+  - Agent tool generateFromCharter: defer until sidecar/MCP boundary closes
+  Prompt eval:
+  - Surface: CLI optional (npm run test:prompt-eval when ported); fixtures in protocols/prompt-eval-workgraph-flows-v1.bvc
+  - No operator UI for eval in MVP
+Цель:
+  Operator видит prompt rules; low-code остаётся CLI/evidence path; eval не блокирует deterministic CI.
+
+Метки:
+  atom.profile: architecture_decision
+  protocol.id: prompt-step-lowcode-replacement-scope-v1
+  decision.id: prompt-step-lowcode-ui-cli-boundary
+  trace.status: verified
+]>
+
+#Замена_prompt_step_panel<[
+Базис:
+  Старый prompt-step tab = Monaco-side prompt list for Code to Step pipeline.
+Вектор:
+  | Старый ioHasC | Work Graph replacement |
+  |---|---|
+  | Tab «prompt-step» в console | Nav «Промпты» в operator dashboard |
+  | Inline edit in panel | Read-only review MVP; edit via Atom Inspector later |
+  | Mixed with code-to-step | Filter atom.profile: prompt_rule across protocols/rules |
+  | Compile status in UI | show trace.status + formatter/lint hints read-only |
+Цель:
+  Оператор находит prompt rules без возврата к Monaco console.
+
+Метки:
+  atom.profile: trace
+  protocol.id: prompt-step-lowcode-replacement-scope-v1
+  trace.status: verified
+]>
+
+#Follow_up_WorkItems<[
+Базис:
+  Scope закрывается concrete backlog atoms, не только текстом протокола.
+Вектор:
+  Ready/next после этого design:
+  - implement-prompt-step-review-ui-mvp (read-only «Промпты» view + GET /api/prompt-rules-projection)
+  Backlog:
+  - implement-lowcode-scaffold-cli-mvp (CLI scaffold + optional verify:lowcode hook)
+  - port-agent-behavior-rules-bundle (sync key rules from ../project/rules/agent-behavior when needed)
+  - implement-atom-inspector-form-mvp (enables prompt_rule editing proposals)
+  Deferred (documented, no MVP blocker):
+  - full Bracket IR editor, template engine UI, generateFromCharter agent tool in rebuild
+Цель:
+  Backlog отражает replacement path без дублирования «phase-8 done».
+
+Метки:
+  atom.profile: prompt_rule
+  protocol.id: prompt-step-lowcode-replacement-scope-v1
+  trace.status: verified
+]>

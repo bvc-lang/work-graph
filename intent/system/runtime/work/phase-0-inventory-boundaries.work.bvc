@@ -1,0 +1,50 @@
+#Задача_phase_0_inventory_boundaries<[
+Базис:
+  Перед переносом подсистем ioHasC нужно явно отделить port/rebuild/replace/defer, иначе бэклог станет обещанием перенести всё.
+  Задача «Фаза 0: inventory и границы переноса» относится к контуру архитектуры продукта и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: iohasc-full-rebuild-roadmap.
+Вектор:
+  Сверить inventory старого ioHasC с roadmap-документом и phase atoms в бэклог; зафиксировать границы MVP, post-MVP и deferred R&D.
+  Ближайший шаг исполнения: завершить фазу 1 live-loop agent worker.
+Цель:
+  Команда получает первую claimable фазовую задачу для управления большим переносом.
+Анализ:
+  Целесообразность:
+  Стоит завести «Фаза 0: inventory и границы переноса» в бэклог.
+  Контекст и границы:
+  Сверить inventory старого ioHasC с roadmap-документом и phase atoms в бэклог; зафиксировать границы MVP, post-MVP и deferred R&D.
+  Зависимости и готовность:
+  depends_on=iohasc-full-rebuild-roadmap; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Команда получает первую claimable фазовую задачу для управления большим переносом.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441050
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:37.408Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:37.416Z
+  work.decision.verdict: useful
+  work.department: product-architecture
+  work.depends_on: iohasc-full-rebuild-roadmap
+  work.id: phase-0-inventory-boundaries
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: system_architect
+  work.pipeline_stage: decided
+  work.priority: critical
+  work.risk: medium
+  work.status: done
+  work.target_files: docs/plan-iohasc-full-rebuild-backlog.md, docs/plan-rebuild-post-mvp.md, work/backlog.bvc
+  work.title: Фаза 0: inventory и границы переноса
+]>
+

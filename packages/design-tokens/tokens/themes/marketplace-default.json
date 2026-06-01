@@ -1,0 +1,40 @@
+{
+  "schema": "design-tokens.v1",
+  "themeId": "marketplace-default",
+  "extends": "base",
+  "brand": {
+    "primaryRgb": "245 158 11",
+    "bgRgb": "2 6 23",
+    "surfaceRgb": "15 23 42"
+  },
+  "ui": {
+    "accentRgb": "12 115 254",
+    "accentHoverRgb": "9 101 224",
+    "accentActiveRgb": "8 88 199",
+    "accentForegroundRgb": "255 255 255",
+    "linkRgb": "12 115 254",
+    "linkHoverRgb": "220 38 38",
+    "linkActiveRgb": "185 28 28",
+    "textRgb": "15 23 42",
+    "mutedRgb": "100 116 139",
+    "surfaceRgb": "255 255 255",
+    "surfaceMutedRgb": "245 245 245",
+    "surfaceHoverRgb": "243 243 243",
+    "controlBgRgb": "242 242 242",
+    "controlBgHoverRgb": "226 232 240",
+    "controlCheckedRgb": "0 0 0",
+    "controlCheckedForegroundRgb": "255 255 255",
+    "focusRingRgb": "12 115 254",
+    "dangerRgb": "220 38 38",
+    "ctaRgb": "0 0 0",
+    "ctaHoverRgb": "38 38 38",
+    "ctaActiveRgb": "23 23 23",
+    "ctaForegroundRgb": "255 255 255",
+    "ratingActiveRgb": "12 115 254",
+    "radiusCard": "1.5rem",
+    "radiusModal": "1.5rem",
+    "radiusControlLg": "1rem",
+    "radiusControl": "0.75rem",
+    "radiusControlSm": "0.5rem"
+  }
+}

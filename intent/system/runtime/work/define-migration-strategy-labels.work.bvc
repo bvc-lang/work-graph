@@ -1,0 +1,51 @@
+#Задача_define_migration_strategy_labels<[
+Базис:
+  Для большого бэклог нужны machine labels, чтобы отличать port/rebuild/replace/defer.
+  Задача «определить labels migration strategy для backlog» относится к контуру архитектуры продукта и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: phase-0-inventory-boundaries.
+Вектор:
+  Зафиксировать conventions для `migration.strategy`, `migration.source_repo`, `migration.source_paths` и phase ids.
+  Ближайший шаг исполнения: выполнить фазу 2 WorkGraph OS.
+Цель:
+  Leaf-задачи можно фильтровать и проверять по стратегии переноса.
+  Готово, когда выполнены проверки: словарь labels задокументирован.
+Анализ:
+  Целесообразность:
+  Стоит завести «определить labels migration strategy для backlog» в бэклог.
+  Контекст и границы:
+  Зафиксировать conventions для `migration.strategy`, `migration.source_repo`, `migration.source_paths` и phase ids.
+  Зависимости и готовность:
+  depends_on=phase-0-inventory-boundaries; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Leaf-задачи можно фильтровать и проверять по стратегии переноса.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441063
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:35.751Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:35.761Z
+  work.decision.verdict: useful
+  work.department: product-architecture
+  work.depends_on: phase-0-inventory-boundaries
+  work.id: define-migration-strategy-labels
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: product_architect
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: docs/plan-iohasc-full-rebuild-backlog.md, work/backlog.bvc
+  work.title: определить labels migration strategy для backlog
+]>
+

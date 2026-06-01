@@ -1,0 +1,49 @@
+#Задача_tests_work_graph_multiproject_host<[
+Базис:
+  Multiproject host — сквозная фича: реестр, UI, snapshot, переключатель.
+  AN-40: критерий готовности — два корня в реестре, switch без перезапуска.
+Вектор:
+  Тесты на реестр (register/resolve), смену repoRoot в snapshot, обработчик switch в UI server.
+Цель:
+  Регрессии multiproject ловятся в обязательном npm test, а не при ручной проверке.
+Проверки:
+  npm test зелёный
+  Покрыты register, switch и snapshot для «чужого» repoRoot
+Анализ:
+  Зачем:
+  Без тестов переключатель сломается при следующем рефакторинге backlog UI.
+  Когда:
+  После переключателя и repoRoot-aware snapshot.
+Решение:
+  Вердикт:
+  полезно
+
+Свидетельства:
+  - tests/workspaceRegistry.test.mjs
+  - createBacklogUiServer multiproject host integration test
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-40
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-project-deployment-model.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-01T11:18:32.845Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-01T11:18:32.845Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: epic-work-graph-multiproject-host, implement-ui-project-switcher-multiproject, implement-architecture-snapshot-reporoot-aware
+  work.id: tests-work-graph-multiproject-host
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: integration_architect
+  work.parent_id: epic-work-graph-multiproject-host
+  work.pipeline_stage: closed
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: tests/workspaceRegistry.test.mjs, tests/architectureSnapshot.test.mjs, tests/workGraphBacklogUiServer.test.mjs
+  work.title: Тесты: несколько проектов в одной консоли
+]>

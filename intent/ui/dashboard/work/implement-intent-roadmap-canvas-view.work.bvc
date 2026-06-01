@@ -1,0 +1,21 @@
+#Задача_implement_intent_roadmap_canvas_view<[
+Базис:
+  Intent roadmap: схема в analytics — референс формы (question → options → decision → work), не runtime UI.
+  UI должен быть кликабельным canvas; layout — dagre (тот же класс, что внутри Mermaid).
+Вектор:
+  buildIntentRoadmapCanvasModel + dagre: все варианты, выбранный путь, эпик, подзадачи.
+  Клик по work → task drawer; intent-узел → drawer; отклонённые варианты пунктиром.
+  intentRoadmapMermaid.mjs — только генерация текста для docs/экспорта, не UI.
+Цель:
+  «Дорожная карта» = интерактивная схема как в референсе, без Mermaid в DOM.
+
+Метки:
+  atom.profile: work_item
+  migration.strategy: replace
+  trace.status: verified
+  work.department: frontend-ui
+  work.id: implement-intent-roadmap-canvas-view
+  work.status: done
+  work.target_files: src/intentRoadmapCanvas.mjs, src/dagreGraphLayout.mjs, src/intentRoadmapProjection.mjs, src/workGraphBacklogUiServer.mjs, tests/intentRoadmapCanvas.test.mjs, tests/dagreGraphLayout.test.mjs
+  work.title: реализовать интерактивную dagre-схему intent roadmap
+]>

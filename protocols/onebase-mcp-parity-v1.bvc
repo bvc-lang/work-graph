@@ -1,0 +1,28 @@
+#Протокол_OneBase_MCP_Parity_V1<[
+Базис:
+  Старый ioHasC предоставляет built-in agent tools (onebaseListMetadata, onebaseRestCall, onebaseDevStatus) и stdio MCP package packages/onebase-mcp.
+  Work Graph rebuild использует scripts/run-onebase-verification.mjs как deterministic CLI gate; access paths не должны дублировать или противоречить друг другу.
+Вектор:
+  Parity matrix onebase.access.v1:
+  | capability | built-in tool | MCP tool | work graph CLI |
+  | metadata scan | onebaseListMetadata | list_metadata (describe→scan fallback) | verifyOnebaseGrossProfitStaticVerify (static paths) |
+  | describe export | — | describe_config | onebase describe --json |
+  | config validate | — | check_config | onebase check |
+  | AI guide | — | ai_guide | onebase ai-guide |
+  | read config file | via scan + workspace | read_config_file | static verify reads sibling ../onebase |
+  | REST read | onebaseRestCall | rest_get | onebaseRestEvidenceAdapter (describe/check → evidence-record.v1) |
+  | dev health | onebaseDevStatus | (env in MCP server) | go version preflight in run-onebase-verification |
+  | deterministic verify | — | — | npm run test:optional:onebase |
+  CLI probe artifact: work/onebase-cli-capabilities.v1.json (npm run probe:onebase-cli) — cliAvailable on describe/check/ai-guide rows.
+  Rules: verification gate остаётся CLI/deterministic; MCP и built-in tools — agent/discovery only unless evidence recorded on WorkItem.
+Цель:
+  OneBase workflows работают в agent UI, external MCP или daemon без single point of failure.
+
+Метки:
+  atom.profile: prompt_rule
+  protocol.id: onebase-mcp-parity-v1
+  work.source: port-onebase-mcp-parity
+  migration.source_repo: ../project
+  migration.source_paths: packages/onebase-mcp/src/index.ts, src/agent/onebaseAgentTools.ts, skills/onebase-config/SKILL.md
+  trace.status: verified
+]>

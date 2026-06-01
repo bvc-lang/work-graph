@@ -1,0 +1,39 @@
+{
+  "name": "@work-graph/cli",
+  "version": "0.2.3",
+  "description": "Work Graph CLI — npm-first project setup, doctor, backlog UI",
+  "type": "module",
+  "bin": {
+    "work-graph": "bin/work-graph.mjs"
+  },
+  "files": [
+    "bin",
+    "vendor",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/work-graph/work-graph.git",
+    "directory": "packages/work-graph-cli"
+  },
+  "keywords": [
+    "work-graph",
+    "backlog",
+    "bvc",
+    "cli"
+  ],
+  "dependencies": {
+    "@dagrejs/dagre": "^3.0.0",
+    "mermaid": "^11.15.0"
+  },
+  "scripts": {
+    "prepack": "node ../../scripts/sync-work-graph-cli-vendor.mjs"
+  }
+}

@@ -1,0 +1,50 @@
+#Задача_design_derived_graph_viewer<[
+Базис:
+  Пользователь не должен строить граф вручную, а React Flow уже показал высокий overhead.
+  Граф должен быть derived projection из Work Graph, trace, target files и code artifacts.
+Вектор:
+  Описать проекцию nodes/edges: work depends_on, trace refs, target files, generated artifacts, evidence links.
+  Выбрать renderer только для чтения и layout strategy: Cytoscape.js + ELK/Dagre, Mermaid или Graphviz.
+  Описать interaction model: filter, focus, expand/collapse, open atom, open file.
+Цель:
+  Система показывает понятный граф проектирования без собственного visual graph editor.
+Анализ:
+  Целесообразность:
+  Стоит завести «спроектировать derived graph viewer» в бэклог.
+  Контекст и границы:
+  Описать проекцию nodes/edges: work depends_on, trace refs, target files, generated artifacts, evidence links.
+  Зависимости и готовность:
+  depends_on=design-operator-dashboard-snapshot; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Система показывает понятный граф проектирования без собственного visual graph editor.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441016
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:35.896Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:35.906Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: design-operator-dashboard-snapshot
+  work.id: design-derived-graph-viewer
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: frontend_architect
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: ui/derived-graph-viewer.bvc, ui/operator-dashboard.bvc, ui/operator-dashboard-snapshot.bvc, protocols/language-adapter-layer.bvc, domains/onebase/artifact-mapping.bvc, work/backlog.bvc
+  work.title: спроектировать derived graph viewer
+]>
+

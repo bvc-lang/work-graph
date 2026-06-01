@@ -1,0 +1,45 @@
+#Протокол_Sidecar_MCP_Execution_Boundary_v1<[
+Базис:
+  Work Graph rebuild держит source of truth в work/backlog.bvc и Worker Input/Output v1; ioHasC ../project добавляет sidecar (:8788), built-in agent tools и stdio MCP servers.
+  Без явной boundary sidecar/MCP легко становятся вторым источником истины, обходом policy gates (shell/network/write) или дублированием domain tools.
+  protocols/onebase-mcp-parity-v1.bvc покрывает только OneBase access paths; общая transport boundary для всех tool classes отсутствовала.
+Вектор:
+  Transport lanes v1 (sidecar-mcp-execution-boundary.v1):
+  | lane | role | examples | default |
+  | builtin | in-process Work Graph runtime, deterministic, CI-safe | workGraph.*, worker.runLocalWorker, onebase.listMetadata, worker.boundedTargetFileRead | mandatory CI |
+  | sidecar | out-of-process proxy with same policy envelope | runCommand allowlist, bounded file read/write proxy, generateFromCharter (deferred) | opt-in, env-gated |
+  | mcp | external stdio MCP server, discovery/network tools | onebase list_metadata/read_config_file/rest_get, future domain MCP | opt-in, never CI gate |
+  | forbidden | blocked unless explicit WorkItem policy + evidence | raw writeFile, arbitrary shell, unbounded network, backlog rewrite from client | default deny |
+  Policy gates are transport-agnostic:
+  - targetFiles allowlist required for file-touching capabilities
+  - allowShell / allowNetwork / allowFileWrite come from Worker Input policy + owner_role handoff, not from transport choice
+  - secrets redaction on evidence/logs (API keys, tokens, Authorization headers)
+  - evidence logging mandatory before transition to verify/done
+  - timeoutMs and cancellation propagate from Worker Input policy to sidecar/MCP adapter
+  Capability request flow (provider-neutral):
+  1. Worker builds allowedTools[] + policy from Work Graph task (domain tools via resolveDomainWorkerCapabilities).
+  2. Provider executor receives capability id, not transport id.
+  3. resolveToolCapabilityRequest() returns allowed lanes + effective policy; transport adapter is selected later.
+  4. Sidecar/MCP adapters MUST NOT mutate work/backlog.bvc directly — only return Worker Output evidence for Work Graph apply.
+  Rules:
+  - LLM transport (OpenAI/Ollama/Claude HTTP) is not a tool lane; it is provider execution separate from tool surface.
+  - Mandatory CI uses builtin lane only; sidecar/MCP paths are optional eval or operator-initiated runs.
+  - Domain tools (OneBase) prefer builtin worker tools in rebuild; MCP remains parity/discovery per onebase-mcp-parity-v1.
+Цель:
+  Sidecar и MCP становятся policy-bound транспортами tool execution, а не альтернативным runtime state или обходом Work Graph gates.
+
+Проверки:
+  buildToolTransportBoundary() возвращает schema workgraph.tool.transport.boundary.v1
+  evaluateTransportPolicyGate() блокирует shell/network/write без policy flags независимо от lane
+  redactTransportSecrets() удаляет token/key patterns из evidence payload
+  tests/workGraphToolSurfaceAudit.test.mjs покрывает boundary rows и policy gates
+
+Метки:
+  atom.profile: architecture_decision
+  protocol.id: sidecar-mcp-execution-boundary-v1
+  decision.id: sidecar-mcp-execution-boundary-v1
+  work.source: design-sidecar-mcp-execution-boundary
+  migration.source_repo: ../project
+  migration.source_paths: src/mcp/, pvrg-core/pvrg-server.js, src/agent/tools.js
+  trace.status: verified
+]>

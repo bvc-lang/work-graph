@@ -1,0 +1,45 @@
+#Шаблон_OneBase_WorkItem<[
+Базис:
+  OneBase golden path (gross-profit-by-warehouse) доказал повторяемый контур; новые domain changes должны использовать тот же WorkItem skeleton без rediscovery.
+  Canonical design остаётся в domains/onebase/*.bvc; template описывает обязательные поля backlog atom для OneBase implementation tasks.
+Вектор:
+  Required BVC sections: Базис (scenario + artifact slice), Вектор (bounded file changes), Цель (business invariant), Свидетельства (verification + static gate), критерии_готовности.
+  Required labels:
+  work.department: product-architecture
+  domain.id: onebase
+  onebase.document, onebase.rule (or onebase.scenario_id)
+  trace.code_refs / trace.artifact_refs for YAML, .os, reports, widgets
+  verification.primary_command, verification.cwd (usually ../onebase)
+  Optional: onebase.rest_evidence_refs, onebase.rollback_notes
+  Depends_on chain: onebase-artifact-mapping → scenario → verification-command → golden-path → implement-* .
+Цель:
+  Любая новая OneBase задача клонируется из template с предсказуемыми gates и evidence.
+
+Метки:
+  atom.profile: prompt_rule
+  domain.id: onebase
+  template.id: onebase-workitem-template-v1
+  work.source: design-onebase-workitem-template
+  trace.status: verified
+]>
+
+#Поля_Шаблона<[
+Базис:
+  Template должен покрывать metadata scan, target files, verification, REST evidence и rollback без VectorDSL codegen.
+Вектор:
+  metadata_scan: ссылка на artifact-mapping + list_metadata / scanOneBaseMetadata paths
+  target_files: CSV YAML documents/catalogs/registers, .os posting scripts, reports, widgets, optional Go tests
+  verification_command: go version preflight + go test ./... или npm run test:optional:onebase из work graph
+  static_gate: verifyOnebaseGrossProfitWarehouseArtifacts pattern для bounded artifact checks без Go
+  rest_evidence: optional GET /catalogs|/documents refs в Свидетельства (blocked если API недоступен)
+  rollback_notes: явный список файлов/движений для revert и preserved invariants
+  evidence_sections: command/test/file + blocked environment format из domains/onebase/verification-command.bvc
+Цель:
+  Worker и operator получают checklist, а не ad-hoc prompt.
+
+Метки:
+  atom.profile: trace
+  contract.id: onebase-workitem-template-fields-v1
+  template.id: onebase-workitem-template-v1
+  trace.status: verified
+]>

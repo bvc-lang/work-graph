@@ -1,0 +1,50 @@
+#Задача_implement_mcp_intent_graph_resources<[
+Базис:
+  Resources workgraph://backlog и cycle есть; intent graph slices не экспонированы как URI.
+  Задача «Intent graph: MCP resources workgraph://intent/*» относится к контуру платформы агента и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: implement-mcp-get-architecture-snapshot, implement-mcp-get-intent-hierarchy.
+Вектор:
+  Добавить resources: workgraph://intent/hierarchy, workgraph://architecture/snapshot, workgraph://linkage/projection.
+  Ближайший шаг исполнения: просмотреть и перевести в ready.
+Цель:
+  MCP clients могут подписаться на read-only graph slices без tool roundtrip.
+  Готово, когда выполнены проверки: readWorkGraphResource поддерживает новые URI.
+Анализ:
+  Целесообразность:
+  Стоит завести «Intent graph: MCP resources workgraph://intent/*» в бэклог.
+  Контекст и границы:
+  Добавить resources: workgraph://intent/hierarchy, workgraph://architecture/snapshot, workgraph://linkage/projection.
+  Зависимости и готовность:
+  depends_on=implement-mcp-get-architecture-snapshot, implement-mcp-get-intent-hierarchy; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  MCP clients могут подписаться на read-only graph slices без tool roundtrip.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:36.932Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:36.939Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: implement-mcp-get-intent-hierarchy, implement-mcp-get-architecture-snapshot
+  work.id: implement-mcp-intent-graph-resources
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: integration_architect
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: medium
+  work.status: done
+  work.target_files: packages/workgraph-mcp/src/index.mjs, packages/workgraph-mcp/src/handlers.mjs, packages/workgraph-mcp/README.md
+  work.title: Intent graph: MCP resources workgraph://intent/*
+]>
+

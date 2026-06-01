@@ -1,0 +1,143 @@
+#Golden_Path_OneBase_Posting_Rule<[
+Базис:
+  OneBase golden path is complete at this stage when the Work Graph has a reviewable, executable design package for one real posting-rule change.
+  This package does not modify OneBase source code; it prepares the first implementation PR/patch with bounded context, evidence and verification gates.
+Вектор:
+  Scenario: add Склад as a dimension of РеализацияТоваров gross-profit posting so ВаловаяПрибыль can be analyzed by warehouse.
+  Source scenario: domains/onebase/workflows/change-posting-rule.bvc.
+  Artifact mapping: domains/onebase/artifact-mapping.bvc and domains/onebase/examples/realization-posting-step-atom-draft.example.json.
+  Verification policy: domains/onebase/verification-command.bvc.
+Цель:
+  A worker can claim the next implementation task, open only the relevant OneBase slice, produce a small patch, and record deterministic evidence without rediscovering the scenario.
+
+Проверки:
+  scenario, artifact mapping, StepAtomDraft input, worker flow, evidence model and verification command are tied together
+  Go absence is modeled as an environment blocker, not a OneBase code failure
+  first implementation DoD is explicit and does not require another design pass
+
+Метки:
+  atom.profile: prompt_rule
+  domain.id: onebase
+  golden_path.id: onebase-posting-rule-gross-profit-warehouse
+  onebase.document: РеализацияТоваров
+  onebase.rule: gross-profit-by-warehouse
+  work.source: onebase-posting-rule-golden-path
+  trace.status: verified
+]>
+
+#Scenario_Context<[
+Базис:
+  РеализацияТоваров already carries header field Склад and uses it for stock movements, while the gross-profit register path is currently described as item-level analytics.
+Вектор:
+  Intended change: add Склад to ВаловаяПрибыль movements and related reporting/query surface while preserving totals.
+  Expected invariant: total Выручка, Себестоимость and gross profit stay the same before and after grouping by warehouse.
+  Preserved behavior: FIFO batch selection, ОстаткиТоваров by Номенклатура/Склад, ПартииТоваров расход and Взаиморасчеты debt movement.
+Цель:
+  The business result is warehouse-level gross-profit analysis without changing stock, cost or settlement semantics.
+
+Метки:
+  atom.profile: trace
+  golden_path.id: onebase-posting-rule-gross-profit-warehouse
+  workflow.id: onebase-change-posting-rule
+  trace.status: verified
+]>
+
+#Artifact_Context_Slice<[
+Базис:
+  The implementation worker should not scan the whole OneBase tree when the relevant slice is known.
+Вектор:
+  Read first: ../onebase/examples/trade/documents/реализация_товаров.yaml, ../onebase/examples/trade/src/реализациятоваров.posting.os and ../onebase/examples/trade/registers/валовая_прибыль.yaml.
+  Then read downstream readers only as needed: ../onebase/examples/trade/reports/валовая_прибыль.yaml and ../onebase/examples/trade/widgets/валовая_прибыль_kpi.yaml.
+  Related register invariants: ОстаткиТоваров, ПартииТоваров and Взаиморасчеты are trace context but should not be changed unless verification proves the rule requires it.
+  Trace refs: onebase-realization-golden-path, onebase-change-posting-rule and onebase-golden-path-command.
+Цель:
+  The context slice is broad enough to implement the rule and narrow enough to review safely.
+
+Метки:
+  atom.profile: trace
+  golden_path.id: onebase-posting-rule-gross-profit-warehouse
+  onebase.document_file: ../onebase/examples/trade/documents/реализация_товаров.yaml
+  onebase.posting_script: ../onebase/examples/trade/src/реализациятоваров.posting.os
+  onebase.register.refs: ВаловаяПрибыль, ОстаткиТоваров, ПартииТоваров, Взаиморасчеты
+  work.target_files: ../onebase/examples/trade/registers/валовая_прибыль.yaml, ../onebase/examples/trade/src/реализациятоваров.posting.os, ../onebase/examples/trade/reports/валовая_прибыль.yaml
+  trace.status: verified
+]>
+
+#StepAtomDraft_Task_Input<[
+Базис:
+  The next implementation task should be expressible as StepAtomDraft instead of an open-ended prompt.
+Вектор:
+  profile: work_item.
+  work.id: onebase-implement-gross-profit-warehouse-dimension.
+  basis: РеализацияТоваров posting uses Склад for stock movement, but gross-profit analytics need warehouse separation.
+  vector: update ВаловаяПрибыль schema, posting movement and report/query surface so gross profit can be grouped or filtered by Склад; add or update the smallest deterministic test/fixture available in OneBase.
+  goal: warehouse-level gross-profit analytics with unchanged FIFO, stock and settlement behavior.
+  checks: gross-profit movement includes Склад; totals remain compatible; FIFO, stock and debt behavior are unchanged; verification command evidence is recorded.
+Цель:
+  A provider-neutral worker receives a concrete task input that can become a backlog atom or provider prompt without reinterpreting the design artifacts.
+
+Метки:
+  atom.profile: trace
+  golden_path.id: onebase-posting-rule-gross-profit-warehouse
+  work.template_id: onebase-implement-gross-profit-warehouse-dimension
+  trace.status: verified
+]>
+
+#Expected_Worker_Flow<[
+Базис:
+  Worker execution must follow the provider-neutral adapter boundary and leave Work Graph as source of truth.
+Вектор:
+  Claim onebase-implement-gross-profit-warehouse-dimension only after this golden path task is done.
+  Build Worker Input v1 from current Work Graph snapshot, this golden path artifact, artifact mapping, scenario design, verification policy and a memory slice for OneBase artifact facts.
+  Allow file reads/writes only inside the declared OneBase target files plus the smallest test/fixture files selected during implementation.
+  Produce Worker Output v1 with patchSummary, changed files, evidence records, verification result or blocker, and a transition request.
+  Runtime records evidence and applies status gates; the worker does not silently mark the task done.
+Цель:
+  The first real implementation PR can be executed by any provider without hidden session state.
+
+Метки:
+  atom.profile: trace
+  golden_path.id: onebase-posting-rule-gross-profit-warehouse
+  protocol.refs: agent-worker-adapter, evidence-model-v1
+  trace.status: verified
+]>
+
+#Evidence_And_Verification_Model<[
+Базис:
+  The golden path needs distinguishable evidence for design completion, code changes, command verification and environment blockers.
+Вектор:
+  Design evidence: this file exists and links scenario, mapping, StepAtomDraft input, worker flow, evidence and verification policy.
+  Change evidence for implementation: changed OneBase files, patch summary and business assertion added or updated.
+  Verification evidence: preflight command go version from ../onebase, then primary command go test ./... from ../onebase with timeout 120s.
+  Blocked state: if go version is missing or non-zero, record evidence type=blocker/status=blocked with preflight output and do not claim OneBase verification passed or failed.
+  Work Graph verification for this design package: npm test in D:/Work/IDE/work graph must pass before onebase-posting-rule-golden-path can be marked done.
+Цель:
+  Operators can tell whether the system proved the design package, proved the OneBase code patch, or hit a local toolchain blocker.
+
+Метки:
+  atom.profile: trace
+  golden_path.id: onebase-posting-rule-gross-profit-warehouse
+  verification.id: onebase-golden-path-command
+  verification.preflight_command: go version
+  verification.primary_command: go test ./...
+  verification.cwd: ../onebase
+  verification.timeout_seconds: 120
+  trace.status: verified
+]>
+
+#First_Implementation_DoD<[
+Базис:
+  The next task is the first real OneBase implementation patch, not another design artifact.
+Вектор:
+  Done requires: Склад is represented in ВаловаяПрибыль schema/movements; gross-profit report/query surface can separate warehouses; KPI totals remain compatible; FIFO, stock and debt behavior are unchanged.
+  Done also requires evidence: changed artifact refs, deterministic test or fixture assertion where feasible, go version preflight, go test ./... result or a clear environment blocker if Go is unavailable.
+  Review boundary: changing shared posting runtime, FIFO algorithm or unrelated registers requires a separate Work Graph task.
+Цель:
+  The first implementation PR has a precise acceptance boundary and can be reviewed as a small business-rule patch.
+
+Метки:
+  atom.profile: work_item
+  work.template_id: onebase-implement-gross-profit-warehouse-dimension
+  golden_path.id: onebase-posting-rule-gross-profit-warehouse
+  trace.status: verified
+]>

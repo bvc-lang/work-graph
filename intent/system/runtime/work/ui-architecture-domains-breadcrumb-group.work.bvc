@@ -1,0 +1,57 @@
+#Задача_ui_architecture_domains_breadcrumb_group<[
+Базис:
+  AN-39: оператор ожидает иерархию «Домены › OneBase», не плоский «Домен OneBase» среди ядерных блоков.
+Вектор:
+  workGraphBacklogUiServer.mjs: group headers для blocks.group === domains.
+  Non-domain blocks без изменения порядка peer-секции.
+Цель:
+  Architecture list визуально отделяет прикладные домены от ядра.
+Проверки:
+  UI smoke: grouped domain section visible
+  workGraphBacklogUiServer tests при наличии
+Анализ:
+  Целесообразность:
+  Стоит завести «UI Architecture list: секция «Домены › {block title}»» в бэклог — по материалам AN-39 (work/analytics/architecture-domains-l1-hierarchy.md).
+  Контекст и границы:
+  workGraphBacklogUiServer.mjs: group headers для blocks.group === domains.
+  Зависимости и готовность:
+  depends_on=epic-architecture-domains-l1-hierarchy, schema-architecture-block-group-field; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Architecture list визуально отделяет прикладные домены от ядра.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-39 (work/analytics/architecture-domains-l1-hierarchy.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-39
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/architecture-domains-l1-hierarchy.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-01T08:36:55.117Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-01T08:36:55.117Z
+  work.decision.verdict: useful
+  work.department: product-ux
+  work.depends_on: epic-architecture-domains-l1-hierarchy, schema-architecture-block-group-field
+  work.id: ui-architecture-domains-breadcrumb-group
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: ux_designer
+  work.parent_id: epic-architecture-domains-l1-hierarchy
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: src/workGraphBacklogUiServer.mjs, tests/workGraphBacklogUiServer.test.mjs, work/analytics/architecture-domains-l1-hierarchy.md
+  work.title: UI Architecture list: секция «Домены › {block title}»
+
+Свидетельства:
+  - cascade: reconcile epic epic-architecture-domains-l1-hierarchy already done
+]>

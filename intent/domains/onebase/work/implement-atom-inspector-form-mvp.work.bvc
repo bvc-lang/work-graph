@@ -1,0 +1,52 @@
+#Задача_implement_atom_inspector_form_mvp<[
+Базис:
+  Я предлагал Atom Inspector как замену ручной правки raw .bvc: пользователь должен редактировать BVC/labels/checks/evidence через форму.
+  В пересобрать есть design-atom-inspector-form и Jira-like detail drawer, но нет editable/proposal-based inspector.
+  Предварительно должны быть закрыты зависимости: design-atom-inspector-form, implement-workgraph-backlog-ui-mvp, reconcile-rebuild-scope-against-original-iohasc-plan.
+Вектор:
+  Реализовать read/write proposal UI для выбранной задачи: поля Базис, Вектор, Цель, status, owner_role, priority, risk, labels, проверки, evidence.
+  Сохранение должно генерировать StepAtomDraft/patch proposal и проходить через runtime validation; прямой client-side rewrite бэклог запрещён.
+  MVP может быть review-only save-to-draft, если runtime write gate ещё не готов.
+Цель:
+  Оператор может безопасно править WorkItem atom без знания синтаксиса .bvc.
+  Готово, когда выполнены проверки: detail drawer имеет режим редактирования atom fields.
+Анализ:
+  Целесообразность:
+  Стоит завести «реализовать MVP Atom Inspector Form» в бэклог.
+  Контекст и границы:
+  Реализовать read/write proposal UI для выбранной задачи: поля Базис, Вектор, Цель, status, owner_role, priority, risk, labels, проверки, evidence.
+  Зависимости и готовность:
+  depends_on=design-atom-inspector-form, implement-workgraph-backlog-ui-mvp, reconcile-rebuild-scope-against-original-iohasc-plan; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Оператор может безопасно править WorkItem atom без знания синтаксиса .bvc.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441106
+  migration.strategy: replace
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:36.558Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:36.568Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: design-atom-inspector-form, implement-workgraph-backlog-ui-mvp, reconcile-rebuild-scope-against-original-iohasc-plan
+  work.id: implement-atom-inspector-form-mvp
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: frontend_architect
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: high
+  work.status: done
+  work.target_files: src/atomInspector.mjs, src/atomInspectorApi.mjs, src/workGraphBacklogUiServer.mjs, src/stepAtomFormatter.mjs, tests/atomInspector.test.mjs, tests/workGraphBacklogUiServer.test.mjs, work/backlog.bvc
+  work.title: реализовать MVP Atom Inspector Form
+]>
+

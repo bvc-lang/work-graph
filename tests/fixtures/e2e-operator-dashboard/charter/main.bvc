@@ -1,0 +1,13 @@
+#Устав_E2e_Operator_Dashboard<[
+Базис:
+  E2E fixture charter with enough meaningful content to pass classifyCharterBody heuristics for isolated operator dashboard Playwright smoke tests in Work Graph rebuild.
+Вектор:
+  Agent-run and promote-ready API must respect charter preflight when backlog transitions are exercised from browser smoke tests.
+Цель:
+  Deterministic fixture charter without touching canonical repo charter files.
+
+Метки:
+  atom.profile: charter
+  project.slug: work-graph-rebuild
+  trace.status: verified
+]>

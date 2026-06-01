@@ -1,0 +1,52 @@
+#Задача_onebase_posting_rule_golden_path<[
+Базис:
+  OneBase содержит реальную доменную модель торговли и .os проведение РеализацияТоваров.
+  Задача «описать golden path для правила проведения OneBase» относится к контуру архитектуры продукта и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: onebase-verification-command.
+Вектор:
+  Описать сценарий изменения правила проведения.
+  Сопоставить YAML документа, регистры и .posting.os с StepAtomDraft.
+  Определить минимальную проверку: Go test, compile/parser check или targeted scenario.
+Цель:
+  Новая система доказывает пользу на доменной бизнес-логике, а не на toy CRUD.
+  Готово, когда выполнены проверки: выбран конкретный business rule change.
+Анализ:
+  Целесообразность:
+  Стоит завести «описать golden path для правила проведения OneBase» в бэклог.
+  Контекст и границы:
+  Описать сценарий изменения правила проведения.
+  Зависимости и готовность:
+  depends_on=onebase-verification-command; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Новая система доказывает пользу на доменной бизнес-логике, а не на toy CRUD.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441009
+  migration.strategy: port
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:37.326Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:37.334Z
+  work.decision.verdict: useful
+  work.department: product-architecture
+  work.depends_on: onebase-verification-command
+  work.id: onebase-posting-rule-golden-path
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: domain_architect
+  work.pipeline_stage: decided
+  work.priority: critical
+  work.risk: high
+  work.status: done
+  work.target_files: domains/onebase/golden-path.bvc, domains/onebase/artifact-mapping.bvc, domains/onebase/examples/realization-posting-step-atom-draft.example.json, domains/onebase/workflows/change-posting-rule.bvc, domains/onebase/verification-command.bvc
+  work.title: описать golden path для правила проведения OneBase
+]>
+

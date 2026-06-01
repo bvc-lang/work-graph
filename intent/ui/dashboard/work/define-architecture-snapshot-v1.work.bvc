@@ -1,0 +1,50 @@
+#Задача_define_architecture_snapshot_v1<[
+Базис:
+  Architecture graph должен быть derived projection, rebuildable из .bvc, intent tree, memory и trace links.
+  UI, PVRG slice и dashboard оператора не должны парсить raw .bvc в браузере для architecture map.
+Вектор:
+  Определить architecture.snapshot.v1 JSON schema: blocks, containers, artifacts, edges, counts, focusBlockId, source refs.
+  Зафиксировать deterministic builder input: charter, intent/index.bvc, workgraph.snapshot.v1, trace links validator output, optional memory/evidence exports.
+  Описать stable ids для blocks/containers и typed edges compatible with derived graph viewer contracts.
+Цель:
+  Architecture map и block detail panel читают один rebuildable snapshot contract, а не ad-hoc HTML data.
+Анализ:
+  Целесообразность:
+  Стоит завести «определить JSON schema architecture.snapshot.v1» в бэклог.
+  Контекст и границы:
+  Определить architecture.snapshot.v1 JSON schema: blocks, containers, artifacts, edges, counts, focusBlockId, source refs.
+  Зависимости и готовность:
+  depends_on=design-architecture-graph-model-v1; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Architecture map и block detail panel читают один rebuildable snapshot contract, а не ad-hoc HTML data.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441041
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:35.707Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:35.716Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: design-architecture-graph-model-v1
+  work.id: define-architecture-snapshot-v1
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: feature_engineer
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: schemas/architecture-snapshot.v1.json, src/architectureSnapshot.mjs, tests/architectureSnapshot.test.mjs, work/backlog.bvc
+  work.title: определить JSON schema architecture.snapshot.v1
+]>
+

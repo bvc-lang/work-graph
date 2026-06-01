@@ -1,0 +1,160 @@
+#Дизайн_Derived_Graph_Viewer<[
+Базис:
+  Пользователь не должен строить Work Graph вручную; граф является наблюдаемой проекцией задач, evidence, memory, target files, provider runs and domain artifacts.
+  Operator dashboard уже задаёт роль человека как оператора/reviewer, а operator-dashboard.snapshot.v1 задаёт derived read model без browser-side raw .bvc parsing.
+  Language Adapter Layer and OneBase artifact mapping уже дают будущие structured file/domain facts for graph nodes and edges.
+Вектор:
+  Derived graph viewer renders relationships from workgraph.snapshot.v1 plus optional operator-dashboard.snapshot.v1, Evidence v1, MemoryRecord v1, Worker Output/provider run summaries and language/domain adapter projections.
+  Graph is read-only by default: no manual node creation, no manual edge drawing, no layout-as-state and no React Flow-like editor as the main product path.
+  MVP starts from WorkItem dependencies, target files, legacy evidence strings and dashboard snapshot summaries; later graph slices add structured evidence, memory, provider runs and OneBase domain objects when their producers materialize them.
+Цель:
+  Оператор получает понятную карту проекта and can focus a task, inspect why it is connected, and open task/file/artifact details without turning graph editing into a second source of truth.
+
+Проверки:
+  graph viewer не поддерживает ручное создание нод как основной режим
+  описаны derived nodes/edges for work, files/artifacts, evidence, memory, provider runs and OneBase objects
+  выбран renderer/layout recommendation with MVP/later boundary
+  integration uses dashboard snapshot and Work Graph as source of truth
+
+Метки:
+  atom.profile: plan
+  design.id: derived-graph-viewer
+  design.input: workgraph.snapshot.v1, operator-dashboard.snapshot.v1, evidence-record-v1, memory-record-v1, worker-output-v1, adapter-projection-v1
+  design.output: derived-graph-view.v1
+  work.source: design-derived-graph-viewer
+  trace.status: verified
+]>
+
+#Purpose_And_Non_Goals<[
+Базис:
+  The graph exists to explain relationships already present in project state, not to author project state.
+Вектор:
+  Purpose: show task dependency chains, current/ready/blocked focus, evidence links, target file/artifact impact, memory context and domain object relationships around selected WorkItems.
+  Purpose: help the operator answer "why is this task ready/blocked?", "what files and domain objects does it touch?", "what evidence proves it?", and "what memory/context will the worker see?".
+  Non-goal: manual graph editor, freeform node canvas, drag-to-create dependencies, visual layout as canonical state or React Flow-like manual editing overhead.
+  Non-goal: replacing backlog board, task detail drawer, atom inspector form, language adapters, memory store or evidence model.
+  Non-goal: graph database as source of truth in MVP; graph data is rebuildable from Work Graph and derived projections.
+Цель:
+  Keep the graph as an explanatory projection that complements dashboard/detail views without competing with Work Graph runtime.
+
+Метки:
+  atom.profile: prompt_rule
+  rule.id: derived-graph-viewer-purpose-nongoals
+  trace.status: verified
+]>
+
+#Derived_Node_Model<[
+Базис:
+  Node types must map to existing contracts so the viewer can be rebuilt and tested from snapshots.
+Вектор:
+  WorkItem node: id, title, status, ownerRole, department, priority, risk, traceStatus, nextAction and checks from workgraph.snapshot.v1 items.
+  Artifact/File node: path, kind, language/domain adapter id, confidence and source range when available; MVP starts with targetFiles and protocol/artifact refs from evidence strings.
+  Evidence node: Evidence Record v1 id/type/status/source/summary/artifacts/command/provider/runId; MVP can show legacy evidence summaries as compact evidence nodes.
+  MemoryRecord node: MemoryRecord v1 id/type/status/confidence/summary/sourceWorkItem/evidenceIds/relatedFiles/relatedTasks.
+  ProviderRun node: Worker Output or run summary with provider, runId, taskId, status, started/finished time when available, failureReason/retryAdvice and produced evidence ids.
+  OneBase domain object node: document, catalog, register, report, widget, posting script, procedure or runtime artifact from adapter/domain projections; use onebase.kind, onebase.name, trace.source.file and confidence.
+Цель:
+  The viewer can mix operational tasks with code/domain context while preserving each node's source contract and confidence.
+
+Метки:
+  atom.profile: trace
+  contract.id: derived-graph-node-model-v1
+  trace.status: verified
+]>
+
+#Derived_Edge_Model<[
+Базис:
+  Edges should explain existing relations and never imply a writeable graph model.
+Вектор:
+  depends_on: WorkItem dependency edges from workgraph.snapshot.v1.edges or item.dependsOn, directed dependency -> dependent task.
+  targets: WorkItem -> Artifact/File from item.targetFiles and structured evidence artifacts.
+  has_evidence: WorkItem -> Evidence from legacy item.evidence or structured Evidence v1 records with taskId.
+  produced_by_run: Evidence -> ProviderRun and ProviderRun -> WorkItem from Worker Output/provider run summaries.
+  creates_or_updates_memory: WorkItem/Evidence -> MemoryRecord from sourceWorkItem, evidenceIds, relatedTasks and relatedFiles.
+  relates_file: MemoryRecord/Evidence/ProviderRun -> Artifact/File from relatedFiles, artifacts and changedFiles.
+  domain_relation: OneBase document -> posting script -> registers -> report/widget readers from adapter projections and domains/onebase/artifact-mapping.bvc.
+  trace_ref: WorkItem/Evidence/MemoryRecord -> domain object or source range when adapters expose trace refs with confidence.
+Цель:
+  Edge labels remain small, typed and rebuildable, allowing filters and focus views without hand-authored graph state.
+
+Метки:
+  atom.profile: trace
+  contract.id: derived-graph-edge-model-v1
+  trace.status: verified
+]>
+
+#Renderer_And_Layout_Decision<[
+Базис:
+  The first implementation should be useful inside the current small Node/HTML UI without pulling in a visual editor framework.
+Вектор:
+  Recommendation for MVP: implement a simple read-only SVG/HTML graph panel first, generated from a derived graph JSON, with dependency/file/evidence lanes or grouped columns and no external graph editor dependency.
+  Recommendation for interactive later stage: Cytoscape.js with Dagre or ELK layout for focus/expand/collapse, larger node counts, keyboard navigation and stable layout presets.
+  Keep Mermaid or Graphviz as optional export/debug renderers for static diagrams, not as the main interactive viewer, because operator interactions need focus, filters and click-through details.
+  Avoid React Flow as the primary approach because its strengths are manual canvas editing and custom node workflows, which are explicit non-goals for this viewer.
+  Layout strategy: default to layered left-to-right or top-to-bottom dependency flow; cluster by WorkItem status, domain, artifact kind or selected focus; collapse evidence/memory leaves by default.
+Цель:
+  Start with the smallest read-only renderer that fits the existing UI server, while preserving a clear upgrade path to Cytoscape.js + Dagre/ELK when interaction complexity justifies it.
+
+Метки:
+  atom.profile: architecture_decision
+  decision.id: derived-graph-renderer-layout
+  renderer.mvp: svg-html-readonly
+  renderer.later: cytoscape-dagre-elk
+  trace.status: verified
+]>
+
+#Interaction_Model<[
+Базис:
+  Graph interaction should deepen inspection and navigation, not mutate canonical project state.
+Вектор:
+  Filter by node kind, WorkItem status, department, ownerRole, priority, risk, evidence status, memory type, provider, artifact kind and domain.
+  Focus on a WorkItem, artifact, evidence record, memory record, provider run or OneBase object; focus view shows one-hop neighbors first and can expand upstream dependencies, downstream dependents, files, evidence, memory and domain links.
+  Expand/collapse groups: collapse evidence leaves, memory leaves, file folders, OneBase artifact groups, done tasks and low-confidence adapter results by default.
+  Open task detail: selecting a WorkItem opens the existing dashboard/backlog detail drawer with BVC, labels, checks, evidence, target files and run/memory summaries.
+  Open file/artifact: selecting a file/domain artifact opens file path or artifact detail when the host can open resources; otherwise copy/show stable path and trace ref.
+  Explain edge: selecting an edge shows source contract, confidence and the field that produced it, such as dependsOn, targetFiles, evidence.artifacts, memory.relatedFiles or onebase.register.refs.
+Цель:
+  The operator can move from high-level graph context into concrete task/file/evidence detail while keeping all state changes behind existing runtime actions.
+
+Метки:
+  atom.profile: prompt_rule
+  rule.id: derived-graph-interactions
+  trace.status: verified
+]>
+
+#MVP_Vs_Later<[
+Базис:
+  The design task should not implement a renderer beyond a tiny future path; it should define a bounded first graph scope.
+Вектор:
+  MVP includes a derived graph projection function/schema and read-only view around WorkItem nodes, depends_on edges, target file nodes, legacy evidence nodes and click-through to the existing task detail drawer.
+  MVP uses current /api/snapshot or operator-dashboard.snapshot.v1 as input and can be served by the existing Node UI server as an additional route or tab.
+  MVP excludes graph editing, persistence of visual layout, custom drag/drop authoring, provider transcript replay, full graph DB, full OneBase parser implementation and broad renderer dependencies.
+  Later adds structured Evidence v1 nodes, MemoryRecord nodes, ProviderRun nodes, OneBase domain object nodes, adapter confidence indicators, Cytoscape.js + Dagre/ELK, search/focus URL state and static Mermaid/Graphviz export.
+  Later may materialize derived graph JSON as NDJSON/SQLite/GBC cache only when size or latency requires it; source of truth remains Work Graph plus structured evidence/memory/artifact projections.
+Цель:
+  First ship a small explanatory graph, then enrich it as structured producers become available.
+
+Метки:
+  atom.profile: architecture_decision
+  decision.id: derived-graph-mvp-later
+  trace.status: verified
+]>
+
+#Integration_With_Dashboard_And_WorkGraph<[
+Базис:
+  Dashboard snapshot already separates display-ready state from canonical Work Graph state.
+Вектор:
+  Work Graph .bvc remains canonical for WorkItems, statuses, dependencies, target files, evidence strings and trace status.
+  workgraph.snapshot.v1 supplies base WorkItem nodes and depends_on/target file edges; operator-dashboard.snapshot.v1 supplies current/ready/blocked focus, recentEvidence, workerRunSummaries and memoryUpdates.
+  Evidence v1, Project Memory v1 and adapter projections are optional inputs that enrich the derived graph without changing the Work Graph snapshot contract.
+  UI integration path: add a Graph tab or "open graph focused on this task" affordance in operator dashboard/backlog detail; the graph consumes derived graph JSON and returns selected ids to the detail drawer/router.
+  Runtime integration path: expose a buildDerivedGraphView(snapshot, projections) style function later, mirroring buildOperatorDashboardSnapshot and keeping graph projection deterministic and testable.
+  Trace verification: graph edges should expose source fields and confidence so trace.status can be reviewed without guessing from rendered positions.
+Цель:
+  The derived graph viewer becomes another rebuildable read model beside the dashboard snapshot, not a separate task source or visual editor.
+
+Метки:
+  atom.profile: architecture_decision
+  decision.id: derived-graph-dashboard-workgraph-integration
+  trace.status: verified
+]>

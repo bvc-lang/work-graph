@@ -1,0 +1,50 @@
+#Задача_implement_prompt_step_review_ui_mvp<[
+Базис:
+  Старый ioHasC имел prompt rules in .bvc и prompt-step panel; в новой сборке мы решили не тащить старый монолит, но prompt-as-step остаётся важной частью философии.
+  protocols/prompt-step-lowcode-replacement-scope-v1.bvc выбрал read-only «Промпты» view + GET /api/prompt-rules-projection как MVP surface.
+Вектор:
+  Реализовать минимальный Prompt Step Review UI в dashboard оператора: список prompt_rule atoms, просмотр Базис/Вектор/Цель, labels, compile/validation status и ссылки на evidence.
+  API: GET /api/prompt-rules-projection — scan protocols/*.bvc и rules/**/*.bvc.
+  Не реализовывать полноценный prompt editor до Atom Inspector write/proposal flow.
+Цель:
+  Prompt rules in .bvc становятся видимой частью Work Graph UI, а не скрытым файлом.
+Анализ:
+  Целесообразность:
+  Стоит завести «реализовать MVP Prompt Step Review UI» в бэклог.
+  Контекст и границы:
+  Реализовать минимальный Prompt Step Review UI в dashboard оператора: список prompt_rule atoms, просмотр Базис/Вектор/Цель, labels, compile/validation status и ссылки на evidence.
+  Зависимости и готовность:
+  depends_on=design-prompt-step-and-lowcode-replacement-scope; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Prompt rules in .bvc становятся видимой частью Work Graph UI, а не скрытым файлом.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441110
+  migration.strategy: replace
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:37.069Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:37.076Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: design-prompt-step-and-lowcode-replacement-scope
+  work.id: implement-prompt-step-review-ui-mvp
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: frontend_architect
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: medium
+  work.status: done
+  work.target_files: src/promptRulesProjection.mjs, src/workGraphBacklogUiServer.mjs, tests/promptRulesProjection.test.mjs, tests/workGraphBacklogUiServer.test.mjs, protocols/prompt-step-lowcode-replacement-scope-v1.bvc, work/backlog.bvc
+  work.title: реализовать MVP Prompt Step Review UI
+]>
+

@@ -1,0 +1,50 @@
+#Задача_phase_2_workgraph_os_daemon<[
+Базис:
+  Старый ioHasC имеет daemon, хранилище черновиков, WorkGraph scheduler и recovery идеи, но пересобрать пока ограничен локальным UI и одноразовым runner.
+  Задача «Фаза 2: WorkGraph OS и daemon» относится к контуру платформы агента и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: phase-1-agent-worker-live-loop.
+Вектор:
+  Спроектировать фазу WorkGraph OS: scheduler owns tick, recovery presets, приём черновиков, audit journal и derived projections.
+  Ближайший шаг исполнения: выполнить фазу 3 Step canon и intent graph.
+Цель:
+  Work Graph становится операционной системой проекта, а не только backlog-файлом.
+Анализ:
+  Целесообразность:
+  Стоит завести «Фаза 2: WorkGraph OS и daemon» в бэклог.
+  Контекст и границы:
+  Спроектировать фазу WorkGraph OS: scheduler owns tick, recovery presets, приём черновиков, audit journal и derived projections.
+  Зависимости и готовность:
+  depends_on=phase-1-agent-worker-live-loop; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Work Graph становится операционной системой проекта, а не только backlog-файлом.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441052
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:37.448Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:37.456Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: phase-1-agent-worker-live-loop
+  work.id: phase-2-workgraph-os-daemon
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: system_architect
+  work.pipeline_stage: decided
+  work.priority: critical
+  work.risk: high
+  work.status: done
+  work.target_files: protocols/workgraph-daemon-scheduler-tick.bvc, src/workGraphDaemonTick.mjs, protocols/workgraph-recovery-policy-presets.bvc, work/daemon-audit.jsonl, work/backlog.bvc
+  work.title: Фаза 2: WorkGraph OS и daemon
+]>
+

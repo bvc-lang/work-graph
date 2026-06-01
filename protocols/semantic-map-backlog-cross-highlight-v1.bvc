@@ -1,0 +1,16 @@
+#Semantic_Map_Backlog_Cross_Highlight_V1<[
+Базис:
+  Architecture map и dependency graph — derived projections; backlog UI должен cross-highlight related tasks при focus.
+Вектор:
+  Mapping: workId -> architectureBlockId (classifyWorkItemBlock) + intent domain + targetFiles.
+  Focus behavior: click task card highlights graph node и architecture block peers; graph click opens task drawer.
+  Graph остаётся read-only derived view без второго source of truth.
+Цель:
+  Semantic navigation связывает kanban, architecture и dependencies.
+
+Метки:
+  atom.profile: plan
+  design.id: semantic-map-backlog-cross-highlight-v1
+  work.source: design-semantic-map-backlog-cross-highlight
+  trace.status: verified
+]>

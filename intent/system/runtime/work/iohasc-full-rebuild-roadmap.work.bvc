@@ -1,0 +1,48 @@
+#Задача_iohasc_full_rebuild_roadmap<[
+Базис:
+  MVP пересобрать доказал узкий контур Work Graph, но старый ioHasC содержит больше подсистем: Step/HasC, IR/codegen/runtime, PVRG/semantic maps, agent runtime, daemon, OneBase, UI shell, CI и GBC/GFS/GVM.
+  Полный перенос без inventory-границ снова создаст монолит; поэтому нужен корневой roadmap atom, который держит дерево фаз и migration strategy.
+Вектор:
+  Вести перенос как большое дерево фаз: inventory, worker live-loop, WorkGraph OS, Step canon/intent graph, trace/PVRG, IR/codegen, memory/evidence, OneBase, agent/prompt eval, UI, CI и deferred GBC/GVM.
+  Для каждой подсистемы фиксировать migration.strategy: port, rebuild, replace или defer.
+Цель:
+  Backlog становится управляемой картой полного ioHasC rebuild, а не списком случайных следующих задач.
+Анализ:
+  Целесообразность:
+  Стоит завести «полный roadmap переноса ioHasC в Work Graph rebuild» в бэклог.
+  Контекст и границы:
+  Вести перенос как большое дерево фаз: inventory, worker live-loop, WorkGraph OS, Step canon/intent graph, trace/PVRG, IR/codegen, memory/evidence, OneBase, agent/prompt eval, UI, CI и deferred GBC/GVM.
+  Зависимости и готовность:
+  depends_on=нет; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Backlog становится управляемой картой полного ioHasC rebuild, а не списком случайных следующих задач.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441049
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:37.283Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:37.293Z
+  work.decision.verdict: useful
+  work.department: product-architecture
+  work.id: iohasc-full-rebuild-roadmap
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: product_architect
+  work.pipeline_stage: decided
+  work.priority: critical
+  work.risk: high
+  work.status: done
+  work.target_files: docs/plan-iohasc-full-rebuild-backlog.md, work/backlog.bvc, intent/index.bvc
+  work.title: полный roadmap переноса ioHasC в Work Graph rebuild
+]>
+

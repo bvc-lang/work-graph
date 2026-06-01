@@ -1,0 +1,49 @@
+#Задача_pilot_gbc_module_slice_ingest_boundary<[
+Базис:
+  GBC boundary protocol — contract-only.
+  Задача «Фаза 11: pilot ingest GBC module slice» относится к контуру Work Graph rebuild и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: phase-11-gbc-gfs-gvm-deferred.
+Вектор:
+  Read-only ingest ../project .iohasc/cache slice → intentGraphGbcSliceBoundary report.
+  Ближайший шаг исполнения: просмотреть и перевести в ready.
+Цель:
+  Измеримый pilot без mandatory gate.
+  Готово, когда выполнены проверки: Pilot report на sample slice или skip.
+Анализ:
+  Целесообразность:
+  Стоит завести «Фаза 11: pilot ingest GBC module slice» в бэклог.
+  Контекст и границы:
+  Read-only ingest ../project .iohasc/cache slice → intentGraphGbcSliceBoundary report.
+  Зависимости и готовность:
+  depends_on=phase-11-gbc-gfs-gvm-deferred; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Измеримый pilot без mandatory gate.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  migration.strategy: defer
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:37.529Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:37.536Z
+  work.decision.verdict: useful
+  work.department: devops-runtime
+  work.depends_on: phase-11-gbc-gfs-gvm-deferred
+  work.id: pilot-gbc-module-slice-ingest-boundary
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: system_architect
+  work.pipeline_stage: decided
+  work.priority: low
+  work.risk: medium
+  work.status: done
+  work.target_files: src/intentGraphGbcSliceBoundary.mjs, protocols/intent-graph-gbc-slice-boundary-v1.bvc
+  work.title: Фаза 11: pilot ingest GBC module slice
+]>

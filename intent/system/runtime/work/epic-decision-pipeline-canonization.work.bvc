@@ -1,0 +1,65 @@
+#Задача_epic_decision_pipeline_canonization<[
+Базис:
+  Источник: analytics:pipeline-analysis-to-board (AN-22).
+  PIPELINE_STAGES (src/workItemDecisionPipeline.mjs), work.parent_id/work.item_kind (AN-2, src/workItemHierarchy.mjs) и Intent Roadmap Canvas (src/intentRoadmapCanvas.mjs) уже реализованы, но нигде не описаны как единый канон с переходами.
+  Три провала: нет обратного контура (closing-анализ после done), нет bypass для operational/charter, связь Analysis↔Epic подразумевается 1:1 вместо N:M.
+Вектор:
+  Эпик объединяет 5 подзадач (document-canon, closing-analysis, dor-dod-gates, operational-bypass, roadmap-canvas-epic-rollup), которые закрывают три провала и поднимают видимость эпиков на доске.
+  Никаких новых runtime-моделей: эпик = work item с work.item_kind=epic без work.parent_id.
+  Никакой новой UI-вкладки: epic visibility встраивается в существующий Intent Roadmap Canvas.
+Цель:
+  Пайплайн «Анализ → Эпик → Задачи → Беклог → Доска» зафиксирован как canon, обкатан на собственном цикле и закрывается closing-анализом, который снова попадает в analytics-records.
+Анализ:
+  Целесообразность:
+  Без canon разные подсистемы (analytics, intake, runtime, lint, UI) развиваются независимо и расходятся в трактовке этапов; новые задачи рискуют создаваться вне пайплайна как «мелочи».
+  Контекст и границы:
+  Закрывается ровно три провала из §3 AN-22; не вводится новая сущность «Epic» и новая UI-вкладка «Дорожная карта».
+  Зависимости и готовность:
+  parent_id уже работает (implement-work-item-parent-id-runtime done); Intent Roadmap Canvas уже работает (implement-intent-roadmap-canvas-view done); backlogSchemaLint существует и расширяется.
+  Риски и альтернативы:
+  Риск формальности — закрывается DoR/DoD-гейтами в T3 (errors only там, где жёстко; warnings для мягких).
+  Альтернатива «оставить как есть» отклонена: AN-20 уже зафиксировал боль обратного контура.
+  Критерии успеха:
+  См. §7 AN-22: protocol опубликован, lint ловит ≥ 1 каждого класса нарушений, один полный цикл AN→эпик→2+ подзадач→closed→closing-AN отработан на живом примере (mission-control из AN-20), epic-узел виден в Intent Roadmap Canvas, AN-22 помечен feeds_epics.
+  Рекомендация для решения:
+  Полезно — задача готова к декомпозиции на T1..T5 и исполнению после T1.
+Решение:
+  Вердикт:
+  полезно
+  Создан по материалам приёма AN-22 (analytics:pipeline-analysis-to-board); T1 стартует первым как корневая канонизация, T2/T3/T4 параллельно после T1, T5 после T1+T3.
+Проверки:
+  protocols/decision-pipeline-canon-v1.bvc опубликован и проходит charter-проверку
+  backlogSchemaLint покрывает все DoR/DoD-правила из §4 AN-22
+  intent/<area>/work/<slug> для mission-control (или другого живого эпика) прошёл полный цикл, включая closing-analysis
+  Intent Roadmap Canvas показывает эпик epic-decision-pipeline-canonization с rollup N/M подзадач
+  AN-22 содержит метку analytics.feeds_epics: [epic-decision-pipeline-canonization]
+
+Свидетельства:
+  - 5 подзадач T1..T5 закрыты с verdict=useful и status=done
+  - protocols/decision-pipeline-canon-v1.bvc опубликован; lint:backlog без errors по pipeline gates
+  - Intent Roadmap Canvas: /api/roadmap/epics показывает epic-decision-pipeline-canonization с rollup 4/5 closed
+  - closing-анализ: work/analytics/closing-epic-decision-pipeline-canonization.md + journal AN-23
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-22
+  intake.source_kind: analytics-record
+  intake.source_ref: analytics:pipeline-analysis-to-board
+  migration.strategy: replace
+  trace.status: verified
+  work.analysis.at: 2026-05-31T09:59:00.000Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T09:59:00.000Z
+  work.decision.verdict: useful
+  work.department: product-process
+  work.id: epic-decision-pipeline-canonization
+  work.item_kind: epic
+  work.next_action: —
+  work.owner_role: product_owner
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: low
+  work.status: done
+  work.target_files: protocols/decision-pipeline-canon-v1.bvc, docs/decision-pipeline-canon.md, src/workItemDecisionPipeline.mjs, src/workItemHierarchy.mjs, src/backlogSchemaLint.mjs, src/intentRoadmapCanvas.mjs, src/intentRoadmapProjection.mjs, work/analytics/pipeline-analysis-to-board.md
+  work.title: канонизация пайплайна Анализ → Эпик → Задачи → Беклог → Доска
+]>

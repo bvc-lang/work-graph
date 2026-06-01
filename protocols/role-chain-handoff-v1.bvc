@@ -1,0 +1,22 @@
+#Протокол_Role_Chain_Handoff_V1<[
+Базис:
+  WorkItems несут work.owner_role и work.department; agent worker input должен явно передавать role profile без скрытого prompt state.
+  Старый ioHasC использует skills и multi-model roles; rebuild начинает с deterministic role→policy mapping.
+Вектор:
+  role_chain.handoff.v1:
+  product_architect → planning-heavy, read snapshot, no file write
+  feature_engineer → targetFiles write + verification shell allowlist
+  domain_architect → OneBase domain tools deferred; static verify + artifact refs
+  agent_platform_architect → runtime/audit tools, dry-run default
+  qa_automation → verify/record only, no claim without explicit task
+  frontend_architect → UI targetFiles bounded, no network
+  Worker Input providerHints.roleProfile и policy.mode derived from owner_role.
+Цель:
+  Tasks переходят между roles с predictable toolPolicy без manual prompt edits.
+
+Метки:
+  atom.profile: prompt_rule
+  protocol.id: role-chain-handoff-v1
+  work.source: design-role-chain-handoff
+  trace.status: verified
+]>

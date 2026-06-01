@@ -1,0 +1,50 @@
+#Задача_implement_migration_label_backlog_lint<[
+Базис:
+  Стратегии миграции описаны в roadmap, но при добавлении WorkItem lint не проверяет migration.strategy.
+  Задача «Фаза 0: lint метки migration.strategy» относится к контуру архитектуры продукта и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: phase-0-inventory-boundaries.
+Вектор:
+  Расширить backlogSchemaLint: допустимы только port, rebuild, replace, defer.
+  Ближайший шаг исполнения: просмотреть и перевести в ready.
+Цель:
+  Новая задача не попадает в intent tree без явной стратегии миграции.
+  Готово, когда выполнены проверки: npm run lint:backlog падает на atom без migration.strategy.
+Анализ:
+  Целесообразность:
+  Стоит завести «Фаза 0: lint метки migration.strategy» в бэклог.
+  Контекст и границы:
+  Расширить backlogSchemaLint: допустимы только port, rebuild, replace, defer.
+  Зависимости и готовность:
+  depends_on=phase-0-inventory-boundaries; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Новая задача не попадает в intent tree без явной стратегии миграции.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:36.990Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:36.997Z
+  work.decision.verdict: useful
+  work.department: product-architecture
+  work.depends_on: phase-0-inventory-boundaries
+  work.id: implement-migration-label-backlog-lint
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: system_architect
+  work.pipeline_stage: decided
+  work.priority: low
+  work.risk: medium
+  work.status: done
+  work.target_files: src/backlogSchemaLint.mjs, tests/backlogSchemaLint.test.mjs, scripts/backfill-migration-strategy-labels.mjs
+  work.title: Фаза 0: lint метки migration.strategy
+]>
+

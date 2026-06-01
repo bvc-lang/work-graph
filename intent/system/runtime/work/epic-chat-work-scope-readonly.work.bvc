@@ -1,0 +1,62 @@
+#Задача_epic_chat_work_scope_readonly<[
+Базис:
+  AN-28: оператор хочет видеть задачи в чате, но TodoWrite↔kanban sync создаёт dual backlog.
+  Инцидент T1–T10: chat todo «завис» после summary, хотя эпик в WG уже done.
+  AN-25 запретил TodoWrite для trackable work; нужен read-only мост для UX.
+Вектор:
+  MCP/API compact rollup эпика (work.id + status) для scope.
+  Agent-behavior: блок «Scope» в ответе из snapshot, не TodoWrite.
+  P2: UI panel poll snapshot по activeWorkId / epicId.
+  Без двусторонней записи статуса через chat todo.
+Цель:
+  Оператор видит прогресс subtasks в контексте сессии из Work Graph, без ложных pending после reload.
+Проверки:
+  MCP get_epic_scope / resource возвращает children с work.status
+  agent-behavior step chat-work-scope-readonly в bundle
+  canon §Chat read-only scope в decision-pipeline-canon.md
+  AN-29 closing analysis опубликован
+Анализ:
+  Целесообразность:
+  Стоит завести «Chat work scope (read-only): информативность без TodoWrite sync» в бэклог — по материалам AN-28 (work/analytics/chat-work-graph-todo-sync.md).
+  Контекст и границы:
+  MCP/API compact rollup эпика (work.id + status) для scope.
+  Зависимости и готовность:
+  depends_on=epic-agent-workgraph-enforcement, ux-mission-control-p0; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Оператор видит прогресс subtasks в контексте сессии из Work Graph, без ложных pending после reload.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-28 (work/analytics/chat-work-graph-todo-sync.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-28
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/chat-work-graph-todo-sync.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-05-31T14:19:05.271Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T14:19:05.271Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: epic-agent-workgraph-enforcement, ux-mission-control-p0
+  work.id: epic-chat-work-scope-readonly
+  work.item_kind: epic
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: integration_architect
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: work/analytics/chat-work-graph-todo-sync.md, docs/plan-chat-work-scope-readonly.md, packages/workgraph-mcp/src/handlers.mjs, rules/agent-behavior/chat-work-scope-readonly.bvc, docs/decision-pipeline-canon.md
+  work.title: Chat work scope (read-only): информативность без TodoWrite sync
+
+Свидетельства:
+  - AN-28 epic complete: MCP get_epic_work_scope, agent-behavior chat-work-scope-readonly, canon §Chat read-only scope, UI agent-scope-panel poll, AN-29 closing published
+]>

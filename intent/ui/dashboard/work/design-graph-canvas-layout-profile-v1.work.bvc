@@ -1,0 +1,53 @@
+#Задача_design_graph_canvas_layout_profile_v1<[
+Базис:
+  Источник: аналитика analytics:graph-canvas-layout-mess (AN-1), блок C п.8 — layout как часть модели Work Graph.
+  Сейчас POSITIONS захардкожены в schematicView.mjs и architectureLayout.mjs; нет версионируемого layout.profile в snapshot.
+  work/analytics/graph-canvas-layout-mess.md
+Вектор:
+  Описать protocols/graph-canvas-layout-profile-v1.bvc и schemas/graph-canvas-layout-profile.v1.json.
+  Зафиксировать поля layout.profile, layout.ranks, layout.manualOverrides и mapping в architecture/schematic snapshot.
+  Определить default auto-layout preset (layered-dag-v1) и правила merge override поверх engine output.
+Цель:
+  Канон layout profile v1 согласован с derived snapshot; агент может добавить profile в .bvc без правки UI-кода.
+Анализ:
+  Целесообразность:
+  Стоит завести «спроектировать layout profile v1 для graph canvas (.bvc / snapshot)» в бэклог — по материалам запись аналитики.
+  Контекст и границы:
+  Описать protocols/graph-canvas-layout-profile-v1.bvc и schemas/graph-canvas-layout-profile.v1.json.
+  Зависимости и готовность:
+  depends_on=implement-architecture-map-l1-mvp, implement-schematic-visualization-view-mvp; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Канон layout profile v1 согласован с derived snapshot; агент может добавить profile в .bvc без правки UI-кода.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма запись аналитики; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Свидетельства:
+  - protocols/graph-canvas-layout-profile-v1.bvc + schemas/graph-canvas-layout-profile.v1.json
+
+Метки:
+  atom.profile: work_item
+  intake.source_kind: analytics-record
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:35.943Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-30T17:22:35.952Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: implement-schematic-visualization-view-mvp, implement-architecture-map-l1-mvp
+  work.id: design-graph-canvas-layout-profile-v1
+  work.next_action: —
+  work.owner_role: frontend_architect
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: medium
+  work.status: done
+  work.target_files: protocols/graph-canvas-layout-profile-v1.bvc, schemas/graph-canvas-layout-profile.v1.json, schemas/architecture-snapshot.v1.json, src/schematicView.mjs, src/architectureSnapshot.mjs, work/analytics/graph-canvas-layout-mess.md
+  work.title: спроектировать layout profile v1 для graph canvas (.bvc / snapshot)
+]>

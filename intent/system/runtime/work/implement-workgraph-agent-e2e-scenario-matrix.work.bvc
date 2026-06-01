@@ -1,0 +1,50 @@
+#Задача_implement_workgraph_agent_e2e_scenario_matrix<[
+Базис:
+  ioHasC agent-matrix A1–A14+; Work Graph — только MCP stdio test.
+  Задача «Фаза 8: E2E-матрица agent-сценариев Work Graph» относится к контуру Work Graph rebuild и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: implement-mcp-stdio-integration-test.
+Вектор:
+  Playwright/Vitest matrix: cycle read, claim, evidence, semantic_search.
+  Ближайший шаг исполнения: просмотреть и перевести в ready.
+Цель:
+  Regression gate для MCP flows без port orchestrator.
+  Готово, когда выполнены проверки: Matrix JSON ≥3 сценария.
+Анализ:
+  Целесообразность:
+  Стоит завести «Фаза 8: E2E-матрица agent-сценариев Work Graph» в бэклог.
+  Контекст и границы:
+  Playwright/Vitest matrix: cycle read, claim, evidence, semantic_search.
+  Зависимости и готовность:
+  depends_on=implement-mcp-stdio-integration-test; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Regression gate для MCP flows без port orchestrator.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  migration.strategy: port
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:37.204Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:37.213Z
+  work.decision.verdict: useful
+  work.department: qa
+  work.depends_on: implement-mcp-stdio-integration-test
+  work.id: implement-workgraph-agent-e2e-scenario-matrix
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: qa_architect
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: medium
+  work.status: done
+  work.target_files: e2e/workgraph-agent-matrix.json, tests/workgraphAgentScenarioMatrix.test.mjs, tests/fixtures/workgraphMcpScenarioFixture.mjs
+  work.title: Фаза 8: E2E-матрица agent-сценариев Work Graph
+]>
+

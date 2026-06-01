@@ -1,0 +1,138 @@
+#Сценарий_Change_Posting_Rule_РеализацияТоваров<[
+Базис:
+  OneBase trade demo conducts РеализацияТоваров through FIFO batches and writes movements to stock, batch, gross-profit and settlement registers.
+  Golden path must change a real posting rule, but this design task must not edit OneBase code.
+Вектор:
+  Concrete rule change: add warehouse dimension to РеализацияТоваров gross-profit posting so ВаловаяПрибыль can be analyzed by Склад without changing FIFO cost logic.
+  Before: the posting script writes ВаловаяПрибыль by Номенклатура with Выручка and Себестоимость only; reports/widgets can show gross profit by item and month, but cannot separate stores.
+  After: the intended implementation records Склад from the document into ВаловаяПрибыль movements and the register/report can expose store-level gross profit while FIFO, inventory and buyer debt remain unchanged.
+Цель:
+  Give an agent one concrete OneBase business task: preserve FIFO posting while extending gross-profit analytics from item-only to item-by-warehouse.
+
+Проверки:
+  scenario identifies one exact posting-rule change
+  affected OneBase artifacts and registers are listed
+  expected before/after behavior is testable
+  risk, rollback and agent task outline are present
+
+Метки:
+  atom.profile: prompt_rule
+  workflow.id: onebase-change-posting-rule
+  domain.id: onebase
+  onebase.document: РеализацияТоваров
+  onebase.rule: gross-profit-by-warehouse
+  work.source: onebase-posting-scenario-design
+  trace.status: verified
+]>
+
+#Affected_Artifacts<[
+Базис:
+  The rule crosses metadata, posting script, accumulation registers and downstream reporting.
+Вектор:
+  Document YAML: ../onebase/examples/trade/documents/реализация_товаров.yaml declares posting=true, header fields Покупатель/Склад/Сумма and tablepart Товары with Номенклатура/Количество/Цена/Сумма.
+  Posting script: ../onebase/examples/trade/src/реализациятоваров.posting.os procedure ОбработкаПроведения already uses this.Склад for ОстаткиТоваров and writes ВаловаяПрибыль with Номенклатура, Выручка and Себестоимость.
+  Register schema: ../onebase/examples/trade/registers/валовая_прибыль.yaml currently has dimension Номенклатура and resources Выручка/Себестоимость; the scenario expects Склад as an added dimension if verification confirms schema change is the right gate.
+  Downstream readers: ../onebase/examples/trade/reports/валовая_прибыль.yaml and ../onebase/examples/trade/widgets/валовая_прибыль_kpi.yaml read РегистрНакопления.ВаловаяПрибыль; report grouping/filtering may need targeted update, KPI should remain total-compatible.
+  Related registers preserved: ОстаткиТоваров расход by Номенклатура/Склад, ПартииТоваров расход by Номенклатура/ДатаПоставки, Взаиморасчеты приход by Контрагент/ТипКонтрагента.
+Цель:
+  The agent can open a bounded context slice instead of scanning all OneBase files.
+
+Метки:
+  atom.profile: trace
+  workflow.id: onebase-change-posting-rule
+  onebase.document_file: ../onebase/examples/trade/documents/реализация_товаров.yaml
+  onebase.posting_script: ../onebase/examples/trade/src/реализациятоваров.posting.os
+  onebase.register.refs: ВаловаяПрибыль, ОстаткиТоваров, ПартииТоваров, Взаиморасчеты
+  trace.status: verified
+]>
+
+#Expected_Behavior<[
+Базис:
+  A small posting-rule change is only useful if success and failure outcomes are unambiguous.
+Вектор:
+  Before: two РеализацияТоваров documents for the same Номенклатура from different Склад values aggregate together in ВаловаяПрибыль because the register has no Склад dimension.
+  After: the same sales keep identical total Выручка, Себестоимость and ВаловаяПрибыль, but rows can be grouped or filtered by Склад.
+  Invariants: FIFO order by ДатаПоставки is preserved, Строка.Сумма remains Количество * Цена, Себестоимость derives only from consumed batches, ОстаткиТоваров still uses this.Склад, and Взаиморасчеты.Сумма equals document total.
+Цель:
+  Verification can assert business behavior, not just file parsing.
+
+Метки:
+  atom.profile: trace
+  workflow.id: onebase-change-posting-rule
+  onebase.rule: gross-profit-by-warehouse
+  trace.status: verified
+]>
+
+#Verification_Expectations<[
+Базис:
+  The next task selects the final command, but this scenario must state what evidence that command should prove.
+Вектор:
+  Minimum gate should parse or compile the edited YAML and .os artifacts.
+  Preferred targeted scenario should post two sales for the same Номенклатура from different Склад values and assert separate ВаловаяПрибыль rows or grouping keys while preserving total profit.
+  Failure evidence should include the command, working directory, exit code, touched artifacts and whether the failure is parser, runtime, assertion or fixture setup.
+Цель:
+  onebase-verification-command can choose a deterministic command without redesigning business expectations.
+
+Метки:
+  atom.profile: trace
+  workflow.id: onebase-change-posting-rule
+  work.next_action: onebase-verification-command
+  trace.status: verified
+]>
+
+#Risk_Rollback<[
+Базис:
+  Posting changes can corrupt stock and profit if dimensions or cost values drift.
+Вектор:
+  Main risks: adding Склад to ВаловаяПрибыль can require data migration in real deployments, break report queries if grouping is incomplete, or accidentally alter FIFO cost/stock movements while touching the posting script.
+  Rollback: revert changes to ../onebase/examples/trade/registers/валовая_прибыль.yaml, ../onebase/examples/trade/src/реализациятоваров.posting.os, gross-profit report/widget files and any scenario fixtures/tests created for this rule.
+  Review boundary: any change to shared posting runtime, FIFO batch selection or non-gross-profit register schemas must become a separate Work Graph task because it expands blast radius beyond this golden path.
+Цель:
+  The implementation task stays small enough to review and safe to undo.
+
+Метки:
+  atom.profile: architecture_decision
+  decision.id: onebase-change-posting-rule-risk-rollback
+  workflow.id: onebase-change-posting-rule
+  trace.status: verified
+]>
+
+#WorkGraph_Task_Template<[
+Базис:
+  The next agent should receive a task shape that can be converted to StepAtomDraft and executed through Work Graph.
+Вектор:
+  WorkItem id: onebase-implement-gross-profit-warehouse-dimension.
+  Title: add warehouse dimension to РеализацияТоваров gross-profit posting.
+  Depends on: onebase-verification-command.
+  Target files: ../onebase/examples/trade/registers/валовая_прибыль.yaml, ../onebase/examples/trade/src/реализациятоваров.posting.os, ../onebase/examples/trade/reports/валовая_прибыль.yaml plus targeted test/fixture files selected by onebase-verification-command.
+  Trace refs: onebase-realization-golden-path, onebase-change-posting-rule, gross-profit-by-warehouse.
+  DoD: gross-profit movements include Склад; report can separate stores; monthly KPI total remains compatible; FIFO, stock and debt behavior are unchanged; verification command evidence is recorded.
+Цель:
+  The scenario can become an executable Work Graph task without another design pass.
+
+Метки:
+  atom.profile: work_item
+  work.template_id: onebase-implement-gross-profit-warehouse-dimension
+  workflow.id: onebase-change-posting-rule
+  work.next_action: select-verification-command
+  trace.status: verified
+]>
+
+#StepAtomDraft_Outline<[
+Базис:
+  Agent-facing payload should stay structured and short.
+Вектор:
+  profile: work_item.
+  basis: РеализацияТоваров posting uses document Склад for stock movements but gross-profit analytics currently have only Номенклатура.
+  vector: inspect document YAML, posting .os, ВаловаяПрибыль register/report/widget and selected verification command; add warehouse dimension to gross-profit movements and reporting; add/update targeted fixture/test.
+  goal: gross profit can be analyzed by warehouse while FIFO cost and totals stay stable.
+  labels: work.id=onebase-implement-gross-profit-warehouse-dimension; onebase.document=РеализацияТоваров; onebase.rule=gross-profit-by-warehouse; work.target_files=../onebase/examples/trade/registers/валовая_прибыль.yaml, ../onebase/examples/trade/src/реализациятоваров.posting.os, ../onebase/examples/trade/reports/валовая_прибыль.yaml; trace.refs=onebase-realization-golden-path, onebase-change-posting-rule.
+  checks: gross-profit movement includes Склад; report can group/filter by Склад; KPI total remains compatible; FIFO, stock and debt behavior are unchanged; selected verification command passes.
+Цель:
+  The StepAtomDraft writer has enough fields to create the future implementation atom.
+
+Метки:
+  atom.profile: trace
+  workflow.id: onebase-change-posting-rule
+  trace.status: verified
+]>

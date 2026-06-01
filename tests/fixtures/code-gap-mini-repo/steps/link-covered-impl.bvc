@@ -1,0 +1,17 @@
+#Link_Covered_Impl<[
+Базис:
+  Link step with matching implementation in src/covered.mjs.
+Вектор:
+  mode: link
+Цель:
+  Covered by @iohasc-tur marker.
+
+Реализация:
+  tur_id: CoveredFn
+
+Метки:
+  atom.profile: trace
+  compiler.mode: link
+  guid: 550e8400-e29b-41d4-a716-446655440102
+  trace.status: verified
+]>

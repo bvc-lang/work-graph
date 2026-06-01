@@ -1,0 +1,55 @@
+#Задача_inventory_public_private_packages_an42<[
+Базис:
+  Сейчас один репозиторий смешивает core, R&D (GVM/Genesis), eval fixtures и vertical packs — при публикации это утечка и путаница.
+  AN-42 требует явных границ: packages/public, packages/private, fixtures/public vs private.
+Вектор:
+  Составить реестр каталогов с метками public | private | experimental.
+  Пометить eval corpus, customer fixtures, operator playbooks как private.
+  Документ в docs/publication-inventory-an42.md или раздел в ADR.
+Цель:
+  Любой maintainer видит, что можно публиковать в npm/tarball, а что нет.
+Проверки:
+  Реестр public/private/experimental опубликован
+  Eval и customer fixtures помечены private
+  experimental/* не обещается как продукт в README
+Анализ:
+  Зачем:
+  Сейчас один репозиторий смешивает core, R&D (GVM/Genesis), eval fixtures и vertical packs — при публикации это утечка и путаница.
+  Контекст: AN-42 требует явных границ: packages/public, packages/private, fixtures/public vs private.
+  Когда:
+  После готовности: epic-work-graph-open-publication, decide-work-graph-open-publication-adr.
+  Готово, когда:
+  Любой maintainer видит, что можно публиковать в npm/tarball, а что нет.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: epic-work-graph-open-publication, decide-work-graph-open-publication-adr.
+
+Свидетельства:
+  - docs/publication-inventory-an42.md
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-42
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/open-publication-technology-holdback-strategy.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-01T14:37:53.784Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-01T14:37:53.784Z
+  work.decision.verdict: useful
+  work.department: product-architecture
+  work.depends_on: epic-work-graph-open-publication, decide-work-graph-open-publication-adr
+  work.id: inventory-public-private-packages-an42
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: system_architect
+  work.parent_id: epic-work-graph-open-publication
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: work/analytics/open-publication-technology-holdback-strategy.md, docs/plan-work-graph-open-publication.md, docs/publication-inventory-an42.md
+  work.title: Инвентаризация: public, private и experimental пакеты
+]>

@@ -1,0 +1,22 @@
+#Протокол_Bracket_IR_Trace_Envelope_V1<[
+Базис:
+  ioHasC Bracket IR cache (Phase 11) вычисляет vectorHash для bracket: секций; structural step edits должны инвалидировать или обновлять связанные WorkItems.
+  workitem.trace-envelope.v1 уже агрегирует trace refs; Bracket IR добавляет hash/diff signal без второго source of truth.
+Вектор:
+  Labels:
+  trace.bracket_ir_hash — vectorHash последнего known-good bracket body
+  trace.bracket_ir_step — .bvc path containing bracket: vector section
+  trace.bracket_ir_engine — parser engine version string (port reference from bracketIrEngineVersion)
+  Drift: recompute hash from step body; if differs from label → diagnostic bracket_ir.hash_drift + needs_review trace.status suggestion.
+  Diff evidence: Bracket IR diff result может записываться как codegen integrity или decision evidence.
+Цель:
+  Step structural edits детерминированно связаны с WorkItem verify lifecycle.
+
+Метки:
+  atom.profile: prompt_rule
+  protocol.id: bracket-ir-trace-envelope-v1
+  work.source: port-bracket-ir-trace-envelope
+  migration.source_repo: ../project
+  migration.source_paths: src/parser/bracketIrVectorHash.ts, src/parser/parseBracketIrCached.ts
+  trace.status: verified
+]>

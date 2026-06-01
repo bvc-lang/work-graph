@@ -1,0 +1,53 @@
+#Задача_design_code_gap_backlog_feeder<[
+Базис:
+  Старый ioHasC Phase 8 code-gap умеет находить code без step coverage.
+  Задача «спроектировать code-gap feeder для backlog» относится к контуру платформы агента и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: phase-5-ir-codegen-runtime.
+Вектор:
+  Спроектировать output code-gap analyzer как бэклог suggestion feeder с confidence, source files и suggested WorkItems.
+  Ближайший шаг исполнения: спроектировать writer MemoryRecord.
+Цель:
+  Existing code можно втягивать в Work Graph, а не оставлять невидимым.
+  Готово, когда выполнены проверки: mapping gap report -> WorkItem черновик определён.
+Анализ:
+  Целесообразность:
+  Стоит завести «спроектировать code-gap feeder для backlog» в бэклог.
+  Контекст и границы:
+  Спроектировать output code-gap analyzer как бэклог suggestion feeder с confidence, source files и suggested WorkItems.
+  Зависимости и готовность:
+  depends_on=phase-5-ir-codegen-runtime; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Existing code можно втягивать в Work Graph, а не оставлять невидимым.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441074
+  migration.source_paths: src/scanner/codeGapAnalyzer.ts
+  migration.source_repo: ../project
+  migration.strategy: port
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:35.861Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:35.870Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: phase-5-ir-codegen-runtime
+  work.id: design-code-gap-backlog-feeder
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: compiler_engineer
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: protocols/code-gap-backlog-feeder-v1.bvc, src/codeGapBacklogFeeder.mjs, tests/codegenEvidence.test.mjs, work/backlog.bvc
+  work.title: спроектировать code-gap feeder для backlog
+]>
+

@@ -1,0 +1,18 @@
+#Протокол_Daemon_Integration_Tests_V1<[
+Базис:
+  Daemon tick делегирует в live-loop; unit tests покрывают pure functions, но workflow regression нужен fixture backlog + journal paths.
+Вектор:
+  Fixture backlog: ready task with done dependency, bounded targetFiles.
+  Success path: runWorkGraphDaemonTickFromBacklogFile → ok=true, worker_run_finished audit, worker output succeeded.
+  Blocked path: denied worker policy → tick_failed, recovery suggestion with retry advice.
+  Dry-run path: schedule without worker execution (already in workGraphDaemonTick.test.mjs).
+  Fixtures live under tests/fixtures/daemon-integration/; tests/workGraphDaemonIntegration.test.mjs in deterministic suite.
+Цель:
+  WorkGraph OS scheduler regression-safe без Playwright для MVP.
+
+Метки:
+  atom.profile: prompt_rule
+  protocol.id: daemon-integration-tests-v1
+  work.source: design-daemon-integration-tests
+  trace.status: verified
+]>

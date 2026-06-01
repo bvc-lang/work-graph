@@ -1,0 +1,52 @@
+#Задача_onebase_posting_scenario_design<[
+Базис:
+  Первый domain scenario должен быть бизнес-значимым и проверяемым, а не toy CRUD.
+  OneBase trade demo содержит FIFO posting и регистры, где изменение правила имеет понятный риск.
+  Предварительно должны быть закрыты зависимости: onebase-artifact-mapping.
+Вектор:
+  Выбрать конкретное изменение правила проведения: например проверка отрицательных остатков, партия/FIFO edge case или отражение валовой прибыли.
+  Описать expected behavior, affected artifacts, risks и rollback.
+  Сформировать Work Graph task template для такого изменения.
+Цель:
+  Агент получает чёткую доменную задачу с проверяемым результатом.
+  Готово, когда выполнены проверки: выбран один конкретный rule change.
+Анализ:
+  Целесообразность:
+  Стоит завести «спроектировать сценарий изменения posting rule OneBase» в бэклог.
+  Контекст и границы:
+  Выбрать конкретное изменение правила проведения: например проверка отрицательных остатков, партия/FIFO edge case или отражение валовой прибыли.
+  Зависимости и готовность:
+  depends_on=onebase-artifact-mapping; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Агент получает чёткую доменную задачу с проверяемым результатом.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441018
+  migration.strategy: port
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:37.336Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:37.343Z
+  work.decision.verdict: useful
+  work.department: product-architecture
+  work.depends_on: onebase-artifact-mapping
+  work.id: onebase-posting-scenario-design
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: domain_product_owner
+  work.pipeline_stage: decided
+  work.priority: critical
+  work.risk: high
+  work.status: done
+  work.target_files: domains/onebase/workflows/change-posting-rule.bvc
+  work.title: спроектировать сценарий изменения posting rule OneBase
+]>
+

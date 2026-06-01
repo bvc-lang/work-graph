@@ -1,0 +1,56 @@
+#Задача_write_an34_closing_architecture_views_v1<[
+Базис:
+  Canon: closing analysis после done эпика по AN-34.
+Вектор:
+  work/analytics/closing-epic-architecture-views-v1.md
+  analytics-records.jsonl closing entry
+  feeds_epics link back to epic
+Цель:
+  AN-34 закрыт с evidence multi-view delivery.
+Проверки:
+  closing doc published
+  journal entry appended
+  epic closed with evidence
+Анализ:
+  Целесообразность:
+  Стоит завести «AN-34 closing analysis: epic-architecture-views-v1» в бэклог — по материалам AN-34 (work/analytics/architecture-visualization-patterns-comparison.md).
+  Контекст и границы:
+  work/analytics/closing-epic-architecture-views-v1.md
+  Зависимости и готовность:
+  depends_on=epic-architecture-views-v1, tests-architecture-views-v1, architecture-snapshot-mermaid-export-cli; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  AN-34 закрыт с evidence multi-view delivery.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-34 (work/analytics/architecture-visualization-patterns-comparison.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-34
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/architecture-visualization-patterns-comparison.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T19:21:12.952Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T19:21:12.952Z
+  work.decision.verdict: useful
+  work.department: system-runtime
+  work.depends_on: epic-architecture-views-v1, tests-architecture-views-v1, architecture-snapshot-mermaid-export-cli
+  work.id: write-an34-closing-architecture-views-v1
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: integration_architect
+  work.parent_id: epic-architecture-views-v1
+  work.pipeline_stage: closed
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: work/analytics/closing-epic-architecture-views-v1.md, work/analytics-records.jsonl, work/analytics/architecture-visualization-patterns-comparison.md
+  work.title: AN-34 closing analysis: epic-architecture-views-v1
+]>

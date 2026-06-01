@@ -1,0 +1,52 @@
+#Задача_implement_step_atom_formatter<[
+Базис:
+  LLM должна работать через Step Atom Draft JSON, а не raw .bvc.
+  Без formatter-а schema остаётся только договорённостью.
+  Предварительно должны быть закрыты зависимости: define-workitem-v1.
+Вектор:
+  Реализовать deterministic formatter StepAtomDraft -> canonical .bvc.
+  Реализовать validator ошибок, понятных LLM.
+  Проверить roundtrip на профилях charter, work_item и prompt_rule.
+Цель:
+  Новые .bvc atom создаются безопасно из структурированной формы.
+  Готово, когда выполнены проверки: formatter пишет Базис/Вектор/Цель/Метки в стабильном порядке.
+Анализ:
+  Целесообразность:
+  Стоит завести «реализовать formatter для Step Atom» в бэклог.
+  Контекст и границы:
+  Реализовать deterministic formatter StepAtomDraft -> canonical .bvc.
+  Зависимости и готовность:
+  depends_on=define-workitem-v1; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Новые .bvc atom создаются безопасно из структурированной формы.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441006
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:37.161Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:37.168Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: define-workitem-v1
+  work.id: implement-step-atom-formatter
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: feature_engineer
+  work.pipeline_stage: decided
+  work.priority: critical
+  work.risk: medium
+  work.status: done
+  work.target_files: schemas/step-atom-draft.v1.json, protocols/llm-step-atom-writer.bvc
+  work.title: реализовать formatter для Step Atom
+]>
+

@@ -1,0 +1,62 @@
+#Задача_pivot_to_1c_onebase_vertical<[
+Базис:
+  Источник: analytics:product-self-audit-user (AN-7).
+  AN-7: четыре позиции (A memory layer / B agent governance / C 1С vertical / D open canon).
+  Рекомендация: C — есть в charter, нет конкурентов, конкретный сегмент, платёжеспособный рынок RU/CIS.
+  Связано с AN-6 (техдолг как следствие отсутствия позиции): work/analytics/product-self-audit-tech.md.
+Вектор:
+  Один прикладной сценарий 1С/OneBase, проведённый через golden path не-автором.
+  Всё, что не служит этому сценарию, переезжает в experimental/ или признаётся R&D.
+  Метрика успеха: один не-автор → одна реальная 1С-задача → verified с evidence.
+Цель:
+  Продукт получает явного пользователя и измеримую ценность; charter и README соответствуют факту.
+Анализ:
+  Целесообразность:
+  Стоит завести «pivot продукта в 1С/OneBase vertical (позиция C из AN-7)» в бэклог — по материалам AN-7 (analytics:product-self-audit-user).
+  Контекст и границы:
+  Один прикладной сценарий 1С/OneBase, проведённый через golden path не-автором.
+  Зависимости и готовность:
+  depends_on=нет; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Продукт получает явного пользователя и измеримую ценность; charter и README соответствуют факту.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-7 (analytics:product-self-audit-user); исполнять после вердикта «полезно» и готовности зависимостей.
+Проверки:
+  charter/main.bvc описывает 1С/OneBase vertical как primary scope
+  README.md имеет «Getting Started» для 1С-разработчика, не для автора
+  experimental/ содержит всё, что не входит в vertical (Genesis, GVM, multi-domain ambitions)
+  один не-автор завершил golden path с verified evidence
+
+Свидетельства:
+  - Position C canon in charter + README + decision record
+  - pilot docs ready for external eval
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-7
+  intake.source_kind: analytics-record
+  intake.source_ref: analytics:product-self-audit-user
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T22:16:35.027Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-30T22:16:35.027Z
+  work.decision.verdict: useful
+  work.department: product
+  work.id: pivot-to-1c-onebase-vertical
+  work.item_kind: epic
+  work.next_action: —
+  work.owner_role: product_owner
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: high
+  work.status: done
+  work.target_files: charter/main.bvc, README.md, experimental/, work/analytics/product-self-audit-user.md, work/analytics/product-self-audit-tech.md
+  work.title: pivot продукта в 1С/OneBase vertical (позиция C из AN-7)
+]>

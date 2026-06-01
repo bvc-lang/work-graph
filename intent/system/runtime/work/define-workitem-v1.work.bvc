@@ -1,0 +1,48 @@
+#Задача_define_workitem_v1<[
+Базис:
+  Work Graph должен быть центральной операционной моделью новой сборки.
+  Старый Work Graph уже содержит статусы, role_chain, evidence, DoD, trace refs и журнал итераций.
+Вектор:
+  Выделить минимальный WorkItem v1: id, title, status, role, depends_on, target_files, trace_refs, dod, evidence, journal.
+  Оставить расширения вроде planning_poker, departments, recovery policy для v2.
+Цель:
+  Получить компактный контракт задачи, пригодный для хранения в .bvc и экспорта в JSON snapshot.
+Анализ:
+  Целесообразность:
+  Стоит завести «определить WorkItem v1» в бэклог.
+  Контекст и границы:
+  Выделить минимальный WorkItem v1: id, title, status, role, depends_on, target_files, trace_refs, dod, evidence, journal.
+  Зависимости и готовность:
+  depends_on=нет; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Получить компактный контракт задачи, пригодный для хранения в .bvc и экспорта в JSON snapshot.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441001
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:35.774Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:35.784Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.id: define-workitem-v1
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: product_architect
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: charter/main.bvc, work/backlog.bvc
+  work.title: определить WorkItem v1
+]>
+

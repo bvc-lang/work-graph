@@ -1,0 +1,50 @@
+#Задача_phase_5_ir_codegen_runtime<[
+Базис:
+  ioHasC имеет IR, Vector DSL, Bracket IR, compiler codegen и semantic runtime; пересобрать должен подключить их как evidence-producing pipelines.
+  Задача «Фаза 5: IR, codegen и semantic runtime» относится к контуру платформы агента и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: phase-4-trace-pvrg-semantic-map.
+Вектор:
+  Перенести IR/codegen/runtime как инструменты verified task: codegen evidence, Bracket IR diff, compiler round-trip, code-gap feeder и Vector DSL branch tests.
+  Ближайший шаг исполнения: выполнить фазу 6 Project Memory и Evidence.
+Цель:
+  Генерация и reverse engineering становятся Work Graph verify steps, а не отдельными CLI-островами.
+Анализ:
+  Целесообразность:
+  Стоит завести «Фаза 5: IR, codegen и semantic runtime» в бэклог.
+  Контекст и границы:
+  Перенести IR/codegen/runtime как инструменты verified task: codegen evidence, Bracket IR diff, compiler round-trip, code-gap feeder и Vector DSL branch tests.
+  Зависимости и готовность:
+  depends_on=phase-4-trace-pvrg-semantic-map; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Генерация и reverse engineering становятся Work Graph verify steps, а не отдельными CLI-островами.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441055
+  migration.strategy: port
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:37.477Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:37.485Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: phase-4-trace-pvrg-semantic-map
+  work.id: phase-5-ir-codegen-runtime
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: compiler_engineer
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: high
+  work.status: done
+  work.target_files: protocols/codegen-evidence-contract-v1.bvc, src/codegenEvidence.mjs, src/bracketIrTraceSignal.mjs, src/codeGapBacklogFeeder.mjs, tests/codegenEvidence.test.mjs, work/backlog.bvc
+  work.title: Фаза 5: IR, codegen и semantic runtime
+]>
+

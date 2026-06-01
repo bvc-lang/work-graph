@@ -1,0 +1,109 @@
+#Решение_Runtime_Substrate_WorkGraph<[
+Базис:
+  Work Graph уже разделил intent tree layout, serialization boundary, OS integration loop and FlatBuffers/GBC evaluation.
+  Открытый риск — смешать canonical project truth with runtime queue, UI snapshot, binary cache or future native reader before MVP proves the need.
+Вектор:
+  Canonical store for MVP and migration target is .bvc intent tree: WorkItems, protocols, evidence summaries and memory records live as reviewable Step atoms with stable ids, links and trace labels.
+  Compatibility projection is work/backlog.bvc during migration: current UI/runtime readers may keep parsing it, but it is an index/projection over canonical intent atoms rather than the long-term ownership location.
+  Derived snapshots are deterministic JSON for UI, workers, tests and graph/RAG context; they are safe to delete and rebuild from .bvc sources.
+  SQLite is optional runtime substrate for queue/index/locks/history/scheduling: task_index, run_queue, run_log, claim locks, retry windows and efficient polling may live there, but status, evidence and decisions must reconcile back to canonical .bvc.
+  FlatBuffers/GBC is optional derived binary slice after explicit triggers: large snapshots, zero-copy reader need, native/Zig/Go consumer, GFS overlay or cross-process ABI pressure. It must not serialize the whole Step language or become a hidden canonical store.
+  NoSQL is not an MVP goal. Revisit only for remote collaborative writes, offline/online sync, document-scale query volume, managed remote document API requirements or query/event scale beyond intent tree plus JSON/SQLite projections.
+  Zig/native role is future reader/performance/R&D: useful for schema-stable slice readers, validators, GBC/GFS experiments or high-performance indexing, not for MVP source of truth or mandatory memory core.
+Цель:
+  Runtime substrate is chosen as boring canonical .bvc plus rebuildable projections, with databases and binary/native formats introduced only as measured execution aids.
+
+Проверки:
+  canonical store choice is explicit
+  compatibility backlog role is explicit
+  JSON, SQLite, FlatBuffers/GBC, NoSQL and Zig roles are separated
+  migration and operations do not make cache/queue/binary artifacts authoritative
+
+Метки:
+  atom.profile: architecture_decision
+  decision.id: runtime-substrate-decision
+  decision.status: accepted
+  work.source: choose-runtime-substrate
+  source.canonical: step-intent-tree
+  compatibility.projection: work/backlog.bvc
+  runtime.snapshot: workgraph.snapshot.v1-json
+  sqlite.role: optional-runtime-projection
+  gbc.role: optional-derived-binary-slice
+  nosql.scope: non-goal-mvp
+  zig.role: future-native-reader-rnd
+  trace.status: verified
+]>
+
+#Канонический_Store_And_Backlog_Projection<[
+Базис:
+  Current compatibility readers still consume work/backlog.bvc, while intent tree layout already defines smaller canonical WorkItem files.
+Вектор:
+  New source-of-truth writes should target intent/**/*.work.bvc and related .bvc protocol/evidence/memory atoms first.
+  work/backlog.bvc remains a stable, reviewable projection for current parseWorkItems/buildSnapshot readers, queue ordering and migration compatibility.
+  During transition, dual updates are allowed only to keep the mirror consistent; after reader cutover, backlog should be regenerated or checked from intent tree.
+  Projection drift must be treated as verification failure: duplicate work.id, missing dependency, stale status or missing evidence should block trace.status verified.
+Цель:
+  Operators keep a familiar backlog surface while storage ownership moves to intent tree atoms.
+
+Метки:
+  atom.profile: trace
+  contract.id: runtime-canonical-store-and-backlog-projection
+  decision.id: runtime-substrate-decision
+  trace.status: verified
+]>
+
+#JSON_SQLite_And_Runtime_Operations<[
+Базис:
+  UI, workers and schedulers need fast read models, but read speed is not the same as project truth.
+Вектор:
+  JSON snapshots remain the first interchange for operator dashboard, worker input, tests, derived graph and RAG context because browsers and tools consume them directly and diffs stay readable.
+  SQLite may be introduced when runtime needs durable claims, multi-process locking, scheduled runs, retry/rate-limit state, crash recovery, history, action feed joins or efficient polling.
+  SQLite tables must be projection-oriented and rebuildable from .bvc plus worker/evidence outputs; writes that affect WorkItem state become transition proposals and evidence records, not silent DB mutations.
+  Runtime startup should tolerate missing SQLite by rebuilding from .bvc/JSON; corruption or stale SQLite should be recoverable by deleting the DB and replaying canonical atoms/log projections.
+Цель:
+  Local execution can become reliable without letting queue mechanics own task semantics.
+
+Метки:
+  atom.profile: architecture_decision
+  decision.id: json-sqlite-runtime-roles
+  decision.parent: runtime-substrate-decision
+  trace.status: verified
+]>
+
+#Binary_Native_And_NoSQL_Boundaries<[
+Базис:
+  FlatBuffers/GBC, GFS, Zig/native readers and NoSQL can all be useful later, but each solves a different pressure.
+Вектор:
+  FlatBuffers/GBC starts only from an explicit derived-slice trigger and should cover a minimal WorkGraphSlice, WorkItem, DependencyEdge, EvidenceRef and SchemaVersion shape.
+  Zig/native work is R&D or performance implementation for readers, validators, slice generation or indexing; it must read canonical/projection contracts rather than redefine Work Graph truth.
+  NoSQL remains out of MVP because .bvc plus deterministic JSON plus optional SQLite covers current authoring, review, UI and local scheduling needs with less operational surface.
+  Any future move toward NoSQL or binary-first canonical storage requires a separate architecture decision that preserves reviewability, stable ids, migration path, conflict handling and evidence gates.
+Цель:
+  Advanced substrate work stays available without becoming accidental architecture.
+
+Метки:
+  atom.profile: architecture_decision
+  decision.id: binary-native-nosql-boundaries
+  decision.parent: runtime-substrate-decision
+  deferred.next_work: defer-gbc-gvm-zig-scope
+  trace.status: verified
+]>
+
+#Migration_And_Operational_Implications<[
+Базис:
+  The project is already between backlog monolith compatibility and intent tree canonical layout.
+Вектор:
+  Migration should keep status/evidence edits synchronized between canonical intent task files and work/backlog.bvc until runtime readers scan intent roots directly.
+  Tests must continue to compare snapshots across backlog projection and intent tree files, because runtime substrate errors usually appear as missing ids, stale statuses or broken dependency/evidence links.
+  Operational commands should publish or serve JSON snapshots from canonical state; worker queues may cache runnable tasks but must re-check dependency/status gates before claim and before done.
+  Backup/rollback is simple by design: .bvc atoms are reviewable in git, JSON/SQLite/GBC artifacts can be regenerated, and failed cache migrations should not require recovering hidden project state.
+  Next architecture follow-up is to finalize GBC/GVM/Zig deferral scope so the team knows which native/binary experiments are outside MVP and which triggers bring them back.
+Цель:
+  Runtime substrate decision can guide implementation without forcing a database migration or binary runtime before the first operator/dashboard/golden-path loops are stable.
+
+Метки:
+  atom.profile: plan
+  plan.id: runtime-substrate-migration-operations
+  decision.id: runtime-substrate-decision
+  trace.status: verified
+]>

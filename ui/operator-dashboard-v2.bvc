@@ -1,0 +1,18 @@
+#Operator_Dashboard_V2<[
+Базис:
+  MVP dashboard snapshot уже derived из workgraph.snapshot.v1; operator shell v2 добавляет actionable sections без raw .bvc editing.
+  Agent Run panel (protocols/operator-agent-run-panel-v1.bvc) заменяет старый ioHasC agent chat window.
+Вектор:
+  Sections: eligible queue (readyQueue), live-loop state (workerRunSummaries), Agent Run panel (task/provider/run/log), blocked reasons, verification matrix summary, phase roadmap, cycle slice context.
+  Read model: operator-shell.snapshot.v2 via buildOperatorShellSnapshotV2().
+  UI strip на доске показывает current cycle, ready count, blocked count и next claimable task.
+  Agent Run panel MVP: POST /api/agent-run (persist backlog по умолчанию), GET /api/worker-provider-catalog, GET /api/agent-run/journal.
+Цель:
+  Operator управляет Work Graph OS и запускает worker runs без чтения monolithic backlog и без старого chat UX.
+
+Метки:
+  atom.profile: plan
+  design.id: operator-dashboard-v2
+  work.source: design-workgraph-dashboard-v2
+  trace.status: verified
+]>

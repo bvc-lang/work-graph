@@ -1,0 +1,56 @@
+#Задача_wg_backlog_ui_button_migration_wave_1<[
+Базис:
+  AN-21 §4.1: workGraphBacklogUiServer ≈9000 строк inline HTML.
+  renderUiButton уже в src/ui/atoms/button.mjs и ui-kit; production shell — still raw <button>.
+Вектор:
+  Заменить static shell buttons: nav-tab, theme-toggle, detail-close, agent-run-dock.
+  Подключить UI_BUTTON_CSS в backlog page head (если ещё не inline).
+  Smoke: workGraphBacklogUiServer.test.mjs nav + theme.
+Цель:
+  Видимый shell backlog UI на Gripe DS button variants без регрессий навигации.
+Проверки:
+  nav-tab / theme-toggle / agent dock через renderUiButton или wg-btn classes
+  tests/workGraphBacklogUiServer.test.mjs green
+Анализ:
+  Целесообразность:
+  Стоит завести «WG backlog UI: renderUiButton wave 1 (shell / nav / agent dock)» в бэклог — по материалам AN-32 (work/analytics/gripe-ds-adoption-phase2-post-an21.md).
+  Контекст и границы:
+  Заменить static shell buttons: nav-tab, theme-toggle, detail-close, agent-run-dock.
+  Зависимости и готовность:
+  depends_on=epic-gripe-ds-adoption-phase2; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Видимый shell backlog UI на Gripe DS button variants без регрессий навигации.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-32 (work/analytics/gripe-ds-adoption-phase2-post-an21.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-32
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/gripe-ds-adoption-phase2-post-an21.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-05-31T17:04:02.435Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T17:04:02.435Z
+  work.decision.verdict: useful
+  work.department: ui-dashboard
+  work.depends_on: epic-gripe-ds-adoption-phase2
+  work.id: wg-backlog-ui-button-migration-wave-1
+  work.item_kind: subtask
+  work.next_action: closed with evidence
+  work.owner_role: frontend_architect
+  work.parent_id: epic-gripe-ds-adoption-phase2
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: src/workGraphBacklogUiServer.mjs, src/ui/atoms/button.mjs, tests/workGraphBacklogUiServer.test.mjs, work/analytics/gripe-ds-adoption-phase2-post-an21.md
+  work.title: WG backlog UI: renderUiButton wave 1 (shell / nav / agent dock)
+]>

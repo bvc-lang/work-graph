@@ -1,0 +1,26 @@
+#Протокол_Agent_Worker_Provider_Registry_v1<[
+Базис:
+  protocols/agent-worker-adapter.bvc фиксирует provider-neutral Worker Input/Output v1 и правила selection/fallback.
+  src/workGraphWorkerProvider.mjs реализует local, openai-compatible, cursor-sdk, claude-sdk-api и local-cli providers.
+Вектор:
+  Registry v1 описывает каждого provider через capabilities, policy constraints, cost/latency hints и implementationStatus (implemented|planned).
+  selectWorkerProvider() выбирает исполнителя по requiredCapabilities из providerHints, policy compatibility и reliability/cost/latency — не по brand id.
+  buildProviderFallbackEvidence() возвращает evidence object для записи в Work Graph при переключении provider после failure.
+  resolveWorkerProvider() остаётся explicit-run API; planned providers throw unsupported until implement-* tasks закрыты.
+Цель:
+  Scheduler и live-loop могут объяснимо выбирать и переключать исполнителя без скрытого изменения Work Graph state.
+
+Проверки:
+  buildWorkerProviderRegistry() возвращает schema workgraph.worker.provider.registry.v1
+  registry содержит local, openai, cursor-sdk, claude-sdk-api, local-cli
+  selectWorkerProvider() возвращает selectionRationale с matchedCapabilities
+  buildProviderFallbackEvidence() не мутирует Work Graph — только evidence payload
+  tests/workGraphWorkerProvider.test.mjs покрывает registry, selection и fallback
+
+Метки:
+  atom.profile: architecture_decision
+  protocol.id: agent-worker-provider-registry-v1
+  decision.id: agent-worker-provider-registry-v1
+  work.source: design-provider-registry-and-capability-selection
+  trace.status: verified
+]>

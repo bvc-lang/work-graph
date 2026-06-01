@@ -1,0 +1,1 @@
+{"schema":"workgraph.daemon.audit.v1","tickId":"tick-e2e","event":"worker_run_finished","taskId":"ready-task","workerStatus":"succeeded","recoveryClass":"succeeded","summary":"e2e fixture daemon tick","recordedAt":"2026-05-29T12:00:00.000Z"}

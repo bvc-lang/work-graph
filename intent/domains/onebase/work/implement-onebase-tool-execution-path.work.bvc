@@ -1,0 +1,50 @@
+#Задача_implement_onebase_tool_execution_path<[
+Базис:
+  OneBase был выбран как первый реальный domain vertical, а в переписке звучали built-in tools, MCP parity и agent UI/daemon/external MCP paths.
+  Сейчас есть static verification, template и parity matrix, но нет реального provider-neutral OneBase tool execution path для agent worker.
+Вектор:
+  Реализовать минимальный OneBase tool execution path: list metadata, read bounded artifact facts, прогнать optional verification command, return Worker Output evidence.
+  Разделить built-in CLI, MCP package и agent provider path; mandatory CI остаётся на deterministic CLI/static gate.
+  Подключить tool capabilities к provider registry и Agent Run panel later.
+Цель:
+  OneBase workflows могут выполняться через Work Graph worker, а не только через static gate/documentation.
+Анализ:
+  Целесообразность:
+  Стоит завести «реализовать OneBase tool execution path для worker» в бэклог.
+  Контекст и границы:
+  Реализовать минимальный OneBase tool execution path: list metadata, read bounded artifact facts, прогнать optional verification command, return Worker Output evidence.
+  Зависимости и готовность:
+  depends_on=design-provider-registry-and-capability-selection, implement-language-adapter-layer-mvp, port-onebase-mcp-parity; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  OneBase workflows могут выполняться через Work Graph worker, а не только через static gate/documentation.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441108
+  migration.strategy: port
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:37.020Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:37.029Z
+  work.decision.verdict: useful
+  work.department: domain-onebase
+  work.depends_on: port-onebase-mcp-parity, implement-language-adapter-layer-mvp, design-provider-registry-and-capability-selection
+  work.id: implement-onebase-tool-execution-path
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: domain_architect
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: high
+  work.status: done
+  work.target_files: src/onebaseWorkerTools.mjs, src/workGraphWorkerProvider.mjs, src/agentWorkerLocalRunner.mjs, tests/onebaseWorkerTools.test.mjs, protocols/onebase-mcp-parity-v1.bvc, work/backlog.bvc
+  work.title: реализовать OneBase tool execution path для worker
+]>
+

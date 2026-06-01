@@ -1,0 +1,50 @@
+#Задача_migrate_backlog_to_intent_tree_files<[
+Базис:
+  Intent tree layout уже спроектирован, но текущие runtime/UI tools ещё читают monolithic work/backlog.bvc.
+  Миграция должна быть отдельной implementation task, чтобы не смешивать дизайн storage layout с фактическим переносом atom files.
+Вектор:
+  Реализовать безопасный split текущего work/backlog.bvc в intent/<area>/<stream>/work/<work.id>.bvc без потери work.id, status, depends_on, target_files, evidence, blocker and trace.status.
+  Оставить work/backlog.bvc как compatibility index/projection для текущего parseWorkItems/buildSnapshot until runtime can read intent tree directly.
+  Добавить snapshot comparison before/after migration и tests, которые проверяют сохранение ids/status/dependencies/evidence.
+Цель:
+  Перейти от бэклог monolith к canonical intent tree files with generated or compatibility бэклог projection.
+Анализ:
+  Целесообразность:
+  Стоит завести «мигрировать бэклог в intent tree файлы» в бэклог.
+  Контекст и границы:
+  Реализовать безопасный split текущего work/backlog.bvc в intent/<area>/<stream>/work/<work.id>.bvc без потери work.id, status, depends_on, target_files, evidence, blocker and trace.status.
+  Зависимости и готовность:
+  depends_on=design-intent-tree-workgraph-layout; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Перейти от бэклог monolith к canonical intent tree files with generated or compatibility бэклог projection.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441035
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:37.295Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:37.304Z
+  work.decision.verdict: useful
+  work.department: devops-runtime
+  work.depends_on: design-intent-tree-workgraph-layout
+  work.id: migrate-backlog-to-intent-tree-files
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: feature_engineer
+  work.pipeline_stage: decided
+  work.priority: critical
+  work.risk: high
+  work.status: done
+  work.target_files: work/backlog.bvc, protocols/intent-tree-workgraph-layout.bvc, src/intentTreeMigration.mjs, tests/workGraphRuntime.test.mjs, intent/index.bvc
+  work.title: мигрировать бэклог в intent tree файлы
+]>
+

@@ -1,0 +1,50 @@
+#Задача_implement_architecture_map_l1_mvp<[
+Базис:
+  После architecture model и snapshot contract можно показать верхний уровень проекта как read-only map основных блоков.
+  MVP должен оставаться zero-dependency и derived из локальных .bvc/files, без React Flow и без ручного layout editing.
+Вектор:
+  Реализовать buildArchitectureSnapshotL1 в runtime/server и endpoint /api/architecture-snapshot.
+  Отрисовать L1 map в UI tab Архитектура: 6-8 blocks, typed inter-block edges, status/count badges where available.
+  Добавить click handler: focus block and open block detail shell even if inner tabs are partially stubbed.
+Цель:
+  Пользователь видит architecture map верхнего уровня и может выбрать блок для детализации.
+Анализ:
+  Целесообразность:
+  Стоит завести «реализовать MVP L1 architecture map в UI» в бэклог.
+  Контекст и границы:
+  Реализовать buildArchitectureSnapshotL1 в runtime/server и endpoint /api/architecture-snapshot.
+  Зависимости и готовность:
+  depends_on=define-architecture-snapshot-v1, separate-architecture-and-work-deps-ui; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Пользователь видит architecture map верхнего уровня и может выбрать блок для детализации.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441044
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:36.547Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:36.556Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: define-architecture-snapshot-v1, separate-architecture-and-work-deps-ui
+  work.id: implement-architecture-map-l1-mvp
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: feature_engineer
+  work.pipeline_stage: decided
+  work.priority: critical
+  work.risk: medium
+  work.status: done
+  work.target_files: src/workGraphBacklogUiServer.mjs, src/architectureSnapshot.mjs, schemas/architecture-snapshot.v1.json, tests/workGraphBacklogUiServer.test.mjs, work/backlog.bvc
+  work.title: реализовать MVP L1 architecture map в UI
+]>
+

@@ -1,0 +1,50 @@
+#Задача_design_atom_inspector_form<[
+Базис:
+  Человек должен вмешиваться через форму атома, а не через ручную правку синтаксиса .bvc.
+  StepAtomDraft JSON уже выбран LLM-friendly и form-friendly контрактом.
+Вектор:
+  Спроектировать form model для профилей work_item, charter_section, prompt_rule и trace.
+  Описать labels editor с typed shortcuts для work.*, trace.*, project.*.
+  Описать preview: StepAtomDraft JSON, generated .bvc, validation errors.
+Цель:
+  Operator может безопасно поправить BVC/labels/checks/evidence без знания raw .bvc.
+Анализ:
+  Целесообразность:
+  Стоит завести «спроектировать форму atom inspector» в бэклог.
+  Контекст и границы:
+  Спроектировать form model для профилей work_item, charter_section, prompt_rule и trace.
+  Зависимости и готовность:
+  depends_on=design-operator-dashboard, implement-step-atom-formatter; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Operator может безопасно поправить BVC/labels/checks/evidence без знания raw .bvc.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441015
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:35.850Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:35.859Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: design-operator-dashboard, implement-step-atom-formatter
+  work.id: design-atom-inspector-form
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: product_designer
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: ui/atom-inspector-form.bvc, schemas/step-atom-draft.v1.json, protocols/llm-step-atom-writer.bvc, src/stepAtomFormatter.mjs, src/workGraphBacklogUiServer.mjs, work/backlog.bvc
+  work.title: спроектировать форму atom inspector
+]>
+

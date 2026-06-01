@@ -1,0 +1,50 @@
+#Задача_refresh_audit_gap_matrix_on_iohasc_changes<[
+Базис:
+  Матрица audit-gap зафиксирована после rollout, но IMPLEMENTATION_STATUS в ../project меняется отдельно от Work Graph.
+  Задача «Фаза 0: актуализировать матрицу расхождений при изменениях ioHasC» относится к контуру архитектуры продукта и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: phase-0-inventory-boundaries.
+Вектор:
+  Описать и при необходимости автоматизировать сверку docs/plan-iohasc-rebuild-audit-gap-matrix.md с roadmap.
+  Ближайший шаг исполнения: просмотреть и перевести в ready.
+Цель:
+  Карта честной поставки не устаревает без явной процедуры сверки.
+  Готово, когда выполнены проверки: Матрица отражает: реализовано, только контракт, заглушка, отложено.
+Анализ:
+  Целесообразность:
+  Стоит завести «Фаза 0: актуализировать матрицу расхождений при изменениях ioHasC» в бэклог.
+  Контекст и границы:
+  Описать и при необходимости автоматизировать сверку docs/plan-iohasc-rebuild-audit-gap-matrix.md с roadmap.
+  Зависимости и готовность:
+  depends_on=phase-0-inventory-boundaries; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Карта честной поставки не устаревает без явной процедуры сверки.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:37.660Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:37.668Z
+  work.decision.verdict: useful
+  work.department: product-architecture
+  work.depends_on: phase-0-inventory-boundaries
+  work.id: refresh-audit-gap-matrix-on-iohasc-changes
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: system_architect
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: medium
+  work.status: done
+  work.target_files: docs/plan-iohasc-rebuild-audit-gap-matrix.md, docs/plan-iohasc-full-rebuild-backlog.md, src/auditGapMatrixRefresh.mjs, scripts/check-audit-gap-matrix.mjs
+  work.title: Фаза 0: актуализировать матрицу расхождений при изменениях ioHasC
+]>
+

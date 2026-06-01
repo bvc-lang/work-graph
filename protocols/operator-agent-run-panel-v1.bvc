@@ -1,0 +1,94 @@
+#Протокол_Operator_Agent_Run_Panel_v1<[
+Базис:
+  Старый ioHasC agent panel (Monaco-side chat, tool picker, free-form orchestrator) не переносится 1:1.
+  Work Graph rebuild заменяет его operator Agent Run panel: task-bound worker execution через runtime/API, а не свободный чат.
+  Provider registry v1 и selection/fallback runtime уже описаны; UI показывает worker runs и runner queue, но не даёт launch/stop actions.
+Вектор:
+  Agent Run panel — секция operator dashboard «Агент» с:
+  - task selector (ready queue / runner queue / explicit task id)
+  - provider selector (MVP: local, openai; later: auto/cursor-sdk/claude-sdk-api badges from registry)
+  - policy preset (dry-run default, optional verification mode)
+  - Run / Cancel actions
+  - live run log (steps: observe→plan→claim→act→verify→record→stop)
+  - Worker Output preview (patchSummary, evidence, transitionRequest, failureReason)
+  - fallback trail view when usedFallback=true
+  Все state-changing actions идут через POST /api/agent-run (server-side live-loop), не через client-side backlog mutation.
+Цель:
+  Оператор получает замену старого agent window в архитектуре Work Graph executor без возврата к monolithic chat UX.
+
+Проверки:
+  MVP API contract documented below
+  no shell/file-write from browser client
+  cancel is best-effort on in-flight HTTP run (later: run handle + abort)
+  planned providers visible but disabled until implement-* tasks close
+
+Метки:
+  atom.profile: architecture_decision
+  protocol.id: operator-agent-run-panel-v1
+  decision.id: operator-agent-run-panel-v1
+  work.source: design-operator-agent-run-panel
+  trace.status: verified
+]>
+
+#Замена_старого_agent_panel<[
+Базис:
+  Старый agent panel = free chat + orchestrator tools + Monaco context.
+  Rebuild = task-scoped worker runs with evidence gates.
+Вектор:
+  | Старый ioHasC | Agent Run panel replacement |
+  |---|---|
+  | Free-form chat input | Task selector + optional nextAction hint |
+  | Model picker in settings | Provider selector per run |
+  | Tool calls from orchestrator | Worker Input allowedTools + policy preset |
+  | Chat history | worker-runs.jsonl + run log steps |
+  | Apply edits inline | transitionRequest review + runtime gates |
+Цель:
+  Replacement scope явный; оператор не ищет «чат», а запускает worker run на WorkItem.
+
+Метки:
+  atom.profile: trace
+  protocol.id: operator-agent-run-panel-v1
+  trace.status: verified
+]>
+
+#API_Contract_MVP<[
+Базис:
+  implement-operator-agent-run-panel-mvp реализует этот контракт в workGraphBacklogUiServer.mjs.
+Вектор:
+  GET /api/worker-provider-catalog — buildWorkerProviderCatalog() (implemented + planned providers).
+  GET /api/agent-run/journal — readWorkerRunJournal() recent entries.
+  POST /api/agent-run — body: { taskId?, provider?, policyPreset?, enableFallback?, persistBacklog? }; server calls runAgentWorkerLiveLoopFromBacklogFile(); returns { ok, workerRunSummary, workerOutput, steps, providerResult, appliedTransition, persistedBacklog, persistBacklogError }.
+  По умолчанию persistBacklog=true: после успешного appliedTransition server патчит один WorkItem atom в work/backlog.bvc (implement-agent-run-backlog-persist); opt-out persistBacklog=false для tests/CLI.
+  Client renders #agent-run-panel with data-testid hooks for E2E.
+Цель:
+  UI и CLI используют один live-loop path; mandatory CI остаётся без real LLM.
+
+Метки:
+  atom.profile: trace
+  contract.id: operator-agent-run-api-v1
+  protocol.id: operator-agent-run-panel-v1
+  trace.status: verified
+]>
+
+#MVP_vs_Later<[
+Базис:
+  MVP не блокируется на cursor-sdk/claude providers.
+Вектор:
+  MVP:
+  - task selector from runner queue
+  - provider: local | openai | auto (capability selection)
+  - one-shot run + journal refresh
+  - Worker Output + fallback trail display
+  Later:
+  - cursor-sdk / claude-sdk-api enabled when implemented
+  - cancel in-flight run handle
+  - cost/latency badges from registry hints
+  - role-chain handoff picker
+Цель:
+  MVP и later controls разделены; backlog implement task scoped to MVP only.
+
+Метки:
+  atom.profile: prompt_rule
+  protocol.id: operator-agent-run-panel-v1
+  trace.status: verified
+]>

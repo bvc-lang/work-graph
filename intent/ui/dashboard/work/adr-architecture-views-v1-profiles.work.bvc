@@ -1,0 +1,57 @@
+#Задача_adr_architecture_views_v1_profiles<[
+Базис:
+  AN-34 §3–§6: профили view и anti-patterns (no Mermaid runtime canvas, no tree for depends_on).
+  Согласовать с graph-canvas-layout-mess и parent-subtask-hierarchy.
+Вектор:
+  docs/adr-architecture-views-v1.md: matrix view × use case.
+  When to use list vs tree vs pipeline vs full graph.
+  Link из AN-34 и architecture tab help text.
+Цель:
+  Единый канон view profiles для UI и агента.
+Проверки:
+  adr-architecture-views-v1.md в docs/
+  profiles: List, Tree, Pipeline, Full, Export
+  anti-patterns явно перечислены
+Анализ:
+  Целесообразность:
+  Стоит завести «ADR: Architecture views v1 (List / Tree / Pipeline / Full / Export)» в бэклог — по материалам AN-34 (work/analytics/architecture-visualization-patterns-comparison.md).
+  Контекст и границы:
+  docs/adr-architecture-views-v1.md: matrix view × use case.
+  Зависимости и готовность:
+  depends_on=epic-architecture-views-v1; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Единый канон view profiles для UI и агента.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-34 (work/analytics/architecture-visualization-patterns-comparison.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-34
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/architecture-visualization-patterns-comparison.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T19:21:12.864Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T19:21:12.864Z
+  work.decision.verdict: useful
+  work.department: ui-dashboard
+  work.depends_on: epic-architecture-views-v1
+  work.id: adr-architecture-views-v1-profiles
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: frontend_architect
+  work.parent_id: epic-architecture-views-v1
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: low
+  work.status: done
+  work.target_files: docs/adr-architecture-views-v1.md, work/analytics/architecture-visualization-patterns-comparison.md, work/analytics/graph-canvas-layout-mess.md, work/analytics/parent-subtask-hierarchy.md
+  work.title: ADR: Architecture views v1 (List / Tree / Pipeline / Full / Export)
+]>

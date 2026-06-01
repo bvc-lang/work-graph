@@ -1,0 +1,58 @@
+#Задача_epic_work_graph_multiproject_host<[
+Базис:
+  Сейчас Work Graph живёт «один репозиторий — один инстанс»: свой канон, свой UI на порту 4177.
+  Для нескольких похожих проектов (несколько конфигураций OneBase, несколько вертикалей Marketplace) это означает N копий движка и N вкладок в браузере.
+  Разбор AN-40 рекомендует гибрид: канон хранится в git каждого проекта, а консоль WG подключает корни и переключается между ними.
+Вектор:
+  Зафиксировать модель в ADR (вариант C — гибрид).
+  Сделать реестр подключённых корней проектов.
+  Научить backlog UI и снимок архитектуры читать выбранный корень, а не только cwd.
+  CLI для init / register / ui — подключить новый проект без ручной возни.
+  Переключатель проекта в шапке UI.
+  Runbook для оператора, тесты, закрытие разбора AN-40.
+Цель:
+  Один процесс Work Graph, несколько проектов: оператор переключается между корнями без второго сервера на 4177 и без копирования движка.
+Проверки:
+  В реестре два корня; переключение в UI без перезапуска сервера
+  WG_PROJECT_ROOT или параметр repoRoot меняет данные в backlog UI
+  CLI init создаёт .work-graph/config.json и каркас intent/
+  npm test зелёный; разбор AN-40 закрыт итоговой записью
+Анализ:
+  Зачем:
+  Масштабирование на семейство похожих репозиториев без размножения инсталляций.
+  Границы:
+  Pilot — локальные корни; удалённые репозитории и multi-user — позже.
+  Зависимости:
+  Прецедент уже есть: loadArchitectureL1Canon(repoRoot), resolveOnebaseMetadataScanRoot.
+Решение:
+  Вердикт:
+  полезно
+  Исполнять по плану docs/plan-work-graph-multiproject-host.md после ADR.
+
+Свидетельства:
+  - AN-40 epic deliverables shipped
+  - closing doc published
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-40
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-project-deployment-model.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-01T11:18:32.724Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-01T11:18:32.724Z
+  work.decision.verdict: useful
+  work.department: product-architecture
+  work.id: epic-work-graph-multiproject-host
+  work.item_kind: epic
+  work.next_action: —
+  work.owner_role: system_architect
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: work/analytics/work-graph-project-deployment-model.md, docs/plan-work-graph-multiproject-host.md, src/workspaceRegistry.mjs, src/workGraphBacklogUiServer.mjs, src/architectureSnapshot.mjs, packages/work-graph-cli/, docs/runbook-deploy-work-graph-on-project.md
+  work.title: Несколько проектов в одной консоли Work Graph (AN-40)
+]>

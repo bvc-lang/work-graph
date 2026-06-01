@@ -1,0 +1,139 @@
+#Протокол_Language_Adapter_Layer<[
+Базис:
+  Work Graph, Project Memory и Evidence v1 должны получать факты о файлах, языках и доменных артефактах через явный adapter layer, а не через случайное чтение файлов агентом.
+  OneBase является первым golden path для доменных YAML metadata и .os scripts, но общий слой не должен быть спроектирован только под OneBase.
+Вектор:
+  Language Adapter Registry хранит записи с language id, extensions, parser/chunker/symbol extractor, import extractor, test detector, domain metadata extractor, capabilities, confidence and fallback policy.
+  Adapter output нормализуется в file facts, semantic chunks, symbols, imports, test hints, domain metadata, trace refs, StepAtomDraft candidates, MemoryRecord candidates, Evidence hints and snapshot projections.
+  MVP adapters: step, json/yaml, js/ts, go, onebase-os for .os scripts and plaintext fallback.
+  Fallback всегда возвращает degraded plaintext lexical chunks and file refs вместо hard failure; отсутствующие возможности объявляются явно в capabilities.
+Цель:
+  Агент получает структурированный, проверяемый контекст для Work Graph task, memory writer, evidence writer and future graph/RAG without replacing LSP or forcing a binary IR in the MVP.
+
+Проверки:
+  описан adapter registry contract
+  описаны capabilities for syntax, symbols, imports, tests, chunks, domain metadata and trace links
+  MVP adapters include step, json/yaml, js/ts, go, onebase-os and plaintext fallback
+  OneBase описан как first domain adapter/golden path, not generic architecture owner
+  non-goals exclude full LSP replacement, all languages at once and mandatory binary IR
+
+Метки:
+  atom.profile: prompt_rule
+  protocol.id: language-adapter-layer
+  work.source: design-language-adapter-layer
+  trace.status: verified
+]>
+
+#Контракт_Adapter_Registry_Record<[
+Базис:
+  Runtime, dashboard, memory writer и future retrieval должны понимать capabilities файла до запуска дорогого анализа или agent step.
+Вектор:
+  Required fields: id, languageId, extensions, artifactProfiles, capabilities, confidence, fallback and owner.
+  Extractor fields: parser, chunker, symbolExtractor, importExtractor, testDetector, domainMetadataExtractor and traceLinkExtractor.
+  parser может быть structured, tolerant, regex, external-tool or none; chunker может быть syntax-aware, outline, lexical or whole-file.
+  capabilities содержит booleans или levels для syntax, symbols, imports, tests, semanticChunks, domainMetadata, traceLinks and verificationHints.
+  confidence принимает high, medium or low and отражает качество extracted facts; fallback описывает, какой adapter используется при ошибке или неподдержанном формате.
+Цель:
+  Каждый adapter явно сообщает, что он умеет извлекать, насколько результату можно доверять и как runtime должен деградировать.
+
+Метки:
+  atom.profile: trace
+  contract.id: adapter-registry-record-v1
+  protocol.id: language-adapter-layer
+  trace.status: verified
+]>
+
+#Модель_Capabilities_Language_Adapter<[
+Базис:
+  Разные языки и доменные форматы дают разные уровни структуры; scheduler и agent context builder не должны предполагать полный AST везде.
+Вектор:
+  syntax: adapter can parse or segment structure beyond raw text.
+  symbols: adapter can identify declarations such as functions, types, procedures, documents, registers or step atoms.
+  imports: adapter can extract references to modules, packages, files or domain artifacts.
+  tests: adapter can detect related test files, commands, fixtures or scenario hints.
+  semanticChunks: adapter can produce bounded chunks with stable refs for retrieval and memory.
+  domainMetadata: adapter can extract business/domain concepts, e.g. OneBase documents, tabular sections, registers and posting handlers.
+  traceLinks: adapter can map source ranges, symbols and domain artifacts to Work Graph trace refs, Evidence artifacts and snapshot edges.
+Цель:
+  Capabilities allow Work Graph tools to request only available facts and record missing structure as an explicit limitation, not as an exception.
+
+Метки:
+  atom.profile: trace
+  contract.id: language-adapter-capabilities-v1
+  protocol.id: language-adapter-layer
+  trace.status: verified
+]>
+
+#MVP_Adapters<[
+Базис:
+  Первый слой должен покрыть current Work Graph protocols, common code files and OneBase golden path without attempting complete language coverage.
+Вектор:
+  step adapter parses Step atoms, labels, BVC sections, evidence/checks and trace refs; it can emit StepAtomDraft-like records and Work Graph facts.
+  json/yaml adapter parses structured metadata, stable keys, schema-like fields and domain artifact declarations; for OneBase YAML it extracts document/catalog/register/report/widget metadata.
+  js/ts adapter starts with imports, exports, functions/classes, tests and semantic chunks; TypeScript-first code can later add stronger AST extraction.
+  go adapter extracts packages, imports, functions, tests and command/test hints relevant to backend verification.
+  onebase-os adapter handles .os scripts as a domain language: procedures, posting handlers, register movements, references to document fields and verification hints.
+  plaintext adapter is universal fallback: file refs, lexical chunks, extension metadata and low-confidence search tokens, with no symbols/imports guarantee.
+Цель:
+  MVP adapters provide enough structure for planning, evidence, memory and OneBase artifact mapping while leaving deeper parsers incremental.
+
+Метки:
+  atom.profile: architecture_decision
+  decision.id: language-adapter-mvp-set
+  protocol.id: language-adapter-layer
+  trace.status: verified
+]>
+
+#Связь_Adapters_With_WorkGraph_Memory_Evidence<[
+Базис:
+  Adapter output is useful only if it feeds the existing core contracts rather than forming a parallel index with hidden semantics.
+Вектор:
+  Work Graph receives target file facts, dependency hints, related tasks, trace refs and verification hints for claim/plan/verify steps.
+  Project Memory receives MemoryRecord candidates for stable decisions, architecture facts, domain facts and task outcomes, always with source file refs and confidence.
+  Evidence v1 receives suggested artifacts, command/test hints, source ranges and structured summaries for file/change/test records.
+  JSON snapshot and future graph/RAG receive derived nodes for files, Step atoms, symbols, domain artifacts, evidence and memory records; adapters do not become source of truth.
+Цель:
+  Language/domain facts flow through Work Graph, Memory and Evidence boundaries already defined by protocols instead of creating a second project state model.
+
+Метки:
+  atom.profile: architecture_decision
+  decision.id: adapter-core-boundary-v1
+  protocol.id: language-adapter-layer
+  trace.status: verified
+]>
+
+#OneBase_Golden_Path_Adapter_Boundary<[
+Базис:
+  OneBase is the first real domain vertical because it has YAML metadata, .os posting scripts, registers and business verification needs.
+Вектор:
+  OneBase YAML adapter extracts artifact kind, id/name, fields, tabular sections, registers, reports, widgets and links to .os handlers.
+  OneBase .os adapter extracts posting procedures, document/register references, movement writes, business rule checks and scenario verification hints.
+  The adapter layer maps these facts to StepAtomDraft candidates, Work Graph trace refs, MemoryRecord domain-facts and Evidence artifacts.
+  Generic registry fields remain domain-neutral; OneBase contributes domainMetadataExtractor behavior and artifactProfiles, not a replacement architecture for all languages.
+Цель:
+  OneBase golden path proves the adapter model on business logic while keeping the layer reusable for other languages and domains.
+
+Метки:
+  atom.profile: architecture_decision
+  decision.id: onebase-adapter-boundary-v1
+  protocol.id: language-adapter-layer
+  domain.id: onebase
+  trace.status: verified
+]>
+
+#Fallback_And_NonGoals<[
+Базис:
+  Adapter failure must not block backlog execution, but silent overconfidence would corrupt memory, evidence and graph context.
+Вектор:
+  On parse failure, missing dependency, unsupported extension or timeout, runtime records adapter status=degraded and falls back to plaintext lexical chunks with low confidence.
+  Fallback output includes file refs, extension, size/hash if available, lexical chunks and diagnostic summary; it does not invent symbols, imports, tests or domain metadata.
+  Non-goals: full LSP replacement, perfect parsing for every language, implementation of all adapters at once, mandatory binary IR/GBC slice for MVP, and using OneBase-specific fields as the universal adapter schema.
+Цель:
+  The system stays useful under partial knowledge and keeps future parser investments incremental and evidence-backed.
+
+Метки:
+  atom.profile: prompt_rule
+  rule.id: language-adapter-fallback-nongoals-v1
+  protocol.id: language-adapter-layer
+  trace.status: verified
+]>

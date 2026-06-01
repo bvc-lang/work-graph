@@ -1,0 +1,51 @@
+#Задача_audit_workgraph_tool_surface<[
+Базис:
+  Старый ioHasC agent имеет много tools; пересобрать нужен минимальный Work Graph tool surface для live-loop и будущего LLM execution.
+  Задача «провести audit Work Graph tool surface» относится к контуру платформы агента и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: phase-8-agent-prompt-eval-tools.
+Вектор:
+  Провести audit tool surface: snapshot, claim, record evidence, предложение transition, graph context и verification.
+  Ближайший шаг исполнения: —.
+Цель:
+  Agent tools становятся маленькими, policy-gated и testable.
+  Готово, когда выполнены проверки: tool list разнесён по категориям keep/replace/defer.
+Анализ:
+  Целесообразность:
+  Стоит завести «провести audit Work Graph tool surface» в бэклог.
+  Контекст и границы:
+  Провести audit tool surface: snapshot, claim, record evidence, предложение transition, graph context и verification.
+  Зависимости и готовность:
+  depends_on=phase-8-agent-prompt-eval-tools; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Agent tools становятся маленькими, policy-gated и testable.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441080
+  migration.strategy: port
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:35.642Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:35.652Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: phase-8-agent-prompt-eval-tools
+  work.id: audit-workgraph-tool-surface
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: agent_platform_architect
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: high
+  work.status: done
+  work.target_files: protocols/workgraph-tool-surface-audit-v1.bvc, src/workGraphToolSurfaceAudit.mjs, tests/workGraphToolSurfaceAudit.test.mjs, work/backlog.bvc
+  work.title: провести audit Work Graph tool surface
+]>
+

@@ -1,0 +1,51 @@
+#Задача_design_gfs_overlay_project_passport<[
+Базис:
+  Старый ioHasC может использовать GFS overlay в project passport/context; пересобрать должен оставить это optional.
+  Задача «спроектировать optional GFS overlay для project passport» относится к контуру Work Graph rebuild и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: phase-11-gbc-gfs-gvm-deferred.
+Вектор:
+  Спроектировать optional GFS overlay path для project passport и agent context без превращения в canonical state.
+  Ближайший шаг исполнения: —.
+Цель:
+  GFS остаётся полезным как derived context при включении.
+  Готово, когда выполнены проверки: overlay read contract определён.
+Анализ:
+  Целесообразность:
+  Стоит завести «спроектировать optional GFS overlay для project passport» в бэклог.
+  Контекст и границы:
+  Спроектировать optional GFS overlay path для project passport и agent context без превращения в canonical state.
+  Зависимости и готовность:
+  depends_on=phase-11-gbc-gfs-gvm-deferred; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  GFS остаётся полезным как derived context при включении.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441090
+  migration.strategy: defer
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:35.931Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:35.940Z
+  work.decision.verdict: useful
+  work.department: devops-runtime
+  work.depends_on: phase-11-gbc-gfs-gvm-deferred
+  work.id: design-gfs-overlay-project-passport
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: system_architect
+  work.pipeline_stage: decided
+  work.priority: low
+  work.risk: medium
+  work.status: done
+  work.target_files: protocols/gfs-overlay-project-passport-v1.bvc, src/gfsOverlayProjectPassport.mjs, tests/gfsOverlayProjectPassport.test.mjs, protocols/gbc-gvm-zig-deferral-boundary.bvc, docs/plan-iohasc-full-rebuild-backlog.md, work/backlog.bvc
+  work.title: спроектировать optional GFS overlay для project passport
+]>
+

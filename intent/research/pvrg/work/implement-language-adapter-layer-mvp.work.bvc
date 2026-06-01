@@ -1,0 +1,50 @@
+#Задача_implement_language_adapter_layer_mvp<[
+Базис:
+  В переписке language adapter layer был предложен как отдельный слой между файлами и Work Graph facts: extension -> language id -> parser/chunker/symbol extractor -> Work Graph facts -> agent context.
+  Сейчас есть design-language-adapter-layer, но нет минимальной реализации registry/adapters.
+Вектор:
+  Реализовать language adapter registry MVP: step, json/yaml, typescript/javascript, go и onebase-os adapters.
+  Для каждого adapter описать capabilities: syntax/facts/imports/tests/domainMetadata/fallback.
+  Вернуть нормализованные file facts для Work Graph / worker context без ad hoc чтения всех файлов.
+Цель:
+  OneBase и agent worker получают структурированные факты через единый adapter layer, а не через случайные парсеры.
+Анализ:
+  Целесообразность:
+  Стоит завести «реализовать MVP language adapter layer» в бэклог.
+  Контекст и границы:
+  Реализовать language adapter registry MVP: step, json/yaml, typescript/javascript, go и onebase-os adapters.
+  Зависимости и готовность:
+  depends_on=design-language-adapter-layer, reconcile-rebuild-scope-against-original-iohasc-plan; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  OneBase и agent worker получают структурированные факты через единый adapter layer, а не через случайные парсеры.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441105
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:36.849Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:36.857Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: design-language-adapter-layer, reconcile-rebuild-scope-against-original-iohasc-plan
+  work.id: implement-language-adapter-layer-mvp
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: language_platform_architect
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: high
+  work.status: done
+  work.target_files: src/languageAdapterRegistry.mjs, src/languageAdapters/, tests/languageAdapterRegistry.test.mjs, src/agentWorkerOpenAiProvider.mjs, protocols/language-adapter-layer.bvc, work/backlog.bvc
+  work.title: реализовать MVP language adapter layer
+]>
+

@@ -1,0 +1,183 @@
+#Протокол_Intent_Tree_WorkGraph_Layout<[
+Базис:
+  Текущий work/backlog.bvc удобен как seed и MVP-очередь, но один растущий файл создаёт конфликты параллельных агентов и плохо отражает домены проекта.
+  WorkGraph OS Integration Model уже зафиксировал: Work Graph/.bvc остаётся source of truth, JSON/dashboard/graph are derived projections, SQLite является optional runtime queue/index, а NoSQL не входит в MVP.
+  Intent tree должен взять сильную сторону intent graph: хранить смысл по доменам, потокам и evidence/memory рядом с источником намерения, не превращая UI board или queue в canonical state.
+Вектор:
+  Canonical state переносится из monolithic backlog в дерево .bvc atoms под intent/, где каждый WorkItem, protocol, evidence summary and memory record lives in a small stable file.
+  work/backlog.bvc становится generated/reviewable index projection: ordering, current operational queue, compact summaries and migration compatibility for existing runtime readers.
+  JSON snapshots, operator dashboard snapshot and derived graph/RAG slices build from the intent tree plus optional projection indexes, not from browser state or provider sessions.
+  SQLite may materialize runnable queue, run log and lookup indexes for scheduling/crash recovery, but it must be reconciled back to canonical .bvc atoms and remain rebuildable.
+  Intent graph canon: protocols/intent-graph-storage-v1.bvc; roadmap view — projection выбранной ветки, не primary storage.
+Цель:
+  Work Graph получает storage layout, где intent tree является source of truth, а backlog, UI board, JSON snapshots, SQLite queue and graph/RAG remain replaceable projections with low merge conflict risk.
+
+Проверки:
+  описана структура папок intent tree
+  backlog определён как projection/index, not canonical monolith
+  JSON snapshots, SQLite and NoSQL roles separated
+  migration plan preserves work.id, status, depends_on, evidence and trace refs
+  concurrency benefits and conflict avoidance are explicit
+
+Метки:
+  atom.profile: prompt_rule
+  protocol.id: intent-tree-workgraph-layout
+  work.source: design-intent-tree-workgraph-layout
+  trace.status: verified
+]>
+
+#Структура_Intent_Tree<[
+Базис:
+  Папки должны отражать устойчивые intent domains, а не текущую форму UI или исполнителя.
+Вектор:
+  intent/system/runtime/ хранит runtime, serialization, queue, worker adapter and verification loop WorkItems/protocols.
+  intent/system/storage/ хранит storage decisions, migration plans, source-of-truth rules, SQLite/GBC/NoSQL deferrals and compatibility records.
+  intent/ui/dashboard/ хранит operator dashboard, backlog board, graph viewer, atom inspector and UI projection WorkItems/protocols.
+  intent/domains/onebase/ хранит OneBase artifact mapping, golden path, posting scenarios, verification command and domain implementation tasks.
+  intent/research/pvrg/ хранит Graph/RAG, retrieval, PVRG slice and future vector/index research as derived-context design.
+  intent/evidence/ хранит structured Evidence Record atoms or evidence-summary atoms when evidence graduates from legacy inline strings.
+  intent/memory/ хранит Project Memory v1 records: decisions, invariants, architecture facts, domain facts, risks and open questions.
+  protocols/, ui/, domains/, schemas/ and src/ remain artifact locations for human design/code; intent/ stores the canonical work/memory/evidence atoms that point to those artifacts.
+Цель:
+  Intent tree makes ownership visible by folder while preserving the WorkItem graph through stable ids and labels rather than file placement alone.
+
+Метки:
+  atom.profile: architecture_decision
+  decision.id: intent-tree-folder-structure
+  protocol.id: intent-tree-workgraph-layout
+  trace.status: verified
+]>
+
+#Имена_И_Связи_WorkItem_Atoms<[
+Базис:
+  WorkItem ids already act as durable references in depends_on, dashboard snapshots, evidence summaries and worker input.
+Вектор:
+  WorkItem file name SHOULD be <work.id>.work.bvc, for example intent/system/storage/design-intent-tree-workgraph-layout.work.bvc.
+  One file SHOULD contain one canonical WorkItem atom during migration; companion evidence-summary or memory atoms may live beside it only with their own stable ids.
+  Atom header MAY keep the existing Russian task name, but work.id is the primary machine identity and must never be regenerated during file moves.
+  Required links stay in labels: work.id, work.status, work.depends_on, work.target_files, trace.status, work.next_action, work.blocker and owner/department/priority/risk where present.
+  Cross-domain dependencies use work.id references, not relative file paths; optional labels such as work.path or intent.domain may accelerate projection but are rebuildable.
+  Evidence links should move from free text toward evidenceIds or evidence atoms under intent/evidence/, while legacy Свидетельства lines stay preserved until Evidence v1 migration exists.
+Цель:
+  Moving a task between folders changes intent ownership, not identity, dependency graph or evidence trail.
+
+Метки:
+  atom.profile: trace
+  contract.id: workitem-atom-naming-and-links
+  protocol.id: intent-tree-workgraph-layout
+  trace.status: verified
+]>
+
+#Роль_Work_Backlog_Step<[
+Базис:
+  Current runtime and UI parse work/backlog.bvc directly, so backlog cannot disappear before reader migration.
+Вектор:
+  MVP after migration: work/backlog.bvc becomes an index/projection over intent/**/*.work.bvc, generated or manually refreshed in a stable order.
+  It may contain compact WorkItem summaries, queue ordering, current ready/in_progress/blocked/done slices, and compatibility fields needed by parseWorkItems/buildSnapshot.
+  It must not be the only place where canonical WorkItem body, status, evidence or dependency truth exists once migration completes.
+  During transition, backlog may be dual-written only under explicit migration tasks; after cutover, updates should modify task files first and rebuild backlog projection.
+  Runtime readers should eventually accept multiple roots or an index manifest, then treat work/backlog.bvc as a convenient snapshot source rather than the canonical monolith.
+Цель:
+  Existing board and tests keep working while storage moves to smaller canonical files with less merge pressure.
+
+Метки:
+  atom.profile: architecture_decision
+  decision.id: backlog-as-index-projection
+  protocol.id: intent-tree-workgraph-layout
+  trace.status: verified
+]>
+
+#JSON_UI_And_Graph_Projections<[
+Базис:
+  workgraph.snapshot.v1, operator-dashboard.snapshot.v1 and derived graph viewer already define UI-facing read models.
+Вектор:
+  workgraph.snapshot.v1 should be built from parsed canonical WorkItems, regardless of whether the input source is work/backlog.bvc or intent/**/*.work.bvc.
+  operator-dashboard.snapshot.v1 remains a derived dashboard read model with currentTasks, readyQueue, blocked, statusCounts, recentEvidence, workerRunSummaries, memoryUpdates and actionFeed.
+  UI board and readonly graph viewer must read snapshots or API projections, not raw intent files in the browser.
+  JSON snapshots may be written to build/cache locations or served from runtime APIs; they are deterministic exports and safe to delete/rebuild.
+  Graph/RAG slices may add WorkItem, FileArtifact, Evidence, MemoryRecord, DomainObject and ProviderRun nodes, but each node needs source refs back to canonical atoms or artifacts.
+Цель:
+  UI and retrieval can evolve quickly while the canonical source remains inspectable .bvc atoms.
+
+Метки:
+  atom.profile: trace
+  contract.id: intent-tree-json-ui-projections
+  protocol.id: intent-tree-workgraph-layout
+  trace.status: verified
+]>
+
+#SQLite_Runtime_Index_And_Queue<[
+Базис:
+  PromptPilot-style queue mechanics are useful for worker scheduling, but a queue must not become Work Graph truth.
+Вектор:
+  Use SQLite only when runtime needs multi-process claim coordination, durable scheduled runs, retry/rate-limit state, crash recovery, efficient polling or fast lookup by work.id/status/provider/runId.
+  Suggested tables are projection-oriented: task_index(work_id, status, priority, risk, path, updated_at), run_queue(run_id, work_id, provider_id, queue_status, next_run_at, retry_count, timeout_ms), run_log(run_id, work_id, result, evidence_id, started_at, finished_at).
+  SQLite rows are rebuilt or reconciled from intent tree snapshots and worker/evidence outputs; status transitions still require writing canonical WorkItem/evidence atoms.
+  SQLite should not store BVC body as the only copy, hidden provider state, memory records without .bvc equivalents, or UI layout state as project truth.
+Цель:
+  SQLite improves local execution reliability only after scheduling needs justify it, without changing the source-of-truth model.
+
+Метки:
+  atom.profile: architecture_decision
+  decision.id: sqlite-runtime-index-queue
+  protocol.id: intent-tree-workgraph-layout
+  trace.status: verified
+]>
+
+#NoSQL_Non_Goal_And_Revisit_Triggers<[
+Базис:
+  Current needs are human-readable canonical atoms, deterministic JSON projections and optional local runtime queue/index.
+Вектор:
+  NoSQL is a non-goal for MVP because it adds operational complexity before there is a proven need for remote collaborative writes, document-scale queries or independent service ownership.
+  Do not introduce MongoDB, CouchDB, DynamoDB or similar stores for canonical WorkItems, memory, evidence, dashboard state or graph/RAG in the first storage migration.
+  Revisit NoSQL only when one of these is true: multiple remote users need concurrent offline/online writes; query shape cannot be served by intent tree plus JSON/SQLite indexes; event volume exceeds local SQLite and file snapshots; deployment requires a managed remote document API; or conflict-free sync semantics become a product requirement.
+  Even after revisiting, NoSQL should begin as derived or replicated storage unless a separate architecture decision replaces .bvc canonical atoms with equivalent reviewable guarantees.
+Цель:
+  Storage stays boring and reviewable until project scale proves that a document database solves a real bottleneck.
+
+Метки:
+  atom.profile: architecture_decision
+  decision.id: nosql-non-goal-mvp
+  protocol.id: intent-tree-workgraph-layout
+  trace.status: verified
+]>
+
+#Migration_Plan_From_Backlog_To_Task_Files<[
+Базис:
+  Migration must preserve existing WorkItem ids, statuses, evidence, dependencies, trace status and current UI/runtime behavior.
+Вектор:
+  Step 1: parse work/backlog.bvc with existing parser and create an inventory table of work.id, atomName, status, depends_on, target_files, evidence count, trace.status and proposed intent path.
+  Step 2: choose deterministic placement rules by department/domain/target_files: frontend-ui -> intent/ui/dashboard, product-architecture with OneBase targets -> intent/domains/onebase, knowledge-publishing/RAG -> intent/research/pvrg or intent/memory, devops-runtime/agent-platform -> intent/system/runtime or intent/system/storage.
+  Step 3: write one <work.id>.work.bvc file per task, preserving BVC, criteria, labels, Свидетельства, blocker and journal-like sections exactly enough for parse/roundtrip compatibility.
+  Step 4: add or generate an index/projection at work/backlog.bvc that still contains every work.id and status until runtime readers can scan intent/**.
+  Step 5: add tests for parsing both monolith and tree inputs, duplicate work.id detection, missing dependency detection and snapshot parity with the pre-migration backlog.
+  Step 6: only after parity passes, update runtime/UI commands to read intent roots or a manifest first and backlog projection second.
+  Step 7: record migration evidence and keep a rollback path: regenerate old monolithic backlog from task files if reader cutover fails.
+Цель:
+  Migration changes storage granularity without losing graph identity, operational status or evidence history.
+
+Метки:
+  atom.profile: plan
+  plan.id: migrate-backlog-to-intent-tree
+  protocol.id: intent-tree-workgraph-layout
+  trace.status: verified
+]>
+
+#Concurrency_And_Conflict_Avoidance<[
+Базис:
+  Parallel agents should not fight over one monolithic file for unrelated domains.
+Вектор:
+  Domain folders create natural edit ownership: UI agents touch intent/ui/dashboard, runtime agents touch intent/system/runtime, domain agents touch intent/domains/onebase, memory/retrieval agents touch intent/memory or intent/research/pvrg.
+  One WorkItem per file means status/evidence edits usually conflict only when two agents operate on the same task.
+  work/backlog.bvc projection can be regenerated in stable sorted order, so projection conflicts are mechanical and lower risk than semantic conflicts in canonical atoms.
+  Stable work.id dependencies avoid path churn; moving a file should not require every dependent task to edit depends_on.
+  Snapshot builders should detect duplicate ids, missing dependencies and stale projection entries before status transitions are accepted.
+Цель:
+  The storage model supports concurrent work by isolating semantic edits and making generated/index conflicts reproducible.
+
+Метки:
+  atom.profile: prompt_rule
+  rule.id: intent-tree-concurrency-policy
+  protocol.id: intent-tree-workgraph-layout
+  trace.status: verified
+]>

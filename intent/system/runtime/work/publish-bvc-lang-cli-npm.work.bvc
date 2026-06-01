@@ -1,0 +1,57 @@
+#Задача_publish_bvc_lang_cli_npm<[
+Базис:
+  Phase 1 оставил CLI только в monorepo; spec уже @bvc-lang/spec@0.0.1.
+Вектор:
+  prepack sync-bvc-cli-lib; verify script; npm publish --access public.
+Цель:
+  npm install -g @bvc-lang/cli даёт bvc lint и bvc format.
+Проверки:
+  npm view @bvc-lang/cli version
+  npm pack --dry-run в packages/bvc-cli
+Анализ:
+  Целесообразность:
+  Стоит завести «опубликовать @bvc-lang/cli на npm» в бэклог — по материалам plan: docs/plan-step-to-bvc-migration.md.
+  Контекст и границы:
+  prepack sync-bvc-cli-lib; verify script; npm publish --access public.
+  Зависимости и готовность:
+  depends_on=bvc-tooling-external; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  npm install -g @bvc-lang/cli даёт bvc lint и bvc format.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма plan: docs/plan-step-to-bvc-migration.md; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Свидетельства:
+  - @bvc-lang/cli@0.1.3 published (npm dist-tag latest; bin bvc)
+  - scripts/sync-bvc-cli-lib.mjs + verify-bvc-cli-publish-ready.mjs
+  - npm pkg fix: bin path bin/bvc.mjs (not ./bin/...)
+
+Метки:
+  atom.profile: work_item
+  intake.source_kind: plan
+  intake.source_ref: docs/plan-step-to-bvc-migration.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T11:48:24.925Z
+  work.analysis.source: plan
+  work.decision.at: 2026-05-31T11:48:24.925Z
+  work.decision.verdict: useful
+  work.department: architecture
+  work.depends_on: bvc-tooling-external
+  work.id: publish-bvc-lang-cli-npm
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: frontend_architect
+  work.parent_id: bvc-tooling-external
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: low
+  work.status: done
+  work.target_files: packages/bvc-cli/package.json, scripts/verify-bvc-cli-publish-ready.mjs
+  work.title: опубликовать @bvc-lang/cli на npm
+]>

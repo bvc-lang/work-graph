@@ -1,0 +1,62 @@
+#Задача_implement_mcp_memory_records_tools<[
+Базис:
+  memory-record-v1 (protocols/project-memory-v1.bvc) есть в репо: writers, UI /api/memory-records, worker slice — но Cursor через MCP не видит ни одного memory record.
+  AN-38 §6: Cursor может получить часть memory косвенно через PVRG slice, но это случайно — нет первичного канала для durable project memory.
+Вектор:
+  server.tool list_memory_records(filter?) + get_memory_record(recordId) — read-only поверх memoryRecordWriter / memory-record-v1 JSON.
+  Resource workgraph://memory/records — minimal projection без полного prompt-rule dump.
+  Тесты: workgraph-mcp.test.mjs + fixture с несколькими memory kinds (decision, invariant, domain-fact).
+Цель:
+  Cursor видит durable project memory как первичный MCP канал и может выбрать запись по type/sourceWorkItem без чтения внутренних .work.bvc.
+Проверки:
+  list_memory_records возвращает schema memory-record-list.v1
+  get_memory_record возвращает memory-record-v1
+  tests/workgraph-mcp.test.mjs зелёные
+  README packages/workgraph-mcp + protocols/project-memory-v1.bvc trace обновлены
+Анализ:
+  Целесообразность:
+  Стоит завести «MCP: list_memory_records / get_memory_record + workgraph://memory/records» в бэклог — по материалам AN-38 (work/analytics/llm-pvrg-richir-memory-slices-usage-audit.md).
+  Контекст и границы:
+  server.tool list_memory_records(filter?) + get_memory_record(recordId) — read-only поверх memoryRecordWriter / memory-record-v1 JSON.
+  Зависимости и готовность:
+  depends_on=epic-cursor-mcp-context-surface-v1; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Cursor видит durable project memory как первичный MCP канал и может выбрать запись по type/sourceWorkItem без чтения внутренних .work.bvc.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-38 (work/analytics/llm-pvrg-richir-memory-slices-usage-audit.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+
+Свидетельства:
+  npm run test:deterministic — 648/648 green (2026-06-01)
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-38
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/llm-pvrg-richir-memory-slices-usage-audit.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T23:29:42.428Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T23:29:42.428Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: epic-cursor-mcp-context-surface-v1
+  work.id: implement-mcp-memory-records-tools
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: agent_platform_architect
+  work.parent_id: epic-cursor-mcp-context-surface-v1
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: low
+  work.status: done
+  work.target_files: packages/workgraph-mcp/src/index.mjs, packages/workgraph-mcp/src/handlers.mjs, tests/workgraph-mcp.test.mjs, src/memoryRecordWriter.mjs, protocols/project-memory-v1.bvc, packages/workgraph-mcp/README.md
+  work.title: MCP: list_memory_records / get_memory_record + workgraph://memory/records
+]>

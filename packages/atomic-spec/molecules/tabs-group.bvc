@@ -1,0 +1,23 @@
+#!bvc lang=ru
+#Molecule_tabs_group<[
+Базис:
+  Gripe `<x-ui.molecules.tabs.group>` — row tablist с underline active state.
+  WG backlog uses .workflow-subtab / .board-tab — migrate to molecule contract.
+Вектор:
+  Props: size (sm|md|lg), role=tablist, aria-label.
+  Children: tabs.trigger slots.
+Цель:
+  Shared tabs shell для analytics/workflow subtabs в WG.
+
+Проверки:
+  data-testid=ui-tabs-group
+  role=tablist on container
+
+Метки:
+  atom.profile: ui_component
+  ui.layer: molecule
+  ui.id: tabs-group
+  ui.marketplace.blade: resources/views/components/ui/molecules/tabs/group.blade.php
+  ui.workgraph.module: src/ui/molecules/tabs.mjs
+  trace.status: verified
+]>

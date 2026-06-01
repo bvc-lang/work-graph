@@ -1,0 +1,63 @@
+#Задача_agent_behavior_chat_scope_block<[
+Базис:
+  AN-28 R2/V3: при execute эпика — markdown Scope с work.id из MCP, не TodoWrite T1/Tn.
+  Дополняет cursor-ide-workgraph-parity без нарушения single-backlog rule.
+Вектор:
+  rules/agent-behavior/chat-work-scope-readonly.bvc — prompt_rule в bundle.
+  Шаблон: ## Scope (read-only) + чеклист [x]/[ ]/[~] по work.status.
+  Запрет TodoWrite для списка subtasks эпика (>3 пунктов с work.id).
+Цель:
+  Cursor-агент показывает scope из WG в тексте ответа; оператор видит реальные work.id.
+Проверки:
+  rules/agent-behavior/chat-work-scope-readonly.bvc существует
+  npm run audit:agent-behavior-rules green
+Анализ:
+  Целесообразность:
+  Стоит завести «agent-behavior: chat-work-scope-readonly step (Scope block)» в бэклог — по материалам AN-28 (work/analytics/chat-work-graph-todo-sync.md).
+  Контекст и границы:
+  rules/agent-behavior/chat-work-scope-readonly.bvc — prompt_rule в bundle.
+  Зависимости и готовность:
+  depends_on=epic-chat-work-scope-readonly, mcp-epic-rollup-scope-resource; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Cursor-агент показывает scope из WG в тексте ответа; оператор видит реальные work.id.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-28 (work/analytics/chat-work-graph-todo-sync.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-28
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/chat-work-graph-todo-sync.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-05-31T14:19:05.297Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T14:19:05.297Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: epic-chat-work-scope-readonly, mcp-epic-rollup-scope-resource
+  work.id: agent-behavior-chat-scope-block
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: integration_architect
+  work.parent_id: epic-chat-work-scope-readonly
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: low
+  work.status: done
+  work.target_files: rules/agent-behavior/chat-work-scope-readonly.bvc, src/agentBehaviorRulesBundle.mjs, work/analytics/chat-work-graph-todo-sync.md
+  work.title: agent-behavior: chat-work-scope-readonly step (Scope block)
+
+Свидетельства:
+  - rules/agent-behavior/chat-work-scope-readonly.bvc — prompt_rule chat-work-scope-readonly
+  - src/agentBehaviorRulesBundle.mjs — WORKER_BEHAVIOR_RULE_IDS includes chat-work-scope-readonly
+  - src/epicWorkScope.mjs — formatEpicScopeMarkdown + scopeChecklistMark
+  - npm run audit:agent-behavior-rules ok; tests 8/8 pass
+  - agent-behavior chat scope rule in bundle; AN-28 R2 scope markdown template
+]>

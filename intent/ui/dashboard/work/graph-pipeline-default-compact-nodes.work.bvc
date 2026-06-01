@@ -1,0 +1,57 @@
+#Задача_graph_pipeline_default_compact_nodes<[
+Базис:
+  AN-1 layout mess: oversized nodes, overlapping edges.
+  AN-34: pipeline graph default для lineage; full graph secondary.
+Вектор:
+  Default Architecture graph layout = pipeline (LR/TB profile).
+  Compact node cards: title + status + 1-line summary.
+  Dagre spacing tuning; fit-view on mode switch.
+Цель:
+  Pipeline graph readable at first open without manual pan/zoom marathon.
+Проверки:
+  Architecture opens in pipeline profile by default
+  node card height bounded; no label overlap in fixture snapshot test
+  link to graph-canvas-layout-mess remediation
+Анализ:
+  Целесообразность:
+  Стоит завести «Graph: pipeline default + compact canvas cards (AN-1 tail)» в бэклог — по материалам AN-34 (work/analytics/architecture-visualization-patterns-comparison.md).
+  Контекст и границы:
+  Default Architecture graph layout = pipeline (LR/TB profile).
+  Зависимости и готовность:
+  depends_on=epic-architecture-views-v1, adr-architecture-views-v1-profiles, architecture-blocks-list-view-tab; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Pipeline graph readable at first open without manual pan/zoom marathon.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-34 (work/analytics/architecture-visualization-patterns-comparison.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-34
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/architecture-visualization-patterns-comparison.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T19:21:12.902Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T19:21:12.902Z
+  work.decision.verdict: useful
+  work.department: ui-dashboard
+  work.depends_on: epic-architecture-views-v1, adr-architecture-views-v1-profiles, architecture-blocks-list-view-tab
+  work.id: graph-pipeline-default-compact-nodes
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: frontend_architect
+  work.parent_id: epic-architecture-views-v1
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: high
+  work.status: done
+  work.target_files: src/workGraphBacklogUiServer.mjs, work/analytics/graph-canvas-layout-mess.md, work/analytics/architecture-visualization-patterns-comparison.md
+  work.title: Graph: pipeline default + compact canvas cards (AN-1 tail)
+]>

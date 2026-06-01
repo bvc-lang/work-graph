@@ -1,0 +1,50 @@
+#Задача_implement_mcp_get_intent_hierarchy<[
+Базис:
+  intent.hierarchy.snapshot.v1 собирается в src/intentHierarchy.mjs и UI operator shell, но агент в Cursor не видит domain tree через MCP.
+  Задача «Intent graph: MCP tool get_intent_hierarchy» относится к контуру графа знаний и retrieval и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: phase-4-trace-pvrg-semantic-map.
+Вектор:
+  Добавить get_intent_hierarchy — обёртка buildIntentHierarchySnapshot над intent tree.
+  Ближайший шаг исполнения: просмотреть и перевести в ready.
+Цель:
+  Агент навигирует по доменам намерений без чтения всего backlog snapshot.
+  Готово, когда выполнены проверки: MCP tool get_intent_hierarchy возвращает intent.hierarchy.snapshot.v1.
+Анализ:
+  Целесообразность:
+  Стоит завести «Intent graph: MCP tool get_intent_hierarchy» в бэклог.
+  Контекст и границы:
+  Добавить get_intent_hierarchy — обёртка buildIntentHierarchySnapshot над intent tree.
+  Зависимости и готовность:
+  depends_on=phase-4-trace-pvrg-semantic-map; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Агент навигирует по доменам намерений без чтения всего backlog snapshot.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  migration.strategy: port
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:36.891Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:36.899Z
+  work.decision.verdict: useful
+  work.department: knowledge-publishing
+  work.depends_on: phase-4-trace-pvrg-semantic-map
+  work.id: implement-mcp-get-intent-hierarchy
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: retrieval_architect
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: packages/workgraph-mcp/src/handlers.mjs, packages/workgraph-mcp/src/index.mjs, tests/workgraph-mcp.test.mjs
+  work.title: Intent graph: MCP tool get_intent_hierarchy
+]>
+

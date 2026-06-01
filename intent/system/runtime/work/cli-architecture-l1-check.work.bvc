@@ -1,0 +1,55 @@
+#Задача_cli_architecture_l1_check<[
+Базис:
+  AN-35 Phase A: CI gate for L1 drift.
+Вектор:
+  scripts/architecture-l1-check.mjs
+  npm script architecture:l1-check
+  Optional golden mermaid from canon-only export.
+Цель:
+  PR с изменением L1 без canon diff ловится в CI.
+Проверки:
+  l1-check exits 0 on main branch fixture
+  documented in plan + AGENTS if needed
+Анализ:
+  Целесообразность:
+  Стоит завести «CLI: npm run architecture:l1-check (canon parse + charter mapping + golden mermaid)» в бэклог — по материалам AN-36 (work/analytics/architecture-main-bvc-canon-hub.md).
+  Контекст и границы:
+  scripts/architecture-l1-check.mjs
+  Зависимости и готовность:
+  depends_on=epic-architecture-main-bvc-canon, migrate-architecture-snapshot-from-canon; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  PR с изменением L1 без canon diff ловится в CI.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-36 (work/analytics/architecture-main-bvc-canon-hub.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-36
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/architecture-main-bvc-canon-hub.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T21:27:08.593Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T21:27:08.593Z
+  work.decision.verdict: useful
+  work.department: system-runtime
+  work.depends_on: epic-architecture-main-bvc-canon, migrate-architecture-snapshot-from-canon
+  work.id: cli-architecture-l1-check
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: integration_architect
+  work.parent_id: epic-architecture-main-bvc-canon
+  work.pipeline_stage: closed
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: scripts/architecture-l1-check.mjs, package.json, docs/plan-architecture-main-bvc-canon.md, work/analytics/architecture-main-bvc-canon-hub.md
+  work.title: CLI: npm run architecture:l1-check (canon parse + charter mapping + golden mermaid)
+]>

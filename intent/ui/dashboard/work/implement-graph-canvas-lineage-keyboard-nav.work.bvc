@@ -1,0 +1,60 @@
+#Задача_implement_graph_canvas_lineage_keyboard_nav<[
+Базис:
+  Источник: analytics:graph-visualization-engine (AN-4).
+  n8n useCanvasTraversal: upstream/downstream/siblings для keyboard selection.
+Вектор:
+  graphCanvasTraversal.ts: getIncoming/Outgoing/Upstream/Downstream от selected node.
+  Arrow keys + Enter → drawer; highlight lineage path на edges.
+Цель:
+  Operator navigates graph with keyboard как на n8n canvas.
+Анализ:
+  Целесообразность:
+  Стоит завести «реализовать keyboard lineage nav и highlight (n8n parity)» в бэклог — по материалам AN-4 (analytics:graph-visualization-engine).
+  Контекст и границы:
+  graphCanvasTraversal.ts: getIncoming/Outgoing/Upstream/Downstream от selected node.
+  Зависимости и готовность:
+  depends_on=migrate-intent-roadmap-lit-flow; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Operator navigates graph with keyboard как на n8n canvas.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-4 (analytics:graph-visualization-engine); исполнять после вердикта «полезно» и готовности зависимостей.
+Проверки:
+  unit tests traversal на fixture graph
+  focused node visible after pan (fitView partial)
+
+Свидетельства:
+  - protocols/graph-canvas-lit-flow-v1.bvc + schemas/graph-canvas-lit-flow-projection.v1.json
+  - public/graph-canvas-lit-flow.js (lit-flow client island)
+  - src/graphCanvasLitFlow/* + tests/graphCanvasLitFlow.test.mjs
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-4
+  intake.source_kind: analytics-record
+  intake.source_ref: analytics:graph-visualization-engine
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T19:39:18.399Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-30T19:39:18.399Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: migrate-intent-roadmap-lit-flow
+  work.id: implement-graph-canvas-lineage-keyboard-nav
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.parent_id: implement-lit-flow-graph-canvas-v1
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: medium
+  work.status: done
+  work.target_files: src/graphCanvasLitFlow/graphCanvasTraversal.ts, tests/graphCanvasTraversal.test.mjs
+  work.title: реализовать keyboard lineage nav и highlight (n8n parity)
+]>

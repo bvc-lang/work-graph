@@ -1,0 +1,49 @@
+#Задача_design_operator_memory_panel_mvp<[
+Базис:
+  В UI есть disabled пункт «Память», при этом Project Memory v1, memory writer и worker memory slice уже существуют частично.
+  Пользователь не видит, какие решения, инварианты, риски и facts накоплены проектом.
+Вектор:
+  Спроектировать MVP панели «Память»: список MemoryRecord, фильтры type/status/confidence, sourceWorkItem, relatedFiles, evidenceIds, review actions для draft/needs-review.
+  Разделить read-only projection MVP и будущий writer/review flow.
+Цель:
+  Project Memory становится видимой продуктовой ценностью, а не скрытым prompt context.
+Анализ:
+  Целесообразность:
+  Стоит завести «спроектировать MVP панели «Память»» в бэклог.
+  Контекст и границы:
+  Спроектировать MVP панели «Память»: список MemoryRecord, фильтры type/status/confidence, sourceWorkItem, relatedFiles, evidenceIds, review actions для draft/needs-review.
+  Зависимости и готовность:
+  depends_on=design-project-memory-v1, implement-memory-record-worker-slice-mvp; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Project Memory становится видимой продуктовой ценностью, а не скрытым prompt context.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441125
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:36.069Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:36.078Z
+  work.decision.verdict: useful
+  work.department: memory
+  work.depends_on: design-project-memory-v1, implement-memory-record-worker-slice-mvp
+  work.id: design-operator-memory-panel-mvp
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: product_architect
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: low
+  work.status: done
+  work.target_files: protocols/project-memory-v1.bvc, ui/operator-dashboard-v2.bvc, src/workGraphBacklogUiServer.mjs, work/backlog.bvc
+  work.title: спроектировать MVP панели «Память»
+]>
+

@@ -1,0 +1,19 @@
+#Протокол_WorkGraph_Board_Cycle_Slice_V1<[
+Базис:
+  Канбан показывает все done/verified в одной колонке; при 70+ закрытых WorkItems операционный срез теряется.
+  Phase epics (phase-0…phase-11) уже задают natural cycles без второго source of truth.
+Вектор:
+  Optional label work.cycle (например phase-9 или 2026-05).
+  Derived cycle: walk depends_on → ближайший phase-* epic, если label не задан; id phase-* epic → self cycle.
+  UI default: operational columns (ready/in_progress/verify/blocked) без полного done dump.
+  Done/verified — archive section с cap (12) и фильтром по выбранному cycle.
+  Contract: workgraph.cycle.slice.v1 в src/workGraphCycleSlice.mjs.
+Цель:
+  Operator видит актуальный срез; canonical state остаётся work/backlog.bvc.
+
+Метки:
+  atom.profile: prompt_rule
+  protocol.id: workgraph-board-cycle-slice-v1
+  work.source: implement-workgraph-cycle-slice-filter
+  trace.status: verified
+]>

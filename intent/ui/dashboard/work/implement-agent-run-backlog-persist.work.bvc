@@ -1,0 +1,51 @@
+#Задача_implement_agent_run_backlog_persist<[
+Базис:
+  Agent Run panel MVP запускал live-loop в памяти: transition status/evidence применялись к in-memory snapshot, но work/backlog.bvc на диске не обновлялся и доска не отражала смену статуса.
+  Без записи в canonical бэклог нет истории в графе намерений и оператор не видит, какая задача реально продвинулась после run.
+Вектор:
+  Server-side persist одного WorkItem atom в work/backlog.bvc после успешного agent прогнать с appliedTransition.
+  Патч work.status, work.blocker и append Свидетельства; opt-out persistBacklog=false для tests/CLI.
+  POST /api/agent-run перезагружает snapshot в UI и перерисовывает board.
+Цель:
+  Work Graph остаётся источник истины: worker прогнать оставляет след в бэклог, intent graph и оператор board.
+Анализ:
+  Целесообразность:
+  Стоит завести «сохранять transitions Agent Run в бэклог» в бэклог.
+  Контекст и границы:
+  Server-side persist одного WorkItem atom в work/backlog.bvc после успешного agent прогнать с appliedTransition.
+  Зависимости и готовность:
+  depends_on=implement-operator-agent-run-panel-mvp; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Work Graph остаётся источник истины: worker прогнать оставляет след в бэклог, intent graph и оператор board.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441110
+  migration.strategy: replace
+  trace.artifact_refs: protocols/operator-agent-run-panel-v1.bvc, intent/ui/dashboard/work/implement-operator-agent-run-panel-mvp.work.bvc
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:36.487Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:36.498Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: implement-operator-agent-run-panel-mvp
+  work.id: implement-agent-run-backlog-persist
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: frontend_architect
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: src/workGraphBacklogPersist.mjs, src/agentRunApi.mjs, src/workGraphBacklogUiServer.mjs, tests/workGraphBacklogPersist.test.mjs, work/backlog.bvc, intent/index.bvc
+  work.title: сохранять transitions Agent Run в бэклог
+]>
+

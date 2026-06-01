@@ -1,0 +1,49 @@
+#Задача_implement_onebase_rest_evidence_adapter<[
+Базис:
+  Статическая проверка и инструменты worker уже работают; путь свидетельств через REST и PostgreSQL ещё не подключён.
+  Задача «Фаза 7: адаптер REST-свидетельств OneBase» относится к контуру Work Graph rebuild и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: phase-7-onebase-vertical.
+Вектор:
+  Сделать адаптер: вывод команд onebase describe/check преобразуется в формат evidence-record.v1.
+  Ближайший шаг исполнения: просмотреть и перевести в ready.
+Цель:
+  Доменные свидетельства не сводятся только к статической проверке gross-profit.
+  Готово, когда выполнены проверки: Адаптер преобразует образцовый вывод CLI в evidence v1.
+Анализ:
+  Целесообразность:
+  Стоит завести «Фаза 7: адаптер REST-свидетельств OneBase» в бэклог.
+  Контекст и границы:
+  Сделать адаптер: вывод команд onebase describe/check преобразуется в формат evidence-record.v1.
+  Зависимости и готовность:
+  depends_on=phase-7-onebase-vertical; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Доменные свидетельства не сводятся только к статической проверке gross-profit.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  migration.strategy: port
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:37.010Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:37.018Z
+  work.decision.verdict: useful
+  work.department: domain-onebase
+  work.depends_on: phase-7-onebase-vertical
+  work.id: implement-onebase-rest-evidence-adapter
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: domain_architect
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: medium
+  work.status: done
+  work.target_files: src/onebaseWorkerTools.mjs, protocols/onebase-mcp-parity-v1.bvc
+  work.title: Фаза 7: адаптер REST-свидетельств OneBase
+]>

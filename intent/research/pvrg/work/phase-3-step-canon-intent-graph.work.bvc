@@ -1,0 +1,51 @@
+#Задача_phase_3_step_canon_intent_graph<[
+Базис:
+  `.bvc` canon — уникальный слой ioHasC, а intent tree в пересобрать уже начал заменять монолитный бэклог.
+  Задача «Фаза 3: Step canon и intent graph» относится к контуру платформы агента и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: phase-2-workgraph-os-daemon.
+Вектор:
+  Спроектировать перенос Step/HasC canon, intent hierarchy, связей WorkItem с intent, charter gates и выравнивание catalog/passport.
+  Ближайший шаг исполнения: выполнить фазу 4 trace, PVRG и semantic maps.
+Цель:
+  Смысловые артефакты ioHasC получают устойчивый canonical layout в rebuild.
+  Готово, когда выполнены проверки: inventory Step/HasC parser/canon сопоставлен с контрактами rebuild.
+Анализ:
+  Целесообразность:
+  Стоит завести «Фаза 3: Step canon и intent graph» в бэклог.
+  Контекст и границы:
+  Спроектировать перенос Step/HasC canon, intent hierarchy, связей WorkItem с intent, charter gates и выравнивание catalog/passport.
+  Зависимости и готовность:
+  depends_on=phase-2-workgraph-os-daemon; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Смысловые артефакты ioHasC получают устойчивый canonical layout в rebuild.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441053
+  migration.strategy: port
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:37.458Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:37.465Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: phase-2-workgraph-os-daemon
+  work.id: phase-3-step-canon-intent-graph
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: compiler_engineer
+  work.pipeline_stage: decided
+  work.priority: critical
+  work.risk: high
+  work.status: done
+  work.target_files: protocols/intent-hierarchy-pilot.bvc, protocols/catalog-passport-intent-alignment.bvc, src/intentHierarchy.mjs, src/intentTreeMigration.mjs, tests/intentHierarchy.test.mjs, intent/index.bvc, work/backlog.bvc
+  work.title: Фаза 3: Step canon и intent graph
+]>
+

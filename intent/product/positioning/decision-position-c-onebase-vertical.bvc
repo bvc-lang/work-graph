@@ -1,0 +1,26 @@
+#!bvc lang=ru
+#Decision_Position_C_OneBase_Vertical<[
+Базис:
+  AN-7 §8: четыре позиции продукта; позиция C — vertical для 1С / OneBase с LLM и верификацией.
+  Без decision record команда возвращается к «всё сразу» (general agentic OS).
+Вектор:
+  Вопрос: какая позиция продукта Work Graph Rebuild?
+  Варианты: A (MCP layer), B (governance), C (1С/OneBase vertical), D (open canon only).
+  Выбрано: C — «Платформа для разработки конфигураций 1С через LLM с верификацией».
+  Критерий разворота: если внешний pilot не проходит golden path за 2 часа — пересмотреть A или B.
+  Риски: узкий рынок RU/CIS; нужен канал в 1С-сообщество.
+Цель:
+  Позиция C закреплена в intent graph и видна на roadmap; charter/README ссылаются на AN-7.
+
+Проверки:
+  atom в intent/product/positioning/
+  intake.analytics_key AN-7 на связанных work items
+
+Метки:
+  atom.profile: decision
+  decision.id: product-position-c-onebase-vertical
+  decision.selected_option: C
+  intake.analytics_key: AN-7
+  intake.source_ref: work/analytics/product-self-audit-user.md
+  trace.status: verified
+]>

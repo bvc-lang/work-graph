@@ -1,0 +1,28 @@
+#Протокол_WorkGraph_Draft_Intake<[
+Базис:
+  Старый ioHasC daemon пишет suggestions в steps/suggestions/*.suggested.bvc и NDJSON journal, но rebuild backlog требует controlled promotion в WorkItems.
+  Draft store остаётся feeder, не вторым source of truth.
+Вектор:
+  Intake flow: suggestion/draft atom -> review queue -> operator approval -> new WorkItem atom appended to work/backlog.bvc with provenance labels.
+  Provenance labels: intake.source_path, intake.source_kind (suggestion|llm_draft|manual), intake.review_status (pending|approved|rejected), intake.promoted_work.id.
+  Promotion requires: StepAtomDraft validation, duplicate work.id check, explicit migration.strategy and target phase assignment.
+  Rejected drafts stay in suggestion shard with rejection evidence; they do not mutate canonical backlog.
+  Link to old ioHasC: steps/suggestions/, .iohasc/daemon-suggestions.ndjson as reference intake sources (port strategy).
+  Promotion rules (deterministic, src/draftIntakePromotionRules.mjs):
+    proposal_validation — StepAtomDraft validation passes;
+    work_id_present — non-empty work.id;
+    migration_strategy — port|rebuild|replace|defer;
+    intake_provenance — intake.source_kind + intake.source_path + intake.review_status=pending;
+    target_files — at least one target file for code-gap drafts;
+    duplicate_work_id — work.id absent from canonical backlog;
+    confidence_gate — low-confidence suggestions rejected unless allowLowConfidence.
+  Eligible drafts → promotion candidate list (reviewRequired=true); failed checks → rejected list without backlog mutation.
+Цель:
+  Daemon и LLM draft pipelines могут предлагать задачи, но canonical backlog меняется только через reviewed promotion.
+
+Метки:
+  atom.profile: prompt_rule
+  protocol.id: workgraph-draft-intake
+  work.source: design-draft-store-backlog-intake
+  trace.status: verified
+]>

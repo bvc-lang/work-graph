@@ -1,0 +1,50 @@
+#Задача_implement_provider_selection_fallback_runtime<[
+Базис:
+  Provider registry без runtime selection не решает задачу сменных исполнителей.
+  Текущий live-loop поддерживает --provider local|openai, но не умеет выбирать provider по required capabilities и не пишет evidence при fallback.
+Вектор:
+  Добавить selectWorkerProvider(input, policy, registry): required capabilities, policy compatibility, env availability, reliability/cost order.
+  Интегрировать selection/fallback в agentWorkerLiveLoop и daemon tick, сохранив явный --provider override.
+  Записывать fallback evidence в worker-runs journal и operator-shell snapshot.
+Цель:
+  Work Graph dispatch выбирает безопасного исполнителя автоматически и объяснимо, а оператор видит причины переключения.
+Анализ:
+  Целесообразность:
+  Стоит завести «реализовать provider selection/fallback runtime» в бэклог.
+  Контекст и границы:
+  Добавить selectWorkerProvider(input, policy, registry): required capabilities, policy compatibility, env availability, reliability/cost order.
+  Зависимости и готовность:
+  depends_on=design-provider-registry-and-capability-selection; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Work Graph dispatch выбирает безопасного исполнителя автоматически и объяснимо, а оператор видит причины переключения.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441101
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:37.088Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:37.096Z
+  work.decision.verdict: useful
+  work.department: devops-runtime
+  work.depends_on: design-provider-registry-and-capability-selection
+  work.id: implement-provider-selection-fallback-runtime
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: agent_platform_architect
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: src/workGraphWorkerProvider.mjs, src/agentWorkerLiveLoop.mjs, src/workGraphDaemonTick.mjs, tests/workGraphWorkerProvider.test.mjs, tests/agentWorkerLiveLoop.test.mjs, tests/workGraphDaemonTick.test.mjs, work/backlog.bvc
+  work.title: реализовать provider selection/fallback runtime
+]>
+

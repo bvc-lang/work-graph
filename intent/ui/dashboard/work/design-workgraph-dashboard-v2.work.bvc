@@ -1,0 +1,51 @@
+#Задача_design_workgraph_dashboard_v2<[
+Базис:
+  Текущий UI полезен, но всё ещё local MVP; full пересобрать нужен dashboard оператора v2.
+  Задача «спроектировать Work Graph dashboard v2» относится к контуру Work Graph rebuild и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: phase-9-ui-operator-shell.
+Вектор:
+  Спроектировать dashboard v2 с eligible queue, live-loop прогнать state, blocked reasons, verification, memory/evidence summaries и phase roadmap.
+  Ближайший шаг исполнения: —.
+Цель:
+  Operator может управлять Work Graph OS без чтения raw бэклог.
+  Готово, когда выполнены проверки: dashboard sections и read models определены.
+Анализ:
+  Целесообразность:
+  Стоит завести «спроектировать Work Graph dashboard v2» в бэклог.
+  Контекст и границы:
+  Спроектировать dashboard v2 с eligible queue, live-loop прогнать state, blocked reasons, verification, memory/evidence summaries и phase roadmap.
+  Зависимости и готовность:
+  depends_on=phase-9-ui-operator-shell; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Operator может управлять Work Graph OS без чтения raw бэклог.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441083
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:36.301Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:36.310Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: phase-9-ui-operator-shell
+  work.id: design-workgraph-dashboard-v2
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: frontend_architect
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: ui/operator-dashboard-v2.bvc, src/operatorShellProjection.mjs, src/workGraphBacklogUiServer.mjs, work/backlog.bvc
+  work.title: спроектировать Work Graph dashboard v2
+]>
+

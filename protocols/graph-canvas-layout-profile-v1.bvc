@@ -1,0 +1,27 @@
+#Протокол_Graph_Canvas_Layout_Profile_V1<[
+Базис:
+  Аналитический разбор AN-1 (analytics:graph-canvas-layout-mess) фиксирует: ручная сетка POSITIONS не масштабируется; долгосрочный канон Work Graph — layout как часть модели, а не inline-координаты в UI.
+  Схема и Дорожная карта уже derived из snapshot (schematic.view.v1, architecture.snapshot.v1), но профиль раскладки не персистится и не версионируется.
+Вектор:
+  Ввести layout profile v1 в канон: preset layered-dag-v1, ranks по node id, manualOverrides для презентации.
+  Auto-layout по умолчанию (dagre/elk или общий graphCanvasLayout engine); override не ломает snapshot contract.
+  Пример меток в .bvc / snapshot labels:
+    layout.profile: layered-dag-v1
+    layout.ranks: { work-graph: 1, storage: 3 }
+    layout.manualOverrides: { "domain-onebase": { col: 1, row: 2 } }
+  Snapshot JSON: поле layoutProfile рядом с nodes/edges; UI читает только derived snapshot, не правит канон inline.
+Цель:
+  Operator и агент могут воспроизводимо задать/обновить раскладку графа через step/snapshot; регрессии ловятся тестами качества layout (см. implement-graph-canvas-layout-quality-snapshot-test).
+
+Проверки:
+  описан layout.profile и override semantics
+  schema graph-canvas-layout-profile.v1.json согласован с architecture/schematic snapshot
+  auto-layout default + manual override path документированы
+  UI не хранит persisted layout state вне snapshot/profile
+
+Метки:
+  atom.profile: architecture_decision
+  protocol.id: graph-canvas-layout-profile-v1
+  work.source: analytics:graph-canvas-layout-mess
+  trace.status: verified
+]>

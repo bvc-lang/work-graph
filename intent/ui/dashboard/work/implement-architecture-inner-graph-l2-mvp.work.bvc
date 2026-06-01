@@ -1,0 +1,50 @@
+#Задача_implement_architecture_inner_graph_l2_mvp<[
+Базис:
+  Списки внутри block detail полезны, но для проектирования нужен локальный inner graph L2 с ограниченным числом нод.
+  Trace Links v1 validator уже даёт step↔code diagnostics, пригодные для L2/L3 file/symbol nodes.
+Вектор:
+  Реализовать scoped L2 graph только для выбранного block: containers/modules/protocols/runtime pieces, max ~15 visible nodes.
+  Edge types: defines, implements, uses, relates_file; hide unrelated work deps unless filtered explicitly.
+  Reuse existing SVG graph renderer patterns from work deps view with block-scoped layout and orphan/broken link badges.
+Цель:
+  Внутри architecture block оператор видит локальную схему проектирования, а не весь проектный spaghetti graph.
+Анализ:
+  Целесообразность:
+  Стоит завести «реализовать MVP inner graph L2 внутри architecture block» в бэклог.
+  Контекст и границы:
+  Реализовать scoped L2 graph только для выбранного block: containers/modules/protocols/runtime pieces, max ~15 visible nodes.
+  Зависимости и готовность:
+  depends_on=implement-architecture-block-detail-mvp, implement-step-code-trace-link-validator; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Внутри architecture block оператор видит локальную схему проектирования, а не весь проектный spaghetti graph.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441046
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:36.536Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:36.545Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: implement-architecture-block-detail-mvp, implement-step-code-trace-link-validator
+  work.id: implement-architecture-inner-graph-l2-mvp
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: feature_engineer
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: src/architectureSnapshot.mjs, src/workGraphBacklogUiServer.mjs, tests/architectureSnapshot.test.mjs, tests/workGraphBacklogUiServer.test.mjs, work/backlog.bvc
+  work.title: реализовать MVP inner graph L2 внутри architecture block
+]>
+

@@ -1,0 +1,59 @@
+#Задача_intent_marketplace_backlog_bootstrap<[
+Базис:
+  AN-21 §3.2 / Phase 5: WG как PM над Marketplace.
+  docs/plans/*.md Marketplace → work.bvc items.
+Вектор:
+  intent/domains/marketplace/work/ — folder + index entries.
+  Миграция top-5 plans в work items с parent epic.
+  Verification matrix: phpunit/phpstan evidence hooks.
+Цель:
+  Marketplace roadmap виден на Intent Roadmap Canvas WG.
+Проверки:
+  intent/index.bvc содержит marketplace work ids
+  ≥5 marketplace work items в backlog
+Анализ:
+  Целесообразность:
+  Стоит завести «intent/domains/marketplace: bootstrap backlog из docs/plans» в бэклог — по материалам AN-21 (work/analytics/marketplace-integration-and-shared-design-system.md).
+  Контекст и границы:
+  intent/domains/marketplace/work/ — folder + index entries.
+  Зависимости и готовность:
+  depends_on=epic-marketplace-shared-design-system; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Marketplace roadmap виден на Intent Roadmap Canvas WG.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-21 (work/analytics/marketplace-integration-and-shared-design-system.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-21
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/marketplace-integration-and-shared-design-system.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-05-31T15:34:00.460Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T15:34:00.460Z
+  work.decision.verdict: useful
+  work.department: domain-marketplace
+  work.depends_on: epic-marketplace-shared-design-system
+  work.id: intent-marketplace-backlog-bootstrap
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: product_owner
+  work.parent_id: epic-marketplace-shared-design-system
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: medium
+  work.status: done
+  work.target_files: intent/domains/marketplace/work/, intent/index.bvc, ../../04 Marketplace/docs/plans/, work/analytics/marketplace-integration-and-shared-design-system.md
+  work.title: intent/domains/marketplace: bootstrap backlog из docs/plans
+
+Свидетельства:
+  - intent/domains/marketplace/ + 2 plan work items + epic subtasks on index.bvc
+]>

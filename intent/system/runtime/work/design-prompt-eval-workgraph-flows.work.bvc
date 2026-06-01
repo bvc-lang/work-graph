@@ -1,0 +1,51 @@
+#Задача_design_prompt_eval_workgraph_flows<[
+Базис:
+  Prompt eval существует в старом ioHasC; пересобрать нужны Work Graph-specific cases.
+  Задача «описать prompt eval cases для Work Graph flows» относится к контуру Work Graph rebuild и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: phase-8-agent-prompt-eval-tools.
+Вектор:
+  Определить prompt eval fixtures для claim/no eligible/loop hint/trace gate failure/blocked evidence.
+  Ближайший шаг исполнения: —.
+Цель:
+  LLM regressions в Work Graph flows измеримы до real provider rollout.
+  Готово, когда выполнены проверки: fixture list покрывает failure modes Work Graph.
+Анализ:
+  Целесообразность:
+  Стоит завести «описать prompt eval cases для Work Graph flows» в бэклог.
+  Контекст и границы:
+  Определить prompt eval fixtures для claim/no eligible/loop hint/trace gate failure/blocked evidence.
+  Зависимости и готовность:
+  depends_on=phase-8-agent-prompt-eval-tools; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  LLM regressions в Work Graph flows измеримы до real provider rollout.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441082
+  migration.strategy: port
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:36.105Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:36.114Z
+  work.decision.verdict: useful
+  work.department: qa
+  work.depends_on: phase-8-agent-prompt-eval-tools
+  work.id: design-prompt-eval-workgraph-flows
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: qa_automation
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: protocols/prompt-eval-workgraph-flows-v1.bvc, src/workGraphToolSurfaceAudit.mjs, tests/workGraphToolSurfaceAudit.test.mjs, work/backlog.bvc
+  work.title: описать prompt eval cases для Work Graph flows
+]>
+

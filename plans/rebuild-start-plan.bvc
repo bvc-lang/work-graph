@@ -1,0 +1,136 @@
+#План_Rebuild_Start<[
+Базис:
+  Новая сборка должна быть agent-first: LLM ведёт Work Graph, человек наблюдает и вмешивается при необходимости.
+  Уже создан seed: charter/main.bvc, work/backlog.bvc, rules/agent-behavior/rebuild.bvc, schema Step Atom Draft и protocol LLM Step Atom Writer.
+  Следующий шаг — не писать UI-граф руками, а построить минимальный контур: structured atom draft -> formatter -> Work Graph -> dashboard -> OneBase golden path.
+Вектор:
+  Выполнить пять коротких фаз: канон атома, Work Graph tools, operator dashboard, OneBase scenario, verification loop.
+  Каждая фаза должна оставлять evidence в Work Graph.
+Цель:
+  Получить первый рабочий скелет системы, где агент сам создаёт/ведёт задачи, а человек видит состояние и может вмешаться.
+Свидетельства:
+  Фазы 1–5 выполнены: formatter, Work Graph runtime, operator dashboard, OneBase golden path design и verification loop; OneBase implementation task onebase-implement-gross-profit-warehouse-dimension закрыта с go test ./... evidence.
+  npm run test:deterministic exit_code=0; static OneBase artifact gate verifyOnebaseGrossProfitWarehouseArtifacts passed.
+
+Метки:
+  guid: 550e8400-e29b-41d4-a716-446655444001
+  atom.profile: plan
+  plan.id: rebuild-start-plan
+  project.slug: work-graph-rebuild
+  trace.status: verified
+]>
+
+#Фаза_1_StepAtomFormatter<[
+Базис:
+  LLM не должна писать raw .bvc напрямую.
+  В schemas/step-atom-draft.v1.json уже есть входной JSON-контракт.
+Вектор:
+  Спроектировать deterministic formatter StepAtomDraft -> .bvc.
+  Спроектировать parser/validator для обратной проверки.
+  Добавить Work Graph задачу на реализацию formatter.
+Цель:
+  Новый атом можно создать через JSON draft без ручного знания синтаксиса .bvc.
+
+Метки:
+  guid: 550e8400-e29b-41d4-a716-446655444002
+  atom.profile: plan_step
+  work.creates: implement-step-atom-formatter
+  work.depends_on: define-workitem-v1
+  trace.status: verified
+]>
+
+#Фаза_2_WorkGraph_Minimal_Runtime<[
+Базис:
+  Work Graph должен стать операционной моделью агента.
+  .bvc остаётся human/LLM source of truth; JSON snapshot v1 является первым runtime interchange.
+Вектор:
+  Зафиксировать WorkItem v1: поля, статусы, transitions, evidence policy.
+  Описать tools: upsertWorkItem, claimNext, recordEvidence, transitionStatus.
+  Зафиксировать нейтральную serialization boundary после JSON snapshot.
+  Оценивать FlatBuffers/GBC отдельным решением после требований, а не внутри минимального runtime.
+  Зафиксировать deferral boundary GBC/GVM/Zig через defer-gbc-gvm-zig-scope: MVP = JSON snapshot first; R&D = GVM mandate, Genesis runtime, Zig memory core; return triggers = performance, multi-language binary reader, trust/runtime requirement (protocols/gbc-gvm-zig-deferral-boundary.bvc).
+  Не делать полный autonomous daemon на первом шаге.
+Цель:
+  Агент может вести очередь задач детерминированными инструментами.
+
+Метки:
+  guid: 550e8400-e29b-41d4-a716-446655444003
+  atom.profile: plan_step
+  work.creates: implement-workgraph-minimal-runtime, design-serialization-boundary, evaluate-flatbuffers-gbc-slice
+  work.depends_on: define-workitem-v1, implement-step-atom-formatter
+  trace.status: verified
+]>
+
+#Фаза_2b_GBC_GVM_Zig_Deferral<[
+Базис:
+  ioHasC GBC/GFS direction остаётся ценным, но rebuild MVP не должен ждать binary/runtime parity.
+Вектор:
+  Принять protocols/gbc-gvm-zig-deferral-boundary.bvc: MVP GBC scope = derived JSON projections only; deferred = GVM mandate, Genesis runtime, Zig primary memory core, full native schema coverage.
+  Return triggers: measured JSON bottleneck, zero-copy/multi-language reader need, GFS overlay requirement, mandate-gated execution policy.
+  Не добавлять GVM/Genesis acceptance criteria в фазы 3–5 rebuild-start-plan.
+Цель:
+  Golden path и operator dashboard не блокируются R&D runtime слоем.
+
+Метки:
+  guid: 550e8400-e29b-41d4-a716-446655444007
+  atom.profile: plan_step
+  work.completes: defer-gbc-gvm-zig-scope
+  work.depends_on: evaluate-flatbuffers-gbc-slice
+  trace.status: verified
+]>
+
+#Фаза_3_Operator_Dashboard<[
+Базис:
+  Человек не должен строить граф руками.
+  UI нужен как пульт наблюдения и вмешательства.
+Вектор:
+  Сделать dashboard: текущая задача, статусы, blockers, evidence, action feed.
+  Сделать readonly graph viewer из derived Work Graph данных.
+  Сделать atom inspector form для правки BVC/labels без raw .bvc.
+  Не использовать React Flow как основной редактор.
+Цель:
+  Человек может понять, что делает агент, и вмешаться точечно.
+
+Метки:
+  guid: 550e8400-e29b-41d4-a716-446655444004
+  atom.profile: plan_step
+  work.creates: design-operator-dashboard
+  work.depends_on: implement-workgraph-minimal-runtime
+  trace.status: verified
+]>
+
+#Фаза_4_OneBase_Golden_Path<[
+Базис:
+  OneBase даёт реальную доменную боль: metadata YAML, .os DSL, документы, регистры, проведение и тесты.
+Вектор:
+  Выбрать сценарий: изменение правила проведения РеализацияТоваров.
+  Построить ingestion: OneBase YAML/.os -> StepAtomDraft -> Work Graph task.
+  Агент должен найти связанные YAML, .posting.os, регистры и тест/проверку.
+Цель:
+  Доказать, что Work Graph rebuild полезен не на toy CRUD, а на доменной бизнес-логике.
+
+Метки:
+  guid: 550e8400-e29b-41d4-a716-446655444005
+  atom.profile: plan_step
+  work.creates: onebase-posting-rule-golden-path
+  work.depends_on: implement-workgraph-minimal-runtime
+  trace.status: verified
+]>
+
+#Фаза_5_Verification_Loop<[
+Базис:
+  Старая система хорошо покрывала mocked agent E2E, но живая польза требует evidence.
+Вектор:
+  Разделить deterministic tests и optional real LLM tests.
+  Для каждого agent action писать evidence в Work Graph.
+  Минимальный gate: formatter roundtrip, Work Graph transition, OneBase artifact discovery.
+Цель:
+  Первый релиз считается рабочим только после сквозного verified scenario.
+
+Метки:
+  guid: 550e8400-e29b-41d4-a716-446655444006
+  atom.profile: plan_step
+  work.creates: rebuild-verification-loop
+  work.depends_on: onebase-posting-rule-golden-path, design-operator-dashboard
+  trace.status: verified
+]>

@@ -1,0 +1,24 @@
+#Протокол_OpenAI_Compatible_Worker_Provider_v1<[
+Базис:
+  protocols/agent-worker-adapter.bvc фиксирует provider-neutral Worker Input/Output v1.
+  Local runner покрывает deterministic dry-run; post-full rollout требует OpenAI-compatible HTTP provider без переноса business state в session.
+Вектор:
+  Provider читает Worker Input v1, строит chat messages из task snapshot и policy, вызывает POST /v1/chat/completions и парсит structured JSON в Worker Output v1.
+  Env contract: IOHASC_LLM_BASE_URL (default http://127.0.0.1:1234/v1), IOHASC_LLM_MODEL, optional IOHASC_LLM_API_KEY.
+  Live path включается только при IOHASC_E2E_REAL_LLM=1 или явном provider=openai; иначе provider возвращает skipped contract failure.
+  Network, shell и file write остаются запрещены на стороне adapter; модель предлагает transition/evidence, runtime применяет gates.
+Цель:
+  Live-loop может вызывать реальную LLM через OpenAI-compatible endpoint без изменения Work Graph runtime contracts.
+
+Проверки:
+  buildWorkerPromptFromInput() и runOpenAiCompatibleWorker() покрыты deterministic tests с mock fetch
+  provider не входит в npm run ci:mandatory без IOHASC_E2E_REAL_LLM=1
+  Worker Output v1 schema сохраняется
+
+Метки:
+  atom.profile: architecture_decision
+  protocol.id: openai-compatible-worker-provider-v1
+  decision.id: openai-compatible-worker-provider-v1
+  work.source: implement-openai-compatible-worker-provider
+  trace.status: verified
+]>

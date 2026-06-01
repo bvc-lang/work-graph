@@ -1,0 +1,22 @@
+#Правило_Chat_Work_Scope_ReadOnly<[
+Базис:
+  AN-28: chat TodoWrite для subtasks эпика создаёт shadow backlog; оператор видит «зависшие T1–Tn» после reload, хотя kanban уже done.
+  get_epic_work_scope (MCP) и GET /api/epic-scope дают compact read-only rollup direct children эпика из Work Graph.
+  Дополняет cursor-ide-workgraph-parity и agent-workgraph-single-backlog: trackable work — только через atoms, не через TodoWrite sync.
+Вектор:
+  При execute эпика или claimed work с work.item_kind=epic — в начале ответа один блок «## Scope (read-only, Work Graph)» из get_epic_work_scope / workgraph://epic/{id}/scope.
+  Чеклист: [x] done/verified, [~] doing/in_progress/claimed/verify, [ ] backlog/ready/blocked; каждая строка — `work.id` + status (+ title при наличии).
+  Запрет TodoWrite для списка subtasks эпика (>3 пунктов с work.id); micro-todo без work.id — только 1–3 ephemeral шага внутри claimed work.id на один turn.
+  Обновлять Scope блок при смене фазы execute (claim/complete соседа), не полагаться на todo в истории чата.
+  Не двусторонняя sync: отметка в чате не меняет work.status; mutate только через MCP write tools / atom evidence.
+Цель:
+  Оператор видит реальные work.id и статусы из Work Graph в тексте ответа агента без второго backlog в Cursor todo.
+
+Метки:
+  guid: 550e8400-e29b-41d4-a716-446655443302
+  atom.profile: prompt_rule
+  rule.id: chat-work-scope-readonly
+  bundle.group: mcp
+  migration.source: work/analytics/chat-work-graph-todo-sync.md#R2
+  trace.status: verified
+]>

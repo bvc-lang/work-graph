@@ -1,0 +1,62 @@
+#Задача_isolate_experimental_non_vertical<[
+Базис:
+  Источник: analytics:product-self-audit-user (AN-7) §9 — «спрятать остальное в experimental/».
+  Связано с work/analytics/product-self-audit-tech.md §6 — charter vs реальность: 126 файлов src, 48 npm-скриптов.
+Вектор:
+  Список «вне-vertical»: Genesis/GVM/Zig, multi-domain ambitions, Mermaid runtime UI, скрипты не-связанные с 1С.
+  Перенести по `experimental/<domain>/`; в charter явно пометить как R&D.
+  Не удалять — потерянная инвестиция, но убрать из основного потока внимания.
+  package.json: scripts разбиты на core / experimental.
+Цель:
+  Новый человек, читая src/, видит только то, что служит 1С-сценарию.
+Анализ:
+  Целесообразность:
+  Стоит завести «перенести всё не относящееся к 1С-vertical в experimental/» в бэклог — по материалам AN-7 (analytics:product-self-audit-user).
+  Контекст и границы:
+  Список «вне-vertical»: Genesis/GVM/Zig, multi-domain ambitions, Mermaid runtime UI, скрипты не-связанные с 1С.
+  Зависимости и готовность:
+  depends_on=rewrite-charter-for-1c-vertical; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Новый человек, читая src/, видит только то, что служит 1С-сценарию.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-7 (analytics:product-self-audit-user); исполнять после вердикта «полезно» и готовности зависимостей.
+Проверки:
+  experimental/ существует и помечен в README
+  package.json scripts разделены
+  npm run ci:mandatory не зависит от experimental/
+
+Свидетельства:
+  - experimental/README.md — R&D inventory
+  - core vs experimental npm scripts documented
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-7
+  intake.source_kind: analytics-record
+  intake.source_ref: analytics:product-self-audit-user
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T22:16:35.079Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-30T22:16:35.079Z
+  work.decision.verdict: useful
+  work.department: architecture
+  work.depends_on: rewrite-charter-for-1c-vertical
+  work.id: isolate-experimental-non-vertical
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: frontend_architect
+  work.parent_id: pivot-to-1c-onebase-vertical
+  work.pipeline_stage: closed
+  work.priority: medium
+  work.risk: high
+  work.status: done
+  work.target_files: experimental/, package.json, README.md, charter/main.bvc
+  work.title: перенести всё не относящееся к 1С-vertical в experimental/
+]>

@@ -1,0 +1,58 @@
+#Задача_epic_gripe_ds_adoption_phase2<[
+Базис:
+  AN-32: после AN-21/AN-30 out-of-scope — inline backlog UI, molecules, full OData import.
+  Дизайн-система — Gripe Marketplace (Blade x-ui, brand-tokens); OneBase — 1С runtime bridge, не DS.
+  Stub OneBaseCatalogTreeImporter (AN-21) — dry-run only; нужен production upsert.
+Вектор:
+  Track A: renderUiButton migration в workGraphBacklogUiServer.mjs (2 волны).
+  Track B: atomic-spec molecules (rating, tabs) + organism modal parity с Gripe.
+  Track C: OneBase REST/OData → category_nodes + facets → listing_form_schema.
+Цель:
+  Production WG UI использует Gripe DS atoms/molecules; catalog import без dry-run stub.
+Проверки:
+  grep metric ≥80% action buttons через renderUiButton
+  molecules rating/tabs + organism modal в ui-kit
+  catalog:import-onebase с dry-run и live на fixture
+  AN-32 closing опубликован
+Анализ:
+  Целесообразность:
+  Стоит завести «Gripe DS phase 2: WG UI migration + molecules + OneBase OData catalog» в бэклог — по материалам AN-32 (work/analytics/gripe-ds-adoption-phase2-post-an21.md).
+  Контекст и границы:
+  Track A: renderUiButton migration в workGraphBacklogUiServer.mjs (2 волны).
+  Зависимости и готовность:
+  depends_on=epic-marketplace-shared-design-system; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Production WG UI использует Gripe DS atoms/molecules; catalog import без dry-run stub.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-32 (work/analytics/gripe-ds-adoption-phase2-post-an21.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-32
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/gripe-ds-adoption-phase2-post-an21.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-05-31T17:04:02.422Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T17:04:02.422Z
+  work.decision.verdict: useful
+  work.department: product-integration
+  work.depends_on: epic-marketplace-shared-design-system
+  work.id: epic-gripe-ds-adoption-phase2
+  work.item_kind: epic
+  work.next_action: close facets bridge + AN-32 closing
+  work.owner_role: integration_architect
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: work/analytics/gripe-ds-adoption-phase2-post-an21.md, docs/plan-gripe-ds-adoption-phase2.md, src/workGraphBacklogUiServer.mjs, packages/atomic-spec/, src/ui/molecules/, src/ui/organisms/, ../../04 Marketplace/app/Catalog/OneBaseCatalogTreeImporter.php
+  work.title: Gripe DS phase 2: WG UI migration + molecules + OneBase OData catalog
+]>

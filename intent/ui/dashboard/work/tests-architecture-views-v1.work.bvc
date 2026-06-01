@@ -1,0 +1,54 @@
+#Задача_tests_architecture_views_v1<[
+Базис:
+  Regression guard для multi-view UX из AN-34.
+Вектор:
+  workGraphBacklogUiServer.test.mjs: list tab, tree mode, pipeline default.
+  Optional layout bounds check from AN-1 recommendations.
+Цель:
+  CI ловит откат к canvas-only или broken pipeline default.
+Проверки:
+  tests/workGraphBacklogUiServer.test.mjs extended
+  npm test green
+Анализ:
+  Целесообразность:
+  Стоит завести «Tests: architecture views v1 (list, tree, pipeline layout gate)» в бэклог — по материалам AN-34 (work/analytics/architecture-visualization-patterns-comparison.md).
+  Контекст и границы:
+  workGraphBacklogUiServer.test.mjs: list tab, tree mode, pipeline default.
+  Зависимости и готовность:
+  depends_on=epic-architecture-views-v1, architecture-blocks-list-view-tab, workflow-tree-mode-parent-id, graph-pipeline-default-compact-nodes; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  CI ловит откат к canvas-only или broken pipeline default.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-34 (work/analytics/architecture-visualization-patterns-comparison.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-34
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/architecture-visualization-patterns-comparison.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T19:21:12.939Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T19:21:12.939Z
+  work.decision.verdict: useful
+  work.department: ui-dashboard
+  work.depends_on: epic-architecture-views-v1, architecture-blocks-list-view-tab, workflow-tree-mode-parent-id, graph-pipeline-default-compact-nodes
+  work.id: tests-architecture-views-v1
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: frontend_architect
+  work.parent_id: epic-architecture-views-v1
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: low
+  work.status: done
+  work.target_files: tests/workGraphBacklogUiServer.test.mjs, work/analytics/architecture-visualization-patterns-comparison.md, docs/plan-architecture-views-v1.md
+  work.title: Tests: architecture views v1 (list, tree, pipeline layout gate)
+]>

@@ -1,0 +1,60 @@
+#Задача_add_cursor_rule_single_backlog<[
+Базис:
+  AN-25 R1: TodoWrite для trackable work создаёт shadow backlog вне доски.
+  Существующие .cursor/rules не запрещают chat todo для проектных задач.
+Вектор:
+  .cursor/rules/agent-workgraph-single-backlog.mdc — alwaysApply: true.
+  Запрет TodoWrite для work дольше одного round; исключение — micro-steps внутри claimed work.id.
+  docs/plan-*.md todo только с явной ссылкой work.id в строке.
+Цель:
+  Cursor IDE agent получает жёсткое правило: один бэклог = intent/**/work/*.work.bvc.
+Проверки:
+  файл .cursor/rules/agent-workgraph-single-backlog.mdc с alwaysApply
+  npm run audit:agent-behavior-rules или ручная проверка в Cursor
+Анализ:
+  Целесообразность:
+  Стоит завести «Cursor rule: agent-workgraph-single-backlog (alwaysApply)» в бэклог — по материалам AN-25 (work/analytics/agent-bypass-work-graph-dual-backlog.md).
+  Контекст и границы:
+  .cursor/rules/agent-workgraph-single-backlog.mdc — alwaysApply: true.
+  Зависимости и готовность:
+  depends_on=epic-agent-workgraph-enforcement; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Cursor IDE agent получает жёсткое правило: один бэклог = intent/**/work/*.work.bvc.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-25 (work/analytics/agent-bypass-work-graph-dual-backlog.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Свидетельства:
+  - .cursor/rules/agent-workgraph-single-backlog.mdc — alwaysApply: true
+  - Запрет TodoWrite для trackable work; plan todo требуют `work.id`
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-25
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/agent-bypass-work-graph-dual-backlog.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T12:17:11.933Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T12:17:11.933Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: epic-agent-workgraph-enforcement
+  work.id: add-cursor-rule-single-backlog
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: integration_architect
+  work.parent_id: epic-agent-workgraph-enforcement
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: low
+  work.status: done
+  work.target_files: .cursor/rules/agent-workgraph-single-backlog.mdc, work/analytics/agent-bypass-work-graph-dual-backlog.md
+  work.title: Cursor rule: agent-workgraph-single-backlog (alwaysApply)
+]>

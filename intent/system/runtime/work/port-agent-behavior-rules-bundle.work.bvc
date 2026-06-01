@@ -1,0 +1,51 @@
+#Задача_port_agent_behavior_rules_bundle<[
+Базис:
+  ../project/rules/agent-behavior/tool-rules-migrated.bvc — canonical agent editing/tool prompts; пересобрать имеет rules/agent-behavior/rebuild.bvc но не полный bundle.
+  protocols/prompt-step-lowcode-replacement-scope-v1.bvc классифицирует agent behavior rules как port + rebuild.
+Вектор:
+  Выбрать минимальный subset правил для Work Graph worker context (tool policy, failure/retry, provider neutrality) и port в work graph rules/agent-behavior/ без копирования всего ioHasC monolith prompt.
+  Связать с worker input providerHints и Agent Run panel; не дублировать orchestrator.js.
+Цель:
+  Agent worker получает согласованные prompt_rule atoms без возврата к старому agent panel.
+Анализ:
+  Целесообразность:
+  Стоит завести «перенести agent behavior rules bundle» в бэклог.
+  Контекст и границы:
+  Выбрать минимальный subset правил для Work Graph worker context (tool policy, failure/retry, provider neutrality) и port в work graph rules/agent-behavior/ без копирования всего ioHasC monolith prompt.
+  Зависимости и готовность:
+  depends_on=design-prompt-step-and-lowcode-replacement-scope; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Agent worker получает согласованные prompt_rule atoms без возврата к старому agent panel.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441112
+  migration.source_paths: rules/agent-behavior/tool-rules-migrated.bvc
+  migration.source_repo: ../project
+  migration.strategy: port
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:37.548Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:37.556Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: design-prompt-step-and-lowcode-replacement-scope
+  work.id: port-agent-behavior-rules-bundle
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: agent_platform_architect
+  work.pipeline_stage: decided
+  work.priority: low
+  work.risk: low
+  work.status: done
+  work.target_files: rules/agent-behavior/, src/agentBehaviorRulesBundle.mjs, src/agentWorkerLiveLoop.mjs, src/agentWorkerOpenAiProvider.mjs, tests/agentBehaviorRulesBundle.test.mjs, protocols/prompt-step-lowcode-replacement-scope-v1.bvc, work/backlog.bvc
+  work.title: перенести agent behavior rules bundle
+]>
+

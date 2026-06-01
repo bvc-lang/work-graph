@@ -1,0 +1,53 @@
+#Задача_design_step_code_trace_links_v1<[
+Базис:
+  Сейчас Work Graph связывает задачи с кодом в основном через work.target_files, но этого мало для точной трассировки.
+  В текущем ioHasC уже есть полезные наработки: trace refs, iohasc-ref маркеры, PVRG/file graph, diagnostics broken links и GBC trace-link slice.
+  Новая сборка должна использовать эти идеи как донор контрактов, не перенося старый слой целиком.
+Вектор:
+  Спроектировать Trace Links v1 для связи Step Atom, WorkItem, evidence и code artifact.
+  Описать связи atom -> file, atom -> symbol/range, evidence -> command/test/diff, code -> atom через обратный marker.
+  Зафиксировать минимальный формат labels: trace.code_refs, trace.artifact_refs, trace.evidence_refs и relation types.
+  Описать validator broken links и UI-переходы: atom detail -> file/symbol, code marker -> atom.
+  Отдельно оценить, что брать из текущего ioHasC: iohasc-ref, trace-link diagnostics, PVRG edges, GBC trace-link slice как optional derived artifact.
+Цель:
+  Получить стабильную связку .bvc и кода по id, чтобы intent tree, graph viewer, evidence и будущий agent worker не теряли trace при изменениях.
+Анализ:
+  Целесообразность:
+  Стоит завести «спроектировать Trace Links v1 между .bvc и кодом» в бэклог.
+  Контекст и границы:
+  Спроектировать Trace Links v1 для связи Step Atom, WorkItem, evidence и code artifact.
+  Зависимости и готовность:
+  depends_on=design-intent-tree-workgraph-layout, design-language-adapter-layer, design-pvrg-graph-rag-minimal; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Получить стабильную связку .bvc и кода по id, чтобы intent tree, graph viewer, evidence и будущий agent worker не теряли trace при изменениях.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441036
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:36.222Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:36.232Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: design-intent-tree-workgraph-layout, design-pvrg-graph-rag-minimal, design-language-adapter-layer
+  work.id: design-step-code-trace-links-v1
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: traceability_architect
+  work.pipeline_stage: decided
+  work.priority: critical
+  work.risk: high
+  work.status: done
+  work.target_files: protocols/step-code-trace-links-v1.bvc, protocols/intent-tree-workgraph-layout.bvc, protocols/pvrg-graph-rag-minimal.bvc, protocols/language-adapter-layer.bvc, work/backlog.bvc
+  work.title: спроектировать Trace Links v1 между .bvc и кодом
+]>
+

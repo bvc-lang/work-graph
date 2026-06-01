@@ -1,0 +1,50 @@
+#Задача_docs_runbook_deploy_work_graph_on_project<[
+Базис:
+  CLI и реестр бесполезны, если только автор репозитория знает порядок действий.
+  Нужна пошаговая инструкция для оператора: подключить второй репозиторий к уже работающей консоли WG.
+Вектор:
+  Документ docs/runbook-deploy-work-graph-on-project.md: init, register, ui, переключение проекта.
+  Ссылка из README.
+Цель:
+  Человек, не писавший код WG, подключает новый проект по инструкции без созвона с автором.
+Проверки:
+  Runbook опубликован и проходим от начала до конца
+  README содержит ссылку на runbook
+Анализ:
+  Зачем:
+  Эпик считается готовым для оператора, а не только для разработчика.
+  Когда:
+  После рабочего CLI init/register.
+Решение:
+  Вердикт:
+  полезно
+
+Свидетельства:
+  - docs/runbook-deploy-work-graph-on-project.md
+  - skills/install-work-graph/SKILL.md
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-40
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-project-deployment-model.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-01T11:18:32.830Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-01T11:18:32.830Z
+  work.decision.verdict: useful
+  work.department: product-architecture
+  work.depends_on: epic-work-graph-multiproject-host, implement-work-graph-cli-multiproject
+  work.id: docs-runbook-deploy-work-graph-on-project
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: system_architect
+  work.parent_id: epic-work-graph-multiproject-host
+  work.pipeline_stage: closed
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: docs/runbook-deploy-work-graph-on-project.md, README.md, docs/plan-work-graph-multiproject-host.md
+  work.title: Инструкция: подключить Work Graph к новому проекту
+]>

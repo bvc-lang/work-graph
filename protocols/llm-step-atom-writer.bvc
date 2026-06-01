@@ -1,0 +1,89 @@
+#Протокол_LLM_Step_Atom_Writer<[
+Базис:
+  LLM часто ошибается в raw .bvc: пишет Markdown, забывает закрытие блока, смешивает legacy-поля и Метки, считает #Имя стабильным id.
+  .bvc/.bvc — канон хранения, но не обязан быть прямым форматом вывода модели.
+  Multilingual: mixed inline aliases запрещены (ADR docs/adr-bvc-multilingual-keys.md, AN-19).
+Вектор:
+  LLM заполняет Step Atom Draft JSON по схеме schemas/step-atom-draft.v1.json.
+  Deterministic formatter преобразует draft в канонический блок #Имя<[ ... ]>.
+  Один dialect на атом: draft.lang = en | ru (default en в schema; Work Graph legacy — ru если lang опущен).
+  Formatter пишет BVC-ключи dialect из packages/bvc-dialects/ (Basis/Vector/Goal/Labels или Базис/Вектор/Цель/Метки).
+  Машинные поля только в labels; ключи labels всегда EN (work.id, trace.status).
+  Atom-фрагмент без файла: обязателен #Name@lang<[…]> или labels.lang.
+  Legacy-поля читать при импорте; новые атомы — только через Метки/Labels.
+Цель:
+  Снизить синтаксические ошибки и сохранить человекочитаемый канон с одним dialect на атом.
+
+Метки:
+  guid: 550e8400-e29b-41d4-a716-446655442001
+  atom.profile: prompt_rule
+  protocol.id: llm-step-atom-writer
+  schema.input: schemas/step-atom-draft.v1.json
+  trace.status: pending
+]>
+
+#Правило_New_Write_Old_Read<[
+Базис:
+  Текущий ioHasC поддерживает legacy-поля вроде guid, mode, id, статус, trace_status, но Step Atom v1 задаёт Метки как машинный конверт.
+Вектор:
+  Новые атомы писать через Метки.
+  Старые atom-файлы читать через fallback legacy-полей.
+  Не дублировать одно машинное поле одновременно в legacy и Метки.
+  Для Work Graph использовать work.id, work.status, work.owner_role, work.depends_on, work.target_files.
+  Для trace использовать trace.status и evidence/checks.
+Цель:
+  Новый проект постепенно сходится к одному канону без потери совместимости.
+
+Метки:
+  guid: 550e8400-e29b-41d4-a716-446655442002
+  atom.profile: prompt_rule
+  protocol.id: new-write-old-read
+  trace.status: pending
+]>
+
+#Пример_WorkItem_Draft_JSON<[
+Базис:
+  Модель должна видеть простой структурированный пример, а не учиться на raw .bvc.
+Вектор:
+  Пример draft:
+    {
+      "profile": "work_item",
+      "name": "Задача_define_workitem_v1",
+      "basis": ["Work Graph должен быть центральной операционной моделью."],
+      "vector": ["Описать минимальный набор полей WorkItem v1."],
+      "goal": ["Получить контракт задачи для .bvc и JSON snapshot."],
+      "lang": "ru",
+      "labels": {
+        "work.id": "define-workitem-v1",
+        "work.status": "ready",
+        "work.owner_role": "product_architect",
+        "trace.status": "pending"
+      }
+    }
+Цель:
+  LLM генерирует такой JSON, а не raw .bvc.
+
+Метки:
+  guid: 550e8400-e29b-41d4-a716-446655442003
+  atom.profile: prompt_rule
+  protocol.id: workitem-draft-example
+  trace.status: pending
+]>
+
+#Правило_Odin_Dialect_Na_Atom<[
+Базис:
+  Смешение Basis и Базис в одном атоме — lint E_BVC_DIALECT_MIX (AN-19).
+  LLM не должна писать alias-комментарии (# alias: …).
+Вектор:
+  Выбрать один lang на атом: en для open spec / EN charter; ru для RU work items.
+  Указать lang в draft JSON или labels.lang; для фрагментов — #Name@ru<[…]>.
+  Не смешивать EN и RU BVC-ключи в одном блоке.
+Цель:
+  Formatter и parser детерминированы; ревью видит один dialect.
+
+Метки:
+  guid: 550e8400-e29b-41d4-a716-446655442004
+  atom.profile: prompt_rule
+  protocol.id: one-dialect-per-atom
+  trace.status: pending
+]>

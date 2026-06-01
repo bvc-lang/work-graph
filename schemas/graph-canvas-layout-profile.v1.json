@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "iohasc.graph-canvas-layout-profile.v1",
+  "title": "Graph Canvas Layout Profile V1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["profile"],
+  "properties": {
+    "profile": {
+      "type": "string",
+      "enum": ["layered-dag-v1", "pipeline-v1"]
+    },
+    "ranks": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 0
+      }
+    },
+    "manualOverrides": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "col": { "type": "integer", "minimum": 0 },
+          "row": { "type": "integer", "minimum": 0 },
+          "colSpan": { "type": "integer", "minimum": 1 }
+        }
+      }
+    },
+    "pipelineNodeIds": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "profile": { "const": "pipeline-v1" } } },
+      "then": { "required": ["pipelineNodeIds"] }
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+#Задача_wire_unified_linkage_operator_drilldown<[
+Базис:
+  unifiedLinkageProjection — только контракт, без UI workflow оператора.
+  Задача «Фаза 4: drill-down связей trace в UI» относится к контуру графа знаний и retrieval и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: phase-4-trace-pvrg-semantic-map.
+Вектор:
+  В detail drawer связать trace envelope с file/step refs.
+  Ближайший шаг исполнения: закрыто.
+Цель:
+  Путь задача ↔ код без доступа только через MCP.
+  Готово, когда выполнены проверки: Detail drawer показывает linkage refs.
+Анализ:
+  Целесообразность:
+  Стоит завести «Фаза 4: drill-down связей trace в UI» в бэклог.
+  Контекст и границы:
+  В detail drawer связать trace envelope с file/step refs.
+  Зависимости и готовность:
+  depends_on=phase-4-trace-pvrg-semantic-map; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Путь задача ↔ код без доступа только через MCP.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  migration.strategy: port
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:37.901Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:37.909Z
+  work.decision.verdict: useful
+  work.department: knowledge-publishing
+  work.depends_on: phase-4-trace-pvrg-semantic-map
+  work.id: wire-unified-linkage-operator-drilldown
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: retrieval_architect
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: medium
+  work.status: done
+  work.target_files: src/unifiedLinkageProjection.mjs, src/workItemTraceEnvelope.mjs
+  work.title: Фаза 4: drill-down связей trace в UI
+]>
+

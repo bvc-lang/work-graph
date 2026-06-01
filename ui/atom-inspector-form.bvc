@@ -1,0 +1,285 @@
+#Дизайн_Atom_Inspector_Form<[
+Базис:
+  LLM и оператор не должны создавать или менять атомы через raw .bvc как основной путь.
+  StepAtomDraft JSON уже является безопасным контрактом для formatter-а, validator-а и будущей формы.
+  Текущий detail drawer в backlog UI показывает WorkItem как read-only BVC/checks/evidence drilldown, но не является editor-ом.
+Вектор:
+  Atom inspector form открывает один StepAtomDraft и даёт inspect/edit surface для профилей work_item, charter_section, prompt_rule и trace.
+  Форма редактирует profile, name, Базис, Вектор, Цель, labels, checks и evidence как структурированные поля, а не как свободный .bvc text area.
+  Для work_item форма дополнительно поднимает основные labels в typed controls: work.id, work.title, work.status, work.owner_role, work.department, work.priority, work.risk, work.depends_on, work.next_action, work.target_files and work.blocker.
+  Для charter_section форма поднимает project.* labels: project.slug, project.area, project.phase, project.owner and project.decision where present.
+  Для prompt_rule форма поднимает rule.id, protocol.id, design.id and policy-related labels without requiring a new schema profile.
+  Для trace форма поднимает trace.status, trace.ref, trace.source, trace.target, trace.kind, trace.evidence and artifact/file refs.
+Цель:
+  Оператор и LLM могут безопасно править BVC, machine labels, checks and evidence через StepAtomDraft, preview and validation before Work Graph file updates are proposed.
+
+Проверки:
+  form covers work_item, charter_section, prompt_rule and trace
+  form fields include profile, name, Базис, Вектор, Цель, labels, checks and evidence
+  preview includes JSON draft, generated .bvc and validation errors
+  save flow proposes Work Graph file update after validator and formatter
+
+Метки:
+  atom.profile: plan
+  design.id: atom-inspector-form
+  design.input: step-atom-draft.v1
+  design.input: workgraph.snapshot.v1
+  design.related_ui: task-detail-drawer
+  work.source: design-atom-inspector-form
+  trace.status: verified
+]>
+
+#Form_Model_And_Profiles<[
+Базис:
+  StepAtomDraft v1 keeps the edit model small: profile, name, basis, vector, goal, labels, checks and evidence.
+Вектор:
+  Header fields: profile select, atom name input, source file, existing atom id/work id if available, dirty state and validation state.
+  Semantic core fields: Базис, Вектор and Цель are ordered repeatable single-line rows matching formatter constraints; UI may render multiline visual controls but stores each bullet as one string.
+  Checks field: repeatable criteria list mapped to checks and previewed as Проверки.
+  Evidence field: repeatable evidence list mapped to evidence and previewed as Свидетельства; structured Evidence v1 records can later provide pickers, but MVP stores strings.
+  Labels editor: typed known labels plus advanced key/value rows. Unknown valid labels are preserved and sorted by formatter; invalid keys stay visible with validation errors.
+  work_item profile shows task fields first because they drive Work Graph runtime and dashboard cards.
+  charter_section profile keeps BVC and project.* labels first because it records project decisions and sections rather than queue state.
+  prompt_rule profile highlights rule/protocol/design labels and text intent because these atoms constrain future agents and writers.
+  trace profile highlights trace.* labels, evidence/check links and artifact/file refs because trace atoms explain relationships and verification state.
+Цель:
+  One inspector can edit the shared StepAtomDraft shape while each profile gets a focused field order and shortcuts.
+
+Метки:
+  atom.profile: trace
+  contract.id: atom-inspector-form-model
+  trace.status: verified
+]>
+
+#Typed_Label_Shortcuts<[
+Базис:
+  Метки are the machine envelope for new .bvc writes; shortcuts must make common labels safe without hiding raw labels.
+Вектор:
+  work.* shortcuts: work.id, work.title, work.status, work.owner_role, work.department, work.priority, work.risk, work.depends_on, work.next_action, work.target_files, work.blocker and work.source.
+  trace.* shortcuts: trace.status, trace.ref, trace.source, trace.target, trace.kind, trace.evidence, trace.verified_by and trace.reason.
+  project.* shortcuts: project.slug, project.area, project.phase, project.owner, project.decision, project.scope and project.source.
+  onebase.* shortcuts: onebase.artifact_kind, onebase.project, onebase.document, onebase.register, onebase.report, onebase.widget, onebase.script, onebase.procedure and onebase.verification_command.
+  Shortcuts are typed UI affordances only: they create or edit labels with schema-valid string values and do not add new top-level StepAtomDraft fields.
+  Multi-value label shortcuts such as work.depends_on, work.target_files and onebase-related links are edited as chips/lists but serialized as the current comma-separated or project-local string convention until a future schema version changes it.
+  Advanced labels remain available for valid keys matching the schema pattern, with warnings for deprecated legacy fields when parser/import work exists.
+Цель:
+  Operators can edit the labels that matter to Work Graph, trace, project memory and OneBase without memorizing label names or raw .bvc syntax.
+
+Метки:
+  atom.profile: prompt_rule
+  rule.id: atom-inspector-typed-label-shortcuts
+  trace.status: verified
+]>
+
+#Preview_And_Validation<[
+Базис:
+  The inspector must show what will be saved before any file mutation is proposed.
+Вектор:
+  Preview mode JSON draft shows the exact StepAtomDraft object after form normalization, including inferred or explicit atom.profile label.
+  Preview mode generated .bvc runs validateStepAtomDraft then formatStepAtomDraft and displays the canonical block with Базис, Вектор, Цель, optional Проверки/Свидетельства and sorted Метки.
+  Preview mode validation errors shows actionable validator messages by field path and blocks save while errors exist.
+  The preview should distinguish schema/formatter errors from future Work Graph policy errors such as done without evidence or blocked without blocker reason.
+  Warnings are non-blocking and include unknown-but-valid labels, legacy import fields, duplicate semantic values and labels that do not affect the selected profile.
+Цель:
+  The operator sees JSON, generated .bvc and errors side by side before asking runtime to prepare a file update proposal.
+
+Метки:
+  atom.profile: trace
+  contract.id: atom-inspector-preview-validation
+  trace.status: verified
+]>
+
+#Save_Flow<[
+Базис:
+  The UI must not silently mutate work/backlog.bvc or any other canonical .bvc file.
+Вектор:
+  Save starts from form state and produces a normalized StepAtomDraft.
+  The draft is passed to validateStepAtomDraft; validation errors are returned to the form and no file proposal is created.
+  Valid draft is passed to formatStepAtomDraft; the generated block becomes the proposed replacement or insertion payload.
+  Runtime/server locates the target atom by source file plus stable imported identity where available: work.id for work_item, design/rule/protocol/contract labels for design atoms, trace.ref/id for trace atoms, or atom name as a last resort after parser support exists.
+  The result is a Work Graph file update proposal: target file, old block summary/hash, new generated .bvc block, diff preview, policy warnings and required evidence note.
+  Applying the proposal is an explicit operator action and records evidence or an action-feed event; client-side preview never writes canonical state by itself.
+  MVP may stop at producing the proposal and diff; later runtime can apply it through a policy-gated endpoint.
+Цель:
+  Every edit follows draft -> validator -> formatter -> proposed file update, with an auditable approval point before canonical state changes.
+
+Метки:
+  atom.profile: prompt_rule
+  rule.id: atom-inspector-save-flow
+  trace.status: verified
+]>
+
+#MVP_Vs_Later<[
+Базис:
+  The current task is design-only; implementation should stay small and follow existing server/detail drawer boundaries.
+Вектор:
+  MVP: design the inspector contract, profile field groups, typed label shortcuts, previews, validation states and non-silent save proposal flow.
+  MVP implementation later can reuse the existing detail drawer as a read-only entry point and add an "Edit draft" affordance only after parser/import can produce StepAtomDraft from existing .bvc.
+  MVP does not require a full browser form now, React dependency, server-side apply endpoint, structured Evidence v1 picker or direct mutation of work/backlog.bvc.
+  Later: parser-based import of existing atoms, conflict detection with block hashes, Work Graph policy validation, structured Evidence v1 selector, memory/trace link pickers, OneBase artifact pickers and batch proposal review.
+  Later: apply proposal endpoint may update files only after explicit confirmation and runtime policy checks; it must still record evidence/action feed and preserve .bvc as source of truth.
+Цель:
+  The design unblocks parser/roundtrip and future form implementation without expanding the current read-only drawer into an unsafe editor.
+
+Метки:
+  atom.profile: architecture_decision
+  decision.id: atom-inspector-mvp-later
+  trace.status: verified
+]>
+
+#Relation_To_Readonly_Detail_Drawer<[
+Базис:
+  The backlog UI already has a task detail drawer with Базис, Вектор, Цель, dependencies, checks, evidence, next action, blocker and target files.
+Вектор:
+  The drawer remains the default read-only inspection surface for WorkItem snapshot data.
+  Atom inspector form is a separate edit/review mode opened from the drawer, not a replacement for fast task details.
+  The drawer reads derived workgraph.snapshot.v1 fields; the inspector works with StepAtomDraft and generated .bvc previews.
+  Until parser roundtrip exists, the drawer can show task details and link to the design artifact, but should not pretend it can safely edit existing atoms.
+Цель:
+  Read-only task details stay lightweight while structured editing gets a dedicated draft/validation/proposal workflow.
+
+Метки:
+  atom.profile: trace
+  design.id: atom-inspector-detail-drawer-relation
+  trace.status: verified
+]>
+#Дизайн_Atom_Inspector_Form<[
+Базис:
+  Человек и LLM не должны hand-write raw .bvc для обычных изменений атомов.
+  StepAtomDraft JSON уже является безопасным контрактом ввода для formatter-а и подходит для формы.
+  Текущий task detail drawer в backlog UI read-only: он показывает WorkItem BVC/checks/evidence/target files, но не имеет controlled edit flow.
+Вектор:
+  Atom Inspector Form инспектирует и редактирует StepAtomDraft fields для профилей work_item, charter_section, prompt_rule и trace.
+  Форма редактирует только structured draft: profile, name, Базис/basis, Вектор/vector, Цель/goal, labels, checks and evidence.
+  Preview показывает три режима: StepAtomDraft JSON, generated .bvc from formatter and validation errors from schema/runtime validator.
+  Save flow produces an explicit Work Graph file update proposal after draft -> validator -> formatter; UI never silently mutates .bvc as hidden browser state.
+Цель:
+  Оператор может безопасно поправить смысл, labels, checks and evidence атома without learning raw .bvc syntax, while canonical storage remains formatter-produced .bvc.
+
+Проверки:
+  form purpose covers work_item, charter_section, prompt_rule and trace profiles
+  fields include profile, name, Базис, Вектор, Цель, labels, checks and evidence
+  preview modes include JSON draft, generated .bvc and validation errors
+  save flow is proposal-based and uses validator plus formatter before Work Graph mutation
+  read-only detail drawer relation is explicit
+
+Метки:
+  atom.profile: plan
+  design.id: atom-inspector-form
+  design.input: step-atom-draft.v1
+  design.output: workgraph-file-update-proposal
+  work.source: design-atom-inspector-form
+  trace.status: verified
+]>
+
+#Supported_Profiles_And_Fields<[
+Базис:
+  MVP should cover the atom types most likely to be created or edited by an operator and by an LLM-assisted workflow.
+Вектор:
+  work_item form preset: name, basis, vector, goal, labels.work.id/title/status/owner_role/department/priority/risk/depends_on/target_files/next_action/blocker, labels.trace.status, checks and evidence.
+  charter_section form preset: name, basis, vector, goal, labels.project.id/project.area/project.decision/project.risk/trace.status, checks and evidence.
+  prompt_rule form preset: name, basis, vector, goal, labels.rule.id/protocol.id/design.id/trace.status, checks and evidence.
+  trace form preset: name, basis, vector, goal, labels.trace.status/trace.source.file/trace.source.symbol/trace.confidence/trace.kind, checks and evidence.
+  All presets share the same underlying StepAtomDraft fields; profile presets only change labels, helper text, validation hints and shortcut buttons.
+  Базис, Вектор and Цель are ordered multiline list editors where each non-empty line becomes one single-line draft string.
+  checks and evidence are optional list editors and keep deterministic ordering chosen by the operator until the formatter writes canonical .bvc.
+Цель:
+  Keep one form model over StepAtomDraft while making common profile fields discoverable and less error-prone.
+
+Метки:
+  atom.profile: trace
+  contract.id: atom-inspector-supported-profiles-fields
+  trace.status: verified
+]>
+
+#Typed_Label_Shortcuts<[
+Базис:
+  Labels are the machine envelope for new writes; legacy top-level machine fields are read/import only.
+Вектор:
+  work.* shortcuts cover work.id, work.title, work.status, work.owner_role, work.department, work.priority, work.risk, work.depends_on, work.target_files, work.next_action and work.blocker.
+  trace.* shortcuts cover trace.status, trace.kind, trace.source.file, trace.source.symbol, trace.confidence, trace.evidence_id and trace.ref.
+  project.* shortcuts cover project.id, project.area, project.module, project.decision, project.risk, project.owner and project.version.
+  onebase.* shortcuts cover onebase.kind, onebase.name, onebase.document, onebase.register, onebase.report, onebase.widget, onebase.posting_script, onebase.procedure and onebase.verification.
+  Generic label editor remains available for valid keys matching the StepAtomDraft label key pattern; unknown keys are allowed but visually separated from typed shortcuts.
+  Shortcut chips insert or focus a label row, validate single-line string values and show where labels affect Work Graph runtime, trace, project memory or OneBase adapter projections.
+Цель:
+  Operators can use typed machine labels without memorizing exact key names, while preserving the flexible labels object required by StepAtomDraft.
+
+Метки:
+  atom.profile: prompt_rule
+  rule.id: atom-inspector-typed-label-shortcuts
+  trace.status: verified
+]>
+
+#Preview_And_Validation_Model<[
+Базис:
+  Safe editing requires immediate feedback before any file proposal is made.
+Вектор:
+  JSON draft preview shows the exact StepAtomDraft payload the form will submit, including profile, name, basis, vector, goal, labels, checks and evidence.
+  Generated .bvc preview calls the same deterministic formatter used by LLM Step Atom Writer; it is disabled or stale-marked when validation fails.
+  Validation errors preview combines JSON schema errors, formatter validateStepAtomDraft errors and optional profile-specific warnings.
+  Errors are actionable and field-linked: examples include invalid profile, invalid atom name, empty BVC list item, multiline label value, invalid label key and missing work.id for work_item proposal.
+  Warnings can show import/read concerns such as legacy fields, unknown label shortcuts, low-confidence trace refs or missing trace.status, but warnings do not silently rewrite the draft.
+Цель:
+  The operator sees the structured input, canonical output and blockers before asking runtime to update any .bvc file.
+
+Метки:
+  atom.profile: trace
+  contract.id: atom-inspector-preview-validation
+  trace.status: verified
+]>
+
+#Save_Flow_And_Update_Proposal<[
+Базис:
+  Browser UI must not become a hidden source of truth for Work Graph state.
+Вектор:
+  Save starts from the current form draft and runs draft -> validator -> formatter.
+  If validation fails, the form stays editable and only reports validation errors; no file update proposal is created.
+  If validation passes, runtime creates a Work Graph file update proposal containing target file path, atom identity, before text when editing an existing atom, generated after text, diff summary, validation evidence and operator action required.
+  Applying the proposal is an explicit user/runtime action; it can update work/backlog.bvc or another canonical .bvc file only through the Work Graph writer path.
+  Proposal application should record evidence or journal text such as "atom inspector proposal applied" with affected atom id, profile, target file and validation/formatter version.
+  Conflict handling compares the current file atom with proposal before text; if the atom changed, runtime asks for rebase/repreview instead of overwriting.
+Цель:
+  Edits remain auditable and reviewable: the form proposes formatter-produced canonical .bvc, while runtime owns actual file mutation policy.
+
+Метки:
+  atom.profile: architecture_decision
+  decision.id: atom-inspector-save-proposal-flow
+  trace.status: verified
+]>
+
+#MVP_Vs_Later_Atom_Inspector<[
+Базис:
+  This task designs the form, not a broad UI implementation.
+Вектор:
+  MVP includes profile selector, shared StepAtomDraft fields, typed label shortcuts for work.*, trace.*, project.* and onebase.*, preview tabs, validation errors and proposal-based save contract.
+  MVP may attach to the existing read-only detail drawer as an "Edit as draft" affordance only after parser/import support exists; until then the drawer remains read-only and can link to this design.
+  MVP does not require React, a new frontend framework, browser-side .bvc parser or direct file writes from the client.
+  Later adds .bvc -> StepAtomDraft import/roundtrip, conflict-aware edit sessions, structured Evidence v1 picker, dependency picker, OneBase artifact autocomplete, memory links, bulk edits and schema-driven form generation.
+  Later may add a dedicated /api/atom-drafts and /api/atom-proposals pair, but the canonical data path still uses validator, formatter and Work Graph proposal application.
+Цель:
+  Ship a small safe authoring surface first, then enrich it when parser, evidence and domain adapter producers are available.
+
+Метки:
+  atom.profile: architecture_decision
+  decision.id: atom-inspector-mvp-later
+  next_work: design-step-parser-roundtrip
+  trace.status: verified
+]>
+
+#Relation_To_Readonly_Detail_Drawer<[
+Базис:
+  Existing backlog UI already has a task detail drawer that users understand as an inspection surface.
+Вектор:
+  The current drawer remains read-only in MVP and continues to show task BVC, dependencies, checks, evidence, next action, blocker and target files from workgraph.snapshot.v1.
+  Atom Inspector Form is the future edit mode opened from that drawer or from operator dashboard; it should reuse drawer context but use a separate draft/proposal state.
+  The drawer can show an "Edit safely" entry point only when the selected atom can be parsed or reconstructed into StepAtomDraft without losing labels, checks or evidence.
+  If parser roundtrip is unavailable, the drawer may offer "create new atom from draft" for LLM-generated StepAtomDraft, but should not pretend existing raw .bvc can be edited losslessly.
+Цель:
+  Preserve the reliable read-only drawer while defining a clear path to structured editing.
+
+Метки:
+  atom.profile: trace
+  contract.id: atom-inspector-readonly-drawer-relation
+  trace.status: verified
+]>

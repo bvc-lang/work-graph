@@ -1,0 +1,60 @@
+#Задача_extend_llm_usefulness_eval_cursor_mcp_surface<[
+Базис:
+  src/workGraphLlmUsefulnessEval.mjs проверяет worker prompt + intent-graph-mcp-surface, но cursor-mcp-context-surface (graph RAG + memory + evidence tools) не в scorecard.
+  AN-38 §8: без замера новые MCP tools могут отрегрессировать незамеченно — параллельный риск утечки usefulness как у worker prompt.
+Вектор:
+  Добавить fixture cursor-mcp-context-surface в workGraphLlmUsefulnessEval.mjs: вызовы get_graph_rag_context, list_memory_records, list_evidence_records по seed workId.
+  Asserts на schema id, минимальный node coverage, presence required edges (depends_on, has_evidence, writes_memory).
+  Покрыть в ci:mandatory.
+Цель:
+  npm run eval:llm-usefulness ловит регрессию любого из трёх новых MCP tools и фиксирует minimum usefulness score для cursor-mcp-context-surface.
+Проверки:
+  fixture cursor-mcp-context-surface зелёный
+  tests/workGraphLlmUsefulnessEval.test.mjs обновлены
+  eval:llm-usefulness в ci:mandatory
+Анализ:
+  Целесообразность:
+  Стоит завести «eval:llm-usefulness — fixture cursor-mcp-context-surface (graph/memory/evidence)» в бэклог — по материалам AN-38 (work/analytics/llm-pvrg-richir-memory-slices-usage-audit.md).
+  Контекст и границы:
+  Добавить fixture cursor-mcp-context-surface в workGraphLlmUsefulnessEval.mjs: вызовы get_graph_rag_context, list_memory_records, list_evidence_records по seed workId.
+  Зависимости и готовность:
+  depends_on=epic-cursor-mcp-context-surface-v1, implement-mcp-get-graph-rag-context, implement-mcp-memory-records-tools, implement-mcp-evidence-records-tools; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  npm run eval:llm-usefulness ловит регрессию любого из трёх новых MCP tools и фиксирует minimum usefulness score для cursor-mcp-context-surface.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-38 (work/analytics/llm-pvrg-richir-memory-slices-usage-audit.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Свидетельства:
+  evaluateCursorMcpContextSurface в src/workGraphLlmUsefulnessEval.mjs; tests/workGraphLlmUsefulnessEval.test.mjs green
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-38
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/llm-pvrg-richir-memory-slices-usage-audit.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T23:29:42.474Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T23:29:42.474Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: epic-cursor-mcp-context-surface-v1, implement-mcp-get-graph-rag-context, implement-mcp-memory-records-tools, implement-mcp-evidence-records-tools
+  work.id: extend-llm-usefulness-eval-cursor-mcp-surface
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: agent_platform_architect
+  work.parent_id: epic-cursor-mcp-context-surface-v1
+  work.pipeline_stage: closed
+  work.priority: medium
+  work.risk: medium
+  work.status: done
+  work.target_files: src/workGraphLlmUsefulnessEval.mjs, tests/workGraphLlmUsefulnessEval.test.mjs, packages/workgraph-mcp/src/index.mjs
+  work.title: eval:llm-usefulness — fixture cursor-mcp-context-surface (graph/memory/evidence)
+]>

@@ -1,0 +1,57 @@
+#Задача_onebase_odata_catalog_api_client<[
+Базис:
+  AN-21 §3.3A: OneBase Номенклатура → category_nodes via REST/OData.
+  Stub importer accepts array payload only; no HTTP.
+  Fixtures: tests/fixtures/onebase/real-trade/ in ioHasC repo.
+Вектор:
+  04 Marketplace: OneBaseCatalogApiClient — describe JSON, catalog tree.
+  Config: ONEBASE_BASE_URL, timeout, auth optional.
+  PHPUnit with mocked HTTP + real-trade fixture file.
+Цель:
+  Fetch layer отделён от import/sync logic.
+Проверки:
+  OneBaseCatalogApiClientTest green
+  documented env vars in Marketplace .env.example
+Анализ:
+  Целесообразность:
+  Стоит завести «Gripe: OneBaseCatalogApiClient (REST/OData fetch + fixtures)» в бэклог — по материалам AN-32 (work/analytics/gripe-ds-adoption-phase2-post-an21.md).
+  Контекст и границы:
+  04 Marketplace: OneBaseCatalogApiClient — describe JSON, catalog tree.
+  Зависимости и готовность:
+  depends_on=epic-gripe-ds-adoption-phase2; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Fetch layer отделён от import/sync logic.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-32 (work/analytics/gripe-ds-adoption-phase2-post-an21.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-32
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/gripe-ds-adoption-phase2-post-an21.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-05-31T17:04:02.538Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T17:04:02.538Z
+  work.decision.verdict: useful
+  work.department: domain-onebase
+  work.depends_on: epic-gripe-ds-adoption-phase2
+  work.id: onebase-odata-catalog-api-client
+  work.item_kind: subtask
+  work.next_action: closed with evidence
+  work.owner_role: integration_architect
+  work.parent_id: epic-gripe-ds-adoption-phase2
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: high
+  work.status: done
+  work.target_files: ../../04 Marketplace/app/Catalog/OneBaseCatalogApiClient.php, ../../04 Marketplace/tests/Unit/OneBaseCatalogApiClientTest.php, work/analytics/onebase-integration-vertical-stack.md, work/analytics/gripe-ds-adoption-phase2-post-an21.md
+  work.title: Gripe: OneBaseCatalogApiClient (REST/OData fetch + fixtures)
+]>

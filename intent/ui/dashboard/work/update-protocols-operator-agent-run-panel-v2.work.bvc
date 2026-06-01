@@ -1,0 +1,55 @@
+#Задача_update_protocols_operator_agent_run_panel_v2<[
+Базис:
+  v1-protocol описывает modal-стиль panel; dock-режим требует обновления контракта.
+Вектор:
+  protocols/operator-agent-run-panel-v2.bvc: persistent dock, retry contract, diff binding, collapsed state.
+  v1 остаётся как legacy reference, v2 — canon после P0.
+Цель:
+  Канонический протокол для T7 и будущих UI evolution.
+Проверки:
+  protocols/operator-agent-run-panel-v2.bvc создан и линтуется
+Анализ:
+  Целесообразность:
+  Стоит завести «protocols/operator-agent-run-panel-v2.bvc: dock-mode + retry contract» в бэклог — по материалам work/analytics/ux-current-state-and-vector.md.
+  Контекст и границы:
+  protocols/operator-agent-run-panel-v2.bvc: persistent dock, retry contract, diff binding, collapsed state.
+  Зависимости и готовность:
+  depends_on=ux-mission-control-p0, implement-right-dock-agent-run-panel; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Канонический протокол для T7 и будущих UI evolution.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма work/analytics/ux-current-state-and-vector.md; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Свидетельства:
+  - protocols/operator-agent-run-panel-v2.bvc — dock-mode contract
+
+Метки:
+  atom.profile: work_item
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/ux-current-state-and-vector.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T12:01:47.094Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T12:01:47.094Z
+  work.decision.verdict: useful
+  work.department: ui-dashboard
+  work.depends_on: ux-mission-control-p0, implement-right-dock-agent-run-panel
+  work.id: update-protocols-operator-agent-run-panel-v2
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: integration_architect
+  work.parent_id: ux-mission-control-p0
+  work.pipeline_stage: closed
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: protocols/operator-agent-run-panel-v2.bvc
+  work.title: protocols/operator-agent-run-panel-v2.bvc: dock-mode + retry contract
+]>

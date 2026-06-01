@@ -1,0 +1,51 @@
+#Задача_write_an42_closing_work_graph_open_publication<[
+Базис:
+  Эпик завершён — без итоговой записи разбор AN-42 в UI останется незакрытым.
+  Оператору нужен перечень: ADR, specs, лицензии, inventory, CI guard.
+Вектор:
+  Итоговый md: work/analytics/closing-epic-work-graph-open-publication.md
+  Запись в work/analytics-records.jsonl через seed:analytics-record
+Цель:
+  Разбор AN-42 закрыт: видно, что стратегия публикации реализована и чем подтверждена.
+Проверки:
+  Итоговый md опубликован
+  Строка добавлена в analytics-records.jsonl
+  Перечислены ADR, BVC/IR/PVRG specs, inventory, legal docs, CI guard
+Анализ:
+  Зачем:
+  Точка для оператора: «AN-42 отработан, вот доказательства».
+  Когда:
+  После завершения эпика и зелёных проверок CI.
+Решение:
+  Вердикт:
+  полезно
+  Последняя задача эпика.
+
+Свидетельства:
+  - work/analytics/closing-epic-work-graph-open-publication.md
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-42
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/open-publication-technology-holdback-strategy.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-01T14:37:53.924Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-01T14:37:53.924Z
+  work.decision.verdict: useful
+  work.department: product-architecture
+  work.depends_on: epic-work-graph-open-publication, ci-guard-private-paths-npm-pack-an42, trademark-conformance-policy-an42, legal-hygiene-public-release-an42
+  work.id: write-an42-closing-work-graph-open-publication
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: system_architect
+  work.parent_id: epic-work-graph-open-publication
+  work.pipeline_stage: closed
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: work/analytics/closing-epic-work-graph-open-publication.md, work/analytics-records.jsonl, work/analytics/open-publication-technology-holdback-strategy.md
+  work.title: Закрыть разбор AN-42 после эпика open publication
+]>

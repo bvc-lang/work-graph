@@ -1,0 +1,44 @@
+#Протокол_WorkItem_Trace_Envelope_V1<[
+Базис:
+  Code-facing WorkItems уже имеют work.target_files и Trace Links v1 labels, но verify gate и worker context нуждаются в едином envelope contract.
+  protocols/step-code-trace-links-v1.bvc описывает trace-link.record.v1; envelope агрегирует обязательные поля WorkItem для code tasks без второго source of truth.
+Вектор:
+  workitem.trace-envelope.v1 собирается из labels и sections WorkItem atom:
+  work.id — stable identity
+  trace.source_step — optional canonical .bvc source (protocol, intent path или charter ref)
+  work.target_files — planning hint и UI filter; не заменяет trace refs
+  trace.code_refs, trace.artifact_refs, trace.evidence_refs, trace.links — authored trace coverage
+  trace.status — pending | linked | verified | missing | orphaned | needs_review
+  evidence — Свидетельства section или structured evidence ids
+  Verify gate для code-facing tasks:
+  - transition to verify: требует trace.status != missing и хотя бы один trace ref ИЛИ явный trace.source_step
+  - transition to done: требует evidence + trace.status in {linked, verified}; только target_files → diagnostic trace.weak_target_files_only
+  - enforceTraceVerifyGate опция в runtime; по умолчанию advisory через evaluateTraceVerifyGate()
+Цель:
+  Каждая code task проверяется через step/code linkage до переноса PVRG/unified linkage projections.
+
+Метки:
+  atom.profile: prompt_rule
+  protocol.id: workitem-trace-envelope-v1
+  work.source: define-trace-envelope-for-code-workitems
+  trace.status: verified
+]>
+
+#Code_Facing_Classification<[
+Базис:
+  Не все WorkItems требуют code trace envelope.
+Вектор:
+  Code-facing если выполняется любое:
+  - work.target_files содержит path с расширением .js/.mjs/.ts/.tsx/.bvc/.json/.yaml/.os
+  - присутствует trace.code_refs или trace.artifact_refs
+  - label trace.source_step или work.source_step не пуст
+  Design-only tasks без code paths могут оставаться с trace.status pending без gate block.
+Цель:
+  Verify gate применяется только к задачам, которые меняют или проверяют код/артефакты.
+
+Метки:
+  atom.profile: trace
+  contract.id: workitem-trace-envelope-code-facing-v1
+  protocol.id: workitem-trace-envelope-v1
+  trace.status: verified
+]>

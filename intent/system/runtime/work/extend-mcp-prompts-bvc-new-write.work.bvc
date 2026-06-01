@@ -1,0 +1,57 @@
+#Задача_extend_mcp_prompts_bvc_new_write<[
+Базис:
+  create_work_item tool description обновлён; prompts TOOL_RULES ещё без явного .bvc канона.
+Вектор:
+  packages/workgraph-mcp/src/prompts.mjs — TOOL_RULES + create_work_item workflow.
+  protocols/bvc-new-write-policy-v1.bvc cross-link в prompt text.
+Цель:
+  Агенты через MCP prompts создают *.work.bvc, не *.work.bvc.
+Проверки:
+  TOOL_RULES содержит new-write .bvc
+  create_work_item prompt шаг про .work.bvc
+Анализ:
+  Целесообразность:
+  Стоит завести «MCP prompts: рекомендация .bvc для новых atoms» в бэклог — по материалам plan: docs/plan-step-to-bvc-migration.md.
+  Контекст и границы:
+  packages/workgraph-mcp/src/prompts.mjs — TOOL_RULES + create_work_item workflow.
+  Зависимости и готовность:
+  depends_on=bvc-tooling-external; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Агенты через MCP prompts создают *.work.bvc, не *.work.bvc.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма plan: docs/plan-step-to-bvc-migration.md; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Свидетельства:
+  - packages/workgraph-mcp/src/prompts.mjs — TOOL_RULES + create_work_item .work.bvc
+  - protocols/bvc-new-write-policy-v1.bvc cross-referenced
+
+Метки:
+  atom.profile: work_item
+  intake.source_kind: plan
+  intake.source_ref: docs/plan-step-to-bvc-migration.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T11:48:24.951Z
+  work.analysis.source: plan
+  work.decision.at: 2026-05-31T11:48:24.951Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: bvc-tooling-external
+  work.id: extend-mcp-prompts-bvc-new-write
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: integration_architect
+  work.parent_id: bvc-tooling-external
+  work.pipeline_stage: closed
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: packages/workgraph-mcp/src/prompts.mjs, protocols/bvc-new-write-policy-v1.bvc
+  work.title: MCP prompts: рекомендация .bvc для новых atoms
+]>

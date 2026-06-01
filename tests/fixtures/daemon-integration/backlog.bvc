@@ -1,0 +1,27 @@
+#Задача_done_dependency<[
+Метки:
+  atom.profile: work_item
+  work.id: daemon-fixture-done
+  work.title: Daemon fixture done dependency
+  work.status: done
+  trace.status: verified
+]>
+
+#Задача_ready_for_daemon<[
+Базис:
+  Daemon fixture ready task.
+Анализ:
+  Fixture analysis for gate.
+Решение:
+  Verdict: useful
+Метки:
+  atom.profile: work_item
+  work.id: daemon-fixture-ready
+  work.title: Daemon fixture ready task
+  work.status: ready
+  work.depends_on: daemon-fixture-done
+  work.next_action: run daemon tick
+  work.target_files: src/workGraphDaemonTick.mjs, tests/workGraphDaemonIntegration.test.mjs
+  work.decision.verdict: useful
+  trace.status: pending
+]>

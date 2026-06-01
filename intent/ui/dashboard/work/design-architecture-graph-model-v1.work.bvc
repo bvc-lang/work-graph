@@ -1,0 +1,52 @@
+#Задача_design_architecture_graph_model_v1<[
+Базис:
+  Текущая вкладка Граф показывает depends_on между WorkItems, но не отвечает на вопрос об архитектуре и проектировании системы.
+  В уставе и intent tree уже есть устойчивые блоки: Step Canon, Work Graph, Project Memory, Trace/Evidence, Agent Runtime, Domain Adapters, Derived Projections.
+  Derived graph viewer и PVRG slice уже описывают node/edge types, но без отдельной L1/L2 модели architecture graph оператор не может drill-down внутрь блока.
+Вектор:
+  Зафиксировать architecture graph model v1 с уровнями L1 system blocks, L2 containers/modules и L3 artifacts/files/symbols.
+  Определить L1 blocks из charter/main.bvc и intent tree domains; L2 nodes из protocols/, ui/, src/, intent/* и domain adapters.
+  Описать edge types: uses, feeds, validates, implements, defines, maps_to, has_evidence, relates_file; явно отделить их от work.depends_on.
+  Зафиксировать UX pattern: top map -> focus block -> inner detail через drawer/panel, без ручного graph editor.
+Цель:
+  Есть единый контракт architecture graph, который отделяет проектирование системы от очереди задач и готов к snapshot/UI реализации.
+Анализ:
+  Целесообразность:
+  Стоит завести «спроектировать architecture graph model v1 (L1/L2/L3)» в бэклог.
+  Контекст и границы:
+  Зафиксировать architecture graph model v1 с уровнями L1 system blocks, L2 containers/modules и L3 artifacts/files/symbols.
+  Зависимости и готовность:
+  depends_on=choose-runtime-substrate, design-derived-graph-viewer, design-intent-tree-workgraph-layout; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Есть единый контракт architecture graph, который отделяет проектирование системы от очереди задач и готов к snapshot/UI реализации.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441040
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:35.838Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:35.848Z
+  work.decision.verdict: useful
+  work.department: product-architecture
+  work.depends_on: design-derived-graph-viewer, design-intent-tree-workgraph-layout, choose-runtime-substrate
+  work.id: design-architecture-graph-model-v1
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: system_architect
+  work.pipeline_stage: decided
+  work.priority: critical
+  work.risk: medium
+  work.status: done
+  work.target_files: protocols/architecture-graph-model-v1.bvc, charter/main.bvc, protocols/intent-tree-workgraph-layout.bvc, ui/derived-graph-viewer.bvc, protocols/pvrg-graph-rag-minimal.bvc, work/backlog.bvc
+  work.title: спроектировать architecture graph model v1 (L1/L2/L3)
+]>
+

@@ -1,0 +1,51 @@
+#Задача_define_trace_envelope_for_code_workitems<[
+Базис:
+  Code-facing tasks нужен stable trace envelope до безопасного переноса PVRG/linkage layers.
+  Задача «определить trace envelope для code-facing WorkItems» относится к контуру платформы агента и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: phase-4-trace-pvrg-semantic-map.
+Вектор:
+  Определить обязательные поля WorkItem для source step, target files, trace refs, evidence refs и trace status gate.
+  Ближайший шаг исполнения: перенести unified linkage serialization.
+Цель:
+  Каждая code task может проверяться через step/code linkage.
+  Готово, когда выполнены проверки: обязательные trace fields задокументированы.
+Анализ:
+  Целесообразность:
+  Стоит завести «определить trace envelope для code-facing WorkItems» в бэклог.
+  Контекст и границы:
+  Определить обязательные поля WorkItem для source step, target files, trace refs, evidence refs и trace status gate.
+  Зависимости и готовность:
+  depends_on=phase-4-trace-pvrg-semantic-map; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Каждая code task может проверяться через step/code linkage.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441069
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:35.763Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:35.772Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: phase-4-trace-pvrg-semantic-map
+  work.id: define-trace-envelope-for-code-workitems
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: traceability_architect
+  work.pipeline_stage: decided
+  work.priority: critical
+  work.risk: high
+  work.status: done
+  work.target_files: protocols/workitem-trace-envelope-v1.bvc, src/workItemTraceEnvelope.mjs, tests/workItemTraceEnvelope.test.mjs, work/backlog.bvc
+  work.title: определить trace envelope для code-facing WorkItems
+]>
+

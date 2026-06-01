@@ -1,0 +1,58 @@
+#Задача_sync_an14_ir_open_canon_multilingual<[
+Базис:
+  AN-14 §8: «bilingual, как в AN-8» и @step-canon/ir-* — stale после AN-18/AN-19.
+Вектор:
+  Обновить work/analytics/ir-rich-ir-open-canon.md §8: EN canonical + dialect registry.
+  Заменить @step-canon на @bvc/* в таблице решений.
+  Ссылка на AN-19 и adr-bvc-multilingual-keys.
+Цель:
+  IR-аналитика не противоречит multilingual и naming ADR.
+Анализ:
+  Целесообразность:
+  Стоит завести «AN-14 ir-rich-ir: EN canonical + @bvc/* (supersedes bilingual AN-8)» в бэклог — по материалам AN-19 (analytics:bvc-multilingual-keys-design).
+  Контекст и границы:
+  Обновить work/analytics/ir-rich-ir-open-canon.md §8: EN canonical + dialect registry.
+  Зависимости и готовность:
+  depends_on=adr-bvc-multilingual-keys; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  IR-аналитика не противоречит multilingual и naming ADR.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-19 (analytics:bvc-multilingual-keys-design); исполнять после вердикта «полезно» и готовности зависимостей.
+Проверки:
+  AN-14 не содержит «bilingual, как в AN-8» без уточнения
+  @bvc/* вместо @step-canon в §8
+
+Свидетельства:
+  - work/analytics/ir-rich-ir-open-canon.md §8: EN canonical + @bvc/*
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-19
+  intake.source_kind: analytics-record
+  intake.source_ref: analytics:bvc-multilingual-keys-design
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T08:11:06.150Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T08:11:06.150Z
+  work.decision.verdict: useful
+  work.department: product
+  work.depends_on: adr-bvc-multilingual-keys
+  work.id: sync-an14-ir-open-canon-multilingual
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: product_owner
+  work.parent_id: bvc-multilingual-detect-or-declare
+  work.pipeline_stage: closed
+  work.priority: low
+  work.risk: low
+  work.status: done
+  work.target_files: work/analytics/ir-rich-ir-open-canon.md, work/analytics/bvc-multilingual-keys-design.md, docs/adr-bvc-multilingual-keys.md
+  work.title: AN-14 ir-rich-ir: EN canonical + @bvc/* (supersedes bilingual AN-8)
+]>

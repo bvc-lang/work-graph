@@ -1,0 +1,50 @@
+#Задача_phase_4_trace_pvrg_semantic_map<[
+Базис:
+  Старый ioHasC содержит PVRG, unified linkage, semantic map и taxonomy; пересобрать уже имеет Trace Links v1 и architecture map MVP.
+  Задача «Фаза 4: Trace, PVRG и semantic maps» относится к контуру графа знаний и retrieval и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: phase-3-step-canon-intent-graph.
+Вектор:
+  Перенести графовые слои как derived read models вокруг Work Graph: trace envelope, unified linkage, PVRG task scope, semantic relations и taxonomy routing.
+  Ближайший шаг исполнения: выполнить фазу 5 IR, codegen и semantic runtime.
+Цель:
+  Агент и оператор получают маршрут от WorkItem к step, файлу, evidence и graph context.
+Анализ:
+  Целесообразность:
+  Стоит завести «Фаза 4: Trace, PVRG и semantic maps» в бэклог.
+  Контекст и границы:
+  Перенести графовые слои как derived read models вокруг Work Graph: trace envelope, unified linkage, PVRG task scope, semantic relations и taxonomy routing.
+  Зависимости и готовность:
+  depends_on=phase-3-step-canon-intent-graph; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Агент и оператор получают маршрут от WorkItem к step, файлу, evidence и graph context.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441054
+  migration.strategy: port
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:37.467Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:37.475Z
+  work.decision.verdict: useful
+  work.department: knowledge-publishing
+  work.depends_on: phase-3-step-canon-intent-graph
+  work.id: phase-4-trace-pvrg-semantic-map
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: retrieval_architect
+  work.pipeline_stage: decided
+  work.priority: critical
+  work.risk: high
+  work.status: done
+  work.target_files: protocols/workitem-trace-envelope-v1.bvc, src/workItemTraceEnvelope.mjs, src/unifiedLinkageProjection.mjs, src/pvrgTaskScope.mjs, tests/workItemTraceEnvelope.test.mjs, work/backlog.bvc
+  work.title: Фаза 4: Trace, PVRG и semantic maps
+]>
+

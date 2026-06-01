@@ -1,0 +1,46 @@
+#Протокол_WorkGraph_Serialization_Boundary<[
+Базис:
+  .bvc остаётся human/LLM source of truth для Work Graph.
+  workgraph.snapshot.v1 является первым стабильным runtime interchange для UI, tools и tests.
+  Будущие binary/cache форматы должны быть derived artifacts, а не новым каноном.
+Вектор:
+  Canonical state: .bvc atoms with BVC, Метки, criteria and evidence.
+  Runtime snapshot v1: deterministic JSON projection built from parsed WorkItems.
+  Derived formats: JSON files, NDJSON logs, SQLite cache, FlatBuffers/GBC slices or other transports may be generated from canonical state or snapshot.
+  Format decisions must evaluate readability, stability, migrations, browser consumption, multi-language readers, append-only evidence and recovery from partial writes.
+  FlatBuffers/GBC is not selected here; it is evaluated separately by evaluate-flatbuffers-gbc-slice.
+Цель:
+  Разделить canonical .bvc, JSON snapshot v1 и будущие derived/cache layers без преждевременной привязки к технологии.
+
+Проверки:
+  .bvc указан как единственный canonical source
+  snapshot v1 описан как JSON interchange
+  будущие derived artifacts описаны технологически нейтрально
+  FlatBuffers/GBC вынесен в отдельную evaluation task
+
+Метки:
+  atom.profile: prompt_rule
+  protocol.id: workgraph-serialization-boundary
+  snapshot.schema: workgraph.snapshot.v1
+  source.canonical: step
+  trace.status: verified
+]>
+
+#Контракт_WorkGraph_Snapshot_V1<[
+Базис:
+  Snapshot нужен dashboard и агентным инструментам, которые не должны парсить raw .bvc.
+Вектор:
+  Верхний уровень: schema, source, items, edges, statusCounts, readyQueue.
+  item fields: id, title, status, ownerRole, department, priority, risk, dependsOn, targetFiles, traceStatus, nextAction, evidence, checks, blocker.
+  edge fields: from, to, type; первый тип edge — depends_on.
+  Snapshot сортируется детерминированно и не содержит непроверенный mutable UI state.
+  Миграции вводят новый schema id и compatibility reader; existing snapshot v1 не меняется несовместимо.
+Цель:
+  Runtime, UI и tests имеют общий минимальный JSON contract до выбора любых binary/cache форматов.
+
+Метки:
+  atom.profile: trace
+  contract.id: workgraph-snapshot-v1
+  contract.source: src/workGraphRuntime.mjs
+  trace.status: verified
+]>

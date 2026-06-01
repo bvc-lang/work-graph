@@ -1,0 +1,50 @@
+#Задача_design_evidence_model_v1<[
+Базис:
+  Evidence является условием done и мостом между агентным действием, проверкой, файлом и решением.
+  Сейчас evidence в runtime — строки, но для dashboard/memory/verification нужен структурированный минимум.
+Вектор:
+  Спроектировать Evidence v1: kind, source, command, file refs, result, timestamp, summary, artifacts, decision refs.
+  Разделить command evidence, test evidence, file evidence, decision evidence и human approval.
+  Описать status gates: done требует evidence, blocked требует reason, verified требует successful verification evidence.
+Цель:
+  Work Graph может объяснить, почему задача завершена, и передать это в memory/dashboard.
+Анализ:
+  Целесообразность:
+  Стоит завести «спроектировать модель Evidence v1» в бэклог.
+  Контекст и границы:
+  Спроектировать Evidence v1: kind, source, command, file refs, result, timestamp, summary, artifacts, decision refs.
+  Зависимости и готовность:
+  depends_on=design-serialization-boundary; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Work Graph может объяснить, почему задача завершена, и передать это в memory/dashboard.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441020
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:35.919Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:35.929Z
+  work.decision.verdict: useful
+  work.department: qa
+  work.depends_on: design-serialization-boundary
+  work.id: design-evidence-model-v1
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: qa_architect
+  work.pipeline_stage: decided
+  work.priority: critical
+  work.risk: medium
+  work.status: done
+  work.target_files: protocols/evidence-model-v1.bvc, work/backlog.bvc
+  work.title: спроектировать модель Evidence v1
+]>
+

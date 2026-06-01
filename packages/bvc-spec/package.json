@@ -1,0 +1,41 @@
+{
+  "name": "@bvc-lang/spec",
+  "version": "0.0.4",
+  "description": "BVC (Basis·Vector·Goal) open format — specification artifacts, dialect registry, JSON schemas",
+  "license": "Apache-2.0",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bvc-lang/spec.git"
+  },
+  "homepage": "https://github.com/bvc-lang/spec#readme",
+  "bugs": {
+    "url": "https://github.com/bvc-lang/spec/issues"
+  },
+  "keywords": [
+    "bvc",
+    "basis-vector-goal",
+    "agent-context",
+    "spec",
+    "dialect"
+  ],
+  "exports": {
+    ".": "./index.js",
+    "./dialects/en.json": "./dialects/en.json",
+    "./dialects/ru.json": "./dialects/ru.json",
+    "./schemas/bvc-atom-draft.v1.json": "./schemas/bvc-atom-draft.v1.json",
+    "./schemas/step-atom-draft.v1.json": "./schemas/bvc-atom-draft.v1.json"
+  },
+  "files": [
+    "index.js",
+    "README.md",
+    "LICENSE",
+    "LICENSE-SPEC",
+    "spec",
+    "dialects",
+    "schemas"
+  ],
+  "engines": {
+    "node": ">=20"
+  }
+}

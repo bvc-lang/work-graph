@@ -1,0 +1,50 @@
+#Задача_wire_eval_llm_usefulness_ci_gate<[
+Базис:
+  Harness eval:llm-usefulness реализован, но ci:mandatory пока не вызывает scorecard; run-mandatory-prompt-eval-fixtures ещё open.
+  Задача «подключить eval:llm-usefulness к ci:mandatory» относится к контуру платформы агента и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: run-mandatory-prompt-eval-fixtures.
+Вектор:
+  Добавить npm run eval:llm-usefulness в ci:mandatory после test:deterministic; зафиксировать evidence и закрыть run-mandatory-prompt-eval-fixtures.
+  Ближайший шаг исполнения: просмотреть и перевести в ready.
+Цель:
+  LLM usefulness scorecard — обязательный gate в CI, не только ручной npm script.
+  Готово, когда выполнены проверки: package.json ci:mandatory включает eval:llm-usefulness.
+Анализ:
+  Целесообразность:
+  Стоит завести «подключить eval:llm-usefulness к ci:mandatory» в бэклог.
+  Контекст и границы:
+  Добавить npm run eval:llm-usefulness в ci:mandatory после test:deterministic; зафиксировать evidence и закрыть run-mandatory-prompt-eval-fixtures.
+  Зависимости и готовность:
+  depends_on=run-mandatory-prompt-eval-fixtures; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  LLM usefulness scorecard — обязательный gate в CI, не только ручной npm script.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:37.815Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:37.823Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: run-mandatory-prompt-eval-fixtures
+  work.id: wire-eval-llm-usefulness-ci-gate
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: agent_platform_architect
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: package.json, src/workGraphLlmUsefulnessEval.mjs, scripts/run-mandatory-prompt-eval-fixtures.mjs, docs/plan-workgraph-llm-usefulness.md
+  work.title: подключить eval:llm-usefulness к ci:mandatory
+]>
+

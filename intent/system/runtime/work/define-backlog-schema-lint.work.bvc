@@ -1,0 +1,51 @@
+#Задача_define_backlog_schema_lint<[
+Базис:
+  Большому бэклог нужен linting для duplicate ids, missing deps, invalid statuses и missing next_action.
+  Задача «определить бэклог schema lint» относится к контуру Work Graph rebuild и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: phase-10-ci-e2e-release-gates.
+Вектор:
+  Спроектировать бэклог schema lint command/test на текущем parser и transition rules.
+  Ближайший шаг исполнения: —.
+Цель:
+  Bad roadmap edits падают рано, до autonomous execution.
+  Готово, когда выполнены проверки: lint проверяет duplicate ids, missing deps и invalid status.
+Анализ:
+  Целесообразность:
+  Стоит завести «определить бэклог schema lint» в бэклог.
+  Контекст и границы:
+  Спроектировать бэклог schema lint command/test на текущем parser и transition rules.
+  Зависимости и готовность:
+  depends_on=phase-10-ci-e2e-release-gates; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Bad roadmap edits падают рано, до autonomous execution.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441088
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:35.718Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:35.727Z
+  work.decision.verdict: useful
+  work.department: qa
+  work.depends_on: phase-10-ci-e2e-release-gates
+  work.id: define-backlog-schema-lint
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: qa_architect
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: protocols/backlog-schema-lint-v1.bvc, src/backlogSchemaLint.mjs, scripts/lint-backlog.mjs, tests/backlogSchemaLint.test.mjs, work/backlog.bvc
+  work.title: определить бэклог schema lint
+]>
+

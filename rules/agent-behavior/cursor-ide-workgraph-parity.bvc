@@ -1,0 +1,21 @@
+#Правило_Cursor_IDE_WorkGraph_Parity<[
+Базис:
+  Work Graph канон (AN-22, AN-25): backlog mutate и исполнение — через work items с evidence; MCP path покрыт mcp-editing-policy.bvc.
+  Cursor IDE agent пишет файлы напрямую (Write/StrReplace, seed scripts) без обязательного MCP — возникает dual backlog и код без claim.
+Вектор:
+  Parity с mcp-editing-policy: изменения backlog (status, evidence, create) — через work items в intent/**/work или MCP write tools; не «закрыто в чате».
+  Перед правкой src/ или target_files — read atom / get_work_item по claimed work.id; после — строка в Свидетельства: и update status (done/verify).
+  Seed scripts: default work.status backlog; перевод в ready/doing — явный promote/claim оператором, не status: doing при create.
+  Запрет параллельного TodoWrite для trackable work (см. .cursor/rules/agent-workgraph-single-backlog.mdc); micro-steps только внутри claimed work.id.
+  Intake-only: «что дальше?» / аналитический разбор → AN-XX only; epic seed — после «создавай и делай» (docs/decision-pipeline-canon.md §Agent intake vs execute).
+Цель:
+  Cursor IDE agent и MCP agent следуют одному пайплайну ready → claim → code → evidence → done без shadow backlog в чате.
+
+Метки:
+  guid: 550e8400-e29b-41d4-a716-446655443210
+  atom.profile: prompt_rule
+  rule.id: cursor-ide-workgraph-parity
+  bundle.group: mcp
+  migration.source: work/analytics/agent-bypass-work-graph-dual-backlog.md#R2
+  trace.status: verified
+]>

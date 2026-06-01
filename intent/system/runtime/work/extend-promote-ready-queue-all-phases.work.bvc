@@ -1,0 +1,49 @@
+#Задача_extend_promote_ready_queue_all_phases<[
+Базис:
+  get_promote_ready_queue minPhase=8; фазы 0–7 невидимы в MCP queue.
+  Задача «Фаза 10: promote-ready queue для фаз 0–7» относится к контуру платформы агента и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: phase-10-ci-e2e-release-gates.
+Вектор:
+  Configurable minPhase + phase filter в get_promote_ready_queue.
+  Ближайший шаг исполнения: просмотреть и перевести в ready.
+Цель:
+  MCP clients видят promotable items всех фаз.
+  Готово, когда выполнены проверки: Queue включает phase-4 item при minPhase=0.
+Анализ:
+  Целесообразность:
+  Стоит завести «Фаза 10: promote-ready queue для фаз 0–7» в бэклог.
+  Контекст и границы:
+  Configurable minPhase + phase filter в get_promote_ready_queue.
+  Зависимости и готовность:
+  depends_on=phase-10-ci-e2e-release-gates; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  MCP clients видят promotable items всех фаз.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:36.445Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:36.456Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: phase-10-ci-e2e-release-gates
+  work.id: extend-promote-ready-queue-all-phases
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: system_architect
+  work.pipeline_stage: decided
+  work.priority: low
+  work.risk: medium
+  work.status: done
+  work.target_files: src/workGraphPhasePromoteReadyQueue.mjs, packages/workgraph-mcp/src/handlers.mjs
+  work.title: Фаза 10: promote-ready queue для фаз 0–7
+]>

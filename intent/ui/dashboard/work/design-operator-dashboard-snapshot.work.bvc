@@ -1,0 +1,50 @@
+#Задача_design_operator_dashboard_snapshot<[
+Базис:
+  Dashboard должен показывать состояние агента и Work Graph без ручного рисования графа.
+  JSON snapshot v1 уже выбран первым interchange между runtime и UI.
+Вектор:
+  Спроектировать dashboard snapshot: текущая задача, очередь ready, blockers, status counts, recent evidence, action feed.
+  Описать polling/event model и минимальный формат derived JSON.
+  Определить, какие поля приходят из Work Graph, а какие из runtime/session.
+Цель:
+  UI может отрисовать dashboard оператора без чтения raw .bvc и без собственного scheduler state.
+Анализ:
+  Целесообразность:
+  Стоит завести «спроектировать snapshot для панели оператора» в бэклог.
+  Контекст и границы:
+  Спроектировать dashboard snapshot: текущая задача, очередь ready, blockers, status counts, recent evidence, action feed.
+  Зависимости и готовность:
+  depends_on=design-operator-dashboard, design-serialization-boundary; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  UI может отрисовать dashboard оператора без чтения raw .bvc и без собственного scheduler state.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441014
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:36.057Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:36.067Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: design-operator-dashboard, design-serialization-boundary
+  work.id: design-operator-dashboard-snapshot
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: frontend_architect
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: ui/operator-dashboard-snapshot.bvc, schemas/operator-dashboard-snapshot.v1.json, ui/operator-dashboard.bvc, src/workGraphRuntime.mjs, tests/workGraphRuntime.test.mjs, work/backlog.bvc
+  work.title: спроектировать snapshot для панели оператора
+]>
+

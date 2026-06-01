@@ -1,0 +1,52 @@
+#Задача_defer_gbc_gvm_zig_scope<[
+Базис:
+  GBC/GFS важны как substrate derived artifacts, но полный GVM/Genesis/Zig memory core может отвлечь от first golden path.
+  В прошлой оценке GBC нельзя выбрасывать, но нужно разделить GBC slice boundary и runtime R&D.
+  Предварительно должны быть закрыты зависимости: evaluate-flatbuffers-gbc-slice.
+Вектор:
+  Зафиксировать acceptance boundary: что входит в MVP из GBC/GFS, а что остаётся R&D.
+  Описать deferred scope для GVM mandate, Genesis runtime, Zig primary memory core и native coverage всех схем.
+  Указать условия возврата к deferred scope: performance need, multi-language binary reader, trust/runtime requirement.
+Цель:
+  Команда сохраняет GBC direction, но не блокирует MVP бинарным/runtime слоем.
+  Готово, когда выполнены проверки: MVP GBC scope отделён от R&D GVM/Zig scope.
+Анализ:
+  Целесообразность:
+  Стоит завести «зафиксировать границу deferral для GBC/GVM/Zig» в бэклог.
+  Контекст и границы:
+  Зафиксировать acceptance boundary: что входит в MVP из GBC/GFS, а что остаётся R&D.
+  Зависимости и готовность:
+  depends_on=evaluate-flatbuffers-gbc-slice; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Команда сохраняет GBC direction, но не блокирует MVP бинарным/runtime слоем.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441024
+  migration.strategy: defer
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:35.681Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:35.691Z
+  work.decision.verdict: useful
+  work.department: devops-runtime
+  work.depends_on: evaluate-flatbuffers-gbc-slice
+  work.id: defer-gbc-gvm-zig-scope
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: system_architect
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: protocols/gbc-gvm-zig-deferral-boundary.bvc, charter/main.bvc, plans/rebuild-start-plan.bvc
+  work.title: зафиксировать границу deferral для GBC/GVM/Zig
+]>
+

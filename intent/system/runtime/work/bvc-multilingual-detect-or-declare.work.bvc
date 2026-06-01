@@ -1,0 +1,63 @@
+#Задача_bvc_multilingual_detect_or_declare<[
+Базис:
+  Источник: analytics:bvc-multilingual-keys-design (AN-19) — inline bilingual aliases отклонены.
+  AN-8 §6 #1 superseded: EN canonical + registered dialects, не комментарии alias.
+  Существующий RU-корпус *.bvc должен работать через auto-detect без переписывания.
+Вектор:
+  Принять ADR docs/adr-bvc-multilingual-keys.md.
+  Dialect registry en.json + ru.json; parser Detect-or-Declare.
+  Расширить step-atom-draft lang; обновить llm-step-atom-writer.
+  Conformance: EN/RU вход → один AST; round-trip preserve dialect.
+Цель:
+  Мультиязычность BVC зафиксирована в ADR и исполняема: один dialect на атом, E_BVC_DIALECT_MIX при смешении.
+Анализ:
+  Целесообразность:
+  Стоит завести «BVC multilingual: Detect-or-Declare + dialect registry (AN-19)» в бэклог — по материалам AN-19 (analytics:bvc-multilingual-keys-design).
+  Контекст и границы:
+  Принять ADR docs/adr-bvc-multilingual-keys.md.
+  Зависимости и готовность:
+  depends_on=bvc-open-canon-naming; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Мультиязычность BVC зафиксирована в ADR и исполняема: один dialect на атом, E_BVC_DIALECT_MIX при смешении.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-19 (analytics:bvc-multilingual-keys-design); исполнять после вердикта «полезно» и готовности зависимостей.
+Проверки:
+  docs/adr-bvc-multilingual-keys.md принят
+  packages/bvc-dialects/en.json и ru.json существуют
+  parser резолвит lang (pragma / @lang / Labels.lang / auto-detect)
+  conformance EN+RU green
+
+Свидетельства:
+  - 9/9 подзадач closed; ADR + registry + parser + conformance green
+  - node --test tests/bvcAtomParser.test.mjs tests/bvcConformance.test.mjs
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-19
+  intake.source_kind: analytics-record
+  intake.source_ref: analytics:bvc-multilingual-keys-design
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T08:11:06.018Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T08:11:06.018Z
+  work.decision.verdict: useful
+  work.department: product
+  work.depends_on: bvc-open-canon-naming
+  work.id: bvc-multilingual-detect-or-declare
+  work.item_kind: epic
+  work.next_action: —
+  work.owner_role: product_owner
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: docs/adr-bvc-multilingual-keys.md, work/analytics/bvc-multilingual-keys-design.md, work/analytics/step-as-open-canon-standard.md, schemas/step-atom-draft.v1.json, protocols/llm-step-atom-writer.bvc, packages/bvc-dialects
+  work.title: BVC multilingual: Detect-or-Declare + dialect registry (AN-19)
+]>

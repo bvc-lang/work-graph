@@ -1,0 +1,13 @@
+name: РеализацияТоваров
+posting: true
+numerator: НумераторПродаж
+fields:
+  - { name: Номер, type: string }
+  - { name: Дата, type: date }
+  - { name: Покупатель, type: reference:Контрагент }
+tableparts:
+  - name: Товары
+    fields:
+      - { name: Номенклатура, type: reference:Номенклатура }
+      - { name: Количество, type: number }
+      - { name: Сумма, type: number }

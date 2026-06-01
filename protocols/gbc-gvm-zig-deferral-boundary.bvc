@@ -1,0 +1,79 @@
+#Протокол_GBC_GVM_Zig_Deferral_Boundary<[
+Базис:
+  ioHasC накопил GBC/GFS, GVM mandate, Genesis runtime и Zig-oriented memory/binary directions как сильные R&D активы.
+  Work Graph rebuild MVP должен доказать operator loop, OneBase golden path и trace/evidence без обязательного binary/runtime слоя.
+  protocols/flatbuffers-gbc-slice-evaluation.bvc уже принял JSON snapshot first и отложил FlatBuffers/GBC до измеримых триггеров.
+Вектор:
+  Зафиксировать MVP acceptance boundary для GBC/GFS и отдельный deferred scope для GVM/Genesis/Zig.
+  MVP не требует full GVM/Genesis, mandate enforcement, Wasm execution loop или native coverage всех Step Atom схем.
+  R&D track сохраняет donor patterns из ioHasC: trace-link slice, module registry concepts, GFS overlay ideas — только как optional derived artifacts rebuildable from .bvc canon.
+Цель:
+  Команда не блокирует golden path бинарным/runtime слоем, но сохраняет понятный путь возврата к GBC/GVM/Zig когда появятся измеримые требования.
+
+Проверки:
+  MVP GBC scope отделён от R&D GVM/Zig scope
+  описаны триггеры возврата к deferred работам
+  acceptance criteria не требуют full GVM/Genesis
+
+Метки:
+  atom.profile: architecture_decision
+  protocol.id: gbc-gvm-zig-deferral-boundary
+  decision.id: gbc-gvm-zig-deferral-v1
+  work.source: defer-gbc-gvm-zig-scope
+  trace.status: verified
+]>
+
+#MVP_GBC_GFS_Scope<[
+Базис:
+  GBC/GFS в MVP — это направление derived artifacts, а не замена .bvc canon или JSON snapshot v1.
+Вектор:
+  В MVP входит: .bvc как canonical storage; deterministic JSON snapshot v1 для UI, worker input, tests; optional NDJSON evidence/action log; optional SQLite queue/cache projection rebuildable from Work Graph.
+  В MVP входит как donor pattern only: read-only mention of trace-link slice, architecture snapshot, dashboard snapshot and graph/RAG derived JSON — без обязательного FlatBuffers writer/reader.
+  В MVP не входит: FlatBuffers/GBC slice writer, GFS overlay mount, binary module registry sync, mandate-gated Wasm invoke, browser zero-copy slice consumer matrix.
+  Acceptance criteria MVP: operator dashboard, Work Graph runtime transitions, OneBase golden path and verification loop — все проходят без GBC binary artifacts.
+Цель:
+  GBC/GFS direction preserved, but MVP ships on human-readable canon plus deterministic JSON projections.
+
+Метки:
+  atom.profile: prompt_rule
+  rule.id: mvp-gbc-gfs-scope-v1
+  protocol.id: gbc-gvm-zig-deferral-boundary
+  trace.status: verified
+]>
+
+#Deferred_GVM_Genesis_Zig_Scope<[
+Базис:
+  GVM mandate, Genesis runtime и Zig primary memory core были valuable experiments in ioHasC, но expand scope beyond rebuild MVP acceptance.
+Вектор:
+  Deferred: GVM mandate policy enforcement from gbc module registry; Genesis IDE/GVM Lite dev panel; Wasm bytecode invoke/export loop; mandate-aware agent context blocks tied to registry JSON.
+  Deferred: Genesis runtime integration as required execution substrate for Work Graph tasks.
+  Deferred: Zig (or other native) primary memory core, binary schema reader, multi-language zero-copy ABI for all Step Atom/profile variants.
+  Deferred: native FlatBuffers coverage for full step language, TurIr/IR tracks, PVRG slice families and GFS overlay consumers beyond minimal WorkGraphSlice sketch.
+  Deferred work stays documented as R&D backlog references to ioHasC donor code/docs, not migration blockers.
+Цель:
+  Runtime R&D can resume later without re-opening MVP gates or pretending Genesis is already required.
+
+Метки:
+  atom.profile: architecture_decision
+  decision.id: deferred-gvm-genesis-zig-v1
+  protocol.id: gbc-gvm-zig-deferral-boundary
+  trace.status: verified
+]>
+
+#Return_Triggers_To_GBC_GVM_Zig<[
+Базис:
+  Deferral без триггеров возврата превращается в тихое удаление направления или, наоборот, в скрытый scope creep.
+Вектор:
+  Вернуться к FlatBuffers/GBC slice when: JSON snapshot parse/render or agent context assembly becomes measured bottleneck; cross-process worker needs schema-stable binary interchange; GFS overlay requires mapped binary slices; dashboard/graph needs zero-copy read path at scale.
+  Вернуться к GVM/Genesis when: trust/runtime requirement demands mandate-gated execution before tool side effects; reproducible Wasm sandbox becomes policy gate for agent worker; registry-driven import policy must be enforced outside prompt rules.
+  Вернуться к Zig/native memory core when: multi-language binary reader is required for performance or deployment constraints; primary project memory or graph index must live outside JS/TS runtime with proven latency/memory wins.
+  Любой возврат создаёт новую WorkItem with explicit evidence of trigger measurement, not speculative parity with ioHasC.
+Цель:
+  Deferred scope re-enters through policy-gated Work Graph tasks tied to measurable need.
+
+Метки:
+  atom.profile: trace
+  contract.id: gbc-gvm-zig-return-triggers-v1
+  protocol.id: gbc-gvm-zig-deferral-boundary
+  trace.status: verified
+]>

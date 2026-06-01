@@ -1,0 +1,58 @@
+#Задача_write_an29_closing_chat_work_scope_readonly<[
+Базис:
+  Closing loop AN-22: эпик closed → closing-AN с feeds_epics.
+  AN-23/AN-26 — образцы post-mortem.
+Вектор:
+  work/analytics/closing-epic-chat-work-scope-readonly.md + journal AN-29.
+  Outcomes: воспроизведён ли инцидент chat todo после scope panel.
+Цель:
+  Эпик закрыт с outcomes; уроки для agent-UX интеграций.
+Проверки:
+  analytics-records.jsonl содержит AN-29
+  epic-chat-work-scope-readonly closed с evidence
+Анализ:
+  Целесообразность:
+  Стоит завести «AN-29 closing analysis: epic-chat-work-scope-readonly» в бэклог — по материалам AN-28 (work/analytics/chat-work-graph-todo-sync.md).
+  Контекст и границы:
+  work/analytics/closing-epic-chat-work-scope-readonly.md + journal AN-29.
+  Зависимости и готовность:
+  depends_on=epic-chat-work-scope-readonly, mcp-epic-rollup-scope-resource, agent-behavior-chat-scope-block, document-chat-scope-readonly-canon, ui-agent-scope-panel-poll; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Эпик закрыт с outcomes; уроки для agent-UX интеграций.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-28 (work/analytics/chat-work-graph-todo-sync.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-28
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/chat-work-graph-todo-sync.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-05-31T14:19:05.356Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T14:19:05.356Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: epic-chat-work-scope-readonly, mcp-epic-rollup-scope-resource, agent-behavior-chat-scope-block, document-chat-scope-readonly-canon, ui-agent-scope-panel-poll
+  work.id: write-an29-closing-chat-work-scope-readonly
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: product_owner
+  work.parent_id: epic-chat-work-scope-readonly
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: work/analytics/closing-epic-chat-work-scope-readonly.md, work/analytics-records.jsonl
+  work.title: AN-29 closing analysis: epic-chat-work-scope-readonly
+
+Свидетельства:
+  - work/analytics/closing-epic-chat-work-scope-readonly.md published; AN-29 in work/analytics-records.jsonl; outcomes: scope panel read-only, chat todo incident not auto-fixed by design
+]>

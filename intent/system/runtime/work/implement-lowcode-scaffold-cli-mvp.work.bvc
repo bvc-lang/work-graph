@@ -1,0 +1,54 @@
+#Задача_implement_lowcode_scaffold_cli_mvp<[
+Базис:
+  protocols/prompt-step-lowcode-replacement-scope-v1.bvc фиксирует: low-code MVP — CLI surface, без dashboard UI; generateFromCharter agent tool defer до sidecar boundary.
+  Старый ioHasC имеет verify:low-code, generate:arch-scaffold и templates/arch-low-code в ../project.
+  Предварительно должны быть закрыты зависимости: design-prompt-step-and-lowcode-replacement-scope.
+Вектор:
+  Добавить npm run scaffold:arch-rules — минимальный CLI: читает arch-rules.bvc (или path), пишет skeleton output dir, возвращает structured summary для evidence.
+  Добавить npm run verify:lowcode как optional gate (не ci:mandatory): lint arch-rules presence + scaffold dry-run или заглушка check.
+  Не переносить полный template engine и sidecar generateFromCharter в пересобрать MVP.
+Цель:
+  Low-code replacement path исполним через CLI/evidence без visual editor.
+  Готово, когда выполнены проверки: npm run scaffold:arch-rules exit 0 на fixture charter.
+Анализ:
+  Целесообразность:
+  Стоит завести «реализовать MVP low-code scaffold CLI» в бэклог.
+  Контекст и границы:
+  Добавить npm run scaffold:arch-rules — минимальный CLI: читает arch-rules.bvc (или path), пишет skeleton output dir, возвращает structured summary для evidence.
+  Зависимости и готовность:
+  depends_on=design-prompt-step-and-lowcode-replacement-scope; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Low-code replacement path исполним через CLI/evidence без visual editor.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441111
+  migration.source_paths: scripts/lowcode-run-generation.ts, npm run verify:low-code
+  migration.source_repo: ../project
+  migration.strategy: port
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:36.870Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:36.879Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: design-prompt-step-and-lowcode-replacement-scope
+  work.id: implement-lowcode-scaffold-cli-mvp
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: runtime_repair
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: medium
+  work.status: done
+  work.target_files: scripts/scaffold-arch-rules.mjs, src/lowcodeScaffoldCli.mjs, tests/lowcodeScaffoldCli.test.mjs, package.json, protocols/prompt-step-lowcode-replacement-scope-v1.bvc, work/backlog.bvc
+  work.title: реализовать MVP low-code scaffold CLI
+]>
+

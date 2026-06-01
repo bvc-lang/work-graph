@@ -1,0 +1,122 @@
+{
+  "schema": "onebase.parity-evidence.v1",
+  "probedAt": "2026-05-30T10:08:27.434Z",
+  "binary": "D:\\Work\\IDE\\onebase\\onebase.exe",
+  "cliProbe": {
+    "schema": "onebase.cli-capabilities.v1",
+    "probedAt": "2026-05-30T10:08:27.434Z",
+    "binary": "D:\\Work\\IDE\\onebase\\onebase.exe",
+    "ok": true,
+    "failureClass": null,
+    "message": null,
+    "commands": {
+      "init": true,
+      "check": true,
+      "describe": true,
+      "ai-guide": true
+    },
+    "availableCommands": [
+      "ai-guide",
+      "backup",
+      "build",
+      "check",
+      "completion",
+      "convert",
+      "deploy",
+      "describe",
+      "dev",
+      "forms",
+      "help",
+      "ibases",
+      "init",
+      "migrate",
+      "procrun",
+      "restore",
+      "run",
+      "service",
+      "start"
+    ],
+    "helpExitCode": 0
+  },
+  "parity": {
+    "schema": "onebase.access.parity.v1",
+    "rows": [
+      {
+        "capability": "metadata_scan",
+        "builtInTool": "onebaseListMetadata",
+        "mcpTool": "list_metadata",
+        "workGraphCli": "verifyOnebaseGrossProfitWarehouseArtifacts",
+        "ciGate": false,
+        "notes": "list_metadata prefers onebase describe --json with scan fallback",
+        "cliAvailable": null
+      },
+      {
+        "capability": "describe_config",
+        "builtInTool": null,
+        "mcpTool": "describe_config",
+        "workGraphCli": "onebase describe --json",
+        "ciGate": false,
+        "cliAvailable": true,
+        "cliCommand": "describe"
+      },
+      {
+        "capability": "check_config",
+        "builtInTool": null,
+        "mcpTool": "check_config",
+        "workGraphCli": "onebase check",
+        "ciGate": false,
+        "notes": "optional operator/DoD gate when OneBase CLI supports check",
+        "cliAvailable": true,
+        "cliCommand": "check"
+      },
+      {
+        "capability": "ai_guide",
+        "builtInTool": null,
+        "mcpTool": "ai_guide",
+        "workGraphCli": "onebase ai-guide",
+        "ciGate": false,
+        "cliAvailable": true,
+        "cliCommand": "ai-guide"
+      },
+      {
+        "capability": "read_config_file",
+        "builtInTool": "workspace read + scan",
+        "mcpTool": "read_config_file",
+        "workGraphCli": "static artifact verify",
+        "ciGate": false,
+        "cliAvailable": null
+      },
+      {
+        "capability": "rest_read",
+        "builtInTool": "onebaseRestCall",
+        "mcpTool": "rest_get",
+        "workGraphCli": "optional manual",
+        "ciGate": false,
+        "cliAvailable": null
+      },
+      {
+        "capability": "dev_health",
+        "builtInTool": "onebaseDevStatus",
+        "mcpTool": "env ONEBASE_* in MCP server",
+        "workGraphCli": "go version preflight",
+        "ciGate": true,
+        "cliAvailable": null
+      },
+      {
+        "capability": "deterministic_verify",
+        "builtInTool": null,
+        "mcpTool": null,
+        "workGraphCli": "npm run test:optional:onebase",
+        "ciGate": true,
+        "cliAvailable": null
+      }
+    ],
+    "rules": [
+      "CI/done gate uses work graph CLI only",
+      "MCP and built-in tools are discovery/agent paths",
+      "REST evidence is optional and may be blocked"
+    ]
+  },
+  "evidenceLine": "onebase CLI probe 2026-05-30T10:08:27.434Z: binary=D:\\Work\\IDE\\onebase\\onebase.exe; check=available; describe=available; ai-guide=available",
+  "projectRoot": null
+}

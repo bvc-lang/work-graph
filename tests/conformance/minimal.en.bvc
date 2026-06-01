@@ -1,0 +1,12 @@
+#Sample_EN@en<[
+Basis:
+  - Canonical EN dialect sample.
+Vector:
+  - Conformance fixture for parser.
+Goal:
+  - Identical normalized AST as RU counterpart.
+
+Labels:
+  atom.profile: prompt_rule
+  trace.status: pending
+]>

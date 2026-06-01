@@ -1,0 +1,62 @@
+#Задача_bvc_tooling_external<[
+Базис:
+  Фаза 2 MVP закрыта: format CLI и new-write *.work.bvc в Work Graph.
+  План docs/plan-step-to-bvc-migration.md §1–2: publish @bvc-lang/cli, MCP prompt examples, GitHub bvc-lang/cli.
+  Внешние потребители (Cursor, CI) должны ставить CLI без monorepo checkout.
+Вектор:
+  packages/bvc-cli → @bvc-lang/cli с lib/ sync и зависимостью @bvc-lang/spec.
+  verify + export scripts; npm publish; repo github.com/bvc-lang/cli.
+  workgraph-mcp prompts: явные правила .bvc для create_work_item.
+Цель:
+  @bvc-lang/cli@0.1.0 на npm; публичный репозиторий cli; MCP prompts рекомендуют .bvc.
+Проверки:
+  npm run verify:bvc-cli-publish green
+  npm view @bvc-lang/cli version
+  github.com/bvc-lang/cli доступен
+  create_work_item prompt упоминает *.work.bvc
+Анализ:
+  Целесообразность:
+  Стоит завести «BVC external tooling: @bvc-lang/cli npm + GitHub + MCP prompts» в бэклог — по материалам plan: docs/plan-step-to-bvc-migration.md.
+  Контекст и границы:
+  packages/bvc-cli → @bvc-lang/cli с lib/ sync и зависимостью @bvc-lang/spec.
+  Зависимости и готовность:
+  depends_on=bvc-phase2-new-write; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  @bvc-lang/cli@0.1.0 на npm; публичный репозиторий cli; MCP prompts рекомендуют .bvc.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма plan: docs/plan-step-to-bvc-migration.md; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Свидетельства:
+  - External tooling: @bvc-lang/cli npm + GitHub cli repo + MCP prompts
+  - docs/plan-step-to-bvc-migration.md tooling follow-up done
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-18
+  intake.source_kind: plan
+  intake.source_ref: docs/plan-step-to-bvc-migration.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T11:48:24.915Z
+  work.analysis.source: plan
+  work.decision.at: 2026-05-31T11:48:24.915Z
+  work.decision.verdict: useful
+  work.department: product
+  work.depends_on: bvc-phase2-new-write
+  work.id: bvc-tooling-external
+  work.item_kind: epic
+  work.next_action: —
+  work.owner_role: product_owner
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: docs/plan-step-to-bvc-migration.md, packages/bvc-cli/package.json, scripts/sync-bvc-cli-lib.mjs, scripts/verify-bvc-cli-publish-ready.mjs, scripts/export-bvc-cli-github.mjs, packages/workgraph-mcp/src/prompts.mjs
+  work.title: BVC external tooling: @bvc-lang/cli npm + GitHub + MCP prompts
+]>

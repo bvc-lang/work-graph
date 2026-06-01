@@ -1,0 +1,54 @@
+#Задача_review_patent_defensive_publication_an42<[
+Базис:
+  AN-42: до широкого релиза нужно решить — patent, defensive publication или только copyright+trademark.
+  Это не юридическая услуга в эпике, а документированное решение для команды.
+Вектор:
+  work/analytics/patent-defensive-publication-decision-an42.md: варианты, рекомендация, дата публикации specs.
+  Checklist: что раскрыто до/после консультации с патентным специалистом (если будет).
+Цель:
+  Команда знает, зачем датируем specs и не публикуем «случайно» до patent review при необходимости.
+Проверки:
+  Decision doc опубликован
+  Указана связь с датами публикации BVC/IR/PVRG specs
+  Явно: документ не заменяет юриста
+Анализ:
+  Зачем:
+  AN-42: до широкого релиза нужно решить — patent, defensive publication или только copyright+trademark.
+  Контекст: Это не юридическая услуга в эпике, а документированное решение для команды.
+  Когда:
+  После готовности: epic-work-graph-open-publication, decide-work-graph-open-publication-adr.
+  Готово, когда:
+  Команда знает, зачем датируем specs и не публикуем «случайно» до patent review при необходимости.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: epic-work-graph-open-publication, decide-work-graph-open-publication-adr.
+
+Свидетельства:
+  - work/analytics/patent-defensive-publication-decision-an42.md
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-42
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/open-publication-technology-holdback-strategy.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-01T14:37:53.894Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-01T14:37:53.894Z
+  work.decision.verdict: useful
+  work.department: product-architecture
+  work.depends_on: epic-work-graph-open-publication, decide-work-graph-open-publication-adr
+  work.id: review-patent-defensive-publication-an42
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: system_architect
+  work.parent_id: epic-work-graph-open-publication
+  work.pipeline_stage: closed
+  work.priority: low
+  work.risk: low
+  work.status: done
+  work.target_files: work/analytics/open-publication-technology-holdback-strategy.md, work/analytics/patent-defensive-publication-decision-an42.md
+  work.title: Review: patent strategy и defensive publication для BVC/IR/PVRG
+]>

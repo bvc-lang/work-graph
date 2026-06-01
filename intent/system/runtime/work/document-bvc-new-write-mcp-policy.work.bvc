@@ -1,0 +1,57 @@
+#Задача_document_bvc_new_write_mcp_policy<[
+Базис:
+  Агенты и MCP должны явно рекомендовать .bvc для новых protocol/work atoms.
+Вектор:
+  protocols/bvc-new-write-policy-v1.bvc — канон политики.
+  packages/workgraph-mcp create_work_item description + default checks.
+Цель:
+  MCP и protocol документируют: новые atoms → .bvc; .bvc только legacy read.
+Проверки:
+  protocols/bvc-new-write-policy-v1.bvc существует
+  create_work_item tool description упоминает .work.bvc
+Анализ:
+  Целесообразность:
+  Стоит завести «protocol + MCP hints для .bvc new-write» в бэклог — по материалам plan: docs/plan-step-to-bvc-migration.md.
+  Контекст и границы:
+  protocols/bvc-new-write-policy-v1.bvc — канон политики.
+  Зависимости и готовность:
+  depends_on=bvc-phase2-new-write, implement-new-write-work-item-bvc; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  MCP и protocol документируют: новые atoms → .bvc; .bvc только legacy read.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма plan: docs/plan-step-to-bvc-migration.md; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Свидетельства:
+  - protocols/bvc-new-write-policy-v1.bvc
+  - workgraph-mcp create_work_item description + default checks
+
+Метки:
+  atom.profile: work_item
+  intake.source_kind: plan
+  intake.source_ref: docs/plan-step-to-bvc-migration.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T11:39:46.556Z
+  work.analysis.source: plan
+  work.decision.at: 2026-05-31T11:39:46.556Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: bvc-phase2-new-write, implement-new-write-work-item-bvc
+  work.id: document-bvc-new-write-mcp-policy
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: integration_architect
+  work.parent_id: bvc-phase2-new-write
+  work.pipeline_stage: closed
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: protocols/bvc-new-write-policy-v1.bvc, packages/workgraph-mcp/src/index.mjs
+  work.title: protocol + MCP hints для .bvc new-write
+]>

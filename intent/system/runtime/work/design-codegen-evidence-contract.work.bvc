@@ -1,0 +1,51 @@
+#Задача_design_codegen_evidence_contract<[
+Базис:
+  Codegen и compiler-mode steps требуют evidence при использовании в Work Graph tasks.
+  Задача «описать evidence contract для codegen» относится к контуру платформы агента и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: phase-5-ir-codegen-runtime.
+Вектор:
+  Определить evidence records для generated code integrity, compiler round-trip и generated tests.
+  Ближайший шаг исполнения: связать Bracket IR cache с trace envelope.
+Цель:
+  Codegen может стать deterministic verify step.
+  Готово, когда выполнены проверки: виды evidence для integrity/roundtrip/test определены.
+Анализ:
+  Целесообразность:
+  Стоит завести «описать evidence contract для codegen» в бэклог.
+  Контекст и границы:
+  Определить evidence records для generated code integrity, compiler round-trip и generated tests.
+  Зависимости и готовность:
+  depends_on=phase-5-ir-codegen-runtime; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Codegen может стать deterministic verify step.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441072
+  migration.strategy: port
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:35.873Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:35.883Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: phase-5-ir-codegen-runtime
+  work.id: design-codegen-evidence-contract
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: compiler_engineer
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: high
+  work.status: done
+  work.target_files: protocols/codegen-evidence-contract-v1.bvc, src/codegenEvidence.mjs, tests/codegenEvidence.test.mjs, work/backlog.bvc
+  work.title: описать evidence contract для codegen
+]>
+

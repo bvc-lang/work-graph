@@ -1,0 +1,52 @@
+#Задача_onebase_verification_command<[
+Базис:
+  Done для OneBase golden path нельзя ставить без deterministic verification.
+  Go-проект OneBase имеет CLI/runtime/tests, но нужно выбрать минимальный быстрый gate.
+  Предварительно должны быть закрыты зависимости: onebase-posting-scenario-design.
+Вектор:
+  Найти подходящую команду проверки: go test, parser check, compile DSL, targeted scenario или fixture run.
+  Описать expected output, timeout, working directory и failure evidence.
+  Связать команду с Work Graph evidence model.
+Цель:
+  OneBase change можно проверить автоматически и записать evidence.
+  Готово, когда выполнены проверки: выбрана одна быстрая deterministic команда.
+Анализ:
+  Целесообразность:
+  Стоит завести «выбрать verification command для golden path OneBase» в бэклог.
+  Контекст и границы:
+  Найти подходящую команду проверки: go test, parser check, compile DSL, targeted scenario или fixture run.
+  Зависимости и готовность:
+  depends_on=onebase-posting-scenario-design; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  OneBase change можно проверить автоматически и записать evidence.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441019
+  migration.strategy: port
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:37.345Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:37.354Z
+  work.decision.verdict: useful
+  work.department: qa
+  work.depends_on: onebase-posting-scenario-design
+  work.id: onebase-verification-command
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: qa_automation
+  work.pipeline_stage: decided
+  work.priority: critical
+  work.risk: medium
+  work.status: done
+  work.target_files: domains/onebase/verification-command.bvc, ../onebase/go.mod, ../onebase/internal/dsl/parser/parser.go, ../onebase/internal/cli/run.go
+  work.title: выбрать verification command для golden path OneBase
+]>
+

@@ -1,0 +1,51 @@
+#Задача_implement_bounded_target_file_read<[
+Базис:
+  Tool surface audit откладывал ioHasC readFile; worker и OpenAI provider нуждаются в bounded read только по work.target_files.
+  Задача «реализовать bounded read по targetFiles» относится к контуру Work Graph rebuild и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: wire-live-loop-provider-selection.
+Вектор:
+  Реализовать worker.boundedTargetFileRead: normalize paths, отказ traversal, byte limits, batch read для Worker Input targetFiles.
+  Подключить bounded contents в runOpenAiCompatibleWorker prompt assembly.
+Цель:
+  Live LLM path получает file facts без arbitrary filesystem access.
+  Готово, когда выполнены проверки: чтение ограничено targetFiles allowlist.
+Анализ:
+  Целесообразность:
+  Стоит завести «реализовать bounded read по targetFiles» в бэклог.
+  Контекст и границы:
+  Реализовать worker.boundedTargetFileRead: normalize paths, отказ traversal, byte limits, batch read для Worker Input targetFiles.
+  Зависимости и готовность:
+  depends_on=wire-live-loop-provider-selection; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Live LLM path получает file facts без arbitrary filesystem access.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441094
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:36.571Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:36.581Z
+  work.decision.verdict: useful
+  work.department: devops-runtime
+  work.depends_on: wire-live-loop-provider-selection
+  work.id: implement-bounded-target-file-read
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: agent_platform_architect
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: low
+  work.status: done
+  work.target_files: protocols/bounded-target-file-read-v1.bvc, src/workGraphBoundedTargetFileRead.mjs, src/agentWorkerOpenAiProvider.mjs, tests/workGraphBoundedTargetFileRead.test.mjs, src/workGraphToolSurfaceAudit.mjs, work/backlog.bvc
+  work.title: реализовать bounded read по targetFiles
+]>
+

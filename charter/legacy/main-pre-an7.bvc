@@ -1,0 +1,80 @@
+#!bvc lang=ru
+
+#Устав_WorkGraph_Rebuild<[
+Базис:
+  Текущий ioHasC показал сильные ядра: .bvc canon, IR/TurIr, Work Graph, agent tools, project memory, PVRG/trace, GBC/GFS и OneBase vertical.
+  Одновременно текущая кодовая база накопила перегрузку: собственная IDE shell, монолитный orchestrator, несколько IR-треков, экспериментальные GVM/Genesis слои и слабый разрыв между mocked E2E и живыми workflow.
+  Новая сборка должна проверять подход на одном вертикальном сценарии, а не переносить всю платформу целиком.
+Вектор:
+  Строить проект в собственном формате: уставы, правила, backlog и protocol artifacts сначала в .bvc.
+  Выделить Step Canon, Work Graph, Trace/Evidence и Project Memory как первые ядра.
+  Готовые решения использовать для IDE shell, LLM adapters, vector storage, board UI и workflow plumbing, если они не являются уникальностью проекта.
+  GBC/GFS сохранять как substrate derived artifacts; GVM/Genesis/Zig развивать как R&D track, не как обязательный MVP.
+  MVP acceptance boundary: .bvc canon + JSON snapshot v1 + optional NDJSON/SQLite projections; без FlatBuffers writer, GFS overlay, GVM mandate enforcement или Genesis runtime (см. protocols/gbc-gvm-zig-deferral-boundary.bvc).
+  Low-code и prompt-as-step оставить как доказательство того, что .bvc управляет не только кодом, но и поведением агента.
+Цель:
+  Получить минимальную agentic engineering OS, где задача проходит путь от намерения до verified evidence через Work Graph, а не через свободный чат.
+
+Метки:
+  guid: 550e8400-e29b-41d4-a716-446655440101
+  project.slug: work-graph-rebuild
+  project.stage: seed
+  atom.profile: charter
+  canon.primary: step
+  canon.public_format: bvc
+  canon.public_extension: .bvc
+  canon.adr.naming: docs/adr-bvc-format-naming.md
+  canon.adr.multilingual: docs/adr-bvc-multilingual-keys.md
+  npm.scope: "@bvc-lang/spec"
+  golden_path: charter_to_workgraph_to_verified_change
+  trace.status: pending
+
+Критерии_готовности:
+  - есть WorkItem v1 и lifecycle статусов
+  - есть memory/evidence contract
+  - есть первый agent execution loop без монолитного orchestrator
+  - есть test golden path на одну реальную задачу
+  - есть решение, какие старые слои переносить, заменить или отложить
+]>
+
+#Слои_Ядра<[
+Базис:
+  Новая сборка должна быть меньше старой, но не потерять уникальные слои.
+Вектор:
+  Step Canon: формат намерений, правил агента, планов, задач и trace.
+  Work Graph: операционная очередь задач, статусы, роли, evidence, journal, checkpoint.
+  Канон пайплайна analytics → epic → backlog → board → closing-анализ: protocols/decision-pipeline-canon-v1.bvc, docs/decision-pipeline-canon.md (AN-22).
+  Project Memory: durable facts, decisions, summaries, graph context, execution outcomes.
+  Trace/Evidence: связь задачи, кода, тестов, проверок и решений.
+  Agent Runtime: state-machine loop, tool policy, context assembly, verification.
+  Domain Vertical: OneBase/1C-like слой как первый прикладной wedge.
+Цель:
+  Каждый слой имеет проверяемый контракт и не дублирует соседний слой.
+
+Метки:
+  guid: 550e8400-e29b-41d4-a716-446655440102
+  atom.profile: charter_section
+  project.slug: work-graph-rebuild
+  trace.status: pending
+]>
+
+#Анти_Цели<[
+Базис:
+  Старый проект стал ценным, но широким.
+Вектор:
+  Не строить собственную IDE shell до доказательства workflow.
+  Не переносить монолитный orchestrator.
+  Не делать Genesis/GVM обязательным для MVP.
+  Не требовать FlatBuffers/GBC slice, GFS overlay, Wasm mandate loop или Zig native memory core для acceptance rebuild-start-plan и OneBase golden path.
+  Не держать несколько равноправных IR без адаптеров к одному канону.
+  Не конкурировать с vibe-coding продуктами как prompt-to-app.
+  Не считать Markdown каноном исполнения.
+Цель:
+  MVP остаётся узким и проверяемым.
+
+Метки:
+  guid: 550e8400-e29b-41d4-a716-446655440103
+  atom.profile: charter_section
+  project.slug: work-graph-rebuild
+  trace.status: pending
+]>

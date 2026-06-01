@@ -1,0 +1,19 @@
+#Протокол_PVRG_Task_Scope_V1<[
+Базис:
+  Старый ioHasC PVRG предоставляет subgraph tools для agent task context; rebuild должен bounded scope строить из WorkItem без wholesale port pvrg-core.
+  unified-linkage.projection.v1 и workitem.trace-envelope.v1 задают seed paths и typed edges для expansion.
+Вектор:
+  pvrg.task-scope.slice.v1 input: workId + workgraph.snapshot.v1 + optional unified-linkage.projection.v1.
+  Seed nodes: current WorkItem, direct depends_on/dependents, target_files, trace.code_refs file paths, trace.artifact_refs.
+  Expansion: 1 hop по relation in {targets, depends_on, references, verifies, edits}; maxNodes default 24, maxDepth 2.
+  Output: nodes (work, file, artifact), edges (typed), seedWorkId, truncated flag.
+  Agent/worker uses slice as context block; full PVRG graph build and MCP parity remain phase-7/phase-8 scope.
+Цель:
+  Live-loop и agent tasks запрашивают bounded project graph context вместо чтения всего repository.
+
+Метки:
+  atom.profile: prompt_rule
+  protocol.id: pvrg-task-scope-v1
+  work.source: port-pvrg-task-scope-tools
+  trace.status: verified
+]>

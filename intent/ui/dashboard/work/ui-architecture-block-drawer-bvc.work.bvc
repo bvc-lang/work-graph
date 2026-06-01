@@ -1,0 +1,55 @@
+#Задача_ui_architecture_block_drawer_bvc<[
+Базис:
+  Сейчас buildBlockDetailSections показывает только summary (AN-36 user feedback).
+Вектор:
+  buildBlockDetailSections: renderDetailText for basis/vector/goal.
+  Link «Источник: architecture/main.bvc» + canon id in drawer meta.
+  Keep L2 graph + accordions as-is.
+Цель:
+  Паритет drawer L1 с work item BVC presentation.
+Проверки:
+  openBlockDetails renders BVC when present on block
+  workGraphBacklogUiServer.test.mjs asserts BVC hooks
+Анализ:
+  Целесообразность:
+  Стоит завести «UI: L1 block drawer shows BVC (Базис / Вектор / Цель) + canon source link» в бэклог — по материалам AN-36 (work/analytics/architecture-main-bvc-canon-hub.md).
+  Контекст и границы:
+  buildBlockDetailSections: renderDetailText for basis/vector/goal.
+  Зависимости и готовность:
+  depends_on=epic-architecture-main-bvc-canon, migrate-architecture-snapshot-from-canon; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Паритет drawer L1 с work item BVC presentation.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-36 (work/analytics/architecture-main-bvc-canon-hub.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-36
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/architecture-main-bvc-canon-hub.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T21:27:08.559Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T21:27:08.559Z
+  work.decision.verdict: useful
+  work.department: ui-dashboard
+  work.depends_on: epic-architecture-main-bvc-canon, migrate-architecture-snapshot-from-canon
+  work.id: ui-architecture-block-drawer-bvc
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: frontend_architect
+  work.parent_id: epic-architecture-main-bvc-canon
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: low
+  work.status: done
+  work.target_files: src/workGraphBacklogUiServer.mjs, src/architectureSnapshot.mjs, work/analytics/architecture-main-bvc-canon-hub.md
+  work.title: UI: L1 block drawer shows BVC (Базис / Вектор / Цель) + canon source link
+]>

@@ -1,0 +1,51 @@
+#Задача_implement_ui_project_switcher_multiproject<[
+Базис:
+  Переключение проекта — главный UX multiproject host: оператор видит текущий корень и меняет его без перезапуска.
+  AN-40: выпадающий список в шапке; смена проекта = другой repoRoot и перезагрузка snapshot.
+  Сохранённые представления (AN-20) — отдельный namespace localStorage на проект.
+Вектор:
+  В шапке sidebar: имя текущего проекта, кнопка добавить/зарегистрировать.
+  API POST /api/workspace/switch; по желанию — Cmd+K с префиксом project:.
+Цель:
+  Переключение между проектами из UI за пару кликов, без второго терминала и без restart сервера.
+Проверки:
+  Тест (server или e2e): после switch меняется snapshot
+  В UI видно имя активного корня проекта
+Анализ:
+  Зачем:
+  Без переключателя multiproject host — только для разработчиков через env.
+  Когда:
+  После repoRoot-aware UI и реестра.
+Решение:
+  Вердикт:
+  полезно
+
+Свидетельства:
+  - Не реализован по ADR per-project-install — UI switcher удалён
+  - POST /api/workspace/switch остаётся для CLI power-user
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-40
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-project-deployment-model.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-01T11:18:32.814Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-01T11:18:32.814Z
+  work.decision.verdict: useful
+  work.department: ui-dashboard
+  work.depends_on: epic-work-graph-multiproject-host, implement-backlog-ui-reporoot-multiproject, implement-workspace-registry-multiproject
+  work.id: implement-ui-project-switcher-multiproject
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: integration_architect
+  work.parent_id: epic-work-graph-multiproject-host
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: src/workGraphBacklogUiServer.mjs, tests/workGraphBacklogUiServer.test.mjs
+  work.title: Переключатель проектов в UI
+]>

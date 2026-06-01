@@ -1,0 +1,56 @@
+#Протокол_Intent_Graph_GBC_Slice_Boundary_v1<[
+Базис:
+  Work Graph rebuild хранит intent tree как canonical .bvc files и deterministic JSON snapshots v1.
+  ioHasC donor ADR (adr-iohasc-gbc-gfs-slice-consumer-matrix) описывает GBC/GFS derived slices, но MVP acceptance не требует FlatBuffers writer/reader.
+  protocols/gbc-gvm-zig-deferral-boundary.bvc и flatbuffers-gbc-slice-evaluation.bvc уже отложили GBC до измеримых триггеров.
+Вектор:
+  Зафиксировать boundary intent graph GBC slice: source inputs на диске, optional derived binary output, consumers и policy «JSON first, GBC optional».
+  Ни один mandatory release gate (ci:mandatory, lint:backlog, deterministic tests) не зависит от GBC slice presence.
+  Return triggers наследуются из gbc-gvm-zig-deferral-boundary и flatbuffers-gbc-slice-evaluation.
+Цель:
+  Deferred GBC track остаётся видимым, измеримым и не блокирует operator loop.
+
+Проверки:
+  source inputs и consumers перечислены в intentGraphGbcSliceBoundary.mjs
+  mvpIndependence.blocksMandatoryGate === false для всех mandatory gates
+  return triggers ссылаются на deferred protocols
+
+Метки:
+  atom.profile: architecture_decision
+  protocol.id: intent-graph-gbc-slice-boundary-v1
+  decision.id: intent-graph-gbc-slice-boundary-v1
+  work.source: define-intent-graph-gbc-slice-boundary
+  trace.status: verified
+]>
+
+#Source_Inputs<[
+Базис:
+  GBC slice — derived artifact; канон остаётся human-readable .bvc intent tree.
+Вектор:
+  Inputs: intent/index.bvc (root index), intent/**/**/*.work.bvc (per-task mirrors), work/backlog.bvc (migration compatibility projection).
+  Optional donor inputs при port: ../project/.iohasc/cache/* только как reference, не как rebuild canonical store.
+Цель:
+  Любой GBC slice rebuildable from .bvc canon без потери Work Graph semantics.
+
+Метки:
+  atom.profile: trace
+  contract.id: intent-graph-gbc-source-inputs-v1
+  protocol.id: intent-graph-gbc-slice-boundary-v1
+  trace.status: verified
+]>
+
+#Consumers_And_Optional_Status<[
+Базис:
+  Consumers в ioHasC часто читают GFS overlay или b64 transport; rebuild MVP использует JSON projections.
+Вектор:
+  Optional consumers: agent context assembly (intent tree summary), PVRG/graph augment (trace-link slice), operator dashboard (architecture snapshot), cross-process worker interchange.
+  Mandatory path без GBC: parseWorkItems + buildSnapshot + intent tree migration parity + operator-shell.snapshot.v2.
+Цель:
+  Команда знает, кто может читать GBC slice later, но не обязана его генерировать сейчас.
+
+Метки:
+  atom.profile: trace
+  contract.id: intent-graph-gbc-consumers-v1
+  protocol.id: intent-graph-gbc-slice-boundary-v1
+  trace.status: verified
+]>

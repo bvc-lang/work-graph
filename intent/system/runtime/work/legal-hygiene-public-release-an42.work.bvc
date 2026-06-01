@@ -1,0 +1,59 @@
+#Задача_legal_hygiene_public_release_an42<[
+Базис:
+  Публичный релиз без LICENSE в каждом пакете и SECURITY.md вызывает вопросы у компаний и блокирует adoption.
+  AN-42: specs CC BY, code Apache — файлы лицензий должны быть явными.
+Вектор:
+  LICENSE / LICENSE-spec в корне и packages/*.
+  SECURITY.md, PRIVACY.md — что локально, что не отправляется.
+  CONTRIBUTING.md: CLA или DCO — решение зафиксировать в ADR.
+Цель:
+  Юрист или security reviewer может за 10 минут понять условия использования public release.
+Проверки:
+  У public packages есть LICENSE с правильным SPDX identifier
+  SECURITY.md и PRIVACY.md опубликованы
+  CONTRIBUTING или ADR описывает contributor terms
+Анализ:
+  Зачем:
+  Публичный релиз без LICENSE в каждом пакете и SECURITY.md вызывает вопросы у компаний и блокирует adoption.
+  Контекст: AN-42: specs CC BY, code Apache — файлы лицензий должны быть явными.
+  Когда:
+  После готовности: epic-work-graph-open-publication, decide-work-graph-open-publication-adr.
+  Готово, когда:
+  Юрист или security reviewer может за 10 минут понять условия использования public release.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: epic-work-graph-open-publication, decide-work-graph-open-publication-adr.
+
+Свидетельства:
+  - LICENSE
+  - SECURITY.md
+  - PRIVACY.md
+  - CONTRIBUTING.md
+  - workgraph-mcp license field
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-42
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/open-publication-technology-holdback-strategy.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-01T14:37:53.878Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-01T14:37:53.878Z
+  work.decision.verdict: useful
+  work.department: product-architecture
+  work.depends_on: epic-work-graph-open-publication, decide-work-graph-open-publication-adr
+  work.id: legal-hygiene-public-release-an42
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: system_architect
+  work.parent_id: epic-work-graph-open-publication
+  work.pipeline_stage: closed
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: work/analytics/open-publication-technology-holdback-strategy.md, LICENSE, SECURITY.md, PRIVACY.md
+  work.title: Legal hygiene: LICENSE, SECURITY, PRIVACY по пакетам
+]>

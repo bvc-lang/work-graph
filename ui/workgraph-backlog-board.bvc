@@ -1,0 +1,43 @@
+#Дизайн_WorkGraph_Backlog_Board<[
+Базис:
+  Первый интерфейс новой сборки должен показывать состояние Work Graph без чтения raw work/backlog.bvc.
+  UI строится поверх workgraph.snapshot.v1 из runtime и не зависит от OneBase или других доменных вертикалей.
+Вектор:
+  Первый экран: сводка статусов, ready queue, blocked items, verify queue и последние evidence.
+  Основная доска показывает колонки ready, in_progress, verify, blocked и done; backlog остаётся в фильтре планирования.
+  Группировки: work.department, work.owner_role, work.priority и work.risk.
+  Базовые действия: claim, transition status, record evidence, block with reason и open atom inspector.
+  OneBase подключается позже как domain adapter/source задач, а не как общий UI framework.
+Цель:
+  Оператор видит состояние проекта и управляет очередью задач через Work Graph runtime, не редактируя .bvc вручную.
+
+Метки:
+  atom.profile: plan
+  design.id: workgraph-backlog-board
+  design.input: workgraph.snapshot.v1
+  design.scope: base-workgraph-ui
+  trace.status: verified
+]>
+
+#Контракт_Backlog_Board_Snapshot<[
+Базис:
+  Runtime уже отдаёт JSON snapshot v1 с items, edges, statusCounts и readyQueue.
+Вектор:
+  UI читает только derived snapshot и atom inspector payloads; raw .bvc остаётся каноном записи и аудита.
+  Для каждой карточки нужны id, title, status, ownerRole, department, priority, risk, dependsOn, targetFiles, traceStatus, nextAction, evidence, checks и blocker.
+  Derived view добавляет client-side filters, grouping и sorting, но не хранит собственный scheduler state.
+  Смена статуса проходит через runtime policy: done требует evidence, blocked требует reason.
+Цель:
+  Следующая задача implement-workgraph-backlog-ui-mvp может реализовать readonly board и минимальные controls без нового формата данных.
+
+Проверки:
+  UI не зависит от OneBase
+  controls покрывают claim, status transition, evidence и blocker
+  есть путь к implement-workgraph-backlog-ui-mvp
+
+Метки:
+  atom.profile: plan
+  design.id: backlog-board-snapshot-contract
+  design.next_work: implement-workgraph-backlog-ui-mvp
+  trace.status: verified
+]>

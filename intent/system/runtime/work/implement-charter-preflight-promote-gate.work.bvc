@@ -1,0 +1,49 @@
+#Задача_implement_charter_preflight_promote_gate<[
+Базис:
+  В ioHasC charterPlanPreflight блокирует планы; promote-ready в rebuild не смотрит на устав.
+  Задача «Фаза 3: проверка устава перед promote-ready» относится к контуру платформы агента и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: phase-3-step-canon-intent-graph.
+Вектор:
+  Минимальный port charter gate для WorkItem с target_files в scope устава.
+  Ближайший шаг исполнения: просмотреть и перевести в ready.
+Цель:
+  Перевод в ready учитывает устав проекта.
+  Готово, когда выполнены проверки: Promote блокируется при нарушении charter preflight.
+Анализ:
+  Целесообразность:
+  Стоит завести «Фаза 3: проверка устава перед promote-ready» в бэклог.
+  Контекст и границы:
+  Минимальный port charter gate для WorkItem с target_files в scope устава.
+  Зависимости и готовность:
+  depends_on=phase-3-step-canon-intent-graph; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Перевод в ready учитывает устав проекта.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  migration.strategy: port
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:36.583Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:36.593Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: phase-3-step-canon-intent-graph
+  work.id: implement-charter-preflight-promote-gate
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: compiler_engineer
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: medium
+  work.status: done
+  work.target_files: src/charterPreflightPromoteGate.mjs, src/workGraphPromoteReadyApi.mjs, protocols/intent-hierarchy-pilot.bvc
+  work.title: Фаза 3: проверка устава перед promote-ready
+]>

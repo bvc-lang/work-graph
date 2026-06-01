@@ -1,0 +1,99 @@
+#IntentNode_iq_intent_graph_storage<[
+Базис:
+  Как хранить граф намерений, если работа начинается с вопроса, а не с готовой задачи?
+Вектор:
+  question → analysis → options → decision → work items → subtasks → evidence.
+Цель:
+  Единый lineage от аналитического вопроса до исполнения.
+
+Метки:
+  atom.profile: intent_node
+  intent.id: iq:intent-graph-storage
+  intent.node_kind: question
+  intent.link.analytics_ref: analytics:intent-graph-storage-roadmap
+  intent.title: Как хранить граф намерений?
+]>
+
+#IntentNode_option_a_markdown_only<[
+Базис:
+  Вариант A: только markdown в аналитике.
+Вектор:
+  AN-n описывает вопрос и варианты текстом; задачи ссылаются на AN-n в basis.
+Цель:
+  Быстрый bridge без новой схемы.
+
+Метки:
+  atom.profile: intent_node
+  intent.id: option-a-markdown-only
+  intent.node_kind: option
+  intent.parent_id: iq:intent-graph-storage
+  intent.title: Только markdown в аналитике
+]>
+
+#IntentNode_option_b_structured_metadata<[
+Базис:
+  Вариант B: structured metadata в analytics record и WorkItem labels.
+Вектор:
+  intent.question_id / intent.option_id / intent.decision_id на задачах; sidecar в analytics.
+Цель:
+  Machine-readable bridge до полного intent_node canon.
+
+Метки:
+  atom.profile: intent_node
+  intent.id: option-b-structured-metadata
+  intent.node_kind: option
+  intent.parent_id: iq:intent-graph-storage
+  intent.title: Structured metadata → labels
+]>
+
+#IntentNode_option_c_intent_node_canon<[
+Базис:
+  Вариант C: отдельные IntentNode-атомы (выбран).
+Вектор:
+  question/option/decision/work_ref как intent_node; WorkItem — execution layer.
+Цель:
+  Валидируемый граф намерений для UI, MCP и Graph RAG.
+
+Метки:
+  atom.profile: intent_node
+  intent.id: option-c-intent-node-canon
+  intent.node_kind: option
+  intent.parent_id: iq:intent-graph-storage
+  intent.title: IntentNode canon (B → C)
+  intent.selected: true
+]>
+
+#IntentNode_option_d_event_journal<[
+Базис:
+  Вариант D: событийный журнал intent graph.
+Вектор:
+  question.recorded / option.added / decision.selected / work_item.created_from_decision.
+Цель:
+  Аудит и восстановление решений; projection строит текущий граф.
+
+Метки:
+  atom.profile: intent_node
+  intent.id: option-d-event-journal
+  intent.node_kind: option
+  intent.parent_id: iq:intent-graph-storage
+  intent.title: Событийный журнал intent graph
+]>
+
+#IntentNode_decision_intent_graph_storage_v1<[
+Базис:
+  Выбран вариант C: intent_node canon + roadmap как view выбранной ветки.
+Вектор:
+  Реализовать protocol, parser/projection, analytics structure, lineage labels, roadmap и drilldown UI.
+Цель:
+  AN-3 становится входной точкой графа намерений.
+
+Метки:
+  atom.profile: intent_node
+  intent.id: decision:intent-graph-storage-v1
+  intent.node_kind: decision
+  intent.parent_id: iq:intent-graph-storage
+  intent.link.option_id: option-c-intent-node-canon
+  intent.link.analytics_ref: analytics:intent-graph-storage-roadmap
+  intent.title: IntentNode canon + roadmap view
+  intent.selected: true
+]>

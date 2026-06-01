@@ -1,0 +1,61 @@
+#Задача_lint_plan_work_id_mirror<[
+Базис:
+  docs/plan-*.md с чеклистами становятся вторым бэклогом без work.id (AN-25 §2.4).
+  plan-history-in-md требует md-планы, но не связывает todo с work items.
+Вектор:
+  scripts/lint-plan-work-alignment.mjs — warning если - [ ] в plan без work.id.
+  warning если work.status doing но pipeline_stage < ready.
+  Подключить в npm run lint:backlog или ci:mandatory (warning only).
+Цель:
+  Планы и бэклог не расходятся silently; drift виден в lint.
+Проверки:
+  tests/lint-plan-work-alignment.test.mjs green
+  npm run lint:plan-work-alignment без errors на текущих plan-*.md
+Анализ:
+  Целесообразность:
+  Стоит завести «lint: plan.md todo ↔ work.id mirror» в бэклог — по материалам AN-25 (work/analytics/agent-bypass-work-graph-dual-backlog.md).
+  Контекст и границы:
+  scripts/lint-plan-work-alignment.mjs — warning если - [ ] в plan без work.id.
+  Зависимости и готовность:
+  depends_on=epic-agent-workgraph-enforcement, add-cursor-rule-single-backlog; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Планы и бэклог не расходятся silently; drift виден в lint.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-25 (work/analytics/agent-bypass-work-graph-dual-backlog.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Свидетельства:
+  - src/lintPlanWorkAlignment.mjs + scripts/lint-plan-work-alignment.mjs
+  - tests/lintPlanWorkAlignment.test.mjs — 2 кейса pass
+  - npm run lint:plan-work-alignment — в ci:mandatory
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-25
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/agent-bypass-work-graph-dual-backlog.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T12:17:11.971Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T12:17:11.971Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: epic-agent-workgraph-enforcement, add-cursor-rule-single-backlog
+  work.id: lint-plan-work-id-mirror
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: frontend_architect
+  work.parent_id: epic-agent-workgraph-enforcement
+  work.pipeline_stage: closed
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: scripts/lint-plan-work-alignment.mjs, tests/lint-plan-work-alignment.test.mjs, package.json
+  work.title: lint: plan.md todo ↔ work.id mirror
+]>

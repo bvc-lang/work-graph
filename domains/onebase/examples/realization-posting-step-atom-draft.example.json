@@ -1,0 +1,28 @@
+{
+  "profile": "trace",
+  "name": "OneBase_RealizationPosting",
+  "basis": [
+    "РеализацияТоваров combines document metadata, FIFO posting script and register movements in the trade demo."
+  ],
+  "vector": [
+    "Link document YAML, posting procedure ОбработкаПроведения, affected registers and downstream report/widget readers as one derived domain artifact slice."
+  ],
+  "goal": [
+    "Provide structured context for Work Graph planning, evidence and Project Memory before changing the posting rule."
+  ],
+  "labels": {
+    "onebase.kind": "posting_script",
+    "onebase.document": "РеализацияТоваров",
+    "onebase.posting_script": "../onebase/examples/trade/src/реализациятоваров.posting.os",
+    "onebase.document_file": "../onebase/examples/trade/documents/реализация_товаров.yaml",
+    "onebase.register.refs": "ОстаткиТоваров, ПартииТоваров, ВаловаяПрибыль, Взаиморасчеты",
+    "trace.source.file": "../onebase/examples/trade/src/реализациятоваров.posting.os",
+    "trace.symbol": "ОбработкаПроведения",
+    "trace.status": "verified",
+    "work.target_files": "../onebase/examples/trade/documents/реализация_товаров.yaml, ../onebase/examples/trade/src/реализациятоваров.posting.os"
+  },
+  "checks": [
+    "Posting script writes movements to the four mapped registers.",
+    "Downstream gross-profit report/widget read ВаловаяПрибыль."
+  ]
+}

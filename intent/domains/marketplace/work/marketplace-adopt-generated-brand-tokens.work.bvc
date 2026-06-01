@@ -1,0 +1,59 @@
+#Задача_marketplace_adopt_generated_brand_tokens<[
+Базис:
+  AN-21 §Phase 0 п.4–5: Marketplace остаётся reference implementation.
+  Filament `filament-brand.css` должен получать те же токены.
+Вектор:
+  Composer/path-repo или file: на @iohasc/design-tokens из WG.
+  Заменить ручной brand-tokens.css на build step в Marketplace CI.
+  Visual smoke: /dev/ui-kit без diff.
+Цель:
+  Marketplace потребляет shared tokens; визуально без изменений.
+Проверки:
+  Marketplace brand-tokens.css генерируется, не редактируется вручную
+  /dev/ui-kit smoke green
+Анализ:
+  Целесообразность:
+  Стоит завести «Marketplace: переход на сгенерированный brand-tokens.css» в бэклог — по материалам AN-21 (work/analytics/marketplace-integration-and-shared-design-system.md).
+  Контекст и границы:
+  Composer/path-repo или file: на @iohasc/design-tokens из WG.
+  Зависимости и готовность:
+  depends_on=epic-marketplace-shared-design-system, extract-iohasc-design-tokens-package; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Marketplace потребляет shared tokens; визуально без изменений.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-21 (work/analytics/marketplace-integration-and-shared-design-system.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-21
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/marketplace-integration-and-shared-design-system.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-05-31T15:34:00.355Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T15:34:00.355Z
+  work.decision.verdict: useful
+  work.department: domain-marketplace
+  work.depends_on: epic-marketplace-shared-design-system, extract-iohasc-design-tokens-package
+  work.id: marketplace-adopt-generated-brand-tokens
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: frontend_architect
+  work.parent_id: epic-marketplace-shared-design-system
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: ../../04 Marketplace/resources/css/brand-tokens.css, ../../04 Marketplace/docs/ui/tokens.md, work/analytics/marketplace-integration-and-shared-design-system.md
+  work.title: Marketplace: переход на сгенерированный brand-tokens.css
+
+Свидетельства:
+  - npm run sync:design-tokens:marketplace → 04 Marketplace/resources/css/brand-tokens.css; marketplace-uses-shared-tokens.mdc
+]>

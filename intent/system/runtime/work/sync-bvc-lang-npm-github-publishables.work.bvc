@@ -1,0 +1,55 @@
+#Задача_sync_bvc_lang_npm_github_publishables<[
+Базис:
+  npm CDN отстаёт; GitHub PUBLISH.md stub добавлен.
+  Spec readme Governance без ISO STEP mention.
+Вектор:
+  Bump @bvc-lang/spec 0.0.3 if needed; verify cli 0.1.6 readme on npm.
+  export + push GitHub mirrors.
+Цель:
+  npmjs.com readme = GitHub для spec/cli.
+Проверки:
+  npm view @bvc-lang/spec version
+  npm view @bvc-lang/cli version
+  no PUBLISH.md 404 on cli repo
+Анализ:
+  Целесообразность:
+  Стоит завести «Sync @bvc-lang/spec and cli npm/GitHub publishables» в бэклог — по материалам AN-37 (work/analytics/bvc-open-format-tail-v1.md).
+  Контекст и границы:
+  Bump @bvc-lang/spec 0.0.3 if needed; verify cli 0.1.6 readme on npm.
+  Зависимости и готовность:
+  depends_on=epic-bvc-open-format-tail-v1; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  npmjs.com readme = GitHub для spec/cli.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-37 (work/analytics/bvc-open-format-tail-v1.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-37
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/bvc-open-format-tail-v1.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T22:43:17.558Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T22:43:17.558Z
+  work.decision.verdict: useful
+  work.department: system-runtime
+  work.id: sync-bvc-lang-npm-github-publishables
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: product_owner
+  work.parent_id: epic-bvc-open-format-tail-v1
+  work.pipeline_stage: closed
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: packages/bvc-spec/, packages/bvc-cli/, dist/bvc-spec-github/, dist/bvc-cli-github/, docs/plan-bvc-open-format-tail-v1.md
+  work.title: Sync @bvc-lang/spec and cli npm/GitHub publishables
+]>

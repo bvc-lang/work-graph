@@ -1,0 +1,64 @@
+#Протокол_Intent_Hierarchy_Pilot<[
+Базис:
+  Intent tree migration split work/backlog.bvc в intent/**/*.work.bvc, но rebuild нужен явный слой domain/feature/plan labels для routing, UI sidebar и Step canon migration.
+  Labels intent.domain и intent.feature — rebuildable projection; canonical identity остаётся work.id.
+Вектор:
+  Layer taxonomy: system | ui | domain | research | memory | plans.
+  Feature taxonomy under layer: runtime, storage, dashboard, onebase, pvrg, memory, plans/work.
+  Folder layout pilot:
+    intent/system/runtime/work — runtime, worker, verification, phases without storage keyword
+    intent/system/storage/work — storage, serialization, GBC, intent tree/hierarchy, migration
+    intent/ui/dashboard/work — dashboard, board, architecture UI, atom inspector
+    intent/domains/onebase/work — OneBase domain tasks
+    intent/research/pvrg/work — PVRG, RAG, trace linkage research
+    intent/memory/work — memory/evidence design tasks
+    intent/plans/work — roadmap/phase epics (phase-* ids, roadmap atoms)
+  src/intentHierarchy.mjs classifies WorkItems and builds intent.hierarchy.snapshot.v1 without mutating atom bodies.
+  Reversible migration: work/backlog.bvc остаётся compatibility projection; intent/index.bvc — manifest work.id -> path.
+Цель:
+  Step canon migration получает machine-readable hierarchy для sidebar, architecture map и catalog alignment.
+
+Метки:
+  atom.profile: prompt_rule
+  protocol.id: intent-hierarchy-pilot
+  work.source: design-intent-hierarchy-pilot
+  trace.status: verified
+]>
+
+#Charter_And_Canon_Gates<[
+Базис:
+  Phase 3 связывает Step/HasC canon с Work Graph через charter gates и formatter/parser contracts.
+Вектор:
+  Charter gate: charter/main.bvc — project principles; plan atoms require charter preflight before backlog promotion; promote-ready calls evaluateCharterPreflightForPromote (src/charterPreflightPromoteGate.mjs).
+  Step Atom gate: schemas/step-atom-draft.v1.json + src/stepAtomFormatter.mjs + protocols/step-parser-roundtrip.bvc — canonical atom shape.
+  WorkItem gate: define-workitem-v1 + work/backlog.bvc/intent files — operational queue with evidence policy.
+  Intent gate: intent/index.bvc manifest must list every work.id; npm run intent:migrate preserves snapshot equivalence.
+  Catalog gate (derived): catalog-index maps stepTitle/guid to work.id via align-catalog-passport-with-intent-graph rules.
+Цель:
+  Новые atoms и tasks проходят через documented gates, а не через ad-hoc markdown.
+
+Метки:
+  atom.profile: trace
+  contract.id: step-canon-charter-gates-v1
+  protocol.id: intent-hierarchy-pilot
+  trace.status: verified
+]>
+
+#Step_HasC_Inventory_Mapping<[
+Базис:
+  Старый ioHasC Step/HasC stack описан в ../project/docs/architecture-v2/IMPLEMENTATION_STATUS.md.
+Вектор:
+  parser/format v1 -> port via stepAtomFormatter + step-parser-roundtrip (done).
+  Vector DSL/codegen -> phase-5 port; MVP uses formatter/parser only.
+  catalog/passport -> align-catalog-passport-with-intent-graph (derived read model).
+  intent tree layout -> design-intent-tree-workgraph-layout + migrate-backlog-to-intent-tree-files (done).
+  charter -> charter/main.bvc remains canonical project ustav for rebuild repo.
+Цель:
+  Phase 3 inventory связывает rebuild contracts с legacy Step/HasC components without promising full port yet.
+
+Метки:
+  atom.profile: trace
+  contract.id: step-hasC-inventory-mapping-v1
+  protocol.id: intent-hierarchy-pilot
+  trace.status: verified
+]>

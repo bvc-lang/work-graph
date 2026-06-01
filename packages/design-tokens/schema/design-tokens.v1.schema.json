@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://iohasc.dev/schemas/design-tokens.v1.schema.json",
+  "title": "design-tokens.v1",
+  "type": "object",
+  "required": ["schema"],
+  "properties": {
+    "schema": { "const": "design-tokens.v1" },
+    "themeId": { "type": "string" },
+    "extends": { "type": "string" },
+    "brand": {
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    },
+    "ui": {
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    }
+  },
+  "additionalProperties": true
+}

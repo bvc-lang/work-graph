@@ -1,0 +1,268 @@
+#Дизайн_Operator_Dashboard<[
+Базис:
+  Человек в Work Graph является оператором и reviewer: он наблюдает за задачами, evidence, worker runs и memory updates, но не рисует граф вручную.
+  Текущий backlog board уже показывает Work Graph snapshot v1; operator dashboard расширяет его до операционного экрана проекта, не заменяя runtime, evidence или memory contracts.
+  Source of truth остаётся .bvc Work Graph; dashboard читает derived snapshot, runner log/evidence projection и memory summary.
+Вектор:
+  Главный экран показывает current task/next action, ready queue, in_progress runs, blocked tasks, verify queue, последние Evidence v1 records, Worker Output summaries и Project Memory update candidates.
+  Board/backlog остаётся основной очередью задач: колонки ready, in_progress, verify, blocked, done и отдельный backlog view, с группировкой по department, owner role, priority and risk.
+  Blocked lane поднимается в отдельный операторский фокус: blocker reason, next unblock action, last failed worker run, related evidence and owner role.
+  Evidence feed показывает command/test/file/change/decision/worker-run/manual-review/blocker records с status, source, summary, artifacts, command/exitCode, provider and runId where available.
+  Worker/provider run status показывает provider id/type, runId, started/finished time, status, retry advice, logs/artifacts, transitionRequest and cancellation state without relying on hidden provider session state.
+  Memory panel показывает draft/needs-review/active Project Memory records created from done tasks, worker output, verification results, blocker resolution and explicit human decisions.
+Цель:
+  Оператор понимает, что делает агент, почему задача может двигаться дальше, где нужен человек, и может вмешаться через policy-gated controls без raw .bvc editing или manual graph editor.
+
+Проверки:
+  dashboard не требует ручного рисования графа
+  есть список intervention controls
+  MVP отделён от later scope
+  dashboard использует Work Graph snapshot, Evidence v1, Project Memory v1 and Worker Output
+  manual graph editor явно указан как non-goal
+
+Метки:
+  atom.profile: plan
+  design.id: operator-dashboard
+  design.input: workgraph.snapshot.v1
+  design.input: evidence-record-v1
+  design.input: memory-record-v1
+  design.input: agent-worker-output-v1
+  design.next_work: design-operator-dashboard-snapshot
+  trace.status: verified
+]>
+
+#Scope_Operator_Dashboard<[
+Базис:
+  Operator dashboard должен объединить уже описанные контракты в один пользовательский экран, а не открыть новую реализацию scheduler-а или memory store.
+Вектор:
+  Scope includes: current/next task visibility, backlog/board, blocked task focus, evidence feed, worker/provider run status, memory updates, intervention controls, readonly derived graph entry point and task detail drawer.
+  Current task card shows WorkItem id/title/status, basis/vector/goal summary, nextAction, DoD/checks, dependencies, target files, trace status and latest evidence gate state.
+  Queue view shows ready and verify candidates from snapshot readyQueue/statusCounts, with dependency satisfaction and risk/priority indicators.
+  Detail drawer is the primary drilldown: WorkItem BVC, dependencies, checks, target files, evidence records, worker runs, memory candidates and allowed actions.
+  Readonly graph viewer is a later linked surface derived from Work Graph edges/evidence/file refs; dashboard may open it focused on a task but does not author nodes or edges.
+Цель:
+  The artifact defines product/design scope for the operator surface before adding a dashboard-specific snapshot or broad UI implementation.
+
+Метки:
+  atom.profile: plan
+  design.section: operator-dashboard-scope
+  trace.status: verified
+]>
+
+#MVP_Operator_Dashboard<[
+Базис:
+  MVP must be useful on top of existing Work Graph runtime, backlog UI server and local runner contracts.
+Вектор:
+  MVP includes: status summary, active task/current run card, board/backlog, blocked tasks panel, recent evidence feed, task detail drawer, and read-only display of worker output and memory update candidates.
+  MVP sidebar views include board, backlog, architecture L1 map, schematic Work Graph OS loop, task dependency graph, verification loop panel and later memory; schematic is readonly derived SVG without manual graph editor.
+  MVP actions are policy-gated and may start as runtime/API contracts before full UI forms: claim, block, unblock, record evidence, open detail drawer, request provider/local runner run and stop/cancel run.
+  MVP uses polling of a dashboard snapshot derived from Work Graph snapshot plus runner/evidence/memory projections; it does not require websocket/event streaming.
+  MVP records every state-changing action as Evidence v1 or Work Graph transition evidence; done/verify gates remain enforced by runtime, not by client UI.
+  MVP graph support is an "open readonly graph/detail" affordance, not a graph editing canvas.
+Цель:
+  Ship one operational dashboard that explains the current agent loop and supports safe human intervention.
+
+Метки:
+  atom.profile: architecture_decision
+  decision.id: operator-dashboard-mvp-scope
+  trace.status: verified
+]>
+
+#Later_Operator_Dashboard<[
+Базис:
+  Several useful operator conveniences require stronger runner logs, memory writer and dashboard snapshot contracts.
+Вектор:
+  Later includes: full readonly derived graph viewer, richer auto-layout graph exploration, provider registry/cost/token views, retry schedule visualization, notifications, Telegram/tray/mobile channels, websocket/event streaming and advanced memory review workflows.
+  Later includes batch operations only after runtime policy can validate each transition and evidence record independently.
+  Later may add SQLite/NDJSON/GBC-derived caches for runner logs or dashboard speed, but not as canonical task state.
+  Later may add domain-specific panels such as OneBase artifact trace after language/domain adapters expose structured facts.
+Цель:
+  Keep MVP focused on Work Graph operations while preserving a path to richer project operating system views.
+
+Метки:
+  atom.profile: architecture_decision
+  decision.id: operator-dashboard-later-scope
+  trace.status: verified
+]>
+
+#Data_Boundaries_Operator_Dashboard<[
+Базис:
+  Dashboard must not parse raw .bvc or provider transcripts to infer core state.
+Вектор:
+  Work Graph snapshot v1 supplies schema, source, items, edges, statusCounts and readyQueue; item fields supply task card and board/backlog state.
+  Evidence v1 supplies structured feed records: id, time, source, taskId, type, summary, status, details, artifacts, command, exitCode, provider and runId.
+  Worker Output v1 supplies run result: runId, taskId, status, patchSummary, evidence, transitionRequest, logs, failureReason and retryAdvice; runtime normalizes it into evidence and transition proposals.
+  Project Memory v1 supplies bounded memory summaries and candidate records: id, type, summary, sourceWorkItem, evidenceIds, confidence, status, updatedAt, relatedFiles and relatedTasks.
+  Dashboard-specific snapshot is a derived join of these projections; it contains display-ready currentTask, queues, blockers, recentEvidence, runnerStatus, memoryUpdates and actionFeed, but no independent scheduler state.
+Цель:
+  UI can explain work, proof, runs and memory without owning canonical state or replaying hidden sessions.
+
+Метки:
+  atom.profile: trace
+  contract.id: operator-dashboard-data-boundaries
+  trace.status: verified
+]>
+
+#Intervention_Controls<[
+Базис:
+  Operator controls should be narrow, auditable and consistent with Work Graph runtime policy.
+Вектор:
+  claim: assign/claim a ready task; runtime checks dependencies and current status before moving it to in_progress/claimed.
+  block: record blocker reason, next unblock action and blocker evidence; runtime moves task to blocked only with reason/evidence.
+  unblock: clear blocker by recording resolution evidence and moving task to ready or in_progress according to policy.
+  record evidence: create Evidence v1 record for command/test/file/change/decision/manual-review/blocker and attach it to the task.
+  open detail drawer: inspect BVC, labels, checks, evidence, target files, worker runs, memory candidates and allowed actions for one WorkItem.
+  request provider run: ask runtime/scheduler to build Worker Input from current snapshot, memory slice, target files and policy, then start local or provider adapter.
+  stop/cancel run: request cancellation for a runId; adapter returns cancelled Worker Output with partial evidence/logs and no implicit done transition.
+Цель:
+  Human intervention is recorded as Work Graph/evidence events instead of out-of-band edits or opaque provider messages.
+
+Метки:
+  atom.profile: prompt_rule
+  rule.id: operator-dashboard-intervention-controls
+  trace.status: verified
+]>
+
+#Non_Goals_Operator_Dashboard<[
+Базис:
+  The dashboard must not repeat the previous heavy visual editor path.
+Вектор:
+  Non-goal: manual graph editor, manual node/edge drawing, freeform React Flow-like editing or making visual layout the source of truth.
+  Non-goal: direct raw .bvc editing as the primary operator interaction; atom inspector/forms can be opened later through structured StepAtomDraft.
+  Non-goal: provider-specific session browser; logs/transcripts are artifacts, while dashboard state comes from Worker Output and Evidence v1.
+  Non-goal: memory vault UI as canonical state; memory records remain Project Memory v1 with derived human-readable projections.
+  Non-goal: queue database as task source of truth; runner queues/logs are derived execution projections around Work Graph.
+Цель:
+  Keep the operator surface focused on observable project operations, evidence and review.
+
+Метки:
+  atom.profile: prompt_rule
+  rule.id: operator-dashboard-non-goals
+  trace.status: verified
+]>
+#Дизайн_Operator_Dashboard<[
+Базис:
+  Человек в Work Graph является оператором, reviewer и policy owner, а не ручным автором графа.
+  Текущий backlog board уже показывает WorkItem статусы из workgraph.snapshot.v1; operator dashboard расширяет этот экран до операционной панели агента.
+  Dashboard читает derived snapshot/evidence/memory/runner projections и не парсит raw .bvc в браузере.
+Вектор:
+  Основной экран показывает current/next task, board/backlog, blocked tasks, recent evidence feed, worker/provider run status, pending memory updates and intervention controls.
+  Work Graph snapshot остаётся базовым входом для задач, dependencies, статусов, target files, DoD/checks and trace status.
+  Evidence v1 даёт ленту proof: command/test/change/file/decision/worker-run/manual-review/blocker records with status, artifacts, provider and runId.
+  Project Memory v1 даёт компактные memory updates: новые или изменённые decision/invariant/risk/open-question/evidence-summary records with sourceWorkItem and evidenceIds.
+  Worker Output v1 даёт run summary: provider, runId, status, patchSummary, logs/artifacts, failureReason, retryAdvice and transitionRequest.
+Цель:
+  Оператор понимает, что агент делает сейчас, что должно идти дальше, где блокеры, какие evidence/memory появились, и может вмешаться через policy-gated controls без ручной правки .bvc или ручного рисования графа.
+
+Проверки:
+  dashboard не требует ручного рисования графа
+  есть список intervention controls
+  выбран готовый graph viewer подход
+  explicit non-goal: manual graph editor
+
+Метки:
+  atom.profile: plan
+  design.id: operator-dashboard
+  design.input: workgraph.snapshot.v1, evidence-record-v1, memory-record-v1, worker-output-v1
+  design.scope: operator-dashboard
+  work.source: design-operator-dashboard
+  trace.status: verified
+]>
+
+#Scope_Operator_Dashboard<[
+Базис:
+  Backlog board является первым UI, но оператору нужна картина execution loop: task -> worker run -> evidence -> memory -> next action.
+Вектор:
+  Header: active project, snapshot time/source, selected provider/runner mode, last successful verification and global health.
+  Current task panel: claimed/in_progress/verify task with title, owner role, department, priority/risk, target files, DoD/checks, nextAction and dependency context.
+  Next task panel: top readyQueue candidate and why it is claimable; show blocked dependency reason when no next task exists.
+  Board/backlog: reuse backlog board columns ready, in_progress, verify, blocked, done and a backlog planning tab; keep grouping by department, ownerRole, priority and risk.
+  Blockers panel: blocked WorkItems and failed/blocked evidence with reason, next unblock action, owner role and affected files.
+  Evidence feed: recent Evidence v1 records grouped by task/run with filters for failed, blocked, test, worker-run and manual-review.
+  Worker/provider status: active run, queued runnable projections, provider id/type, elapsed time, timeout, retry count, cost/tokens if available, cancellation state, logs/artifacts and transition proposal.
+  Memory updates: draft/needs-review Project Memory candidates and active updates produced from successful evidence, with sourceWorkItem, evidenceIds and related files/tasks.
+  Detail drawer: WorkItem inspector showing BVC, labels, checks, evidence, target files, Worker Output summary and memory links; form editing belongs to the later atom inspector task.
+Цель:
+  Dashboard is an operating surface for observing and steering the project loop, not a separate task database or provider session UI.
+
+Метки:
+  atom.profile: trace
+  design.id: operator-dashboard-scope
+  trace.status: verified
+]>
+
+#MVP_Vs_Later<[
+Базис:
+  MVP must ship a useful design boundary without expanding into a broad UI implementation.
+Вектор:
+  MVP includes: current task, next task, board/backlog, blockers, recent evidence feed, worker/provider run summary, memory update summary, detail drawer and minimal intervention controls.
+  MVP uses polling over a derived dashboard snapshot; no browser raw .bvc parsing and no independent scheduler state.
+  MVP graph view is readonly and derived: show dependency/evidence/file/memory relationships through a ready-made renderer approach, with layout generated from snapshot edges and artifact links.
+  Later includes: durable runner queue UI, provider registry management, cost dashboard, notifications, scheduling calendar, memory review inbox workflows, atom inspector form editing, richer graph filters and external integrations.
+  Later graph renderer recommendation: start with Mermaid or Graphviz for static dependency/evidence diagrams; move to Cytoscape.js + Dagre/ELK only when interactive focus/expand/collapse is needed.
+Цель:
+  MVP explains and controls the loop; later work adds deeper management surfaces once snapshot, runner and memory contracts are implemented.
+
+Метки:
+  atom.profile: architecture_decision
+  decision.id: operator-dashboard-mvp-later
+  trace.status: verified
+]>
+
+#Input_Contracts<[
+Базис:
+  Operator dashboard must compose existing contracts instead of inventing a new source of truth.
+Вектор:
+  Work Graph snapshot v1 provides schema, source, items, edges, statusCounts and readyQueue; item fields provide id, title, status, ownerRole, department, priority, risk, dependsOn, targetFiles, traceStatus, nextAction, evidence, checks and blocker.
+  Evidence v1 provides structured records with id, time, source, taskId, type, summary, status, artifacts, command, exitCode, provider and runId.
+  Project Memory v1 provides MemoryRecord updates with id, type, summary, sourceWorkItem, evidenceIds, confidence, status, updatedAt, relatedFiles and relatedTasks.
+  Worker Output v1 provides runId, taskId, status, patchSummary, evidence, transitionRequest, logs, failureReason and retryAdvice.
+  PromptPilot runner patterns are adapted only as derived runner records: provider, duration, retry/rate-limit state, logs, artifacts and proposed transition; queue/cache is not canonical task state.
+  Claude Note memory patterns are adapted only as extraction/update summaries; transcript dumps and provider-specific note stores are not dashboard state.
+Цель:
+  Every dashboard field can be rebuilt from Work Graph, Evidence, Project Memory and runner output projections.
+
+Метки:
+  atom.profile: trace
+  contract.id: operator-dashboard-input-contracts
+  trace.status: verified
+]>
+
+#Intervention_Controls<[
+Базис:
+  Operator controls should call Work Graph runtime or runner policy endpoints, not mutate browser state as truth.
+Вектор:
+  Claim: claim the top ready task or a selected ready task through runtime policy.
+  Block: set blocked with blocker reason and blocker evidence; require next unblock action.
+  Unblock: remove/resolve blocker by creating resolution evidence and returning the task to ready or verify by policy.
+  Record evidence: add Evidence v1 command/test/file/change/decision/manual-review/blocker record with required fields and artifact refs.
+  Open detail drawer: inspect WorkItem BVC, labels, checks, target files, evidence, Worker Output, memory updates and trace refs.
+  Request provider run: create a runnable projection from current Work Graph snapshot, selected provider capability and allowed policy; runtime builds Worker Input v1 at execution time.
+  Stop/cancel run: request cancellation for an active run; resulting Worker Output status=cancelled is recorded as evidence and does not silently mark done.
+  Retry or switch provider: later control after failure evidence exists; retry starts from fresh snapshot and prior evidence/log summaries, not hidden provider session state.
+Цель:
+  Controls let the human steer execution while status transitions remain evidence-gated and reproducible.
+
+Метки:
+  atom.profile: prompt_rule
+  rule.id: operator-dashboard-intervention-controls
+  trace.status: verified
+]>
+
+#Non_Goals_Operator_Dashboard<[
+Базис:
+  Without non-goals the dashboard can drift into an expensive visual editor or provider console.
+Вектор:
+  Do not build a manual graph editor; graph nodes and edges are derived from WorkItems, dependencies, evidence, target files and memory links.
+  Do not make the UI, runner queue, provider session, transcript or memory notes the source of truth; .bvc Work Graph plus structured evidence/memory artifacts remain canonical.
+  Do not add broad React Flow-like editing, drag-to-create dependency state or freeform task DB mutations in MVP.
+  Do not implement the atom inspector form inside this design task; the drawer can inspect and later link to design-atom-inspector-form.
+  Do not build a Claude-only, Cursor-only or PromptPilot-only dashboard; provider details are adapter/run metadata behind Worker Output and Evidence v1.
+Цель:
+  Dashboard stays focused on operating and reviewing the Work Graph loop.
+
+Метки:
+  atom.profile: prompt_rule
+  rule.id: operator-dashboard-non-goals
+  trace.status: verified
+]>

@@ -1,0 +1,53 @@
+#Задача_tests_gripe_visual_default_wave3<[
+Базис:
+  Visual epic needs automated guards on theme URL and wg-badge presence.
+Вектор:
+  design-tokens.test.mjs: gripe-dark-default
+  workGraphBacklogUiServer.test.mjs: default css path, wg-badge in kanban path
+Цель:
+  CI ловит откат на workgraph-blue-only default.
+Проверки:
+  npm test subset green
+Анализ:
+  Целесообразность:
+  Стоит завести «Tests: Gripe default theme + wave 3 regression» в бэклог — по материалам AN-33 (work/analytics/gripe-ds-visual-default-wave3.md).
+  Контекст и границы:
+  design-tokens.test.mjs: gripe-dark-default
+  Зависимости и готовность:
+  depends_on=epic-gripe-ds-visual-default-wave3, backlog-default-gripe-theme-wireup, wg-ui-wave3-kanban-cards-atoms, wg-ui-wave3-view-toolbar-atoms, wg-ui-wave3-detail-toolbar-atoms; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  CI ловит откат на workgraph-blue-only default.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-33 (work/analytics/gripe-ds-visual-default-wave3.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-33
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/gripe-ds-visual-default-wave3.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T17:42:31.304Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T17:42:31.304Z
+  work.decision.verdict: useful
+  work.department: ui-dashboard
+  work.depends_on: epic-gripe-ds-visual-default-wave3, backlog-default-gripe-theme-wireup, wg-ui-wave3-kanban-cards-atoms, wg-ui-wave3-view-toolbar-atoms, wg-ui-wave3-detail-toolbar-atoms
+  work.id: tests-gripe-visual-default-wave3
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: frontend_architect
+  work.parent_id: epic-gripe-ds-visual-default-wave3
+  work.pipeline_stage: closed
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: tests/design-tokens.test.mjs, tests/workGraphBacklogUiServer.test.mjs, work/analytics/gripe-ds-visual-default-wave3.md
+  work.title: Tests: Gripe default theme + wave 3 regression
+]>

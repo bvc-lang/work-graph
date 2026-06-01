@@ -1,0 +1,23 @@
+#!bvc lang=ru
+#Atom_modal<[
+Базис:
+  Marketplace `<x-ui.organisms.modal>` — overlay + panel + header.
+  Work Graph detail drawer — отдельный паттерн; modal для confirm/ui-kit.
+Вектор:
+  Props: title, open, body slot, close control.
+  Roles: dialog, aria-modal, backdrop click (optional phase 2).
+Цель:
+  Переиспользуемый modal shell для WG dev/ui-kit и будущих confirm flows.
+
+Проверки:
+  data-testid=ui-modal
+  panel uses --ui-radius-modal
+
+Метки:
+  atom.profile: ui_component
+  ui.layer: atom
+  ui.id: modal
+  ui.marketplace.blade: resources/views/components/ui/organisms/modal.blade.php
+  ui.workgraph.module: src/ui/atoms/modal.mjs
+  trace.status: verified
+]>

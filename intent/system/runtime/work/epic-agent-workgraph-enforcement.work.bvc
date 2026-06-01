@@ -1,0 +1,64 @@
+#Задача_epic_agent_workgraph_enforcement<[
+Базис:
+  AN-25: LLM обходит Work Graph через TodoWrite в чате, seed→doing и код без claim/evidence.
+  Канон AN-22/MCP описан, но IDE-агент Cursor не имеет жёсткого enforcement.
+  Инцидент ux-mission-control-p0 (2026-05-31): dual backlog chat todo + work.bvc + код без evidence.
+Вектор:
+  Cursor rule alwaysApply: single backlog — trackable work только через work.id.
+  Agent-behavior step: parity IDE ↔ MCP (claim перед кодом, evidence при закрытии).
+  Seed scripts: default status backlog, не doing.
+  Lint plan↔work mirror; canon intake-only vs execute.
+Цель:
+  Cursor-агент не ведёт параллельный todo в чате; исполнение только через claimed work items с evidence.
+Проверки:
+  .cursor/rules/agent-workgraph-single-backlog.mdc exists alwaysApply
+  rules/agent-behavior/cursor-ide-workgraph-parity.bvc в bundle
+  seed-*.mjs default status backlog
+  lint plan-work alignment green
+  AN-26 closing analysis опубликован
+Анализ:
+  Целесообразность:
+  Стоит завести «Agent Work Graph enforcement: единый бэклог, без обхода через chat todo» в бэклог — по материалам AN-25 (work/analytics/agent-bypass-work-graph-dual-backlog.md).
+  Контекст и границы:
+  Cursor rule alwaysApply: single backlog — trackable work только через work.id.
+  Зависимости и готовность:
+  depends_on=epic-decision-pipeline-canonization; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Cursor-агент не ведёт параллельный todo в чате; исполнение только через claimed work items с evidence.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-25 (work/analytics/agent-bypass-work-graph-dual-backlog.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Свидетельства:
+  - AN-25 R1–R5 реализованы: rule, parity step, seed defaults, lint, canon intake vs execute
+  - Closing AN-26 опубликован; dual backlog enforcement declarative layer complete
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-25
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/agent-bypass-work-graph-dual-backlog.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T12:17:11.921Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T12:17:11.921Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: epic-decision-pipeline-canonization
+  work.id: epic-agent-workgraph-enforcement
+  work.item_kind: epic
+  work.next_action: —
+  work.owner_role: integration_architect
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: work/analytics/agent-bypass-work-graph-dual-backlog.md, docs/plan-agent-workgraph-enforcement.md, .cursor/rules/agent-workgraph-single-backlog.mdc, rules/agent-behavior/cursor-ide-workgraph-parity.bvc, docs/decision-pipeline-canon.md
+  work.title: Agent Work Graph enforcement: единый бэклог, без обхода через chat todo
+]>

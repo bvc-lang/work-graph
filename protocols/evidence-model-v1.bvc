@@ -1,0 +1,117 @@
+#Протокол_Evidence_Model_V1<[
+Базис:
+  Evidence является проверяемой связью между Work Graph task, агентным действием, файлом, командой, решением и human review.
+  .bvc остаётся human-readable source of truth, а JSON snapshot получает структурированную проекцию для dashboard, memory и verification loop.
+Вектор:
+  Evidence v1 описывает минимальную запись с полями id, time, source, taskId, type, summary, details, status, artifacts, command, exitCode, provider and runId.
+  Допустимые type: command, test, file, change, decision, worker-run, manual-review and blocker.
+  status принимает succeeded, failed, pending, skipped or blocked; для done/verify gates успешная verification evidence должна быть явной.
+Цель:
+  Work Graph может объяснить, почему задача завершена, заблокирована или отправлена на проверку, без replay чата или provider session.
+
+Проверки:
+  описаны evidence types и required fields
+  status gates используют Evidence v1
+  worker output evidence мапится в .bvc и JSON snapshot
+  human-readable .bvc отделён от structured JSON fields
+
+Метки:
+  atom.profile: prompt_rule
+  protocol.id: evidence-model-v1
+  work.source: design-evidence-model-v1
+  trace.status: verified
+]>
+
+#Контракт_Evidence_Record_V1<[
+Базис:
+  Dashboard и memory не должны парсить произвольные фразы из поля Свидетельства.
+Вектор:
+  Required fields: id, time, source, taskId, type, summary and status.
+  Optional fields: details, artifacts, command, exitCode, provider and runId.
+  artifacts содержит ссылки на файлы, протоколы, логи, snapshots или внешние отчёты; command и exitCode заполняются для command/test evidence.
+  source указывает origin записи: human, local-runner, worker-adapter, test-runner, runtime or imported.
+Цель:
+  Одна запись evidence может быть показана человеку, сохранена в JSON snapshot и использована как input для memory writer.
+
+Метки:
+  atom.profile: trace
+  contract.id: evidence-record-v1
+  protocol.id: evidence-model-v1
+  trace.status: verified
+]>
+
+#Типы_Evidence_V1<[
+Базис:
+  Разные события требуют разных обязательных деталей, но не должны создавать разные storage-модели.
+Вектор:
+  command: запуск команды с command, exitCode, status и кратким stdout/stderr summary.
+  test: verification command или тестовый suite; command и exitCode обязательны, artifacts могут ссылаться на report/trace.
+  file: факт чтения, создания или проверки файла; artifacts содержит file refs.
+  change: изменение workspace; details описывает changed files и смысл изменения.
+  decision: архитектурное или продуктовоe решение; artifacts ссылается на protocol/ADR/step atom.
+  worker-run: результат Agent Worker Output v1; provider и runId обязательны, status отражает succeeded/failed/cancelled/needs_human mapping.
+  manual-review: human approval или review finding; source обычно human, details фиксирует reviewer note.
+  blocker: причина блокировки; status=blocked, details содержит blocker reason и next unblock action.
+Цель:
+  Evidence type помогает dashboard фильтровать события и проверять gates без provider-specific логики.
+
+Метки:
+  atom.profile: trace
+  contract.id: evidence-types-v1
+  protocol.id: evidence-model-v1
+  trace.status: verified
+]>
+
+#Гейты_Status_Evidence_V1<[
+Базис:
+  Status transitions должны быть объяснимыми и машинно проверяемыми.
+Вектор:
+  done требует минимум одну non-empty evidence запись и успешную verification/test/command/file/change evidence, если task меняет файлы или протоколы.
+  blocked требует blocker reason и evidence type blocker или status=blocked запись с next unblock action.
+  verify требует proposal verification evidence: какая команда, review или manual check должна подтвердить результат перед done.
+  failed worker-run не переводит task в done; runtime может записать failure evidence и оставить task claimed, вернуть ready или поставить blocked по явной transition request.
+Цель:
+  Runtime policy остаётся простой, но будущие dashboard/memory получают достаточно структуры для автоматической проверки.
+
+Метки:
+  atom.profile: prompt_rule
+  rule.id: evidence-status-gates-v1
+  protocol.id: evidence-model-v1
+  trace.status: verified
+]>
+
+#Маппинг_Worker_Output_To_WorkGraph<[
+Базис:
+  Agent Worker Adapter уже возвращает Worker Output v1-like evidence, transitionRequest, failureReason and logs.
+Вектор:
+  Worker output evidence нормализуется в Evidence Record v1: type=worker-run для самого run, provider/runId из worker output, status из worker status, summary из patchSummary/failureReason.
+  Дополнительные command/test/file/change records создаются из structured evidence array, patchSummary.changedFiles, logs artifacts and transitionRequest verification proposal.
+  В .bvc atom поле Свидетельства хранит краткую human-readable строку с id, type, status, summary and key artifact refs.
+  В JSON snapshot будущего v1.x рядом с legacy evidence string может появиться structuredEvidence array с полными Evidence Record v1 fields.
+Цель:
+  Worker output становится наблюдаемой историей Work Graph, а не provider-specific transcript.
+
+Метки:
+  atom.profile: trace
+  contract.id: worker-output-evidence-mapping-v1
+  protocol.id: evidence-model-v1
+  trace.status: verified
+]>
+
+#Граница_Step_JSON_Evidence<[
+Базис:
+  Raw .bvc должен оставаться удобным для человека и LLM, но structured consumers требуют стабильных полей.
+Вектор:
+  В .bvc остаются короткие строки Свидетельства, критерии готовности, labels trace.status/work.status и ссылки на artifacts.
+  В JSON snapshot попадают parsed legacy evidence strings для совместимости и structuredEvidence records для новых producers.
+  Runtime не обязан восстанавливать все optional fields из legacy text; при импорте старых строк source=imported, type=manual-review или change, status=pending если результат неясен.
+  Structured writers должны сохранять id/time/type/status/source/taskId так, чтобы memory writer и dashboard не зависели от natural language.
+Цель:
+  Source of truth остаётся читаемым, а automation получает минимально строгий Evidence v1 контракт.
+
+Метки:
+  atom.profile: architecture_decision
+  decision.id: step-json-evidence-boundary-v1
+  protocol.id: evidence-model-v1
+  trace.status: verified
+]>

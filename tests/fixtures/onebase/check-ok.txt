@@ -1,0 +1,2 @@
+Configuration valid
+All metadata files parsed successfully

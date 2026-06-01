@@ -1,0 +1,20 @@
+{
+  "name": "@work-graph/ir-spec",
+  "version": "0.0.1",
+  "description": "IR / RichIR draft specification — typed CFG with BVC semantics on nodes",
+  "license": "Apache-2.0",
+  "type": "module",
+  "files": [
+    "README.md",
+    "LICENSE",
+    "LICENSE-SPEC",
+    "spec",
+    "schemas"
+  ],
+  "exports": {
+    "./schemas/ir-flow.v1.json": "./schemas/ir-flow.v1.json"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

@@ -1,0 +1,50 @@
+#Задача_evaluate_flatbuffers_gbc_slice<[
+Базис:
+  FlatBuffers/GBC — возможный слой derived binary/cache, но не обязательное решение для первого Work Graph runtime.
+  Сначала нужна нейтральная serialization boundary и snapshot v1.
+Вектор:
+  Сравнить FlatBuffers/GBC с JSON/NDJSON/SQLite cache для Work Graph snapshot.
+  Проверить, где реально нужен zero-copy, multi-language reader или GFS overlay.
+  Если FlatBuffers выбран, описать минимальную схему work_graph_slice_v1.fbs и миграционную политику.
+Цель:
+  Принять отдельное архитектурное решение по FlatBuffers/GBC на основании требований, а не по ассоциации со словом binary.
+Анализ:
+  Целесообразность:
+  Стоит завести «оценить slice FlatBuffers/GBC для Work Graph» в бэклог.
+  Контекст и границы:
+  Сравнить FlatBuffers/GBC с JSON/NDJSON/SQLite cache для Work Graph snapshot.
+  Зависимости и готовность:
+  depends_on=design-serialization-boundary; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Принять отдельное архитектурное решение по FlatBuffers/GBC на основании требований, а не по ассоциации со словом binary.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441025
+  migration.strategy: defer
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:36.403Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:36.413Z
+  work.decision.verdict: useful
+  work.department: devops-runtime
+  work.depends_on: design-serialization-boundary
+  work.id: evaluate-flatbuffers-gbc-slice
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: system_architect
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: plans/rebuild-start-plan.bvc, work/backlog.bvc, protocols/flatbuffers-gbc-slice-evaluation.bvc
+  work.title: оценить slice FlatBuffers/GBC для Work Graph
+]>
+

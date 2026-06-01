@@ -1,0 +1,378 @@
+#!bvc lang=ru
+
+#Architecture_Main_Canon<[
+Базис:
+  Устав задаёт конституцию продукта и aggregate §Слои_Ядра; оператору нужен отдельный hub L1/L2 без смешения с очередью Work Graph.
+  AN-36: snapshot и UI «Архитектура» — производная проекция; SSoT L1 — этот файл, не inline JS.
+Вектор:
+  BVC на каждый блок (Базис / Вектор / Цель), корни intent, L2-контейнеры и типизированные L1-связи.
+  Связь charter → architecture canon → architecture.snapshot.v1 → UI / MCP / mermaid export.
+  Управление: digest + architecture:l1-check; изменение L1 только через diff этого файла.
+Цель:
+  Единый читаемый hub архитектуры Work Graph rebuild с trace на устав и protocol architecture-graph-model-v1.
+
+Метки:
+  atom.profile: architecture_canon
+  architecture.canon.id: architecture-l1-blocks-v1
+  architecture.canon.version: 1
+  architecture.charter.ref: charter/main.bvc#Слои_Ядра
+  architecture.protocol.ref: protocols/architecture-graph-model-v1.bvc
+  architecture.design.output: architecture.snapshot.v1
+  intake.analytics_key: AN-36
+  trace.status: verified
+]>
+
+#Architecture_Block_Step_Canon<[
+Базис:
+  Step/BVC canon — формат намерений, formatter, JSON draft и правила записи атомов.
+Вектор:
+  Charter и schemas/step-atom задают контракт; formatter и llm-step-atom-writer — runtime write path.
+  Питает Work Graph и trace-слои каноническими правилами intent/work atoms.
+Цель:
+  Детерминированный формат намерений без дублирования operational queue semantics.
+Анализ:
+  Целесообразность:
+  Без отдельного L1-блока формат step/BVC смешивается с операционной очередью и теряется трассировка на charter/schemas.
+  Контекст и границы:
+  Форматтер и llm-step-atom-writer — путь записи; Work Graph потребляет канон, но не дублирует его.
+Решение:
+  Вердикт: полезно
+  L1-блок step-canon принят; изменения формата — через charter, schemas/step-atom и этот канон.
+
+Метки:
+  atom.profile: architecture_l1_block
+  architecture.block_id: step-canon
+  architecture.layer: L1
+  architecture.title: Канон Step/BVC
+  architecture.summary: Формат намерений, formatter, JSON draft и канон .bvc/.step.
+  architecture.decision.verdict: useful
+  architecture.intent_roots: charter/,schemas/step-atom,protocols/llm-step-atom-writer.bvc
+  architecture.container.charter.title: Charter
+  architecture.container.charter.kind: protocol
+  architecture.container.charter.paths: charter/main.bvc
+  architecture.container.charter.basis: Устав проекта — конституция продукта, §Слои_Ядра и правила управления rebuild Work Graph; без него L1-блоки теряют трассу на продуктовые границы.
+  architecture.container.charter.vector: charter/main.bvc
+  architecture.container.charter.goal: Единый источник правил и границ проекта для всех L1-блоков, протоколов и операторских проекций.
+  architecture.container.charter.analysis: Целесообразность: Устав не должен жить только в чате или в work items — оператор и агенты должны находить §Слои_Ядра и ADR-ссылки по стабильному пути. Без protocol-контейнера блок step-canon смешивается с операционным backlog. Контекст и границы: роль protocol; один путь charter/main.bvc; не дублирует схемы и форматтер; связь с L1 через defines на файл устава.
+  architecture.container.charter.decision: L2-контейнер charter принят как protocol-срез step-canon; изменения только через diff charter/main.bvc и preflight устава.
+  architecture.container.charter.decision.verdict: useful
+  architecture.container.bvc-schemas.title: Схемы step
+  architecture.container.bvc-schemas.kind: schema
+  architecture.container.bvc-schemas.paths: schemas/step-atom-draft.v1.json
+  architecture.container.bvc-schemas.basis: JSON Schema задаёт контракт сериализации step-атомов и architecture snapshot; без схем formatter и MCP расходятся в полях и типах.
+  architecture.container.bvc-schemas.vector: schemas/step-atom-draft.v1.json, schemas/architecture-snapshot.v1.json
+  architecture.container.bvc-schemas.goal: Детерминированная валидация draft/snapshot без произвольного JSON в рантайме и UI.
+  architecture.container.bvc-schemas.analysis: Целесообразность: Канон Step/BVC бессмысленен без машиночитаемого контракта — lint, MCP и architecture:l1-check опираются на схему, а не на комментарии в .bvc. Контекст и границы: роль schema; пути ограничены schemas/*; не содержит рантайм форматтера и не описывает семантику операционной очереди Work Graph.
+  architecture.container.bvc-schemas.decision: L2-контейнер bvc-schemas принят; новые поля snapshot/step — сначала diff схемы, затем форматтер и канон.
+  architecture.container.bvc-schemas.decision.verdict: useful
+  architecture.container.bvc-formatter.title: Форматтер step
+  architecture.container.bvc-formatter.kind: runtime
+  architecture.container.bvc-formatter.paths: src/stepAtomFormatter.mjs
+  architecture.container.bvc-formatter.basis: Парсер и форматтер BVC/step — единственный путь записи и чтения атомов в rebuild Work Graph; дублирование логики в UI ломает round-trip.
+  architecture.container.bvc-formatter.vector: src/stepAtomFormatter.mjs
+  architecture.container.bvc-formatter.goal: Детерминированное чтение и запись step-атомов с предупреждениями и ошибками на уровне форматтера, а не произвольных regex в каждом модуле.
+  architecture.container.bvc-formatter.analysis: Целесообразность: Форматтер — мост между человекочитаемым BVC и JSON draft; без выделенного runtime-контейнера правки парсера смешиваются с backlog UI и инструментами агента. Контекст и границы: роль runtime; основной путь src/stepAtomFormatter.mjs; потребляет схемы; питает work-graph и trace-evidence, но не заменяет протокол llm-step-atom-writer.
+  architecture.container.bvc-formatter.decision: L2-контейнер bvc-formatter принят; изменения парсера — с тестами stepAtomFormatter и без inline-копий в UI.
+  architecture.container.bvc-formatter.decision.verdict: useful
+]>
+
+#Architecture_Block_Work_Graph<[
+Базис:
+  Work Graph — операционная очередь задач, lifecycle, claim/transition и storage layout intent tree.
+Вектор:
+  Рантайм в src/workGraphRuntime.mjs; backlog projection и intent/index — durable work surface.
+  Связан с agent-runtime (uses) и derived-projections (подаёт операционные данные).
+Цель:
+  Проверяемый operational layer между intent и agent execution без architecture edge = depends_on.
+Анализ:
+  Целесообразность:
+  Операционная очередь — центральный контур Work Graph rebuild; её нельзя смешивать с UI-проекциями или каноном форматтера.
+  Контекст и границы:
+  Рантайм, проекция backlog и дерево intent — устойчивая рабочая поверхность; связи архитектуры uses/feeds, не depends_on задач.
+Решение:
+  Вердикт: полезно
+  L1-блок work-graph принят как операционный слой между intent и agent-runtime.
+
+Метки:
+  atom.profile: architecture_l1_block
+  architecture.block_id: work-graph
+  architecture.layer: L1
+  architecture.title: Work Graph
+  architecture.summary: Операционная очередь задач, runtime, lifecycle и storage layout.
+  architecture.decision.verdict: useful
+  architecture.intent_roots: intent/system/runtime,intent/system/storage
+  architecture.container.runtime.title: Рантайм Work Graph
+  architecture.container.runtime.kind: runtime
+  architecture.container.runtime.paths: src/workGraphRuntime.mjs
+  architecture.container.runtime.basis: Операционный рантайм очереди Work Graph — взятие в работу, переходы, reconcile и layout хранилища; центральный контур между intent и исполнением агентом.
+  architecture.container.runtime.vector: src/workGraphRuntime.mjs
+  architecture.container.runtime.goal: Проверяемый операционный слой: задачи меняют статус только через API рантайма, а не прямой правкой .bvc в обход lifecycle.
+  architecture.container.runtime.analysis: Целесообразность: Без выделенного runtime-контейнера операционная семантика размазывается по UI и MCP; связь depends_on смешивается с feeds/uses. Контекст и границы: роль runtime; путь src/workGraphRuntime.mjs; связан с хранилищами backlog и intent-tree, но не является UI-проекцией и не каноном форматтера.
+  architecture.container.runtime.decision: L2-контейнер runtime принят как ядро work-graph; изменения lifecycle — через рантайм и lint backlog, не inline в производном UI.
+  architecture.container.runtime.decision.verdict: useful
+  architecture.container.backlog.title: Проекция backlog
+  architecture.container.backlog.kind: storage
+  architecture.container.backlog.paths: work/backlog.bvc,intent/index.bvc
+  architecture.container.backlog.basis: Устойчивая проекция backlog и индекса intent — рабочая поверхность оператора и lint; источник истины очереди в .bvc, оператор читает согласованный срез.
+  architecture.container.backlog.vector: work/backlog.bvc, intent/index.bvc
+  architecture.container.backlog.goal: Согласованное представление очереди и дерева intent без рассинхрона с reconcile рантайма.
+  architecture.container.backlog.analysis: Целесообразность: Оператору нужен стабильный срез хранилища, отделённый от эфемерного состояния UI; иначе панель backlog и MCP читают разные файлы. Контекст и границы: роль storage; пути work/backlog.bvc и intent/index.bvc; питается рантаймом; не заменяет канон architecture и не является дизайном graph viewer.
+  architecture.container.backlog.decision: L2-контейнер backlog принят; изменения layout хранилища — через скрипты миграции и reconcile, не через обходы только в UI.
+  architecture.container.backlog.decision.verdict: useful
+  architecture.container.intent-tree.title: Дерево intent
+  architecture.container.intent-tree.kind: storage
+  architecture.container.intent-tree.paths: src/intentTreeMigration.mjs,intent/
+  architecture.container.intent-tree.basis: Иерархия intent (domain/feature/work) и миграции layout — долговременная структура scope для intake и контекста агента.
+  architecture.container.intent-tree.vector: src/intentTreeMigration.mjs, intent/
+  architecture.container.intent-tree.goal: Устойчивая иерархия intent без разрыва с проекцией backlog и без смешения с L1-блоками architecture.
+  architecture.container.intent-tree.analysis: Целесообразность: Дерево intent — не просто папки: без контейнера миграции и поддерева смешиваются с рантаймом work-graph и теряется классификация domain/feature. Контекст и границы: роль storage; пути intent/ и модуль миграции; maps_to на work items через intake; не дублирует протоколы project-memory.
+  architecture.container.intent-tree.decision: L2-контейнер intent-tree принят; перестройка дерева — через intentTreeMigration и AN intake, не произвольные переименования в UI.
+  architecture.container.intent-tree.decision.verdict: useful
+]>
+
+#Architecture_Block_Project_Memory<[
+Базис:
+  Долговременные факты, решения и архитектурные заметки переживают отдельные work items.
+Вектор:
+  Memory protocols и intent/memory subtree; trace-evidence питает verified outcomes в memory.
+Цель:
+  Отдельный слой знаний без смешения с очередью Work Graph и UI projections.
+Анализ:
+  Целесообразность:
+  Факты и решения переживают закрытие work items; без отдельного блока память растворяется в backlog.
+  Контекст и границы:
+  intent/memory и протоколы памяти; trace-evidence питает проверенные исходы, но не заменяет слой памяти.
+Решение:
+  Вердикт: полезно
+  L1-блок project-memory принят; знания не смешиваются с операционной очередью.
+
+Метки:
+  atom.profile: architecture_l1_block
+  architecture.block_id: project-memory
+  architecture.layer: L1
+  architecture.title: Память проекта
+  architecture.summary: Долговременные факты, решения и архитектурные заметки.
+  architecture.decision.verdict: useful
+  architecture.intent_roots: intent/memory
+  architecture.container.memory-protocols.title: Протоколы памяти
+  architecture.container.memory-protocols.kind: protocol
+  architecture.container.memory-protocols.paths: protocols/project-memory-v1.bvc,protocols/claude-note-memory-patterns.bvc
+  architecture.container.memory-protocols.basis: Протоколы записи и чтения долговременной памяти проекта — факты и решения переживают закрытие work items.
+  architecture.container.memory-protocols.vector: protocols/project-memory-v1.bvc, protocols/claude-note-memory-patterns.bvc
+  architecture.container.memory-protocols.goal: Стандартизированный слой знаний с трассой на evidence и без смешения с операционной очередью backlog.
+  architecture.container.memory-protocols.analysis: Целесообразность: Без protocol-контейнера память растворяется в analytics markdown и чатах; агент не знает канонический путь записи памяти. Контекст и границы: роль protocol; пути в protocols/*; поддерево intent/memory; trace-evidence питает проверенные исходы, но не заменяет протоколы памяти.
+  architecture.container.memory-protocols.decision: L2-контейнер memory-protocols принят; новые паттерны памяти — через diff протокола и UI памяти, не через осиротевшие .md в work/.
+  architecture.container.memory-protocols.decision.verdict: useful
+]>
+
+#Architecture_Block_Trace_Evidence<[
+Базис:
+  Связь step↔code, evidence model и verification loop — контракт проверяемости изменений.
+Вектор:
+  Trace links v1 и evidence model как protocols; validator hooks в runtime.
+  Питает project-memory и derived-projections (dashboard, verification UI).
+Цель:
+  Trace/Evidence отделён от operational depends_on и семантики L1 feeds/validates архитектуры.
+Анализ:
+  Целесообразность:
+  Проверяемость step↔code — контракт rebuild; без отдельного L1 трассировка смешивается с depends_on задач.
+  Контекст и границы:
+  Trace links v1, модель свидетельств и хуки валидатора; питает память и производный UI, но не операционную очередь.
+Решение:
+  Вердикт: полезно
+  L1-блок trace-evidence принят; контур верификации отделён от depends_on архитектуры.
+
+Метки:
+  atom.profile: architecture_l1_block
+  architecture.block_id: trace-evidence
+  architecture.layer: L1
+  architecture.title: Трассировка и свидетельства
+  architecture.summary: Связь step↔code, evidence model и verification loop.
+  architecture.decision.verdict: useful
+  architecture.intent_roots: protocols/step-code-trace-links-v1.bvc,protocols/evidence-model-v1.bvc
+  architecture.container.trace-links.title: Trace Links v1
+  architecture.container.trace-links.kind: protocol
+  architecture.container.trace-links.paths: protocols/step-code-trace-links-v1.bvc
+  architecture.container.trace-links.basis: Протокол связи step↔code и trace-маркеров — контракт проверяемости изменений между намерением и кодом.
+  architecture.container.trace-links.vector: protocols/step-code-trace-links-v1.bvc
+  architecture.container.trace-links.goal: Единый формат trace-ссылок для контура верификации, UI Problems и связей architecture feeds/validates.
+  architecture.container.trace-links.analysis: Целесообразность: Trace без protocol-контейнера превращается в комментарии в PR; rebuild требует машинного контракта step↔code и хуков evidence. Контекст и границы: роль protocol; один канонический путь; питает runtime валидатора trace и project-memory; не смешивается с work.depends_on.
+  architecture.container.trace-links.decision: L2-контейнер trace-links принят; расширение области trace — через ADR и diff протокола, не inline в рантайме.
+  architecture.container.trace-links.decision.verdict: useful
+  architecture.container.trace-validator.title: Валидатор trace
+  architecture.container.trace-validator.kind: runtime
+  architecture.container.trace-validator.paths: src/workGraphRuntime.mjs
+  architecture.container.trace-validator.basis: Хуки рантайма для валидации trace и evidence в операционном контуре — битые iohasc-ref должны блокировать тихое слияние.
+  architecture.container.trace-validator.vector: src/workGraphRuntime.mjs
+  architecture.container.trace-validator.goal: Автоматическая проверка trace-ссылок при переходах и проверке, с отчётом оператору в UI верификации.
+  architecture.container.trace-validator.analysis: Целесообразность: Протокол trace-links бессилен без принуждения на стороне рантайма; хуки валидатора связывают канон с lifecycle work items. Контекст и границы: роль runtime; общий модуль workGraphRuntime.mjs; реализует протокол trace-links; не дублирует markdown модели evidence и не заменяет backlog UI.
+  architecture.container.trace-validator.decision: L2-контейнер trace-validator принят; новые хуки — в рантайме с тестами, не только в тексте протокола.
+  architecture.container.trace-validator.decision.verdict: useful
+]>
+
+#Architecture_Block_Agent_Runtime<[
+Базис:
+  Цикл исполнения агента: адаптер воркера, локальный раннер, машина состояний без монолитного оркестратора.
+Вектор:
+  protocols/agent-worker-adapter.bvc и src/agentWorkerLocalRunner.mjs; использует L2 OneBase внутри domains для вертикальных задач.
+  Подаёт исходы trace-evidence после взятия в работу и исполнения.
+Цель:
+  Провайдер-нейтральная среда агента с политикой инструментов и хуками верификации.
+Анализ:
+  Целесообразность:
+  Исполнение агента — связка между очередью Work Graph и вертикальной верификацией; без L1-блока оркестрация размывается в рантайме.
+  Контекст и границы:
+  Адаптер воркера и локальный раннер MVP; uses L2 OneBase в блоке domains; питает trace-evidence после взятия в работу и исполнения.
+Решение:
+  Вердикт: полезно
+  L1-блок agent-runtime принят; монолитный оркестратор вне границ этого блока.
+
+Метки:
+  atom.profile: architecture_l1_block
+  architecture.block_id: agent-runtime
+  architecture.layer: L1
+  architecture.title: Среда агента
+  architecture.summary: Адаптер воркера, локальный раннер и цикл исполнения агента.
+  architecture.decision.verdict: useful
+  architecture.intent_roots: protocols/agent-worker-adapter.bvc,src/agentWorkerLocalRunner.mjs
+  architecture.container.worker-adapter.title: Адаптер воркера
+  architecture.container.worker-adapter.kind: protocol
+  architecture.container.worker-adapter.paths: protocols/agent-worker-adapter.bvc
+  architecture.container.worker-adapter.basis: Протокол адаптера воркера: взятие в работу, исполнение, heartbeat и формат выхода worker — контракт между agent-runtime и исполнителем.
+  architecture.container.worker-adapter.vector: protocols/agent-worker-adapter.bvc
+  architecture.container.worker-adapter.goal: Контракт между agent-runtime и worker без монолитного оркестратора и без JSON, привязанного к провайдеру, в рантайме.
+  architecture.container.worker-adapter.analysis: Целесообразность: Без protocol-контейнера агент и worker сходятся на произвольных форматах сообщений; trace-evidence после исполнения теряет стабильный конверт. Контекст и границы: роль protocol; путь protocols/agent-worker-adapter.bvc; парный runtime local-runner; uses L2 OneBase в блоке domains только через agent-runtime, не внутри протокола.
+  architecture.container.worker-adapter.decision: L2-контейнер worker-adapter принят; изменения контракта — через diff протокола и agent E2E, не через скрытые поля в runner.
+  architecture.container.worker-adapter.decision.verdict: useful
+  architecture.container.local-runner.title: Локальный раннер MVP
+  architecture.container.local-runner.kind: runtime
+  architecture.container.local-runner.paths: src/agentWorkerLocalRunner.mjs
+  architecture.container.local-runner.basis: Локальный MVP-раннер агента для dev, опционального E2E и проверки worker-adapter без облачного воркера.
+  architecture.container.local-runner.vector: src/agentWorkerLocalRunner.mjs
+  architecture.container.local-runner.goal: Проверяемый цикл взятие→исполнение→evidence на машине разработчика с теми же хуками, что и production-путь worker.
+  architecture.container.local-runner.analysis: Целесообразность: Протокол worker-adapter нужен исполнимый эталонный клиент; без runtime-контейнера раннер смешивается с сервером backlog UI. Контекст и границы: роль runtime; реализует worker-adapter; не заменяет облачный пул воркеров и не содержит разбор YAML домена OneBase.
+  architecture.container.local-runner.decision: L2-контейнер local-runner принят как MVP-эталон; расширение — только с сохранением совместимости протокола.
+  architecture.container.local-runner.decision.verdict: useful
+]>
+
+#Architecture_Block_Domains<[
+Базис:
+  Прикладные доменные вертикали Work Graph: OneBase и Marketplace как L2 внутри единого L1-блока «Домены».
+Вектор:
+  intent/domains/onebase, intent/domains/marketplace и domains/onebase/; maps_to work-graph через intake, roadmap и сопоставление артефактов.
+  Среда агента использует L2 OneBase для вертикальных гейтов верификации.
+Цель:
+  Оператор видит один L1 «Домены» с drill-down на OneBase и Marketplace без дублирования peer-блоков на карте.
+Анализ:
+  Целесообразность:
+  Intent tree уже multi-domain; отдельные L1 domain-* дублировали родителя «Домены» на карте и смешивали уровни в UI.
+  Контекст и границы:
+  L1 domains hub; L2 onebase-domain и marketplace-domain; maps_to work-graph; department domain-onebase/domain-marketplace сохраняются в work items.
+Решение:
+  Вердикт: полезно
+  Variant A: L1 domains; OneBase и Marketplace — L2-контейнеры внутри блока.
+
+Метки:
+  atom.profile: architecture_l1_block
+  architecture.block_id: domains
+  architecture.layer: L1
+  architecture.title: Домены
+  architecture.summary: Прикладные вертикали OneBase и Marketplace поверх Work Graph.
+  architecture.decision.verdict: useful
+  architecture.intent_roots: intent/domains/onebase,intent/domains/marketplace,domains/onebase
+  architecture.container.onebase-domain.title: OneBase
+  architecture.container.onebase-domain.kind: domain
+  architecture.container.onebase-domain.paths: domains/onebase/,intent/domains/onebase
+  architecture.container.onebase-domain.basis: Доменная вертикаль OneBase: метаданные конфигурации, проводки, golden path и MCP; изолирована от семантики операционной очереди Work Graph.
+  architecture.container.onebase-domain.vector: domains/onebase/,intent/domains/onebase
+  architecture.container.onebase-domain.goal: L2 OneBase внутри L1 domains: maps_to work items и вертикальные гейты верификации для agent-runtime.
+  architecture.container.onebase-domain.analysis: Целесообразность: OneBase нельзя смешивать с рантаймом work-graph — иначе YAML catalog/document попадает в общую семантику backlog и ломает срез PVRG. Контекст и границы: L2 domain внутри L1 domains; поддеревья domains/onebase/ и intent/domains/onebase; agent-runtime uses для вертикальных задач; не заменяет trace-evidence.
+  architecture.container.onebase-domain.decision: L2-контейнер onebase-domain принят; новые domain paths — через intent/domains/onebase и fixture-тесты, не inline в JS snapshot architecture.
+  architecture.container.onebase-domain.decision.verdict: useful
+  architecture.container.marketplace-domain.title: Marketplace
+  architecture.container.marketplace-domain.kind: domain
+  architecture.container.marketplace-domain.paths: intent/domains/marketplace/
+  architecture.container.marketplace-domain.basis: Доменная вертикаль Marketplace: Laravel monorepo, Hub & Spoke, PM backlog в intent/domains/marketplace/work; department domain-marketplace.
+  architecture.container.marketplace-domain.vector: intent/domains/marketplace/
+  architecture.container.marketplace-domain.goal: L2 Marketplace внутри L1 domains: roadmap и architecture matrix без классификации в derived-projections.
+  architecture.container.marketplace-domain.analysis: Целесообразность: AN-21 завёл marketplace intent до L1 canon; без L2-контейнера оператор видит задачи на roadmap, но не на architecture drill-down внутри «Домены». Контекст и границы: L2 domain внутри L1 domains; поддерево intent/domains/marketplace; maps_to work-graph; shared DS и Blade UI — вне этого контейнера.
+  architecture.container.marketplace-domain.decision: L2-контейнер marketplace-domain принят; новые marketplace work items — через intent/domains/marketplace/work и department domain-marketplace.
+  architecture.container.marketplace-domain.decision.verdict: useful
+]>
+
+#Architecture_Block_Derived_Projections<[
+Базис:
+  ADR-блок производного слоя: доска UI, карта архитектуры, дашборд — не product layer строкой в charter §Слои_Ядра.
+  Charter перечисляет 6 core layers; derived-projections — проекции и исследования поверх них.
+Вектор:
+  Сервер backlog UI, derived graph viewer, исследования PVRG/graph RAG; питается данными work-graph и trace-evidence.
+  Read-only просмотры архитектуры; не единый источник L1-канона.
+Цель:
+  Оператор видит проекции и исследования без смешения со слоями устава.
+Анализ:
+  Целесообразность:
+  Доска UI, карта архитектуры и дашборд — производный слой (AN-36); не product layer в charter §Слои_Ядра.
+  Контекст и границы:
+  Read-only проекции поверх work-graph и trace-evidence; не единый источник L1-канона.
+Решение:
+  Вердикт: полезно
+  L1-блок derived-projections принят; UI и исследования не смешиваются со слоями устава.
+
+Метки:
+  atom.profile: architecture_l1_block
+  architecture.block_id: derived-projections
+  architecture.layer: L1
+  architecture.title: Производные проекции
+  architecture.summary: Доска UI, карта архитектуры, дашборд и исследования Graph/RAG.
+  architecture.decision.verdict: useful
+  architecture.intent_roots: intent/ui/dashboard,intent/research/pvrg,ui/
+  architecture.container.backlog-ui.title: Сервер backlog UI
+  architecture.container.backlog-ui.kind: ui
+  architecture.container.backlog-ui.paths: src/workGraphBacklogUiServer.mjs
+  architecture.container.backlog-ui.basis: HTTP-сервер backlog UI — операторская доска, вид architecture, верификация и dock агента; производная проекция, не источник истины данных.
+  architecture.container.backlog-ui.vector: src/workGraphBacklogUiServer.mjs
+  architecture.container.backlog-ui.goal: Проекции только чтения и управления для оператора с drawer L1/L2, без дублирования канона inline в JS без API snapshot.
+  architecture.container.backlog-ui.analysis: Целесообразность: AN-36 требует хаб архитектуры в UI; без ui-контейнера производный слой смешивается с файлами рантайма work-graph. Контекст и границы: роль ui; питание от snapshot work-graph и trace-evidence; канон architecture читается через API, не зашитые блоки; не продуктовый слой в charter §Слои_Ядра.
+  architecture.container.backlog-ui.decision: L2-контейнер backlog-ui принят; функции UI — поверх контрактов snapshot; правки L1 — только в architecture/main.bvc.
+  architecture.container.backlog-ui.decision.verdict: useful
+  architecture.container.graph-design.title: Дизайн graph viewer
+  architecture.container.graph-design.kind: ui
+  architecture.container.graph-design.paths: ui/derived-graph-viewer.bvc
+  architecture.container.graph-design.basis: BVC-спецификация производного graph viewer — раскладка, lanes, карточки узлов для проекций architecture/work graph.
+  architecture.container.graph-design.vector: ui/derived-graph-viewer.bvc
+  architecture.container.graph-design.goal: Спецификация визуализации графа без смешения с L1-каноном и без дублирования lit-flow runtime в атомах канона.
+  architecture.container.graph-design.analysis: Целесообразность: Визуальный дизайн должен версионироваться отдельно от кода сервера backlog UI; иначе правила раскладки теряются в CSS без trace. Контекст и границы: UI-артефакт дизайна; только чтение; не исполняемый рантайм; дополняет backlog-ui, не заменяет architecture/main.bvc.
+  architecture.container.graph-design.decision: L2-контейнер graph-design принят; изменения UX графа — сначала BVC-дизайн, затем сборка graph-canvas.
+  architecture.container.graph-design.decision.verdict: useful
+  architecture.container.pvrg-research.title: Дизайн среза PVRG
+  architecture.container.pvrg-research.kind: research
+  architecture.container.pvrg-research.paths: protocols/pvrg-graph-rag-minimal.bvc
+  architecture.container.pvrg-research.basis: Исследование минимального среза PVRG/graph RAG для контекста агента — прототип поверх графа проекта, не боевой слой памяти.
+  architecture.container.pvrg-research.vector: protocols/pvrg-graph-rag-minimal.bvc
+  architecture.container.pvrg-research.goal: Прототип контекста для агента поверх графа проекта с явными границами относительно §Слои_Ядра устава.
+  architecture.container.pvrg-research.analysis: Целесообразность: Graph RAG без research-контейнера рискует стать скрытой зависимостью agent-runtime; протокол фиксирует минимальный scope MVP. Контекст и границы: роль research; путь протокола; питает derived-projections и эксперименты инструментов агента; не maps_to операционную очередь и не заменяет project-memory.
+  architecture.container.pvrg-research.decision: L2-контейнер pvrg-research принят как исследовательский срез; вывод в продукт — только через ADR и сопоставление с уставом.
+  architecture.container.pvrg-research.decision.verdict: useful
+  architecture.charter.footnote: ADR derived layer — см. charter §Слои_Ядра architecture.ref
+]>
+
+#Architecture_L1_Edges<[
+Базис:
+  Связи архитектуры (feeds, uses, maps_to) отделены от operational work.depends_on.
+Вектор:
+  step-canon -> work-graph : feeds
+  work-graph -> agent-runtime : uses
+  agent-runtime -> trace-evidence : feeds
+  trace-evidence -> project-memory : feeds
+  work-graph -> derived-projections : feeds
+  trace-evidence -> derived-projections : feeds
+  domains -> work-graph : maps_to
+  agent-runtime -> domains : uses
+Цель:
+  Typed L1 graph rebuildable из canon без task-count drift.
+
+Метки:
+  atom.profile: architecture_canon_section
+  architecture.section: l1_edges
+  protocol.id: architecture-graph-model-v1
+]>

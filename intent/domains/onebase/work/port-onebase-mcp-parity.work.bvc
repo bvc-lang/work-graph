@@ -1,0 +1,50 @@
+#Задача_port_onebase_mcp_parity<[
+Базис:
+  Старый ioHasC имеет built-in OneBase tools и MCP package; пересобрать не должен зависеть только от одного access path.
+  Задача «спроектировать parity OneBase MCP и built-in tools» относится к контуру архитектуры продукта и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: phase-7-onebase-vertical.
+Вектор:
+  Определить parity matrix для built-in OneBase tools, MCP package и local verification script.
+  Ближайший шаг исполнения: —.
+Цель:
+  OneBase workflows могут работать в agent UI, daemon или external MCP environment.
+Анализ:
+  Целесообразность:
+  Стоит завести «спроектировать parity OneBase MCP и built-in tools» в бэклог.
+  Контекст и границы:
+  Определить parity matrix для built-in OneBase tools, MCP package и local verification script.
+  Зависимости и готовность:
+  depends_on=phase-7-onebase-vertical; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  OneBase workflows могут работать в agent UI, daemon или external MCP environment.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441078
+  migration.strategy: port
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:37.587Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:37.595Z
+  work.decision.verdict: useful
+  work.department: product-architecture
+  work.depends_on: phase-7-onebase-vertical
+  work.id: port-onebase-mcp-parity
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: integration_architect
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: medium
+  work.status: done
+  work.target_files: protocols/onebase-mcp-parity-v1.bvc, src/onebaseWorkItemTemplate.mjs, tests/onebaseWorkItemTemplate.test.mjs, work/backlog.bvc
+  work.title: спроектировать parity OneBase MCP и built-in tools
+]>
+

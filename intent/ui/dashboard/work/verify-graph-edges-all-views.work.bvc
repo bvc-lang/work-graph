@@ -1,0 +1,61 @@
+#Задача_verify_graph_edges_all_views<[
+Базис:
+  Источник: analytics:graph-edges-n8n-parity (AN-5).
+  Regression pass на трёх graph views после cutover.
+Вектор:
+  Manual smoke: full-screen canvas, pan/zoom, rejected/upstream dashed edges.
+  Обновить plan todo и AN-5 status при закрытии epic.
+Цель:
+  Все три view визуально соответствуют n8n edge quality из AN-5.
+Анализ:
+  Целесообразность:
+  Стоит завести «проверить SVG edges на architecture / schematic / intent roadmap» в бэклог — по материалам AN-5 (analytics:graph-edges-n8n-parity).
+  Контекст и границы:
+  Manual smoke: full-screen canvas, pan/zoom, rejected/upstream dashed edges.
+  Зависимости и готовность:
+  depends_on=implement-graph-canvas-svg-edge-overlay; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Все три view визуально соответствуют n8n edge quality из AN-5.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-5 (analytics:graph-edges-n8n-parity); исполнять после вердикта «полезно» и готовности зависимостей.
+Проверки:
+  Architecture pipeline/full toggle edges OK
+  Schematic upstream dashed edges OK
+  Intent roadmap 4 options + work stack edges OK
+
+Свидетельства:
+  - Architecture / Schematic / Intent roadmap wired through lit-flow island + SVG overlay
+  - tests/graphCanvasLitFlow.test.mjs — architecture + schematic projections pass
+  - tests/intentRoadmapCanvas.test.mjs + intentRoadmapEpicProjection.test.mjs — green
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-5
+  intake.source_kind: analytics-record
+  intake.source_ref: analytics:graph-edges-n8n-parity
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T21:46:13.687Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-30T21:46:13.687Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: implement-graph-canvas-svg-edge-overlay
+  work.id: verify-graph-edges-all-views
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: feature_engineer
+  work.parent_id: implement-graph-canvas-svg-edges-v1
+  work.pipeline_stage: closed
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: src/workGraphBacklogUiServer.mjs, docs/plan-graph-edges-n8n-parity.md, work/analytics/graph-edges-n8n-parity.md
+  work.title: проверить SVG edges на architecture / schematic / intent roadmap
+]>

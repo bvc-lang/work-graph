@@ -1,0 +1,19 @@
+#Протокол_Catalog_Passport_Intent_Alignment<[
+Базис:
+  ioHasC catalog-index и step passport sections живут отдельно от Work Graph rebuild, но discovery/routing должны использовать один identity layer.
+Вектор:
+  Canonical rebuild identity: work.id (primary) + intent.path from intent/index.bvc (location) + trace refs (links).
+  Catalog/passport (legacy, derived): ../project/.iohasc/catalog-index.v1.json entries map to work.id by stepTitle, guid or explicit catalog.packageId label when present.
+  Passport section in .bvc atoms (extractStepPassport) maps to intent node via stepTitle/guid lookup, not by duplicating catalog as source of truth.
+  WorkItem labels for alignment (optional, rebuildable): catalog.entry_id, catalog.package_id, passport.guid, intent.path.
+  src/intentHierarchy.mjs buildCatalogPassportAlignment() emits catalog-passport.intent-alignment.v1 projection for tests and future UI.
+  Rules: catalog remains read/derived; promotion to backlog always creates/updates WorkItem in intent tree first, then rebuilds work/backlog.bvc projection.
+Цель:
+  Step discovery, backlog routing и agent context resolve the same task through work.id and intent.path.
+
+Метки:
+  atom.profile: prompt_rule
+  protocol.id: catalog-passport-intent-alignment
+  work.source: align-catalog-passport-with-intent-graph
+  trace.status: verified
+]>

@@ -1,0 +1,82 @@
+#Протокол_Agent_State_Machine_V1<[
+Базис:
+  ioHasC agent orchestrator накопил эвристики в одном файле; Work Graph rebuild требует явной state machine отдельно от LLM transport и tool policy.
+  protocols/agent-worker-adapter.bvc уже описывает worker input/output; state machine задаёт operator-visible phases до и после provider run.
+Вектор:
+  Зафиксировать состояния: observe, plan, claim, act, verify, record, stop.
+  Tool policy и allowedTools живут отдельно от transport (OpenAI/Cursor/local CLI).
+  Context assembly: current WorkItem snapshot, bounded memorySlice, trace/evidence summaries, targetFiles facts — без replay chat transcript.
+Цель:
+  Agent loop выполняет Work Graph task предсказуемо, с явной остановкой и записью результата.
+
+Проверки:
+  есть список состояний и переходов
+  есть минимальный набор tools
+  есть правило остановки и записи результата
+
+Метки:
+  atom.profile: architecture_decision
+  protocol.id: agent-state-machine-v1
+  work.source: design-agent-state-machine
+  trace.status: verified
+]>
+
+#Состояния_Agent_Loop<[
+Базис:
+  Каждая фаза должна иметь одну ответственность и наблюдаемый output для operator dashboard.
+Вектор:
+  observe: read Work Graph snapshot, blocked/ready queues, recent evidence and memory slice; no side effects.
+  plan: propose next_action, target files and checks for current or selected task; may create StepAtomDraft proposal only through Work Graph tools.
+  claim: select claimable ready task via claimNext policy; transition to claimed/doing; record claim evidence.
+  act: invoke agent worker adapter with Worker Input v1; bounded tools on targetFiles; collect patchSummary and worker-run evidence.
+  verify: run deterministic verification commands from task checks or domain policy; transition to verify status when proposal needs gate.
+  record: normalize Worker Output to Evidence v1 strings; apply transitionStatus only through runtime policy gates.
+  stop: end run when done/blocked/cancelled/needs_human; no hidden retries without new evidence.
+Цель:
+  Operator can trace which phase failed without reading provider logs first.
+
+Метки:
+  atom.profile: trace
+  contract.id: agent-state-states-v1
+  protocol.id: agent-state-machine-v1
+  trace.status: verified
+]>
+
+#Переходы_And_Stop_Rules<[
+Базис:
+  State machine must not invent transitions that bypass Work Graph policy.
+Вектор:
+  observe -> plan when operator or scheduler selects a task focus.
+  plan -> claim when task is ready and dependencies satisfied.
+  claim -> act after successful claim transition and Worker Input build.
+  act -> verify when worker proposes verify/done and checks require command/test/manual review.
+  verify -> record when verification evidence succeeded or failed explicitly.
+  record -> stop when transition applied or blocked by policy with actionable error.
+  act -> stop on cancelled run or needs_human without silent done.
+  Any phase -> stop on timeout, policy denial or operator cancel.
+Цель:
+  Failures surface as blocked/ready with evidence, not as stuck provider session.
+
+Метки:
+  atom.profile: prompt_rule
+  rule.id: agent-state-transitions-v1
+  protocol.id: agent-state-machine-v1
+  trace.status: verified
+]>
+
+#Minimal_Tool_Set_And_Policy<[
+Базис:
+  Tool surface must stay small and aligned with Work Graph runtime, not IDE monolith.
+Вектор:
+  MVP tools: claimNext (read/select), recordEvidence, transitionStatus, read snapshot/target file facts, run bounded verification command (sidecar/local runner).
+  toolPolicy separates: filesystem write scope (targetFiles), network (off by default), shell (verification allowlist only), memory write (draft/needs-review only).
+  LLM transport is not a tool; provider selection follows agent-worker-adapter capability matrix.
+Цель:
+  Agent acts through policy-gated Work Graph operations instead of ad-hoc file edits.
+
+Метки:
+  atom.profile: prompt_rule
+  rule.id: agent-minimal-tool-set-v1
+  protocol.id: agent-state-machine-v1
+  trace.status: verified
+]>

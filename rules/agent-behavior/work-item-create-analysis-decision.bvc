@@ -1,0 +1,20 @@
+#Правило_WorkItem_Create_Analysis_Decision<[
+Базис:
+  Секции «Анализ» и «Решение» обязательны до claim/execute (protocols/work-item-decision-pipeline-v1.bvc).
+  Автoshаблон create_work_item не заменяет человекочитаемый текст — оператор не должен править робототекст после агента.
+Вектор:
+  При create_work_item и seed-epic-* передавать явные basis/vector/goal/checks/analysis/decision на русском (см. .cursor/rules/work-items-russian.mdc).
+  Если analysis/decision не переданы — buildWorkItemCreateAnalysisDecision берёт смысл из basis/goal/dependsOn, без «Целесообразность» / «depends_on=» / «upstream».
+  Запрещено оставлять work.title, Проверки и Анализ на английском telegraphic style («closing doc published», «Track A»).
+  Для intake из analytics-record — intakeSourceKind, intakeSourceRef, analyticsKey; в prose ссылаться «разбор AN-n», не «feeds_epics →».
+  Вердикт useful по умолчанию; harmful/defer только при явном отклонении intake.
+Цель:
+  Новая задача сразу понятна оператору в UI и проходит execution gate без ручной «русификации».
+
+Метки:
+  guid: 550e8400-e29b-41d4-a716-446655443301
+  atom.profile: prompt_rule
+  rule.id: work-item-create-analysis-decision
+  bundle.group: mcp
+  trace.status: verified
+]>

@@ -1,0 +1,58 @@
+#Задача_epic_work_graph_npm_first_distribution<[
+Базис:
+  Per-project install (AN-40) убрал multiproject host, но оставил dev-first: clone WG + engineRoot в config.
+  Обычный пользователь ожидает npm-модель: версия в package.json, CI из коробки, без ручных путей.
+  Dev-first (WORKGRAPH_ENGINE_ROOT) остаётся для контрибьютеров WG — одна кодовая база, два способа установки.
+Вектор:
+  ADR npm-first: user-first default, dev-first override, legacy engineRoot deprecated.
+  Резолвер движка: ENV → legacy config → node_modules.
+  Опубликовать @work-graph/cli и @work-graph/mcp; init без user-facing engineRoot.
+  README, runbook, skill install-work-graph — только npx work-graph init.
+  Тесты и closing doc.
+Цель:
+  Любой проект поднимает Work Graph через npm install без clone внешнего движка; contributors сохраняют WORKGRAPH_ENGINE_ROOT.
+Проверки:
+  ADR и plan приняты
+  @work-graph/cli и @work-graph/mcp на npm
+  init создаёт devDependencies и config без engineRoot
+  Документация и skill не продают ручной clone
+  Тесты npm-first path зелёные
+Анализ:
+  Зачем:
+  engineRoot как основной UX — временный костыль разработки WG, не продуктовая модель.
+  Границы:
+  Полный split @work-graph/runtime / ui-server — phase 2; MVP может bundle в cli.
+  Зависимости:
+  AN-40 (per-project), AN-42 (open publication / npm publish).
+Решение:
+  Вердикт:
+  полезно
+  Исполнять по docs/plan-work-graph-npm-first-distribution.md.
+
+Свидетельства:
+  - AN-43 npm-first distribution shipped in repo
+  - closing doc published
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-43
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-npm-first-distribution.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-01T16:48:00.310Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-01T16:48:00.310Z
+  work.decision.verdict: useful
+  work.department: product-architecture
+  work.id: epic-work-graph-npm-first-distribution
+  work.item_kind: epic
+  work.next_action: —
+  work.owner_role: system_architect
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: work/analytics/work-graph-npm-first-distribution.md, docs/plan-work-graph-npm-first-distribution.md, docs/adr-work-graph-npm-first-distribution.md, packages/work-graph-cli/, packages/workgraph-mcp/, skills/install-work-graph/SKILL.md
+  work.title: Work Graph npm-first: user-first install через npm (AN-43)
+]>

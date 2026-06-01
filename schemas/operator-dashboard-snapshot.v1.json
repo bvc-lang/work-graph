@@ -1,0 +1,169 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "iohasc.operator-dashboard-snapshot.v1",
+  "title": "Operator Dashboard Snapshot V1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "sourceSchema",
+    "source",
+    "currentTasks",
+    "currentTask",
+    "readyQueue",
+    "blocked",
+    "statusCounts",
+    "recentEvidence",
+    "workerRunSummaries",
+    "memoryUpdates",
+    "actionFeed",
+    "viewCounts"
+  ],
+  "properties": {
+    "schema": { "const": "operator-dashboard.snapshot.v1" },
+    "sourceSchema": { "const": "workgraph.snapshot.v1" },
+    "source": { "type": "string", "minLength": 1 },
+    "currentTasks": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/taskSummary" }
+    },
+    "currentTask": {
+      "anyOf": [
+        { "$ref": "#/$defs/taskSummary" },
+        { "type": "null" }
+      ]
+    },
+    "readyQueue": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/readyTask" }
+    },
+    "blocked": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/blockedTask" }
+    },
+    "statusCounts": { "$ref": "#/$defs/countMap" },
+    "recentEvidence": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/evidenceSummary" }
+    },
+    "workerRunSummaries": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/openProjection" }
+    },
+    "memoryUpdates": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/openProjection" }
+    },
+    "actionFeed": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/openProjection" }
+    },
+    "viewCounts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["board", "backlog", "current", "blocked"],
+      "properties": {
+        "board": { "type": "integer", "minimum": 0 },
+        "backlog": { "type": "integer", "minimum": 0 },
+        "current": { "type": "integer", "minimum": 0 },
+        "blocked": { "type": "integer", "minimum": 0 }
+      }
+    }
+  },
+  "$defs": {
+    "countMap": {
+      "type": "object",
+      "additionalProperties": { "type": "integer", "minimum": 0 }
+    },
+    "taskSummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "key",
+        "title",
+        "status",
+        "ownerRole",
+        "department",
+        "priority",
+        "risk",
+        "traceStatus",
+        "nextAction",
+        "targetFiles"
+      ],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "key": { "type": "string" },
+        "title": { "type": "string" },
+        "status": { "type": "string" },
+        "ownerRole": { "type": "string" },
+        "department": { "type": "string" },
+        "priority": { "type": "string" },
+        "risk": { "type": "string" },
+        "traceStatus": { "type": "string" },
+        "nextAction": { "type": "string" },
+        "targetFiles": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "readyTask": {
+      "allOf": [
+        { "$ref": "#/$defs/taskSummary" },
+        {
+          "type": "object",
+          "required": ["dependencies", "claimable"],
+          "properties": {
+            "dependencies": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/dependencyState" }
+            },
+            "claimable": { "type": "boolean" }
+          }
+        }
+      ]
+    },
+    "blockedTask": {
+      "allOf": [
+        { "$ref": "#/$defs/taskSummary" },
+        {
+          "type": "object",
+          "required": ["blocker", "nextUnblockAction"],
+          "properties": {
+            "blocker": { "type": "string" },
+            "nextUnblockAction": { "type": "string" }
+          }
+        }
+      ]
+    },
+    "dependencyState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "status", "satisfied"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "status": { "type": "string" },
+        "satisfied": { "type": "boolean" }
+      }
+    },
+    "evidenceSummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "taskId", "taskTitle", "type", "source", "status", "summary"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "taskId": { "type": "string", "minLength": 1 },
+        "taskTitle": { "type": "string" },
+        "type": { "type": "string" },
+        "source": { "type": "string" },
+        "status": { "type": "string" },
+        "summary": { "type": "string" }
+      }
+    },
+    "openProjection": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  }
+}

@@ -1,0 +1,235 @@
+#Референс_Claude_Note_Memory_Patterns<[
+Базис:
+  Claude Note turns Claude Code sessions into durable notes through hooks, a file queue, a debounced worker, transcript synthesis, KnowledgePack JSON, note routing and MEMORY.md/Obsidian output.
+  Work Graph already has stronger project-state contracts: WorkItem v1, Evidence Record v1, Worker Input/Output v1 and Project Memory v1.
+  Therefore Claude Note is a reference for memory extraction mechanics, not a replacement for Work Graph memory or evidence source of truth.
+Вектор:
+  Adopt the extraction loop shape: observed agent events produce a bounded extraction job, the worker waits until the run is stable, reads structured run/transcript facts, synthesizes candidate memory, deduplicates against nearby records and writes human-readable memory artifacts.
+  Adapt KnowledgePack into Project Memory v1: concepts, decisions, open questions, how-tos, highlights and task outcomes become typed MemoryRecord candidates with sourceWorkItem, evidenceIds, relatedTasks, relatedFiles, confidence and status.
+  Keep note/vault output as readable projection: MEMORY.md or Obsidian-style notes can help humans and agents scan decisions, gotchas and how-tos, but canonical memory remains structured .bvc plus derived JSON export.
+Цель:
+  Work Graph gains an evidence-linked memory extraction loop that preserves useful session knowledge without dumping transcripts or letting provider-specific notes become project truth.
+
+Метки:
+  atom.profile: architecture_decision
+  decision.id: claude-note-memory-patterns
+  work.source: analyze-claude-note-memory-extractor-reference
+  trace.status: verified
+]>
+
+#Паттерны_Взять<[
+Базис:
+  Claude Note has a compact architecture for turning ephemeral agent sessions into searchable human notes.
+Вектор:
+  Hooks/events: observe UserPromptSubmit, PostToolUse and Stop-like milestones as candidate extraction signals; in Work Graph these map to worker-run completion, evidence creation, verification result, human decision and blocker-resolution events.
+  Queue/worker/debounce: use a small extraction queue with debounce or stabilization delay so memory is generated after a coherent unit of work, not after every tool call.
+  Transcript/run reader: extract user intent, touched files, tools/commands, errors, changed artifacts and final outcome; prefer Worker Output and Evidence v1 first, with transcript/logs only as supporting artifacts.
+  KnowledgePack shape: keep highlights, concepts, decisions, open questions, how-tos and note_ops as a useful synthesis envelope before normalizing into MemoryRecord v1.
+  Note routing: route extracted items by project, domain, task, related files and memory type; support safe inbox/needs-review mode before direct updates.
+  Dedup/semantic nearby notes: compare candidate records with existing active memory by type, related files/tasks, evidence ids and semantic similarity to update or supersede instead of duplicating.
+  Human-readable output: maintain MEMORY.md or Obsidian-style sections for Decisions, Patterns, Gotchas, How-tos and Open Questions as a derived readable projection.
+Цель:
+  Adopt the operational loop and readability benefits while keeping Work Graph contracts responsible for durable state and traceability.
+
+Метки:
+  atom.profile: trace
+  reference.id: claude-note-patterns-to-adopt
+  decision.id: claude-note-memory-patterns
+  trace.status: verified
+]>
+
+#Маппинг_KnowledgePack_To_Project_Memory<[
+Базис:
+  Claude Note KnowledgePack is optimized for note synthesis, while Project Memory v1 is optimized for evidence-linked project context.
+Вектор:
+  highlights -> evidence-summary or architecture-fact candidates when they summarize verified work; each candidate must reference sourceWorkItem and evidenceIds.
+  concepts -> architecture-fact, domain-fact or invariant records depending on whether the concept describes system structure, domain behavior or a rule future work must preserve.
+  decisions -> decision records with basisLink/vectorLink/goalLink when available, evidenceIds for the supporting run/test/review and relatedTasks for follow-up impact.
+  open_questions -> open-question records with status=draft or needs-review, relatedTasks and a next-action phrase in summary.
+  howtos -> invariant, architecture-fact or domain-fact records only when the instruction is reusable and project-specific; generic tips stay out of project memory.
+  task outcomes -> evidence-summary or decision records linked to the completed WorkItem, verification evidence and changed artifacts.
+  note_ops -> memory writer operations: create candidate, update active record, append evidence id, mark needs-review, supersede stale record or emit derived human-readable note.
+Цель:
+  KnowledgePack remains a useful intermediate synthesis format, but every durable memory item becomes a typed MemoryRecord v1 with provenance.
+
+Метки:
+  atom.profile: trace
+  contract.id: knowledgepack-memoryrecord-mapping
+  decision.id: claude-note-memory-patterns
+  trace.status: verified
+]>
+
+#Паттерны_Не_Брать_Или_Отложить<[
+Базис:
+  Claude Note intentionally starts from provider transcripts and personal notes, while Work Graph needs auditable project memory tied to work state.
+Вектор:
+  Do not store raw transcript dumps as memory records; transcripts and provider logs belong in evidence artifacts or external logs, summarized through Evidence v1.
+  Do not make Claude-specific synthesis, Claude CLI session files or Claude-only hook names part of the core memory protocol; they are provider adapter details.
+  Do not let unreviewed note mutation become source of truth; direct route mode can exist only after deterministic writer validation and conflict handling.
+  Do not treat Obsidian vault, MEMORY.md or vector/qmd index as canonical memory storage; they are derived human/retrieval projections.
+  Defer automatic preference extraction unless the user explicitly marks a durable project preference.
+  Defer model fallback, rich web session UI, vault-wide semantic routing and line-budget pruning until the MVP writer and review loop are reliable.
+Цель:
+  Prevent a useful auto-note pattern from weakening evidence gates, provider neutrality or the Project Memory source-of-truth boundary.
+
+Метки:
+  atom.profile: prompt_rule
+  rule.id: claude-note-patterns-deferred-or-rejected
+  decision.id: claude-note-memory-patterns
+  trace.status: verified
+]>
+
+#Точки_Запуска_Extraction<[
+Базис:
+  Memory extraction should run when Work Graph has enough stable evidence to produce durable knowledge.
+Вектор:
+  After worker run: create draft candidates from Worker Output, patch summary, touched files, tool/command summaries and run evidence; keep status=draft unless verification is already successful.
+  After verification: promote or update candidates with verification evidence; decisions, invariants and evidence-summary records can become active when gates pass.
+  After human decision: create decision, user-preference or open-question records only from explicit operator review, approval, rejection or instruction.
+  After blocker resolution: convert blocker evidence into risk, gotcha, how-to or invariant records when the resolution is reusable; link both blocker and resolution evidence.
+  After protocol/domain artifact ingestion: create domain-fact or architecture-fact candidates from StepAtomDraft/domain adapters, with file refs and work item links.
+Цель:
+  Memory writes are event-driven by Work Graph lifecycle moments, not by arbitrary chat length or hidden provider session boundaries.
+
+Метки:
+  atom.profile: trace
+  contract.id: memory-extraction-trigger-points
+  decision.id: claude-note-memory-patterns
+  trace.status: verified
+]>
+
+#MVP_Recommendations<[
+Базис:
+  Project Memory v1 already defines fields and storage boundaries, but needs an extraction policy before implementation.
+Вектор:
+  MVP writer input: WorkItem snapshot, structured Evidence v1 records, Worker Output summary, changed/touched files, existing nearby MemoryRecords and optional transcript/log artifact refs.
+  MVP synthesis output: MemoryCandidate pack with candidate id, type, summary, sourceWorkItem, evidenceIds, relatedFiles, relatedTasks, confidence, status, duplicateOf/supersedes and proposed human-readable section.
+  MVP storage: write Project Memory .bvc atoms as canonical draft/active records and generate derived JSON plus optional MEMORY.md sections.
+  MVP routing mode: start with inbox/needs-review for new decisions, invariants and user preferences; allow automatic active evidence-summary records only when linked verification evidence succeeded.
+  MVP dedup: deterministic key by type/sourceWorkItem/evidenceIds plus fuzzy summary comparison against nearby active records; conflicts update status=needs-review instead of overwriting.
+  MVP integration: feed memory updates into operator dashboard snapshot and future agent memorySlice; do not build an independent Claude Note-style vault UI first.
+Цель:
+  Build the smallest useful memory extractor around Work Graph evidence, then add richer semantic routing and human note views after the writer is trustworthy.
+
+Метки:
+  atom.profile: architecture_decision
+  decision.id: claude-note-memory-mvp-scope
+  work.source: analyze-claude-note-memory-extractor-reference
+  trace.status: verified
+]>
+#Референс_Claude_Note_Memory_Patterns<[
+Базис:
+  Claude Note turns Claude Code sessions into project knowledge through hooks, a file queue, a debounced worker, transcript synthesis, KnowledgePack JSON and human-readable MEMORY/Obsidian notes.
+  Work Graph already defines Project Memory v1 as durable records linked to WorkItems and Evidence v1, so Claude Note is a reference for extraction mechanics rather than a replacement memory model.
+  The useful idea is not "save the chat"; it is "extract reviewable project knowledge from observed events after useful work has happened".
+Вектор:
+  Adopt hook/event capture, debounced background extraction, transcript/event reading, KnowledgePack-like intermediate structure, routing/dedup and human-readable memory output.
+  Adapt KnowledgePack into Project Memory v1 records with sourceWorkItem, evidenceIds, relatedTasks and relatedFiles instead of treating notes or transcripts as authoritative state.
+  Keep synthesis provider-neutral: Claude can be one extractor provider, but the memory writer contract must not depend on Claude-only sessions, prompts or vault layout.
+Цель:
+  Work Graph gains a memory extraction loop that converts completed work, verification and human decisions into compact Project Memory records without replaying raw transcripts.
+
+Метки:
+  atom.profile: architecture_decision
+  decision.id: claude-note-memory-patterns
+  work.source: analyze-claude-note-memory-extractor-reference
+  trace.status: verified
+]>
+
+#Паттерны_Взять<[
+Базис:
+  Claude Note has a clear operational loop: hooks emit events, queue stores them durably, worker waits for quiet time, reader builds session facts, synthesizer emits structured knowledge, router writes notes.
+Вектор:
+  Hooks/events: capture meaningful lifecycle events such as prompt submitted, tool used, worker finished, verification completed, human decision recorded and blocker resolved.
+  Queue/worker/debounce: use a small durable extraction queue and per-session/per-task state so memory extraction runs after a stable pause, not while a worker is still changing files.
+  Transcript/event reader: read bounded session facts such as user asks, tools used, files touched, commands run, errors and produced artifacts; do not pass an unbounded transcript directly to memory.
+  KnowledgePack shape: keep an intermediate extraction object with highlights, concepts, decisions, open questions, howtos/task outcomes and proposed memory operations.
+  Note routing: route proposed records by project, domain, work item, file and memory type; support safe modes such as log-only or inbox/needs-review before direct route.
+  Dedup and semantic nearby notes: compare against existing memory records and nearby notes before creating new records; update/supersede when a fact already exists.
+  Human-readable output: keep MEMORY.md or Obsidian-style projections as derived review surfaces for humans and agents that need a compact context file.
+Цель:
+  Preserve Claude Note's practical extraction loop while keeping Work Graph memory typed, auditable and source-linked.
+
+Метки:
+  atom.profile: trace
+  reference.id: claude-note-patterns-to-adopt
+  decision.id: claude-note-memory-patterns
+  trace.status: verified
+]>
+
+#Паттерны_Адаптировать<[
+Базис:
+  Claude Note's KnowledgePack is close to a useful extraction DTO, but Work Graph needs stronger links to WorkItem state and Evidence v1.
+Вектор:
+  highlights map to evidence-summary or task outcome records only when tied to sourceWorkItem and evidenceIds.
+  concepts map to architecture-fact, domain-fact or invariant records based on whether they describe system structure, domain behavior or a rule that must persist.
+  decisions map to decision records with basisLink/vectorLink/goalLink when they come from a protocol/task BVC, plus evidenceIds for verification or manual-review evidence.
+  open_questions map to open-question records with relatedTasks and status=draft or needs-review; they can seed follow-up WorkItems but do not automatically become task state.
+  howtos map to invariant or architecture-fact records only after successful command/test/manual evidence; otherwise they remain needs-review notes.
+  note_ops map to memory writer operations: create record, update record, supersede/retire record or route to review inbox.
+Цель:
+  KnowledgePack becomes a staging format for Project Memory v1 writes, not the canonical memory store.
+
+Метки:
+  atom.profile: trace
+  contract.id: knowledgepack-to-memory-record-v1
+  protocol.id: project-memory-v1
+  trace.status: verified
+]>
+
+#Паттерны_Не_Брать_Или_Отложить<[
+Базис:
+  Claude Note optimizes for personal note capture from Claude Code sessions, while Work Graph must preserve provider-neutral project state and evidence gates.
+Вектор:
+  Do not store full transcript dumps as memory; transcripts and provider logs are evidence artifacts or debugging material, not MemoryRecord summaries.
+  Do not make Claude-only synthesis the memory architecture; extractor providers must consume neutral event/evidence inputs and emit the same staging schema.
+  Do not allow unreviewed note mutation to become source of truth; direct writes can create draft/needs-review records unless backed by successful evidence or explicit human decision.
+  Defer Obsidian vault routing, qmd/vector search, model fallback UI, tray/web sessions UI and MEMORY.md truncation policy until Project Memory writer/export paths exist.
+  Defer automatic user-preference extraction; Project Memory v1 requires explicit confirmation for durable user-preference records.
+Цель:
+  Avoid turning Project Memory into a chat archive, provider feature clone or uncontrolled notes vault.
+
+Метки:
+  atom.profile: prompt_rule
+  rule.id: claude-note-patterns-deferred-or-rejected
+  decision.id: claude-note-memory-patterns
+  trace.status: verified
+]>
+
+#Точки_Запуска_Extraction<[
+Базис:
+  Memory extraction is most valuable when Work Graph has a stable event boundary and enough evidence to separate durable knowledge from temporary run chatter.
+Вектор:
+  After worker run: extract patch summary, touched files, run outcome, provider capability facts and retry/blocker signals from Worker Output and worker-run evidence.
+  After verification: extract decisions, invariants, howtos and evidence-summary records only when command/test/manual-review evidence succeeded or clearly failed with a reusable lesson.
+  After human decision: create decision, user-preference or open-question records from explicit review/approval/rejection evidence.
+  After blocker resolution: update risk/open-question/blocker-related records when the unblock action is known and evidence shows the blocker was resolved.
+  Optional low-priority trigger: after a long planning/design session, create draft/needs-review records from protocol artifacts, not from raw transcript alone.
+Цель:
+  Extraction follows Work Graph lifecycle boundaries and produces auditable memory updates at points where knowledge has actually stabilized.
+
+Метки:
+  atom.profile: trace
+  contract.id: memory-extraction-trigger-points-v1
+  protocol.id: project-memory-v1
+  trace.status: verified
+]>
+
+#MVP_Recommendation<[
+Базис:
+  Project Memory v1 already recommends human-readable .bvc memory atoms and derived JSON export, while Evidence v1 provides the source links needed by a memory writer.
+Вектор:
+  MVP next step: define a MemoryExtractionPack v1 staging schema based on KnowledgePack but with workItemId, evidenceIds, relatedFiles, relatedTasks and proposedOps.
+  MVP next step: implement a log-only/inbox extractor mode that reads WorkItem, Worker Output/Evidence and protocol artifacts, then writes draft memory records for review.
+  MVP next step: add dedup by stable keys first: type + sourceWorkItem + relatedFiles + normalized summary; semantic nearby search can come later as a derived retrieval feature.
+  MVP next step: generate MEMORY.md as a derived compact projection grouped by Decisions, Invariants/Patterns, Gotchas/Risks, How-tos and Open Questions.
+  MVP rule: no memory record reaches active status without evidence ids or explicit human decision; otherwise it remains draft/needs-review.
+Цель:
+  Ship a reviewable memory writer before adding vault routing, vector search or provider-specific transcript synthesis.
+
+Метки:
+  atom.profile: architecture_decision
+  decision.id: claude-note-memory-mvp-scope
+  work.source: analyze-claude-note-memory-extractor-reference
+  trace.status: verified
+]>

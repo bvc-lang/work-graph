@@ -1,0 +1,18 @@
+#!bvc lang=ru
+#Протокол_bvc_new_write_policy_v1<[
+Базис:
+  Фаза 2 plan-step-to-bvc-migration: dual-read .bvc сохранён; новые записи — extension .bvc.
+  ADR adr-bvc-format-naming.md: публичный канон BVC + .bvc; .bvc — legacy read alias.
+Вектор:
+  Agent, MCP create_work_item и human author создают новые protocol/work atoms как *.bvc или *.work.bvc.
+  Legacy *.bvc не переписывать без явного migrate:step-to-bvc --apply.
+  Formatter: npm run bvc format path — canonical output с сохранением atom.lang.
+Цель:
+  Единая политика new-write для Work Graph pilot без mass-rename существующего корпуса.
+
+Метки:
+  atom.profile: protocol
+  protocol.id: bvc-new-write-policy-v1
+  protocol.scope: bvc-canonical-write
+  work.target_files: docs/plan-step-to-bvc-migration.md, src/bvcNewWritePolicy.mjs, packages/workgraph-mcp/src/index.mjs
+]>

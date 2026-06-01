@@ -1,0 +1,50 @@
+#Задача_analyze_promptpilot_task_runner_reference<[
+Базис:
+  PromptPilot показывает практический task runner для CLI-агентов: очередь, worker, provider registry, server, bot и tray.
+  Work Graph уже имеет provider-neutral worker adapter, local runner MVP и Evidence model v1, поэтому внешний пример нужен как контроль архитектурных решений, а не как готовая копия.
+Вектор:
+  Извлечь reusable patterns: SQLite queue, scheduling, provider registry, retry/rate-limit policy, Telegram/tray controls и task result UI.
+  Разделить, что относится к runner layer Work Graph, что остаётся optional integration, а что нужно явно пропустить в MVP.
+  Сопоставить найденные patterns с Worker Input/Output, evidence и status transition loop.
+Цель:
+  Принять короткое решение, какие идеи PromptPilot усиливают Work Graph runner layer без превращения Work Graph в отдельную очередь задач.
+Анализ:
+  Целесообразность:
+  Стоит завести «разобрать PromptPilot как reference task runner» в бэклог.
+  Контекст и границы:
+  Извлечь reusable patterns: SQLite queue, scheduling, provider registry, retry/rate-limit policy, Telegram/tray controls и task result UI.
+  Зависимости и готовность:
+  depends_on=design-agent-worker-adapter, design-evidence-model-v1, implement-agent-worker-local-runner-mvp; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Принять короткое решение, какие идеи PromptPilot усиливают Work Graph runner layer без превращения Work Graph в отдельную очередь задач.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441029
+  migration.strategy: defer
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:35.630Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:35.640Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: design-agent-worker-adapter, implement-agent-worker-local-runner-mvp, design-evidence-model-v1
+  work.id: analyze-promptpilot-task-runner-reference
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: integration_architect
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: protocols/promptpilot-runner-patterns.bvc, protocols/agent-worker-adapter.bvc, protocols/evidence-model-v1.bvc, work/backlog.bvc
+  work.title: разобрать PromptPilot как reference task runner
+]>
+

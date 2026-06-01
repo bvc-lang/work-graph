@@ -1,0 +1,50 @@
+#Задача_design_provider_registry_and_capability_selection<[
+Базис:
+  Agent Worker Adapter задуман provider-neutral: Cursor SDK, Claude SDK/API, OpenAI-compatible endpoint и local runner являются сменными исполнителями, а не ядром.
+  Сейчас buildWorkerProviderCatalog() перечисляет только local/openai, а выбор ограничен явным --provider без capability matching и fallback evidence.
+Вектор:
+  Спроектировать provider registry v1: capabilities, policy constraints, cost/latency hints, native tool-call support, timeout/cancel support, structured output reliability.
+  Описать deterministic selection: required task capabilities -> policy compatibility -> reliability/cost/latency.
+  Описать fallback evidence: previous provider, failure class, reason for switching and retry advice.
+Цель:
+  Scheduler может выбирать исполнителя объяснимо, не превращая Cursor SDK или OpenAI-compatible provider в единственный путь.
+Анализ:
+  Целесообразность:
+  Стоит завести «спроектировать provider registry и capability selection» в бэклог.
+  Контекст и границы:
+  Спроектировать provider registry v1: capabilities, policy constraints, cost/latency hints, native tool-call support, timeout/cancel support, structured output reliability.
+  Зависимости и готовность:
+  depends_on=reconcile-rebuild-scope-against-original-iohasc-plan; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Scheduler может выбирать исполнителя объяснимо, не превращая Cursor SDK или OpenAI-compatible provider в единственный путь.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441098
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:36.126Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:36.133Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: reconcile-rebuild-scope-against-original-iohasc-plan
+  work.id: design-provider-registry-and-capability-selection
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: agent_platform_architect
+  work.pipeline_stage: decided
+  work.priority: critical
+  work.risk: medium
+  work.status: done
+  work.target_files: protocols/agent-worker-provider-registry-v1.bvc, src/workGraphWorkerProvider.mjs, tests/workGraphWorkerProvider.test.mjs, work/backlog.bvc
+  work.title: спроектировать provider registry и capability selection
+]>
+

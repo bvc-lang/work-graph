@@ -1,0 +1,55 @@
+#Задача_wg_ui_molecules_rating_tabs_renderers<[
+Базис:
+  Atoms layer exists; molecules needed for nav/workflow tab parity.
+Вектор:
+  src/ui/molecules/rating.mjs, tabs.mjs + CSS tokens (--ui-rating-*).
+  uiKitPage: секции Rating и Tabs.
+  tests/uiMolecules.test.mjs.
+Цель:
+  Molecules demoable на /dev/ui-kit; готовы для wave-2 tab migration.
+Проверки:
+  GET /dev/ui-kit содержит rating и tabs
+  tests/uiMolecules.test.mjs green
+Анализ:
+  Целесообразность:
+  Стоит завести «WG src/ui/molecules: rating + tabs renderers + ui-kit» в бэклог — по материалам AN-32 (work/analytics/gripe-ds-adoption-phase2-post-an21.md).
+  Контекст и границы:
+  src/ui/molecules/rating.mjs, tabs.mjs + CSS tokens (--ui-rating-*).
+  Зависимости и готовность:
+  depends_on=epic-gripe-ds-adoption-phase2, atomic-spec-molecules-rating-tabs, workgraph-extract-ui-atoms-layer; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Molecules demoable на /dev/ui-kit; готовы для wave-2 tab migration.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-32 (work/analytics/gripe-ds-adoption-phase2-post-an21.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-32
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/gripe-ds-adoption-phase2-post-an21.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-05-31T17:04:02.482Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T17:04:02.482Z
+  work.decision.verdict: useful
+  work.department: ui-dashboard
+  work.depends_on: epic-gripe-ds-adoption-phase2, atomic-spec-molecules-rating-tabs, workgraph-extract-ui-atoms-layer
+  work.id: wg-ui-molecules-rating-tabs-renderers
+  work.item_kind: subtask
+  work.next_action: closed with evidence
+  work.owner_role: frontend_architect
+  work.parent_id: epic-gripe-ds-adoption-phase2
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: src/ui/molecules/rating.mjs, src/ui/molecules/tabs.mjs, src/ui/pages/uiKitPage.mjs, tests/uiMolecules.test.mjs, work/analytics/gripe-ds-adoption-phase2-post-an21.md
+  work.title: WG src/ui/molecules: rating + tabs renderers + ui-kit
+]>

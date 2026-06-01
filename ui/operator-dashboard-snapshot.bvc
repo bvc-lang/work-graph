@@ -1,0 +1,71 @@
+#Дизайн_Operator_Dashboard_Snapshot<[
+Базис:
+  Operator dashboard должен быть derived read model поверх Work Graph, evidence, worker output и memory projections.
+  Текущий /api/snapshot уже отдаёт workgraph.snapshot.v1; browser UI не должен читать raw .bvc или владеть scheduler state.
+Вектор:
+  MVP сохраняет workgraph.snapshot.v1 как базовый runtime interchange и добавляет отдельную derived projection operator-dashboard.snapshot.v1.
+  Projection строится server-side или client-side из workgraph.snapshot.v1 plus optional runner/evidence/memory projection arrays; canonical task state остаётся в .bvc Work Graph.
+  Dashboard snapshot содержит currentTasks/currentTask, readyQueue with dependency satisfaction, blocked tasks, statusCounts, recentEvidence, workerRunSummaries, memoryUpdates, actionFeed and viewCounts.
+  Future durable/cache formats such as NDJSON, SQLite or GBC slices may materialize the same projection, but must keep schema name/version separate from workgraph.snapshot.v1 and not become source of truth.
+Цель:
+  UI может отрисовать operator dashboard without raw .bvc parsing, without hidden provider session replay and without mixing future derived storage with the stable Work Graph snapshot.
+
+Проверки:
+  dashboard snapshot maps from workgraph.snapshot.v1 fields explicitly
+  dashboard includes current/in-progress tasks, ready queue, blocked list, status counts, recent evidence, worker run summaries, memory updates and view counts
+  MVP decision says derive operator-dashboard.snapshot.v1 from workgraph.snapshot.v1 instead of extending canonical snapshot
+  future derived formats remain separate schema/cache layers
+
+Метки:
+  atom.profile: plan
+  design.id: operator-dashboard-snapshot
+  design.input: workgraph.snapshot.v1
+  design.output: operator-dashboard.snapshot.v1
+  design.mvp_decision: derive-dashboard-view
+  work.source: design-operator-dashboard-snapshot
+  trace.status: verified
+]>
+
+#Schema_Operator_Dashboard_Snapshot_V1<[
+Базис:
+  Dashboard needs display-ready fields that combine task state with runner, evidence and memory summaries.
+Вектор:
+  schema: "operator-dashboard.snapshot.v1".
+  sourceSchema/source: copied from workgraph.snapshot.v1 so clients can identify the upstream snapshot contract.
+  currentTasks: array of task summaries where status is claimed, doing, in_progress or verify; currentTask may be derived as first currentTasks item by clients that need one primary card.
+  readyQueue: array of task summaries from workgraph.snapshot.v1.readyQueue with dependencies [{ id, status, satisfied }] and claimable boolean.
+  blocked: array of task summaries for status=blocked or tasks with blocker text, including blocker and nextUnblockAction.
+  statusCounts: status count object copied/normalized from Work Graph items.
+  recentEvidence: compact records { id, taskId, taskTitle, type, source, status, summary } derived from legacy string evidence until Evidence v1 records are materialized.
+  workerRunSummaries: optional projection array for Worker Output v1/run records; MVP accepts an empty array.
+  memoryUpdates: optional projection array for Project Memory v1 update candidates; MVP accepts an empty array.
+  actionFeed: optional projection array for claim/block/evidence/run/memory events; MVP accepts an empty array until runtime events exist.
+  viewCounts: display counts for board, backlog, current and blocked views.
+Цель:
+  Define the minimum dashboard read model without requiring a new scheduler, event store or browser-side .bvc parser.
+
+Метки:
+  atom.profile: trace
+  contract.id: operator-dashboard-snapshot-v1
+  trace.status: verified
+]>
+
+#Mapping_WorkGraph_To_Dashboard_Snapshot<[
+Базис:
+  workgraph.snapshot.v1 already contains enough task data for the first dashboard cards and queues.
+Вектор:
+  workgraph.items[].id/key/title/status/ownerRole/department/priority/risk/nextAction/targetFiles/traceStatus map directly into dashboard task summaries.
+  workgraph.items[].dependsOn plus workgraph.items[].status produce readyQueue.dependencies and claimable.
+  workgraph.readyQueue gives queue ordering; MVP keeps the upstream order and annotates dependency satisfaction.
+  workgraph.items[].blocker and status=blocked produce blocked tasks and nextUnblockAction from nextAction.
+  workgraph.statusCounts maps directly to dashboard.statusCounts; viewCounts is a UI convenience derived from item statuses.
+  workgraph.items[].evidence maps to recentEvidence as legacy-evidence records until Evidence v1 structured records are available.
+  Worker Output v1, Evidence v1 and Project Memory v1 are optional projection inputs for workerRunSummaries, actionFeed and memoryUpdates; they are not inferred from provider transcripts.
+Цель:
+  Make every MVP dashboard field reproducible from stable snapshots/projections and avoid accidental hidden state.
+
+Метки:
+  atom.profile: trace
+  contract.id: workgraph-to-dashboard-snapshot-map
+  trace.status: verified
+]>

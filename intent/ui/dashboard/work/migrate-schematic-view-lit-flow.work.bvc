@@ -1,0 +1,60 @@
+#Задача_migrate_schematic_view_lit_flow<[
+Базис:
+  Источник: analytics:graph-visualization-engine (AN-4).
+  Schematic view — второй потребитель того же runtime; переиспользовать nodes/adapter.
+Вектор:
+  buildSchematicViewModel → GraphCanvasProjection → lit-flow.
+  Upstream/dashed edges и storage layer через edge type mapping.
+Цель:
+  Вкладка «Схема» на lit-flow; клик по блоку → drawer L2.
+Анализ:
+  Целесообразность:
+  Стоит завести «мигрировать схему (schematic) на lit-flow canvas» в бэклог — по материалам AN-4 (analytics:graph-visualization-engine).
+  Контекст и границы:
+  buildSchematicViewModel → GraphCanvasProjection → lit-flow.
+  Зависимости и готовность:
+  depends_on=migrate-architecture-map-lit-flow; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Вкладка «Схема» на lit-flow; клик по блоку → drawer L2.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-4 (analytics:graph-visualization-engine); исполнять после вердикта «полезно» и готовности зависимостей.
+Проверки:
+  schematic panel рендерит lit-flow host
+  npm test schematic/layout не регрессируют на fixture
+
+Свидетельства:
+  - protocols/graph-canvas-lit-flow-v1.bvc + schemas/graph-canvas-lit-flow-projection.v1.json
+  - public/graph-canvas-lit-flow.js (lit-flow client island)
+  - src/graphCanvasLitFlow/* + tests/graphCanvasLitFlow.test.mjs
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-4
+  intake.source_kind: analytics-record
+  intake.source_ref: analytics:graph-visualization-engine
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T19:39:18.373Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-30T19:39:18.373Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: migrate-architecture-map-lit-flow
+  work.id: migrate-schematic-view-lit-flow
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.parent_id: implement-lit-flow-graph-canvas-v1
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: high
+  work.status: done
+  work.target_files: src/schematicView.mjs, src/workGraphBacklogUiServer.mjs, tests/workGraphBacklogUiServer.test.mjs
+  work.title: мигрировать схему (schematic) на lit-flow canvas
+]>

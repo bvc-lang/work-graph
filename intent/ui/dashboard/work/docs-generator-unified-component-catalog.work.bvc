@@ -1,0 +1,58 @@
+#Задача_docs_generator_unified_component_catalog<[
+Базис:
+  AN-21: Marketplace docs/ui/components.md — живой каталог ~98 компонентов.
+  WG не имеет каталога; нужен unified generator из atomic-spec.
+Вектор:
+  packages/docs-generator/ — BVC spec → markdown sections.
+  docs/ui/components.md в WG; sync hook для Marketplace section.
+Цель:
+  Один generator; оба проекта ссылаются на один формат каталога.
+Проверки:
+  docs/ui/components.md генерируется из spec
+  npm run script docs:components green
+Анализ:
+  Целесообразность:
+  Стоит завести «docs-generator: единый каталог components.md» в бэклог — по материалам AN-21 (work/analytics/marketplace-integration-and-shared-design-system.md).
+  Контекст и границы:
+  packages/docs-generator/ — BVC spec → markdown sections.
+  Зависимости и готовность:
+  depends_on=epic-marketplace-shared-design-system, atomic-spec-five-base-atoms; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Один generator; оба проекта ссылаются на один формат каталога.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-21 (work/analytics/marketplace-integration-and-shared-design-system.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-21
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/marketplace-integration-and-shared-design-system.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-05-31T15:34:00.432Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T15:34:00.432Z
+  work.decision.verdict: useful
+  work.department: ui-dashboard
+  work.depends_on: epic-marketplace-shared-design-system, atomic-spec-five-base-atoms
+  work.id: docs-generator-unified-component-catalog
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: frontend_architect
+  work.parent_id: epic-marketplace-shared-design-system
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: packages/docs-generator/, docs/ui/components.md, work/analytics/marketplace-integration-and-shared-design-system.md
+  work.title: docs-generator: единый каталог components.md
+
+Свидетельства:
+  - packages/docs-generator/generateComponentCatalog.mjs → docs/ui/components.md; npm run docs:components
+]>

@@ -1,0 +1,17 @@
+{
+  "id": "en",
+  "canonical": true,
+  "bvc": {
+    "basis": "Basis",
+    "vector": "Vector",
+    "goal": "Goal",
+    "labels": "Labels"
+  },
+  "optional": {
+    "checks": "Checks",
+    "evidence": "Evidence",
+    "analysis": "Analysis",
+    "decision": "Decision",
+    "uiRefs": "UI_References"
+  }
+}

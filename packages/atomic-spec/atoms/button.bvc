@@ -1,0 +1,25 @@
+#!bvc lang=ru
+#Atom_button<[
+Базис:
+  Marketplace `<x-ui.atoms.button>` — reference implementation (variants primary/secondary/flat/soft/black/inverse; sizes lg/md/sm/xs).
+  Work Graph backlog UI дублирует ad-hoc кнопки в inline HTML.
+Вектор:
+  Props: type, href, variant, size, loading, circle, disabled.
+  Variants: primary | secondary | flat | soft | black | inverse.
+  Sizes: lg | md | sm | xs.
+  A11y: aria-busy при loading; aria-disabled для link-as-button.
+Цель:
+  Единый контракт кнопки для Blade (Marketplace) и vanilla render (Work Graph).
+
+Проверки:
+  props parity с marketplace button.blade.php
+  /dev/ui-kit показывает primary/secondary/flat
+
+Метки:
+  atom.profile: ui_component
+  ui.layer: atom
+  ui.id: button
+  ui.marketplace.blade: resources/views/components/ui/atoms/button.blade.php
+  ui.workgraph.module: src/ui/atoms/button.mjs
+  trace.status: verified
+]>

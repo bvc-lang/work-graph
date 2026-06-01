@@ -1,0 +1,49 @@
+#Задача_implement_draft_intake_promotion_rules<[
+Базис:
+  Протокол приёма черновиков есть, но перевод черновиков code-gap в бэклог частично ручной.
+  Задача «Фаза 2: правила автопродвижения черновиков в бэклог» относится к контуру платформы агента и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: phase-2-workgraph-os-daemon.
+Вектор:
+  Детерминированные правила: черновики code-gap с пройденными проверками → список кандидатов бэклога.
+  Ближайший шаг исполнения: просмотреть и перевести в ready.
+Цель:
+  Контролируемый приём без «тихого» засорения бэклога.
+  Готово, когда выполнены проверки: Правила в протоколе или коде.
+Анализ:
+  Целесообразность:
+  Стоит завести «Фаза 2: правила автопродвижения черновиков в бэклог» в бэклог.
+  Контекст и границы:
+  Детерминированные правила: черновики code-gap с пройденными проверками → список кандидатов бэклога.
+  Зависимости и готовность:
+  depends_on=phase-2-workgraph-os-daemon; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Контролируемый приём без «тихого» засорения бэклога.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:36.661Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:36.670Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: phase-2-workgraph-os-daemon
+  work.id: implement-draft-intake-promotion-rules
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: system_architect
+  work.pipeline_stage: decided
+  work.priority: low
+  work.risk: medium
+  work.status: done
+  work.target_files: src/draftIntakePromotionRules.mjs, src/codeGapDraftIntakeApi.mjs, protocols/workgraph-draft-intake.bvc
+  work.title: Фаза 2: правила автопродвижения черновиков в бэклог
+]>

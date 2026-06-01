@@ -1,0 +1,52 @@
+#Задача_define_memory_contract<[
+Базис:
+  Project Memory должна быть не prompt stuffing, а устойчивым слоем фактов, решений и evidence.
+  Задача «определить контракт памяти» относится к контуру графа знаний и retrieval и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: define-workitem-v1.
+Вектор:
+  Разделить source_of_truth, derived_cache, session_runtime и external_evidence.
+  Описать, какие события Work Graph пишут в память.
+  Описать, какие memory slices попадают в agent context.
+Цель:
+  Агент получает полезную память проекта без чтения всего репозитория.
+  Готово, когда выполнены проверки: есть список memory entity.
+Анализ:
+  Целесообразность:
+  Стоит завести «определить контракт памяти» в бэклог.
+  Контекст и границы:
+  Разделить source_of_truth, derived_cache, session_runtime и external_evidence.
+  Зависимости и готовность:
+  depends_on=define-workitem-v1; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Агент получает полезную память проекта без чтения всего репозитория.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441004
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:35.740Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:35.749Z
+  work.decision.verdict: useful
+  work.department: knowledge-publishing
+  work.depends_on: define-workitem-v1
+  work.id: define-memory-contract
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: knowledge_architect
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: protocols/memory-contract-v1.bvc, protocols/project-memory-v1.bvc
+  work.title: определить контракт памяти
+]>
+

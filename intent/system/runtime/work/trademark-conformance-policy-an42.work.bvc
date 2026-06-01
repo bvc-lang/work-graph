@@ -1,0 +1,56 @@
+#Задача_trademark_conformance_policy_an42<[
+Базис:
+  AN-42: рост через brand + conformance, не через секретность; trademark защищает имя, не идею.
+  Нужны правила: кто может писать «BVC-compatible», что считается stable API.
+Вектор:
+  PUBLIC_API.md: stable vs experimental surfaces.
+  Trademark policy draft: BVC, Work Graph, PVRG — использование в marketing и совместимости.
+  Conformance: passing tests/conformance = право на badge (описание процесса).
+Цель:
+  Экосистема может заявлять совместимость по правилам, а не произвольно.
+Проверки:
+  PUBLIC_API.md опубликован
+  Trademark / conformance policy draft в docs/
+  Описан процесс «BVC-compatible» через conformance suite
+Анализ:
+  Зачем:
+  AN-42: рост через brand + conformance, не через секретность; trademark защищает имя, не идею.
+  Контекст: Нужны правила: кто может писать «BVC-compatible», что считается stable API.
+  Когда:
+  После готовности: epic-work-graph-open-publication, publish-bvc-open-standard-pack-an42.
+  Готово, когда:
+  Экосистема может заявлять совместимость по правилам, а не произвольно.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: epic-work-graph-open-publication, publish-bvc-open-standard-pack-an42.
+
+Свидетельства:
+  - docs/trademark-conformance-policy.md
+  - PUBLIC_API.md
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-42
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/open-publication-technology-holdback-strategy.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-01T14:37:53.857Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-01T14:37:53.857Z
+  work.decision.verdict: useful
+  work.department: product-architecture
+  work.depends_on: epic-work-graph-open-publication, publish-bvc-open-standard-pack-an42
+  work.id: trademark-conformance-policy-an42
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: system_architect
+  work.parent_id: epic-work-graph-open-publication
+  work.pipeline_stage: closed
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: work/analytics/open-publication-technology-holdback-strategy.md, PUBLIC_API.md, docs/trademark-conformance-policy.md
+  work.title: Trademark и conformance: BVC-compatible, Work Graph brand
+]>

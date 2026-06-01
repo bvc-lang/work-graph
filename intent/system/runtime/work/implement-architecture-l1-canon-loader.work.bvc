@@ -1,0 +1,54 @@
+#Задача_implement_architecture_l1_canon_loader<[
+Базис:
+  Runtime должен читать canon, не дублировать массив в JS.
+Вектор:
+  src/architectureL1Canon.mjs: parse BVC blocks, edges, digest.
+  Export typed canon model for buildArchitectureSnapshot.
+Цель:
+  Единая точка загрузки L1 для snapshot builder и CLI.
+Проверки:
+  loader returns blocks + edges + canon metadata
+  unit tests on fixture architecture/main.bvc
+Анализ:
+  Целесообразность:
+  Стоит завести «Implement loadArchitectureL1Canon() from architecture/main.bvc» в бэклог — по материалам AN-36 (work/analytics/architecture-main-bvc-canon-hub.md).
+  Контекст и границы:
+  src/architectureL1Canon.mjs: parse BVC blocks, edges, digest.
+  Зависимости и готовность:
+  depends_on=epic-architecture-main-bvc-canon, author-architecture-main-bvc-v1; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Единая точка загрузки L1 для snapshot builder и CLI.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-36 (work/analytics/architecture-main-bvc-canon-hub.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-36
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/architecture-main-bvc-canon-hub.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T21:27:08.515Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T21:27:08.515Z
+  work.decision.verdict: useful
+  work.department: system-runtime
+  work.depends_on: epic-architecture-main-bvc-canon, author-architecture-main-bvc-v1
+  work.id: implement-architecture-l1-canon-loader
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: integration_architect
+  work.parent_id: epic-architecture-main-bvc-canon
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: src/architectureL1Canon.mjs, architecture/main.bvc, tests/architectureL1Canon.test.mjs, work/analytics/architecture-main-bvc-canon-hub.md
+  work.title: Implement loadArchitectureL1Canon() from architecture/main.bvc
+]>

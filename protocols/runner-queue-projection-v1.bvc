@@ -1,0 +1,23 @@
+#Протокол_Runner_Queue_Projection_v1<[
+Базис:
+  protocols/promptpilot-runner-patterns.bvc и runtime-substrate-decision.bvc: SQLite — optional derived queue/index; .bvc Work Graph остаётся canonical.
+  Worker runs уже пишутся в work/worker-runs.jsonl; scheduler нужен rebuildable runnable projection без ownership task semantics.
+Вектор:
+  workgraph.runner.queue.projection.v1 строится из workgraph.snapshot.v1 + optional worker run journal.
+  JSON projection — первый interchange; optional SQLite mirror через DDL workgraph_runner_queue_v1 и sync helper без обязательной native dep в CI.
+  Queue rows: taskId, status, priority, retryCount, nextRunAt, lastRunId, lastRunStatus, providerId, policyHash.
+Цель:
+  Operator и daemon получают durable-friendly dispatch view, rebuildable из canonical backlog при отсутствии SQLite.
+
+Проверки:
+  projection rebuildable from snapshot only
+  journal merge optional
+  SQLite path skip-safe when node:sqlite unavailable
+
+Метки:
+  atom.profile: architecture_decision
+  protocol.id: runner-queue-projection-v1
+  decision.id: runner-queue-projection-v1
+  work.source: implement-sqlite-runner-queue-projection
+  trace.status: verified
+]>

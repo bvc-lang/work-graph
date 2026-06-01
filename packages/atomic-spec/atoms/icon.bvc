@@ -1,0 +1,21 @@
+#!bvc lang=ru
+#Atom_icon<[
+Базис:
+  Marketplace icon atom + inline SVG в organisms.
+Вектор:
+  Props: name, size, title (a11y).
+  MVP: placeholder dot SVG; расширяемый registry имён.
+Цель:
+  Консистентный размер/цвет иконок через --ui-accent-rgb.
+
+Проверки:
+  default size=16
+  aria/title для screen readers
+
+Метки:
+  atom.profile: ui_component
+  ui.layer: atom
+  ui.id: icon
+  ui.workgraph.module: src/ui/atoms/icon.mjs
+  trace.status: verified
+]>

@@ -1,0 +1,13 @@
+#Правило_Ui_Test<[
+Базис:
+  E2E dashboard prompt rule.
+Вектор:
+  Projection scan.
+Цель:
+  Fixture.
+
+Метки:
+  atom.profile: prompt_rule
+  rule.id: ui-test-prompt-rule
+  trace.status: verified
+]>

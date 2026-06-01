@@ -1,0 +1,50 @@
+#Задача_implement_step_code_trace_link_validator<[
+Базис:
+  Trace Links v1 design завершён, но links пока являются протоколом без runtime validator.
+  Первым implementation шагом нужен deterministic validator, который читает .bvc labels/sections, reverse code markers and adapter-resolved file facts without introducing PVRG/GBC as источник истины.
+Вектор:
+  Реализовать минимальный парсер/валидатор trace.code_refs, trace.artifact_refs, trace.evidence_refs, trace.links and iohasc-ref markers.
+  Проверять существование work.id, atom guid when available, evidence ids when available, logical file paths and simple symbol/range locators.
+  Возвращать diagnostics for broken links, orphan markers, stale ranges and weak target_files-only coverage.
+Цель:
+  Work Graph can block trace.status verified when step-code links drift and can expose actionable navigation diagnostics for UI/Graph RAG.
+Анализ:
+  Целесообразность:
+  Стоит завести «реализовать validator Trace Links v1 между .bvc и кодом» в бэклог.
+  Контекст и границы:
+  Реализовать минимальный парсер/валидатор trace.code_refs, trace.artifact_refs, trace.evidence_refs, trace.links and iohasc-ref markers.
+  Зависимости и готовность:
+  depends_on=design-step-code-trace-links-v1; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Work Graph can block trace.status verified when step-code links drift and can expose actionable navigation diagnostics for UI/Graph RAG.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441037
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:37.170Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:37.180Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: design-step-code-trace-links-v1
+  work.id: implement-step-code-trace-link-validator
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: feature_engineer
+  work.pipeline_stage: decided
+  work.priority: critical
+  work.risk: high
+  work.status: done
+  work.target_files: src/workGraphRuntime.mjs, tests/workGraphRuntime.test.mjs, protocols/step-code-trace-links-v1.bvc, work/backlog.bvc
+  work.title: реализовать validator Trace Links v1 между .bvc и кодом
+]>
+

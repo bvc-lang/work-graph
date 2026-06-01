@@ -1,0 +1,23 @@
+#!bvc lang=ru
+#Molecule_rating<[
+Базис:
+  Gripe Marketplace `<x-ui.molecules.rating>` — звёзды рейтинга (MasterClick lineage).
+  Reference: resources/views/components/ui/molecules/rating.blade.php
+Вектор:
+  Props: value, size (xs|sm|md|card|lg|xl), color (blue|yellow-orange|black), showValue, interactive, name.
+  Tokens: --ui-rating-star-size, --ui-rating-active-color.
+Цель:
+  Headless contract для WG vanilla renderer и docs catalog.
+
+Проверки:
+  data-testid=ui-rating
+  supports value "5+" display
+
+Метки:
+  atom.profile: ui_component
+  ui.layer: molecule
+  ui.id: rating
+  ui.marketplace.blade: resources/views/components/ui/molecules/rating.blade.php
+  ui.workgraph.module: src/ui/molecules/rating.mjs
+  trace.status: verified
+]>

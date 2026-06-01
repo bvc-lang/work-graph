@@ -1,0 +1,49 @@
+#Задача_implement_intent_composer_ui_mvp<[
+Базис:
+  В текущем UI есть доска, бэклог, проверки, промпты и runtime-панель Agent Run, но нет места, где пользователь начинает с человеческого намерения.
+  Без раздела «Замысел» пользователь вынужден вручную писать WorkItem или использовать внешний чат.
+Вектор:
+  Добавить вкладку «Замысел»: история короткого диалога, поле ввода, preview IntentDraft/WorkItemDraft, кнопки «Создать задачу», «Создать несколько задач», «Отменить».
+  MVP может быть без streaming и без сторонней chat UI библиотеки; важнее deterministic черновик preview и explicit apply.
+Цель:
+  Первый пользовательский шаг в продукте становится понятным: описать намерение и получить reviewable бэклог черновик.
+Анализ:
+  Целесообразность:
+  Стоит завести «реализовать MVP раздела «Замысел»» в бэклог.
+  Контекст и границы:
+  Добавить вкладку «Замысел»: история короткого диалога, поле ввода, preview IntentDraft/WorkItemDraft, кнопки «Создать задачу», «Создать несколько задач», «Отменить».
+  Зависимости и готовность:
+  depends_on=design-intent-composer-chat-contract, implement-atom-inspector-form-mvp; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Первый пользовательский шаг в продукте становится понятным: описать намерение и получить reviewable бэклог черновик.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441123
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:36.746Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:36.753Z
+  work.decision.verdict: useful
+  work.department: ui-dashboard
+  work.depends_on: design-intent-composer-chat-contract, implement-atom-inspector-form-mvp
+  work.id: implement-intent-composer-ui-mvp
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: frontend_ui_engineer
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: src/workGraphBacklogUiServer.mjs, src/intentComposerApi.mjs, tests/workGraphBacklogUiServer.test.mjs, tests/intentComposerApi.test.mjs, work/backlog.bvc
+  work.title: реализовать MVP раздела «Замысел»
+]>
+

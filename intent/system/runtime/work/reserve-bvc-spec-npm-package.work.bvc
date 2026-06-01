@@ -1,0 +1,61 @@
+#Задача_reserve_bvc_spec_npm_package<[
+Базис:
+  Источник: analytics:bvc-naming-branding-review (AN-18) §9 — npm @bvc/spec свободен; root bvc занят.
+  Без publish scope может занять другой.
+Вектор:
+  Repo packages/bvc-spec/ или external bvc-lang/spec с package.json name @bvc/spec.
+  README: BVC format, link ADR + AN-8, license Apache-2.0.
+  npm publish --access public @bvc/spec@0.0.0.
+Цель:
+  npmjs.com/package/@bvc/spec существует; scope @bvc зарезервирован.
+Анализ:
+  Целесообразность:
+  Стоит завести «опубликовать @bvc/spec@0.0.0 (placeholder npm scope)» в бэклог — по материалам AN-18 (analytics:bvc-naming-branding-review).
+  Контекст и границы:
+  Repo packages/bvc-spec/ или external bvc-lang/spec с package.json name @bvc/spec.
+  Зависимости и готовность:
+  depends_on=bvc-open-canon-naming; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  npmjs.com/package/@bvc/spec существует; scope @bvc зарезервирован.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-18 (analytics:bvc-naming-branding-review); исполнять после вердикта «полезно» и готовности зависимостей.
+Проверки:
+  npm view @bvc/spec version returns 0.0.0
+  README ссылается на ADR и migration plan
+
+Свидетельства:
+  - npm publish @bvc-lang/spec@0.0.0 --access public (2026-05-31, org bvc-lang)
+  - https://www.npmjs.com/package/@bvc-lang/spec (повторный publish: version already exists)
+  - tests/bvcSpecPackage.test.mjs — 4 кейса pass
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-18
+  intake.source_kind: analytics-record
+  intake.source_ref: analytics:bvc-naming-branding-review
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T07:43:54.373Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T07:43:54.373Z
+  work.decision.verdict: useful
+  work.department: architecture
+  work.depends_on: bvc-open-canon-naming
+  work.id: reserve-bvc-spec-npm-package
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: frontend_architect
+  work.parent_id: bvc-open-canon-naming
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: low
+  work.status: done
+  work.target_files: packages/bvc-spec/package.json, docs/adr-bvc-format-naming.md
+  work.title: опубликовать @bvc/spec@0.0.0 (placeholder npm scope)
+]>

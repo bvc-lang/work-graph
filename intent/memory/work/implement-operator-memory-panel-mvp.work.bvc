@@ -1,0 +1,51 @@
+#Задача_implement_operator_memory_panel_mvp<[
+Базис:
+  Раздел «Память» сейчас disabled в навигации, хотя worker уже получает bounded memory slice.
+  Без панели пользователь не может проверить, что именно проект запомнил и откуда это взялось.
+  Предварительно должны быть закрыты зависимости: design-operator-memory-panel-mvp, implement-memory-record-journal-persist.
+Вектор:
+  Реализовать GET /api/memory-projection и вкладку «Память»: type/status summary, список записей, sourceWorkItem, related files/tasks, confidence, reviewRequired.
+  В MVP читать derived candidates из done WorkItems и optional journal, без редактирования записей из UI.
+Цель:
+  Пользователь видит Project Memory как reviewable слой знаний проекта.
+  Готово, когда выполнены проверки: GET /api/memory-projection.
+Анализ:
+  Целесообразность:
+  Стоит завести «реализовать MVP панели «Память»» в бэклог.
+  Контекст и границы:
+  Реализовать GET /api/memory-projection и вкладку «Память»: type/status summary, список записей, sourceWorkItem, related files/tasks, confidence, reviewRequired.
+  Зависимости и готовность:
+  depends_on=design-operator-memory-panel-mvp, implement-memory-record-journal-persist; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Пользователь видит Project Memory как reviewable слой знаний проекта.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441126
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:37.051Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:37.058Z
+  work.decision.verdict: useful
+  work.department: memory
+  work.depends_on: design-operator-memory-panel-mvp, implement-memory-record-journal-persist
+  work.id: implement-operator-memory-panel-mvp
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: frontend_ui_engineer
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: src/memoryPanelProjection.mjs, src/workGraphBacklogUiServer.mjs, tests/memoryPanelProjection.test.mjs, tests/workGraphBacklogUiServer.test.mjs, work/backlog.bvc
+  work.title: реализовать MVP панели «Память»
+]>
+

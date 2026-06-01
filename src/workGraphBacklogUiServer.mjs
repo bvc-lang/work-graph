@@ -1,0 +1,9192 @@
+import { readFileSync } from 'node:fs';
+import { createServer as createHttpServer } from 'node:http';
+import { readFile } from 'node:fs/promises';
+import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+
+import { buildArchitectureSnapshot } from './architectureSnapshot.mjs';
+import {
+  executeAgentRun,
+  readAgentRunJournalResponse,
+  readWorkerProviderCatalogResponse,
+} from './agentRunApi.mjs';
+import { buildPromptRulesProjection } from './promptRulesProjection.mjs';
+import {
+  executePromptRuleSourceRead,
+  executePromptRuleSourceSave,
+} from './promptRulesEditorApi.mjs';
+import { buildCodeGapOperatorProjection } from './codeGapOperatorProjection.mjs';
+import { buildEpicWorkScopeSlice } from './epicWorkScope.mjs';
+import { renderUiKitPageHtml } from './ui/pages/uiKitPage.mjs';
+import { UI_BUTTON_CSS } from './ui/atoms/button.mjs';
+import { UI_BADGE_CSS } from './ui/atoms/badge.mjs';
+import { UI_SELECT_CSS } from './ui/atoms/select.mjs';
+import {
+  renderNavTab,
+  renderThemeToggleButton,
+  renderDetailCloseButton,
+  renderDetailSubCloseButton,
+  renderAgentRunDockCloseButton,
+  renderAgentRunFooterButtons,
+  renderIntentComposerActionButtons,
+  renderIntentDomainClearButton,
+  renderSearchModeSelect,
+  renderCycleFilterSelect,
+  renderIntentDomainFilterSelect,
+  renderAnalyticsSubtabsShell,
+  renderWorkflowSubtabsShell,
+  renderArchitectureSubtabsShell,
+  renderWorkflowDisplayModeSelect,
+} from './ui/backlogShellButtons.mjs';
+import { UI_TABS_CSS } from './ui/molecules/tabs.mjs';
+import { buildPvrgTaskScopeSlice } from './pvrgTaskScope.mjs';
+import { buildWorkItemLinkageDrilldown } from './unifiedLinkageProjection.mjs';
+import { executeSemanticSearchFromRepo } from './semanticSearchWorkflow.mjs';
+import {
+  executeCodeGapDraftApply,
+  executeCodeGapDraftProposal,
+} from './codeGapDraftIntakeApi.mjs';
+import { buildMemoryPanelProjection, buildMemoryRecordsApiResponse } from './memoryPanelProjection.mjs';
+import { buildAnalyticsPanelProjection, buildAnalyticsRecordsApiResponse } from './analyticsPanelProjection.mjs';
+import { buildIntentRoadmapProjection } from './intentRoadmapProjection.mjs';
+import { buildEpicRoadmapProjection } from './intentRoadmapEpicProjection.mjs';
+import { readIntentNodesFromRepo } from './intentNodeRuntime.mjs';
+import { buildEvidenceTimelineForTask } from './evidenceReadModel.mjs';
+import { readWorkerRunJournal } from './agentWorkerLiveLoop.mjs';
+import { readDaemonAuditJournal, readDaemonAuditTailResponse } from './workGraphDaemonTick.mjs';
+import { buildOperatorShellSnapshotV2 } from './operatorShellProjection.mjs';
+import { buildKanbanBoardProjection } from './kanbanBoardProjection.mjs';
+import { buildSchematicViewModel, GRAPH_CANVAS_VIEW_FULL, GRAPH_CANVAS_VIEW_PIPELINE } from './schematicView.mjs';
+import { DEFAULT_DONE_ARCHIVE_CAP } from './workGraphCycleSlice.mjs';
+import { readRunnerQueueProjectionFromRepo } from './workGraphRunnerQueueProjection.mjs';
+import { readWorkItemsFromRepo } from './intentTreeWorkItems.mjs';
+import { buildSnapshot, buildOperatorDashboardSnapshot, parseWorkItems } from './workGraphRuntime.mjs';
+import { buildVerificationSummary } from './verificationLoop.mjs';
+import { executePromoteReady } from './workGraphPromoteReadyApi.mjs';
+import {
+  executeAtomInspectorApply,
+  executeAtomInspectorProposal,
+  readAtomInspectorDraftResponse,
+} from './atomInspectorApi.mjs';
+import {
+  executeIntentComposerApply,
+  executeIntentComposerProposal,
+} from './intentComposerApi.mjs';
+import { buildWorkItemPipelineView } from './workItemDecisionPipeline.mjs';
+import {
+  attachUiReference,
+  listUiReferences,
+  mimeTypeForUiReferenceFileName,
+  resolveUiReferenceFilePath,
+} from './workItemUiReferences.mjs';
+import { workItemStatusOptions } from './atomInspector.mjs';
+import {
+  buildWorkspacesApiResponse,
+  createWorkGraphHostState,
+  ensureHostStateInitialized,
+  registerHostWorkspace,
+  resolveWorkGraphRequestContext,
+  switchHostWorkspace,
+} from './workGraphProjectHost.mjs';
+import { MISSION_CONTROL_CSS } from './missionControlServerHandlers.mjs';
+import {
+  handleHomeSnapshotRequest,
+  handleInboxEventsReadRequest,
+  handleInboxEventsRequest,
+} from './missionControlServerHandlers.mjs';
+
+import { resolveInstallLayout } from './workGraphInstallLayout.mjs';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const {
+  MERMAID_VENDOR_PATH,
+  GRAPH_CANVAS_LIT_FLOW_JS_PATH,
+  GRAPH_CANVAS_LIT_FLOW_CSS_PATH,
+  WORKGRAPH_LOGO_SVG_PATH,
+  PUBLIC_ROOT,
+  DESIGN_TOKENS_GRIPE_CSS_PATH,
+  DESIGN_TOKENS_WG_CSS_PATH,
+  SRC_ROOT,
+} = resolveInstallLayout({ moduleUrl: import.meta.url });
+
+function contentTypeForPublicFont(filePath) {
+  if (filePath.endsWith('.css')) return 'text/css; charset=utf-8';
+  if (filePath.endsWith('.woff2')) return 'font/woff2';
+  if (filePath.endsWith('.woff')) return 'font/woff';
+  return 'application/octet-stream';
+}
+
+function tryServePublicFontsAsset(url, response) {
+  if (!url.pathname.startsWith('/assets/fonts/')) {
+    return false;
+  }
+  const relativePath = decodeURIComponent(url.pathname.slice('/assets/fonts/'.length));
+  if (!relativePath || relativePath.includes('..')) {
+    sendText(response, 403, 'forbidden');
+    return true;
+  }
+  const filePath = join(PUBLIC_ROOT, 'fonts', relativePath);
+  if (!filePath.startsWith(join(PUBLIC_ROOT, 'fonts'))) {
+    sendText(response, 403, 'forbidden');
+    return true;
+  }
+  try {
+    const source = readFileSync(filePath);
+    response.writeHead(200, {
+      'content-type': contentTypeForPublicFont(filePath),
+      'cache-control': 'public, max-age=3600',
+    });
+    response.end(source);
+    return true;
+  } catch {
+    sendText(response, 404, 'not_found');
+    return true;
+  }
+}
+
+function stripModuleForBrowserInline(source) {
+  return source
+    .replace(/^import\s[\s\S]*?from\s+['"][^'"]+['"];?\s*$/gm, '')
+    .replace(/^export /gm, '')
+    .replace(/\/\*\*[\s\S]*?\*\//gm, '');
+}
+
+function loadBrowserGraphCanvasProjectionSource() {
+  return [
+    readFileSync(join(__dirname, 'graphCanvasLitFlow/graphCanvasProjection.mjs'), 'utf8'),
+  ].map(stripModuleForBrowserInline).join('\n');
+}
+
+function loadBrowserArchitectureLayoutSource() {
+  const graphCanvasLayout = stripModuleForBrowserInline(
+    readFileSync(join(__dirname, 'graphCanvasLayout.mjs'), 'utf8'),
+  );
+  const architectureLayout = stripModuleForBrowserInline(
+    readFileSync(join(__dirname, 'architectureLayout.mjs'), 'utf8'),
+  );
+  return `${graphCanvasLayout}\n${architectureLayout}`;
+}
+
+function loadBrowserMarkdownDocumentRenderSource() {
+  return [
+    readFileSync(join(__dirname, 'codeSyntaxHighlight.mjs'), 'utf8'),
+    readFileSync(join(__dirname, 'markdownDocumentRender.mjs'), 'utf8'),
+  ].join('\n')
+    .replace(/^import\s.+$/gm, '')
+    .replace(/^export /gm, '');
+}
+
+function loadBrowserPipelineProseRenderSource() {
+  return readFileSync(join(__dirname, 'pipelineProseRender.mjs'), 'utf8')
+    .replace(/^import\s.+$/gm, '')
+    .replace(/^export /gm, '');
+}
+
+function loadBrowserMissionControlClientSource() {
+  return stripModuleForBrowserInline(
+    readFileSync(join(__dirname, 'missionControlUiClient.mjs'), 'utf8'),
+  );
+}
+
+function loadBrowserWorkflowEpicGroupingSource() {
+  return stripModuleForBrowserInline(
+    readFileSync(join(__dirname, 'workflowEpicGrouping.mjs'), 'utf8'),
+  );
+}
+
+function loadBrowserArchitectureViewsProjectionSource() {
+  return stripModuleForBrowserInline(
+    readFileSync(join(__dirname, 'architectureViewsProjection.mjs'), 'utf8'),
+  );
+}
+
+function loadBrowserWorkflowTreeProjectionSource() {
+  return stripModuleForBrowserInline(
+    readFileSync(join(__dirname, 'workflowTreeProjection.mjs'), 'utf8'),
+  );
+}
+
+function loadBrowserUiButtonClientSource() {
+  return stripModuleForBrowserInline(
+    readFileSync(join(__dirname, 'ui/atoms/buttonClient.mjs'), 'utf8'),
+  );
+}
+
+function loadBrowserUiBadgeClientSource() {
+  return stripModuleForBrowserInline(
+    readFileSync(join(__dirname, 'ui/atoms/badgeClient.mjs'), 'utf8'),
+  );
+}
+
+function loadBrowserWorkItemStatusToneSource() {
+  return stripModuleForBrowserInline(
+    readFileSync(join(__dirname, 'ui/workItemStatusTone.mjs'), 'utf8'),
+  );
+}
+
+const DEFAULT_HOST = '127.0.0.1';
+const DEFAULT_PORT = 4177;
+
+const STATUS_GROUPS = [
+  { id: 'ready', title: 'Доступно агенту', statuses: ['ready'] },
+  { id: 'in_progress', title: 'В работе', statuses: ['claimed', 'doing', 'in_progress'] },
+  { id: 'verify', title: 'Проверка', statuses: ['verify'] },
+  { id: 'blocked', title: 'Заблокировано', statuses: ['blocked'] },
+  { id: 'done', title: 'Завершено', statuses: ['done', 'verified'] },
+];
+
+const OPERATIONAL_BOARD_GROUPS = STATUS_GROUPS.filter((group) => group.id !== 'done');
+const DONE_ARCHIVE_GROUP = { id: 'done_archive', title: 'Архив завершённых', statuses: ['done', 'verified'] };
+
+const BACKLOG_GROUP = { id: 'backlog', title: 'Бэклог', statuses: ['backlog'] };
+
+export function createSnapshotFromText(backlogText) {
+  return buildSnapshot(parseWorkItems(backlogText));
+}
+
+export async function readBacklogSnapshot(options = {}) {
+  const items = await readWorkItemsFromRepo(options);
+  return buildSnapshot(items);
+}
+
+export async function readDashboardSnapshot(options = {}) {
+  const fullItems = await readWorkItemsFromRepo(options);
+  const workGraphSnapshot = buildSnapshot(fullItems);
+  const workerRunSummaries = await readWorkerRunJournal({
+    cwd: options.cwd,
+    journalPath: options.journalPath,
+  });
+  const daemonAuditEntries = await readDaemonAuditJournal({
+    cwd: options.cwd,
+    auditPath: options.auditPath,
+  });
+  const dashboard = buildOperatorDashboardSnapshot(workGraphSnapshot, {
+    evidenceLimit: options.evidenceLimit ?? 8,
+    workerRunSummaries: workerRunSummaries.slice(-8).reverse(),
+    actionFeed: daemonAuditEntries.slice(-8).reverse().map((entry) => ({
+      type: 'daemon_tick',
+      tickId: entry.tickId,
+      taskId: entry.taskId,
+      summary: entry.summary,
+      status: entry.event,
+      recordedAt: entry.recordedAt,
+    })),
+  });
+  return {
+    ...dashboard,
+    verification: buildVerificationSummary(workGraphSnapshot, { items: fullItems }),
+  };
+}
+
+export async function readEvidenceTimelineResponse(options = {}) {
+  const workId = String(options.workId ?? options.taskId ?? '').trim();
+  if (workId === '') {
+    throw new TypeError('workId is required');
+  }
+
+  const items = await readWorkItemsFromRepo(options);
+  const workerRuns = await readWorkerRunJournal({
+    cwd: options.cwd,
+    journalPath: options.journalPath,
+  });
+
+  return buildEvidenceTimelineForTask(items, workId, { workerRuns });
+}
+
+export async function readOperatorShellSnapshot(options = {}) {
+  const workGraphSnapshot = await readBacklogSnapshot(options);
+  const workerRunSummaries = await readWorkerRunJournal({
+    cwd: options.cwd,
+    journalPath: options.journalPath,
+  });
+  const daemonAuditEntries = await readDaemonAuditJournal({
+    cwd: options.cwd,
+    auditPath: options.auditPath,
+  });
+  const dashboardOptions = {
+    evidenceLimit: options.evidenceLimit ?? 8,
+    workerRunSummaries: workerRunSummaries.slice(-8).reverse(),
+    actionFeed: daemonAuditEntries.slice(-8).reverse().map((entry) => ({
+      type: 'daemon_tick',
+      tickId: entry.tickId,
+      taskId: entry.taskId,
+      summary: entry.summary,
+      status: entry.event,
+      recordedAt: entry.recordedAt,
+    })),
+  };
+
+  return buildOperatorShellSnapshotV2(workGraphSnapshot, {
+    ...dashboardOptions,
+    workerRuns: workerRunSummaries,
+    cycleId: options.cycleId,
+    doneArchiveCap: options.doneArchiveCap ?? DEFAULT_DONE_ARCHIVE_CAP,
+    recordedAt: options.recordedAt,
+  });
+}
+
+export async function readArchitectureSnapshot(options = {}) {
+  const workGraphSnapshot = await readBacklogSnapshot(options);
+  const repoRoot = options.repoRoot ?? options.cwd ?? process.cwd();
+  return buildArchitectureSnapshot(workGraphSnapshot, {
+    focusBlockId: options.focusBlockId ?? null,
+    repoRoot,
+  });
+}
+
+export function renderBacklogHtml() {
+  const schematicModelFull = buildSchematicViewModel({ viewMode: GRAPH_CANVAS_VIEW_FULL });
+  const schematicModelPipeline = buildSchematicViewModel({ viewMode: GRAPH_CANVAS_VIEW_PIPELINE });
+  const architectureLayoutSource = loadBrowserArchitectureLayoutSource();
+  const graphCanvasProjectionSource = loadBrowserGraphCanvasProjectionSource();
+  const markdownDocumentRenderSource = loadBrowserMarkdownDocumentRenderSource();
+  const pipelineProseRenderSource = loadBrowserPipelineProseRenderSource();
+  const workflowEpicGroupingSource = loadBrowserWorkflowEpicGroupingSource();
+  const architectureViewsProjectionSource = loadBrowserArchitectureViewsProjectionSource();
+  const workflowTreeProjectionSource = loadBrowserWorkflowTreeProjectionSource();
+  const missionControlClientSource = loadBrowserMissionControlClientSource();
+  const uiButtonClientSource = loadBrowserUiButtonClientSource();
+  const uiBadgeClientSource = loadBrowserUiBadgeClientSource();
+  const workItemStatusToneSource = loadBrowserWorkItemStatusToneSource();
+  const shellNavHome = renderNavTab({ view: 'home', label: 'Главная', selected: true });
+  const shellNavBoard = renderNavTab({ view: 'board', label: 'Доска', selected: false });
+  const shellNavWorkflow = renderNavTab({ view: 'workflow', label: 'Задачи', selected: false });
+  const shellNavVerification = renderNavTab({ view: 'verification', label: 'Проверки', selected: false });
+  const shellNavPrompts = renderNavTab({ view: 'prompts', label: 'Промпты', selected: false });
+  const shellNavMemory = renderNavTab({ view: 'memory', label: 'Память', selected: false });
+  const shellNavAnalytics = renderNavTab({ view: 'analytics', label: 'Аналитика', selected: false });
+  const shellNavArchitecture = renderNavTab({ view: 'architecture', label: 'Архитектура', selected: false });
+  const shellThemeToggle = renderThemeToggleButton();
+  const shellDetailClose = renderDetailCloseButton();
+  const shellDetailSubClose = renderDetailSubCloseButton();
+  const shellAgentDockClose = renderAgentRunDockCloseButton();
+  const shellAgentRunFooter = renderAgentRunFooterButtons();
+  const shellIntentComposerActions = renderIntentComposerActionButtons();
+  const shellIntentDomainClear = renderIntentDomainClearButton();
+  const shellSearchModeSelect = renderSearchModeSelect();
+  const shellCycleFilterSelect = renderCycleFilterSelect();
+  const shellIntentDomainFilterSelect = renderIntentDomainFilterSelect();
+  const shellAnalyticsSubtabs = renderAnalyticsSubtabsShell();
+  const shellWorkflowSubtabs = renderWorkflowSubtabsShell();
+  const shellArchitectureSubtabs = renderArchitectureSubtabsShell();
+  const shellWorkflowDisplayModeSelect = renderWorkflowDisplayModeSelect();
+  return `<!doctype html>
+<html lang="ru" data-iohasc-theme="workgraph-dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Work Graph: атомы задач</title>
+  <link rel="stylesheet" href="/assets/fonts/GraphikLCG/stylesheet.css">
+  <link rel="stylesheet" href="/assets/graph-canvas-lit-flow.css">
+  <link rel="stylesheet" href="/assets/design-tokens-workgraph-dark.css">
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #ffffff;
+      --header-bg: #ffffff;
+      --panel: #ffffff;
+      --panel-2: #f4f5f7;
+      --column-bg: #f4f5f7;
+      --card: #ffffff;
+      --border: #dfe1e6;
+      --text: #172b4d;
+      --muted: #5e6c84;
+      --accent: #0052cc;
+      --accent-soft: #deebff;
+      --warn: #9a6700;
+      --danger: #d1242f;
+      --ok: #1a7f37;
+      --shadow-card: 0 1px 1px rgba(9, 30, 66, .13), 0 0 1px rgba(9, 30, 66, .25);
+      --scrollbar-size: 12px;
+      --scrollbar-track: var(--bg);
+      --scrollbar-thumb: rgba(9, 30, 66, 0.28);
+      --scrollbar-thumb-hover: rgba(9, 30, 66, 0.42);
+      --scrollbar-thumb-active: var(--accent);
+      --sidebar-width: 224px;
+    }
+
+    body[data-theme="dark"] {
+      color-scheme: dark;
+      --bg: rgb(var(--brand-bg-rgb, 30 30 30));
+      --header-bg: rgb(var(--brand-bg-rgb, 24 24 24));
+      --panel: rgb(var(--ui-surface-rgb, 37 37 38));
+      --panel-2: rgb(var(--ui-surface-muted-rgb, 45 45 48));
+      --card: rgb(var(--ui-surface-rgb, 31 31 31));
+      --border: rgb(var(--brand-border-rgb, 60 60 60));
+      --text: rgb(var(--ui-text-rgb, 212 212 212));
+      --muted: rgb(var(--ui-muted-rgb, 157 157 157));
+      --accent: rgb(var(--ui-accent-rgb, 0 102 255));
+      --accent-soft: rgba(var(--ui-accent-rgb, 0 102 255), 0.16);
+      --warn: #f0ad4e;
+      --danger: rgb(var(--ui-danger-rgb, 241 76 76));
+      --ok: #6a9955;
+      --shadow-card: 0 1px 1px rgba(0, 0, 0, .28);
+      --scrollbar-track: var(--bg);
+      --scrollbar-thumb: rgba(255, 255, 255, 0.22);
+      --scrollbar-thumb-hover: rgba(255, 255, 255, 0.34);
+      --scrollbar-thumb-active: var(--accent);
+      --cursor-accent: rgb(var(--ui-accent-rgb, 0 102 255));
+      --cursor-accent-hover: rgb(var(--ui-accent-hover-rgb, 0 90 230));
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      color-scheme: light;
+      font-family: var(--brand-font-sans, 'Graphik LCG', ui-sans-serif, system-ui, sans-serif);
+      letter-spacing: 0.01em;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+    }
+
+    html[data-theme="dark"],
+    body[data-theme="dark"] {
+      color-scheme: dark;
+    }
+
+    b,
+    strong {
+      font-weight: var(--font-weight-strong, 600);
+    }
+
+    * {
+      scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+      scrollbar-width: auto;
+    }
+
+    *::-webkit-scrollbar {
+      height: var(--scrollbar-size);
+      width: var(--scrollbar-size);
+    }
+
+    *::-webkit-scrollbar-track {
+      background: var(--scrollbar-track);
+    }
+
+    *::-webkit-scrollbar-thumb {
+      background-color: var(--scrollbar-thumb);
+      border: 3px solid var(--scrollbar-track);
+      border-radius: 999px;
+      min-height: 48px;
+    }
+
+    *::-webkit-scrollbar-thumb:hover {
+      background-color: var(--scrollbar-thumb-hover);
+    }
+
+    *::-webkit-scrollbar-thumb:active {
+      background-color: var(--scrollbar-thumb-active);
+    }
+
+    *::-webkit-scrollbar-corner {
+      background: var(--scrollbar-track);
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: inherit;
+      font-size: var(--text-base, 0.9375rem);
+      letter-spacing: inherit;
+      line-height: var(--text-base-line-height, 1.5rem);
+    }
+
+    .app-shell {
+      display: grid;
+      grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .app-shell.layout-root {
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      background: var(--header-bg);
+      border-right: 1px solid var(--border);
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      gap: 10px;
+      max-width: var(--sidebar-width);
+      min-width: var(--sidebar-width);
+      overflow-x: hidden;
+      overflow-y: auto;
+      padding: 16px 0 12px;
+      width: var(--sidebar-width);
+    }
+
+    .sidebar-footer {
+      border-top: 1px solid var(--border);
+      margin-top: auto;
+      padding: 10px 12px 0;
+    }
+
+    .project-title {
+      border-bottom: 1px solid var(--border);
+      margin: 0 12px;
+      padding: 10px 4px 12px;
+    }
+
+    .project-logo {
+      display: block;
+      height: 24px;
+      max-width: 100%;
+      width: auto;
+    }
+
+    body[data-theme="dark"] .project-logo {
+      filter: brightness(0) invert(1);
+    }
+
+    .sidebar-nav {
+      display: grid;
+      gap: 2px;
+      padding: 8px 8px 0;
+    }
+
+    .sidebar-nav-advanced {
+      margin-top: 8px;
+    }
+
+    .nav-tab {
+      align-items: center;
+      background: transparent;
+      border: 0;
+      border-left: 3px solid transparent;
+      border-radius: 0 3px 3px 0;
+      box-sizing: border-box;
+      color: var(--text);
+      cursor: pointer;
+      display: flex;
+      font: inherit;
+      font-size: var(--text-sm);
+      gap: 8px;
+      justify-content: flex-start;
+      min-width: 0;
+      padding: 8px 10px 8px 7px;
+      text-align: left;
+      width: 100%;
+    }
+
+    .nav-tab:hover {
+      background: var(--panel-2);
+    }
+
+    .nav-tab[aria-selected="true"] {
+      background: #ebecf0;
+      border-left-color: var(--accent);
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    body[data-theme="dark"] .nav-tab[aria-selected="true"] {
+      background: #17324d;
+      border-left-color: var(--accent);
+      color: #cce0ff;
+    }
+
+    .nav-tab[disabled] {
+      color: var(--muted);
+      cursor: not-allowed;
+      opacity: .62;
+    }
+
+    .badge {
+      background: #ebecf0;
+      border: 0;
+      border-radius: 999px;
+      color: #42526e;
+      font-size: var(--text-sm);
+      min-width: 26px;
+      padding: 1px 6px;
+      text-align: center;
+    }
+
+    .content {
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      max-height: 100vh;
+      min-height: 0;
+      min-width: 0;
+      overflow-x: hidden;
+      overflow-y: auto;
+      padding: 20px 32px 28px;
+    }
+
+    .content.is-graph-workspace {
+      height: 100vh;
+      max-height: 100vh;
+      overflow: hidden;
+      padding: 0;
+    }
+
+    .content.is-graph-workspace .page-header,
+    .content.is-graph-workspace .toolbar {
+      display: none !important;
+    }
+
+    .content.is-graph-workspace > .view:not([hidden]) {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      height: 100%;
+      min-height: 0;
+    }
+
+    .graph-workspace-view {
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .graph-workspace-panel {
+      background: var(--bg);
+      border: 0;
+      box-shadow: none;
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      gap: 0;
+      height: 100%;
+      min-height: 0;
+      padding: 0;
+    }
+
+    .graph-workspace-toolbar-floating {
+      align-items: center;
+      background: color-mix(in srgb, var(--panel) 92%, transparent);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+      display: flex;
+      gap: 12px;
+      padding: 8px 10px;
+      pointer-events: auto;
+      position: absolute;
+      right: 12px;
+      top: 12px;
+      z-index: 6;
+    }
+
+    .graph-workspace-canvas {
+      flex: 1;
+      height: 100%;
+      min-height: 0;
+      position: relative;
+    }
+
+    .graph-workspace-canvas .graph-canvas-lit-flow-host {
+      border: 0 !important;
+      border-radius: 0 !important;
+      height: 100% !important;
+      inset: 0;
+      min-height: 0 !important;
+      position: absolute;
+      width: 100%;
+    }
+
+    .graph-workspace-stack {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      gap: 0;
+      height: 100%;
+      min-height: 0;
+      overflow: auto;
+    }
+
+    .graph-workspace-stack .graph-workspace-panel {
+      flex: 1 0 100%;
+      height: 100%;
+      min-height: 100%;
+    }
+
+    .graph-workspace-panel.architecture-panel,
+    .graph-workspace-panel.schematic-panel {
+      background: var(--bg);
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      padding: 0;
+    }
+
+    .graph-workspace-canvas.schematic-canvas-wrap {
+      margin: 0;
+      overflow: hidden;
+      padding: 0;
+    }
+
+    .graph-workspace-canvas .schematic-canvas {
+      height: 100%;
+      inset: 0;
+      position: absolute;
+      width: 100%;
+    }
+
+    .page-header {
+      margin-bottom: 16px;
+    }
+
+    .breadcrumbs {
+      align-items: center;
+      color: var(--muted);
+      display: flex;
+      flex-wrap: wrap;
+      font-size: var(--text-sm);
+      gap: 6px;
+      margin: 0 0 6px;
+    }
+
+    .breadcrumb-link,
+    .breadcrumb-muted {
+      color: var(--muted);
+    }
+
+    .breadcrumb-sep {
+      color: #97a0af;
+    }
+
+    .breadcrumb-current {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .page-header h1 {
+      font-size: var(--text-2xl, 1.4375rem);
+      font-weight: var(--font-weight-strong, 600);
+      letter-spacing: var(--text-heading-letter-spacing, 0.01em);
+      line-height: var(--text-2xl-line-height, 1.875rem);
+      margin: 0;
+    }
+
+    .workflow-filters[hidden] {
+      display: none !important;
+    }
+
+    .workflow-subtabs {
+      align-items: center;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .workflow-subtab {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      cursor: pointer;
+      font: inherit;
+      font-size: var(--font-size-sm);
+      padding: 6px 12px;
+    }
+
+    .workflow-subtab.is-active,
+    .workflow-subtab[aria-selected="true"] {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    body[data-theme="dark"] .workflow-subtab.is-active,
+    body[data-theme="dark"] .workflow-subtab[aria-selected="true"] {
+      background: rgba(0, 102, 255, 0.16);
+    }
+
+    .workflow-panel[hidden] {
+      display: none !important;
+    }
+
+    .topbar {
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 16px;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding: 0 0 12px;
+    }
+
+    .topbar-main {
+      align-items: flex-start;
+      display: flex;
+      flex: 1;
+      gap: 16px;
+      justify-content: space-between;
+      min-width: 0;
+    }
+
+    .topbar h1 {
+      font-size: var(--text-xl);
+      font-weight: 600;
+      line-height: 1.25;
+      margin: 0;
+    }
+
+    .topbar p {
+      color: var(--muted);
+      font-size: var(--font-size-sm);
+      margin: 4px 0 0;
+    }
+
+    .board-toolbar {
+      align-items: center;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .board-tabs {
+      align-items: center;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .board-tabs[hidden] {
+      display: none !important;
+    }
+
+    .board-tab {
+      background: transparent;
+      border: 0;
+      border-radius: 3px;
+      color: var(--muted);
+      font: inherit;
+      font-size: var(--text-sm);
+      padding: 6px 8px;
+    }
+
+    .board-tab.is-active {
+      background: #deebff;
+      color: #0747a6;
+      font-weight: 600;
+    }
+
+    body[data-theme="dark"] .board-tab.is-active {
+      background: #17324d;
+      color: #cce0ff;
+    }
+
+    .toolbar {
+      align-items: center;
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .toolbar[hidden] {
+      display: none !important;
+    }
+
+    .search {
+      flex: 0 1 280px;
+      min-width: 180px;
+    }
+
+    #board-view .kanban-board {
+      margin-bottom: 12px;
+    }
+
+    .prompt-rule-editor {
+      display: grid;
+      gap: 8px;
+    }
+
+    .prompt-rule-editor textarea {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: var(--text);
+      font-family: var(--mono, Consolas, monospace);
+      font-size: var(--text-sm);
+      min-height: 220px;
+      padding: 10px;
+      width: 100%;
+    }
+
+    .prompt-rule-editor-errors {
+      color: #f48771;
+      font-size: var(--text-sm);
+      white-space: pre-wrap;
+    }
+
+    .workflow-filters {
+      align-items: center;
+      display: flex;
+      flex-shrink: 0;
+      flex-wrap: nowrap;
+      gap: 8px;
+    }
+
+    .theme-toggle {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: var(--text);
+      cursor: pointer;
+      padding: 7px 9px;
+      text-align: left;
+      width: 100%;
+    }
+
+    .theme-toggle:hover {
+      border-color: var(--accent);
+    }
+
+    .verification-panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: var(--shadow-card);
+      display: grid;
+      gap: 10px;
+      margin-bottom: 12px;
+      padding: 12px 14px;
+      width: 100%;
+    }
+
+    .verification-panel-header {
+      align-items: flex-start;
+      display: flex;
+      gap: 12px;
+      justify-content: space-between;
+    }
+
+    .verification-panel-header h2 {
+      font-size: var(--text-lg);
+      margin: 0 0 4px;
+    }
+
+    .verification-panel-header p {
+      color: var(--muted);
+      font-size: var(--text-base);
+      margin: 0;
+    }
+
+    .verification-tier-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .verification-tier-badge {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: var(--text-sm);
+      padding: 3px 8px;
+    }
+
+    .verification-matrix {
+      border-collapse: collapse;
+      font-size: var(--text-base);
+      width: 100%;
+    }
+
+    .verification-matrix th,
+    .verification-matrix td {
+      border-bottom: 1px solid var(--border);
+      padding: 6px 8px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .verification-matrix th {
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .verification-status {
+      border-radius: 999px;
+      display: inline-block;
+      font-size: var(--text-sm);
+      font-weight: 600;
+      padding: 2px 8px;
+      text-transform: lowercase;
+    }
+
+    .verification-status.is-passed { background: rgba(26, 127, 55, .16); color: var(--ok); }
+    .verification-status.is-pending { background: rgba(154, 103, 0, .16); color: var(--warn); }
+    .verification-status.is-blocked { background: rgba(209, 36, 47, .16); color: var(--danger); }
+    .verification-status.is-not_run { background: var(--panel-2); color: var(--muted); }
+    .verification-status.is-failed { background: rgba(209, 36, 47, .16); color: var(--danger); }
+
+    .verification-evidence-list {
+      display: grid;
+      gap: 0;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .verification-evidence-list > li {
+      border-bottom: 1px solid var(--border);
+      font-size: var(--text-base);
+      padding: 10px 12px;
+    }
+
+    .verification-evidence-list > li:last-child {
+      border-bottom: 0;
+    }
+
+    .verification-evidence-list > li h3 {
+      font-size: var(--text-base);
+      font-weight: 600;
+      line-height: 1.3;
+      margin: 0;
+    }
+
+    .code-gap-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .code-gap-actions button {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text);
+      cursor: pointer;
+      font-size: var(--font-size-sm);
+      padding: 4px 10px;
+    }
+
+    .code-gap-actions button[data-action="code-gap-apply"] {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .code-gap-actions button[disabled] {
+      cursor: not-allowed;
+      opacity: 0.45;
+    }
+
+    .code-gap-intake-preview,
+    .code-gap-intake-errors {
+      background: #1e1e1e;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-family: 'JetBrains Mono', Consolas, monospace;
+      font-size: var(--font-size-sm);
+      margin-top: 10px;
+      max-height: 240px;
+      overflow: auto;
+      padding: 10px;
+      white-space: pre-wrap;
+    }
+
+    .code-gap-intake-errors {
+      border-color: rgba(209, 36, 47, .45);
+      color: #f0a0a0;
+    }
+
+    .intent-composer-panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: var(--shadow-card);
+      display: grid;
+      gap: 12px;
+      margin-bottom: 12px;
+      padding: 12px 14px;
+    }
+
+    .intent-composer-panel-header h2 {
+      font-size: var(--text-lg);
+      margin: 0 0 4px;
+    }
+
+    .intent-composer-panel-header p {
+      color: var(--muted);
+      font-size: var(--text-sm);
+      margin: 0;
+    }
+
+    .intent-composer-chat {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      display: grid;
+      gap: 8px;
+      max-height: 220px;
+      overflow: auto;
+      padding: 10px;
+    }
+
+    .intent-composer-message {
+      border-radius: 6px;
+      font-size: var(--text-sm);
+      line-height: 1.45;
+      padding: 8px 10px;
+    }
+
+    .intent-composer-message.is-user {
+      background: rgba(0, 102, 255, .12);
+      border: 1px solid rgba(0, 102, 255, .25);
+    }
+
+    .intent-composer-message.is-system {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: var(--font-size-sm);
+    }
+
+    .intent-composer-input-row {
+      display: grid;
+      gap: 8px;
+    }
+
+    .intent-composer-input-row textarea {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: var(--text-sm);
+      min-height: 88px;
+      padding: 10px;
+      resize: vertical;
+    }
+
+    .intent-composer-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .intent-composer-actions button {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      cursor: pointer;
+      font-size: var(--text-sm);
+      padding: 8px 12px;
+    }
+
+    .intent-composer-actions button[data-action="propose"] {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .intent-composer-actions button[data-action="apply"] {
+      background: #1f6f43;
+      border-color: #1f6f43;
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .intent-composer-actions button[disabled] {
+      cursor: wait;
+      opacity: .65;
+    }
+
+    .intent-composer-preview,
+    .intent-composer-errors {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: var(--font-size-sm);
+      max-height: 320px;
+      overflow: auto;
+      padding: 10px;
+      white-space: pre-wrap;
+    }
+
+    .intent-composer-errors {
+      border-color: #8b3a3a;
+      color: #ffb4b4;
+    }
+
+    .memory-panel,
+    .analytics-panel,
+    .prompts-panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      box-shadow: none;
+      margin-bottom: 12px;
+      overflow: hidden;
+      width: 100%;
+    }
+
+    .memory-summary,
+    .analytics-summary,
+    .prompts-summary {
+      display: none;
+    }
+
+    .pill {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: var(--muted);
+      font-size: var(--text-sm);
+      padding: 4px 7px;
+    }
+
+    .pill strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .board {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(4, minmax(272px, 1fr));
+      overflow-x: auto;
+      overflow-y: visible;
+      padding-bottom: 8px;
+    }
+
+    .column {
+      background: var(--column-bg);
+      border: 0;
+      border-radius: 3px;
+      display: flex;
+      flex-direction: column;
+      padding: 8px 8px 12px;
+    }
+
+    body[data-theme="dark"] .column {
+      background: var(--panel-2);
+    }
+
+    .column h2 {
+      align-items: center;
+      display: flex;
+      color: var(--muted);
+      font-size: var(--text-sm);
+      font-weight: 700;
+      justify-content: space-between;
+      letter-spacing: .04em;
+      line-height: 1.2;
+      margin: 0 0 10px;
+      min-height: 24px;
+      padding: 0 4px;
+      text-transform: uppercase;
+    }
+
+    .count {
+      background: #dfe1e6;
+      border-radius: 999px;
+      color: #42526e;
+      font-size: var(--text-sm);
+      font-weight: 700;
+      min-width: 20px;
+      padding: 1px 6px;
+      text-align: center;
+      text-transform: none;
+    }
+
+    body[data-theme="dark"] .count {
+      background: var(--panel-2);
+      color: var(--muted);
+    }
+
+    .task-atom {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      box-shadow: var(--shadow-card);
+      color: var(--text);
+      cursor: pointer;
+      display: block;
+      font: inherit;
+      margin-bottom: 8px;
+      padding: 10px 10px 8px;
+      text-align: left;
+      width: 100%;
+    }
+
+    .task-atom:hover {
+      background: #ffffff;
+      border-color: #c1c7d0;
+      box-shadow: 0 2px 6px rgba(9, 30, 66, .16), 0 0 1px rgba(9, 30, 66, .3);
+    }
+
+    body[data-theme="dark"] .task-atom:hover {
+      background: var(--card);
+      border-color: #555555;
+    }
+
+    .task-atom h3 {
+      color: #172b4d;
+      font-size: var(--text-base);
+      font-weight: 500;
+      line-height: 1.35;
+      margin: 0;
+    }
+
+    body[data-theme="dark"] .task-atom h3 {
+      color: var(--text);
+    }
+
+    .id {
+      color: #6b778c;
+      font: 14px/1.35 Consolas, "Cascadia Code", monospace;
+      font-weight: 700;
+      overflow-wrap: anywhere;
+      text-transform: uppercase;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 8px;
+    }
+
+    .issue-footer {
+      align-items: center;
+      display: flex;
+      gap: 6px;
+      justify-content: space-between;
+      margin-top: 9px;
+      min-height: 22px;
+    }
+
+    .issue-footer-left,
+    .issue-footer-right {
+      align-items: center;
+      display: flex;
+      gap: 5px;
+      min-width: 0;
+    }
+
+    .owner-avatar {
+      align-items: center;
+      background: #deebff;
+      border-radius: 50%;
+      color: #0747a6;
+      display: inline-flex;
+      flex: 0 0 auto;
+      font-size: var(--text-sm);
+      font-weight: 700;
+      height: 28px;
+      justify-content: center;
+      width: 28px;
+    }
+
+    body[data-theme="dark"] .owner-avatar {
+      background: #17324d;
+      color: #cce0ff;
+    }
+
+    .semantic-core {
+      margin-top: 6px;
+    }
+
+    .semantic-line {
+      color: #5e6c84;
+      font-size: var(--text-base);
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+    }
+
+    body[data-theme="dark"] .semantic-line {
+      color: var(--muted);
+    }
+
+    .tag {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: var(--muted);
+      font-size: var(--text-sm);
+      line-height: 1.25;
+      padding: 2px 5px;
+    }
+
+    .tag-compact {
+      background: transparent;
+      border: 0;
+      color: #6b778c;
+      font-size: var(--text-sm);
+      font-weight: 700;
+      line-height: 1.2;
+      max-width: 115px;
+      overflow: hidden;
+      padding: 0;
+      text-overflow: ellipsis;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .status-badge {
+      align-items: center;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      display: inline-flex;
+      font-size: var(--text-sm);
+      font-weight: 700;
+      line-height: 1;
+      max-width: 130px;
+      overflow: hidden;
+      padding: 4px 7px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .status-badge.is-backlog {
+      background: #f4f5f7;
+      border-color: #dfe1e6;
+      color: #5e6c84;
+    }
+
+    .status-badge.is-ready {
+      background: #e9f2ff;
+      border-color: #b6d4ff;
+      color: #0747a6;
+    }
+
+    .status-badge.is-claimed,
+    .status-badge.is-doing,
+    .status-badge.is-in_progress {
+      background: #fff7d6;
+      border-color: #f0c36d;
+      color: #7a4f01;
+    }
+
+    .status-badge.is-verify {
+      background: #eae6ff;
+      border-color: #c0b6f2;
+      color: #403294;
+    }
+
+    .status-badge.is-blocked {
+      background: #ffebe6;
+      border-color: #ffbdad;
+      color: #bf2600;
+    }
+
+    .status-badge.is-done,
+    .status-badge.is-verified {
+      background: #e3fcef;
+      border-color: #abf5d1;
+      color: #006644;
+    }
+
+    body[data-theme="dark"] .status-badge.is-backlog {
+      background: #2d2d30;
+      border-color: #3c3c3c;
+      color: #c8c8c8;
+    }
+
+    body[data-theme="dark"] .status-badge.is-ready {
+      background: #17324d;
+      border-color: #24517a;
+      color: #cce0ff;
+    }
+
+    body[data-theme="dark"] .status-badge.is-claimed,
+    body[data-theme="dark"] .status-badge.is-doing,
+    body[data-theme="dark"] .status-badge.is-in_progress {
+      background: #3d2e12;
+      border-color: #7a5a16;
+      color: #ffd599;
+    }
+
+    body[data-theme="dark"] .status-badge.is-verify {
+      background: #2f2a52;
+      border-color: #5d55a3;
+      color: #d6d0ff;
+    }
+
+    body[data-theme="dark"] .status-badge.is-blocked {
+      background: #4a1f1a;
+      border-color: #8f3328;
+      color: #ffb3b3;
+    }
+
+    body[data-theme="dark"] .status-badge.is-done,
+    body[data-theme="dark"] .status-badge.is-verified {
+      background: #173b2b;
+      border-color: #2f6f4f;
+      color: #b5f2cf;
+    }
+
+    .status-badge.is-planned {
+      background: #f0ecff;
+      border-color: #c4b5fd;
+      color: #5b21b6;
+    }
+
+    body[data-theme="dark"] .status-badge.is-planned {
+      background: #2a2140;
+      border-color: #5b4a8a;
+      color: #d8ccff;
+    }
+
+    .task-atom-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .task-promote-button {
+      align-self: flex-start;
+      background: transparent;
+      border: 1px solid var(--cursor-accent, #0066ff);
+      border-radius: 4px;
+      color: var(--cursor-accent, #0066ff);
+      cursor: pointer;
+      font-size: var(--font-size-sm);
+      padding: 4px 8px;
+    }
+
+    .task-promote-button:hover {
+      background: rgba(0, 102, 255, 0.12);
+    }
+
+    .detail-promote-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .detail-promote-button {
+      background: var(--cursor-accent, #0066ff);
+      border: 0;
+      border-radius: 4px;
+      color: #fff;
+      cursor: pointer;
+      font-size: var(--font-size-sm);
+      padding: 8px 12px;
+    }
+
+    .detail-toolbar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .detail-toolbar .wg-btn--secondary {
+      background: rgb(var(--ui-control-bg-rgb, 45 45 48));
+      color: rgb(var(--ui-text-rgb, 212 212 212));
+      border-color: rgb(var(--brand-border-rgb, 60 60 60));
+    }
+
+    body:not([data-theme="dark"]) .detail-toolbar .wg-btn--secondary {
+      background: var(--panel-2);
+      color: var(--text);
+      border-color: var(--border);
+    }
+
+    .atom-inspector-form {
+      display: grid;
+      gap: 12px;
+    }
+
+    .atom-inspector-field label {
+      color: var(--muted);
+      display: block;
+      font-size: var(--font-size-sm);
+      margin-bottom: 4px;
+    }
+
+    .atom-inspector-field input,
+    .atom-inspector-field select,
+    .atom-inspector-field textarea {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text);
+      font: inherit;
+      padding: 8px;
+      width: 100%;
+    }
+
+    .atom-inspector-field textarea {
+      min-height: 72px;
+      resize: vertical;
+    }
+
+    .atom-inspector-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .atom-inspector-actions button {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text);
+      cursor: pointer;
+      font-size: var(--font-size-sm);
+      padding: 8px 10px;
+    }
+
+    .atom-inspector-actions button[data-action="apply"] {
+      background: var(--cursor-accent, #0066ff);
+      border-color: var(--cursor-accent, #0066ff);
+      color: #fff;
+    }
+
+    .atom-inspector-preview,
+    .atom-inspector-errors {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text);
+      font-family: "JetBrains Mono", Consolas, monospace;
+      font-size: var(--font-size-sm);
+      max-height: 240px;
+      overflow: auto;
+      padding: 10px;
+      white-space: pre-wrap;
+    }
+
+    .atom-inspector-errors {
+      border-color: var(--danger);
+      color: #ffb3b3;
+    }
+
+    .priority-critical, .risk-high { border-color: var(--danger); color: var(--danger); }
+    .priority-high, .risk-medium { border-color: var(--warn); color: var(--warn); }
+    .trace-verified { border-color: var(--ok); color: var(--ok); }
+    body[data-theme="dark"] .priority-critical,
+    body[data-theme="dark"] .risk-high { color: #ffb3b3; }
+    body[data-theme="dark"] .priority-high,
+    body[data-theme="dark"] .risk-medium { color: #ffd599; }
+    body[data-theme="dark"] .trace-verified { color: #b5cea8; }
+
+    details {
+      margin-top: 8px;
+    }
+
+    summary {
+      color: var(--muted);
+      cursor: pointer;
+      font-size: var(--text-sm);
+    }
+
+    ul {
+      margin: 6px 0 0;
+      padding-left: 18px;
+    }
+
+    li {
+      color: var(--muted);
+      margin: 3px 0;
+      overflow-wrap: anywhere;
+    }
+
+    .empty, .error {
+      border: 1px dashed var(--border);
+      border-radius: 3px;
+      color: var(--muted);
+      padding: 12px;
+      text-align: center;
+    }
+
+    .error {
+      border-color: var(--danger);
+      color: #ffb3b3;
+    }
+
+    .view[hidden] {
+      display: none;
+    }
+
+    .home-mission-control {
+      width: 100%;
+    }
+
+    .backlog-panel,
+    .list-panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      width: 100%;
+    }
+
+    .backlog-panel-header,
+    .list-panel-header {
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 12px;
+    }
+
+    .backlog-panel-header h2,
+    .list-panel-header h2 {
+      font-size: var(--text-lg);
+      margin: 0;
+    }
+
+    .backlog-list,
+    .list-rows {
+      display: grid;
+      gap: 0;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .workflow-epic-group {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-left: 3px solid #8250df;
+      border-radius: 10px;
+      margin-bottom: 8px;
+      overflow: hidden;
+    }
+
+    .workflow-epic-header {
+      align-items: center;
+      display: flex;
+      gap: 8px;
+      justify-content: space-between;
+      padding: 8px 10px 8px 12px;
+    }
+
+    .workflow-epic-header .task-atom {
+      flex: 1;
+      margin: 0;
+      text-align: left;
+    }
+
+    .workflow-epic-badge {
+      background: rgba(130, 80, 223, 0.12);
+      border: 1px solid rgba(130, 80, 223, 0.35);
+      border-radius: 999px;
+      color: #8250df;
+      display: inline-block;
+      font-size: var(--text-xs);
+      letter-spacing: 0.06em;
+      margin-right: 8px;
+      padding: 2px 8px;
+      text-transform: uppercase;
+      vertical-align: middle;
+    }
+
+    body[data-theme="dark"] .workflow-epic-badge {
+      background: rgba(130, 80, 223, 0.18);
+      color: #c59cff;
+    }
+
+    .workflow-epic-meta {
+      color: var(--muted);
+      font-size: var(--text-xs);
+      margin-left: 8px;
+      white-space: nowrap;
+    }
+
+    .workflow-epic-toggle {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      cursor: pointer;
+      flex-shrink: 0;
+      font-size: var(--text-xs);
+      padding: 4px 10px;
+    }
+
+    .workflow-epic-toggle:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .workflow-epic-children {
+      border-top: 1px solid var(--border);
+      display: grid;
+      gap: 6px;
+      padding: 8px 10px 10px 18px;
+    }
+
+    .workflow-epic-children .task-atom {
+      margin: 0;
+    }
+
+    .list-row,
+    .backlog-row {
+      border: 0;
+      border-bottom: 1px solid var(--border);
+      border-radius: 0;
+      box-shadow: none;
+      margin: 0;
+    }
+
+    .list-row:last-child,
+    .backlog-row:last-child,
+    .list-rows > li:last-child {
+      border-bottom: 0;
+    }
+
+    .list-rows > li {
+      border-bottom: 1px solid var(--border);
+      padding: 10px 12px;
+    }
+
+    .list-row.is-selected,
+    .list-row.is-highlighted {
+      background: #ebecf0;
+    }
+
+    body[data-theme="dark"] .list-row.is-selected,
+    body[data-theme="dark"] .list-row.is-highlighted {
+      background: #2d333b;
+    }
+
+    .list-row.is-selected {
+      box-shadow: inset 3px 0 0 var(--accent);
+    }
+
+    .list-row-line {
+      color: var(--muted);
+      font-size: var(--text-sm);
+      line-height: 1.35;
+      margin: 4px 0 0;
+    }
+
+    .list-row-line:first-of-type {
+      margin-top: 6px;
+    }
+
+    .list-row-tags {
+      color: var(--muted);
+      font-size: var(--text-sm);
+      margin-top: 6px;
+    }
+
+    .list-row-tag {
+      color: var(--muted);
+    }
+
+    .list-row-tag.is-valid { color: var(--ok); }
+    .list-row-tag.is-invalid { color: var(--danger); }
+
+    .workflow-pagination {
+      align-items: center;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 12px;
+      justify-content: space-between;
+      padding: 10px 12px;
+    }
+
+    .workflow-pagination[hidden] {
+      display: none !important;
+    }
+
+    .workflow-page-meta {
+      color: var(--muted);
+      font-size: var(--font-size-sm);
+      text-align: center;
+    }
+
+    .workflow-page-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: var(--text);
+      cursor: pointer;
+      font: inherit;
+      font-size: var(--font-size-sm);
+      padding: 6px 10px;
+    }
+
+    .workflow-page-btn:hover:not(:disabled) {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .workflow-page-btn:disabled {
+      cursor: not-allowed;
+      opacity: .45;
+    }
+
+    .architecture-panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: var(--shadow-card);
+      display: grid;
+      gap: 12px;
+      padding: 16px;
+    }
+
+    .architecture-panel-header,
+    .schematic-panel-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .graph-canvas-mode-toggle {
+      display: inline-flex;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .graph-canvas-mode-toggle button {
+      border: 0;
+      background: var(--panel-2);
+      color: var(--muted);
+      padding: 6px 12px;
+      font-size: var(--text-sm);
+      cursor: pointer;
+    }
+
+    .graph-canvas-mode-toggle button.is-active {
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .architecture-panel-header {
+      align-items: flex-start;
+      display: flex;
+      gap: 12px;
+      justify-content: space-between;
+    }
+
+    .architecture-panel-header h2 {
+      font-size: var(--text-lg);
+      margin: 0 0 4px;
+    }
+
+    .architecture-panel-header p {
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .architecture-canvas-wrap {
+      flex: 1;
+      min-height: 280px;
+      min-width: 0;
+      overflow: hidden;
+      padding: 0;
+    }
+
+    .architecture-l2-focus {
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex: 0 0 auto;
+      flex-direction: column;
+      gap: 8px;
+      max-height: min(42vh, 420px);
+      min-height: 0;
+      padding: 12px 0 0;
+    }
+
+    .architecture-l2-focus[hidden] {
+      display: none !important;
+    }
+
+    .architecture-l2-focus-header {
+      align-items: center;
+      display: flex;
+      flex-shrink: 0;
+      gap: 12px;
+      justify-content: space-between;
+    }
+
+    .architecture-l2-focus-header h3 {
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      margin: 0;
+      text-transform: uppercase;
+    }
+
+    .architecture-l2-focus-body {
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+    }
+
+    .architecture-l2-focus-body .detail-section + .detail-section {
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+
+    .architecture-canvas {
+      height: 100%;
+      inset: 0;
+      position: absolute;
+      width: 100%;
+    }
+
+    .architecture-edges {
+      inset: 0;
+      pointer-events: none;
+      position: absolute;
+    }
+
+    .architecture-edge {
+      fill: none;
+      stroke: var(--muted);
+      stroke-width: 1.75;
+    }
+
+    .architecture-edge.is-upstream {
+      stroke-dasharray: 5 4;
+    }
+
+    .architecture-edge-label {
+      fill: var(--text);
+      font-size: var(--text-sm);
+      paint-order: stroke fill;
+      stroke: var(--panel);
+      stroke-width: 4px;
+      text-anchor: middle;
+    }
+
+    .architecture-edge-labels {
+      inset: 0;
+      pointer-events: none;
+      position: absolute;
+      z-index: 3;
+    }
+
+    .architecture-edge-labels .architecture-edge-label {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--muted);
+      font-size: var(--text-sm);
+      line-height: 1.2;
+      padding: 2px 6px;
+      position: absolute;
+      transform: translate(-50%, -50%);
+      white-space: nowrap;
+    }
+
+    .architecture-edge-labels .architecture-edge-label.is-upstream {
+      border-style: dashed;
+    }
+
+    .architecture-block-node {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      box-shadow: var(--shadow-card);
+      box-sizing: border-box;
+      color: inherit;
+      cursor: pointer;
+      font: inherit;
+      min-height: 108px;
+      padding: 12px 14px;
+      position: absolute;
+      text-align: left;
+      z-index: 2;
+    }
+
+    .architecture-block-node:hover,
+    .architecture-block-node.is-focused {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent);
+    }
+
+    .architecture-block-node .id {
+      color: var(--muted);
+      font-size: var(--text-sm);
+      letter-spacing: .04em;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+
+    .architecture-block-node strong {
+      display: block;
+      font-size: var(--text-base);
+      margin-bottom: 6px;
+    }
+
+    .architecture-block-node p {
+      color: var(--muted);
+      font-size: var(--text-base);
+      line-height: 1.35;
+      margin: 0 0 8px;
+    }
+
+    .architecture-block-meta {
+      color: var(--muted);
+      display: flex;
+      flex-wrap: wrap;
+      font-size: var(--text-sm);
+      gap: 6px;
+    }
+
+    .architecture-block-meta span {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 2px 7px;
+    }
+
+    .schematic-panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: var(--shadow-card);
+      display: grid;
+      gap: 12px;
+      padding: 16px;
+    }
+
+    .schematic-panel-header {
+      align-items: flex-start;
+      display: flex;
+      gap: 12px;
+      justify-content: space-between;
+    }
+
+    .schematic-panel-header h2 {
+      font-size: var(--text-lg);
+      margin: 0 0 4px;
+    }
+
+    .schematic-panel-header p {
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .schematic-canvas-wrap {
+      overflow: visible;
+      padding: 12px 0 24px;
+    }
+
+    .schematic-canvas {
+      position: relative;
+    }
+
+    .schematic-edges {
+      inset: 0;
+      pointer-events: none;
+      position: absolute;
+    }
+
+    .schematic-edge {
+      fill: none;
+      stroke: var(--muted);
+      stroke-width: 1.75;
+    }
+
+    .schematic-edge.is-upstream {
+      stroke-dasharray: 5 4;
+    }
+
+    .schematic-edge-label {
+      fill: var(--text);
+      font-size: var(--text-sm);
+      paint-order: stroke fill;
+      stroke: var(--panel);
+      stroke-width: 4px;
+      text-anchor: middle;
+    }
+
+    .schematic-edge-labels {
+      inset: 0;
+      pointer-events: none;
+      position: absolute;
+      z-index: 3;
+    }
+
+    .schematic-edge-labels .schematic-edge-label {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--muted);
+      font-size: var(--text-sm);
+      line-height: 1.2;
+      padding: 2px 6px;
+      position: absolute;
+      transform: translate(-50%, -50%);
+      white-space: nowrap;
+    }
+
+    .schematic-edge-labels .schematic-edge-label.is-upstream {
+      border-style: dashed;
+    }
+
+    .schematic-node {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      box-shadow: var(--shadow-card);
+      box-sizing: border-box;
+      color: inherit;
+      cursor: pointer;
+      font: inherit;
+      padding: 12px 14px;
+      position: absolute;
+      text-align: left;
+      z-index: 2;
+    }
+
+    .schematic-node:hover,
+    .schematic-node.is-focused {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent);
+    }
+
+    .schematic-node .layer {
+      color: var(--muted);
+      font-size: var(--text-sm);
+      letter-spacing: .04em;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+
+    .schematic-node strong {
+      display: block;
+      font-size: var(--text-base);
+      margin-bottom: 6px;
+    }
+
+    .schematic-node p {
+      color: var(--muted);
+      font-size: var(--text-base);
+      line-height: 1.35;
+      margin: 0;
+    }
+
+    .detail-overlay {
+      background: rgba(9, 30, 66, .32);
+      cursor: pointer;
+      inset: 0;
+      opacity: 0;
+      pointer-events: none;
+      position: fixed;
+      transition: opacity .16s ease;
+      z-index: 20;
+    }
+
+    .detail-overlay.is-open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .detail-drawer {
+      background: var(--panel);
+      border-left: 1px solid var(--border);
+      bottom: 0;
+      box-shadow: -12px 0 30px rgba(9, 30, 66, .18);
+      display: flex;
+      flex-direction: column;
+      max-width: calc(100vw - 48px);
+      min-width: min(420px, 100vw);
+      position: fixed;
+      right: 0;
+      top: 0;
+      transform: translateX(100%);
+      transition: transform .18s ease;
+      width: 720px;
+      z-index: 21;
+    }
+
+    .detail-drawer.is-open {
+      transform: translateX(0);
+    }
+
+    .detail-sub-overlay {
+      z-index: 22;
+    }
+
+    .detail-sub-drawer {
+      z-index: 23;
+      box-shadow: -16px 0 40px rgba(9, 30, 66, .24);
+      width: 640px;
+    }
+
+    .detail-sub-drawer.is-open {
+      transform: translateX(0);
+    }
+
+    .detail-resize-handle {
+      bottom: 0;
+      cursor: col-resize;
+      left: -6px;
+      position: absolute;
+      top: 0;
+      width: 12px;
+      z-index: 2;
+    }
+
+    .detail-resize-handle::after {
+      background: transparent;
+      bottom: 0;
+      content: "";
+      left: 5px;
+      position: absolute;
+      top: 0;
+      width: 2px;
+    }
+
+    .detail-resize-handle:hover::after,
+    body.is-resizing-detail .detail-resize-handle::after {
+      background: var(--accent);
+    }
+
+    body.is-resizing-detail {
+      cursor: col-resize;
+      user-select: none;
+    }
+
+    html.detail-drawer-open,
+    body.detail-drawer-open {
+      overflow: hidden;
+    }
+
+    .detail-header {
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 12px;
+      justify-content: space-between;
+      padding: 18px 20px 14px;
+    }
+
+    .detail-header h2 {
+      font-size: var(--text-xl);
+      letter-spacing: -.02em;
+      line-height: 1.25;
+      margin: 0 0 6px;
+    }
+
+    .detail-close {
+      align-self: flex-start;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      color: var(--muted);
+      cursor: pointer;
+      font: inherit;
+      padding: 5px 8px;
+    }
+
+    .detail-close:hover {
+      background: var(--panel-2);
+      color: var(--text);
+    }
+
+    .detail-body {
+      display: grid;
+      gap: 0;
+      overflow: auto;
+      padding: 16px 20px 24px;
+    }
+
+    .detail-section {
+      border-top: 1px solid var(--border);
+      padding: 12px 0;
+    }
+
+    .detail-section:first-child {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .detail-accordion {
+      border-top: 1px solid var(--border);
+    }
+
+    .detail-accordion-summary {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 6px;
+      padding: 13px 0;
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      line-height: 1.2;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      list-style: none;
+      user-select: none;
+    }
+
+    .detail-accordion-summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .detail-accordion-summary::after {
+      content: '';
+      display: inline-block;
+      width: 0.42em;
+      height: 0.42em;
+      border-right: 1.5px solid currentColor;
+      border-bottom: 1.5px solid currentColor;
+      transform: rotate(-45deg);
+      flex-shrink: 0;
+      color: var(--text-muted);
+    }
+
+    .detail-accordion[open] > .detail-accordion-summary::after {
+      transform: rotate(45deg);
+    }
+
+    .detail-accordion-body {
+      padding: 0 0 12px 14px;
+    }
+
+    .detail-accordion-body .detail-section {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .pipeline-readonly-hint {
+      margin: 0 0 10px;
+      font-size: var(--font-size-sm);
+    }
+
+    .pipeline-readonly-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .pipeline-readonly-text {
+      margin: 0;
+      color: var(--text);
+      font-size: var(--font-size-base);
+      line-height: 1.55;
+      white-space: pre-wrap;
+    }
+
+    .pipeline-prose {
+      display: grid;
+      gap: 0;
+    }
+
+    .pipeline-prose-heading {
+      margin: 14px 0 6px;
+      font-size: var(--font-size-base);
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .pipeline-prose-heading:first-child {
+      margin-top: 0;
+    }
+
+    .pipeline-prose-p {
+      margin: 0 0 10px;
+      padding-left: 0;
+      color: var(--text);
+      font-size: var(--font-size-base);
+      line-height: 1.55;
+    }
+
+    .pipeline-prose-list {
+      margin: 0 0 10px;
+      padding-left: 1.25em;
+      color: var(--text);
+      font-size: var(--font-size-base);
+      line-height: 1.55;
+    }
+
+    .pipeline-prose-list--check {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .pipeline-prose-list--check li {
+      padding-left: 0;
+    }
+
+    .inline-term {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.92em;
+      padding: 0 4px;
+      border-radius: 3px;
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+    }
+
+    .pipeline-prose-divider {
+      margin: 10px 0 2px;
+      border-top: 1px solid var(--border);
+    }
+
+    .pipeline-readonly-text + .pipeline-readonly-text {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+
+    .work-pipeline-panel {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px;
+      margin-bottom: 12px;
+      background: var(--panel-2);
+    }
+
+    .work-pipeline-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .work-pipeline-meta .pill {
+      font-size: var(--font-size-sm);
+    }
+
+    .work-pipeline-block {
+      margin: 8px 0 0;
+      padding: 10px;
+      border-radius: 4px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      white-space: pre-wrap;
+      font-size: var(--font-size-sm);
+      line-height: 1.45;
+      max-height: 280px;
+      overflow: auto;
+    }
+
+    .work-pipeline-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .work-pipeline-actions button {
+      font-size: var(--font-size-sm);
+      padding: 6px 10px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .work-pipeline-actions button[data-action="pipeline-advance"] {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .verdict-useful { color: var(--ok); }
+    .verdict-harmful { color: var(--danger); }
+    .verdict-defer { color: var(--warn); }
+
+    .ui-refs-panel {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px;
+      background: var(--panel-2);
+    }
+
+    .ui-refs-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .ui-refs-card {
+      width: 140px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: var(--card);
+      overflow: hidden;
+    }
+
+    .ui-refs-card img {
+      display: block;
+      width: 100%;
+      height: 96px;
+      object-fit: cover;
+      background: var(--panel-2);
+    }
+
+    .ui-refs-caption {
+      font-size: var(--font-size-sm);
+      color: var(--muted);
+      padding: 6px 8px;
+      line-height: 1.3;
+      word-break: break-word;
+    }
+
+    .ui-refs-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+      align-items: center;
+    }
+
+    .ui-refs-actions input[type="file"] {
+      display: none;
+    }
+
+    .ui-refs-actions button {
+      font-size: var(--font-size-sm);
+      padding: 6px 10px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .detail-section h3 {
+      font-size: var(--text-sm);
+      letter-spacing: .04em;
+      margin: 0 0 6px;
+      text-transform: uppercase;
+    }
+
+    .detail-section p {
+      color: var(--muted);
+      margin: 0;
+      overflow-wrap: anywhere;
+      white-space: pre-wrap;
+    }
+
+    .hierarchy-panel {
+      display: grid;
+      gap: 8px;
+    }
+
+    .hierarchy-panel .task-atom.list-row {
+      margin-bottom: 0;
+    }
+
+    .hierarchy-close-gate {
+      color: var(--warn);
+      font-size: var(--font-size-sm);
+      margin: 0 0 8px;
+    }
+
+    .detail-section h4 {
+      font: var(--font-size-sm)/1.3 inherit;
+      letter-spacing: .03em;
+      margin: 10px 0 4px;
+      text-transform: uppercase;
+    }
+
+    .analytics-body-pre {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: var(--text-sm);
+      line-height: 1.5;
+      margin: 0;
+      overflow-wrap: anywhere;
+      padding: 12px 14px;
+      white-space: pre-wrap;
+    }
+
+    .markdown-doc {
+      color: var(--text);
+      display: grid;
+      gap: 0;
+      font-size: var(--font-size-base);
+      line-height: 1.55;
+    }
+
+    .markdown-doc .markdown-h1 {
+      font-size: 1.875rem;
+      font-weight: 600;
+      letter-spacing: -0.015em;
+      line-height: 2.375rem;
+      margin: 0 0 16px;
+    }
+
+    .markdown-doc .markdown-h2 {
+      border-top: 1px solid var(--border);
+      font-size: var(--text-2xl);
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      line-height: var(--text-2xl-line-height, 1.875rem);
+      margin: 22px 0 14px;
+      padding-top: 18px;
+    }
+
+    .markdown-doc .markdown-h2:first-child {
+      border-top: 0;
+      margin-top: 0;
+      padding-top: 0;
+    }
+
+    .markdown-doc .markdown-h3 {
+      font-size: var(--text-xl);
+      font-weight: 600;
+      line-height: var(--text-xl-line-height, 1.75rem);
+      margin: 18px 0 10px;
+    }
+
+    .markdown-doc .markdown-p {
+      color: var(--text);
+      margin: 0 0 10px;
+      overflow-wrap: anywhere;
+    }
+
+    .markdown-doc .markdown-list {
+      margin: 0 0 12px;
+      padding-left: 1.35em;
+    }
+
+    .markdown-doc .markdown-list--ordered {
+      padding-left: 1.5em;
+    }
+
+    .markdown-doc .markdown-list li {
+      margin: 0 0 6px;
+    }
+
+    .markdown-doc .markdown-list li:last-child {
+      margin-bottom: 0;
+    }
+
+    .markdown-doc .markdown-hr {
+      border: 0;
+      border-top: 1px solid var(--border);
+      margin: 16px 0;
+    }
+
+    .markdown-doc .markdown-table-wrap {
+      margin: 0 0 14px;
+      overflow-x: auto;
+    }
+
+    .markdown-doc .markdown-table {
+      border-collapse: collapse;
+      font-size: var(--font-size-base);
+      min-width: 100%;
+      width: max-content;
+    }
+
+    .markdown-doc .markdown-table th,
+    .markdown-doc .markdown-table td {
+      border: 1px solid var(--border);
+      font-size: inherit;
+      padding: 8px 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .markdown-doc .inline-term {
+      font-size: inherit;
+    }
+
+    .markdown-doc .markdown-table th {
+      background: var(--panel-2);
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .markdown-doc .markdown-code-block {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: var(--text);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: var(--text-sm);
+      line-height: 1.45;
+      margin: 0 0 12px;
+      overflow-x: auto;
+      padding: 12px 14px;
+      white-space: pre;
+    }
+
+    .markdown-doc .markdown-code-block code {
+      background: transparent;
+      border: 0;
+      display: block;
+      font: inherit;
+      padding: 0;
+      white-space: pre;
+    }
+
+    .markdown-doc .code-hl-key {
+      color: #0d7a6f;
+    }
+
+    .markdown-doc .code-hl-string {
+      color: #7b4bb7;
+    }
+
+    .markdown-doc .code-hl-number,
+    .markdown-doc .code-hl-punct {
+      color: var(--text);
+    }
+
+    .markdown-doc .code-hl-keyword {
+      color: #0052cc;
+    }
+
+    .markdown-doc .code-hl-comment {
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    body[data-theme="dark"] .markdown-doc .code-hl-key {
+      color: #4ec9b0;
+    }
+
+    body[data-theme="dark"] .markdown-doc .code-hl-string {
+      color: #c792ea;
+    }
+
+    body[data-theme="dark"] .markdown-doc .code-hl-keyword {
+      color: #569cd6;
+    }
+
+    .markdown-doc .markdown-note {
+      color: var(--muted);
+      font-size: var(--text-sm);
+      margin: -4px 0 12px;
+    }
+
+    .markdown-doc strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .analytics-qna {
+      display: grid;
+      gap: 0;
+    }
+
+    .analytics-section-title {
+      font-size: var(--text-sm);
+      letter-spacing: .04em;
+      margin: 0 0 8px;
+      text-transform: uppercase;
+    }
+
+    .analytics-query-section {
+      margin-bottom: 14px;
+    }
+
+    .analytics-query-text {
+      color: var(--text);
+      font-size: var(--font-size-base);
+      line-height: 1.55;
+      margin: 0;
+      overflow-wrap: anywhere;
+      white-space: pre-wrap;
+    }
+
+    .analytics-record-body .markdown-doc {
+      margin-top: 0;
+    }
+
+    .analytics-related-tasks {
+      margin-top: 16px;
+    }
+
+    .analytics-related-tasks-list {
+      display: grid;
+      gap: 8px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .analytics-related-task-row {
+      align-items: center;
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      display: flex;
+      gap: 10px;
+      justify-content: space-between;
+      padding: 10px 12px;
+    }
+
+    .analytics-related-task-btn {
+      background: transparent;
+      border: 0;
+      color: var(--accent);
+      cursor: pointer;
+      font: inherit;
+      padding: 0;
+      text-align: left;
+    }
+
+    .analytics-related-task-btn:hover {
+      text-decoration: underline;
+    }
+
+    .analytics-related-task-meta {
+      color: var(--muted);
+      font-size: var(--font-size-sm);
+      white-space: nowrap;
+    }
+
+    .analytics-intent-options,
+    .analytics-intent-decision,
+    .intent-graph-drilldown {
+      display: grid;
+      gap: 8px;
+    }
+
+    .analytics-intent-option {
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 8px 10px;
+      background: var(--panel-2);
+    }
+
+    .analytics-intent-option.is-selected {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .graph-workspace-stack .intent-roadmap-panel {
+      background: var(--bg);
+      border: 0;
+      border-radius: 0;
+      margin: 0;
+      padding: 0;
+    }
+
+    .graph-workspace-canvas.intent-roadmap-canvas-wrap {
+      margin: 0;
+      overflow: hidden;
+    }
+
+    .intent-roadmap-panel {
+      background: var(--bg);
+      border: 0;
+      border-radius: 0;
+      margin: 0;
+      padding: 0;
+    }
+
+    .intent-roadmap-branch + .intent-roadmap-branch {
+      border-top: 1px solid var(--border);
+      margin-top: 12px;
+      padding-top: 12px;
+    }
+
+    .intent-roadmap-node {
+      margin-left: 12px;
+      padding-left: 10px;
+      border-left: 2px solid var(--border);
+    }
+
+    .intent-roadmap-canvas-wrap {
+      margin: 0;
+      overflow: hidden;
+    }
+
+    .intent-roadmap-epic-panel {
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+    }
+
+    .intent-roadmap-epic-header {
+      align-items: center;
+      display: flex;
+      gap: 10px;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      padding: 0 12px;
+    }
+
+    .intent-roadmap-epic-header h3 {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .intent-roadmap-epic-meta {
+      align-items: center;
+      color: var(--muted);
+      display: flex;
+      font-size: var(--text-xs);
+      gap: 8px;
+    }
+
+    .intent-roadmap-epic-toggle {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      cursor: pointer;
+      font-size: var(--text-xs);
+      padding: 4px 10px;
+    }
+
+    .intent-roadmap-epic-toggle:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .intent-roadmap-section-heading {
+      color: var(--muted);
+      font-size: var(--text-xs);
+      letter-spacing: 0.06em;
+      margin: 0 0 8px;
+      padding: 0 12px;
+      text-transform: uppercase;
+    }
+
+    .graph-canvas-lit-flow-host {
+      width: 100%;
+      min-height: 320px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .graph-canvas-lit-flow-shell {
+      width: 100%;
+      height: 100%;
+      background: var(--bg);
+    }
+
+    .graph-canvas-lit-flow-shell flow-controls {
+      position: absolute;
+      bottom: 12px;
+      left: 12px;
+      z-index: 4;
+      filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.28));
+    }
+
+    .graph-canvas-lit-flow-shell .graph-canvas-minimap-host {
+      filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.28));
+    }
+
+    body[data-theme="dark"] .graph-canvas-lit-flow-shell .graph-canvas-minimap-host {
+      filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.45));
+    }
+
+    .intent-roadmap-canvas {
+      position: relative;
+      min-height: 120px;
+    }
+
+    .intent-canvas-edges {
+      position: absolute;
+      inset: 0;
+      color: var(--muted);
+      pointer-events: none;
+    }
+
+    .intent-canvas-edge-labels {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .intent-canvas-edge-label {
+      position: absolute;
+      transform: translate(-50%, -100%);
+      font-size: var(--font-size-sm, 14px);
+      color: var(--muted);
+      background: var(--panel);
+      padding: 0 4px;
+      white-space: nowrap;
+    }
+
+    .intent-canvas-node {
+      position: absolute;
+      box-sizing: border-box;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--card);
+      box-shadow: var(--shadow-card);
+      color: var(--text);
+      cursor: pointer;
+      padding: 8px 10px;
+      text-align: left;
+    }
+
+    .intent-canvas-node:hover {
+      border-color: var(--accent);
+    }
+
+    .intent-canvas-node .layer {
+      color: var(--muted);
+      font-size: var(--font-size-sm, 14px);
+      letter-spacing: 0.02em;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+
+    .intent-canvas-node strong {
+      display: block;
+      font-size: var(--text-sm);
+      line-height: 1.25;
+    }
+
+    .intent-canvas-node .status {
+      color: var(--muted);
+      font-size: var(--font-size-sm, 14px);
+      margin-top: 6px;
+    }
+
+    .intent-canvas-node.is-question {
+      border-color: #6554c0;
+    }
+
+    .intent-canvas-node.is-analysis {
+      border-color: #5e6c84;
+    }
+
+    .intent-canvas-edge.is-rejected {
+      opacity: 0.45;
+      stroke-dasharray: 5 4;
+    }
+
+    .intent-canvas-node.is-option.is-rejected {
+      opacity: 0.72;
+      border-style: dashed;
+    }
+
+    .intent-canvas-node.is-option.is-selected {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .intent-canvas-node.is-decision {
+      border-color: #00875a;
+    }
+
+    .intent-canvas-node.is-work.is-done {
+      border-color: #00875a;
+    }
+
+    .intent-roadmap-list-heading {
+      color: var(--muted);
+      font-size: var(--font-size-sm, 14px);
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      margin: 8px 0;
+      text-transform: uppercase;
+    }
+
+    .markdown-mermaid-wrap {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      margin: 0 0 14px;
+      min-height: min-content;
+      overflow-x: auto;
+      overflow-y: visible;
+      padding: 12px;
+    }
+
+    .markdown-mermaid-wrap .mermaid {
+      background: transparent;
+      color: var(--text);
+      display: block;
+      font-family: inherit;
+      font-size: var(--text-sm);
+      margin: 0;
+      min-height: min-content;
+      overflow: visible;
+      white-space: pre-wrap;
+    }
+
+    .markdown-mermaid-wrap svg {
+      display: block;
+      height: auto !important;
+      max-width: 100%;
+      overflow: visible;
+      width: 100%;
+    }
+
+    .markdown-mermaid-wrap svg .node rect,
+    .markdown-mermaid-wrap svg .node polygon,
+    .markdown-mermaid-wrap svg .node circle {
+      fill: var(--panel-2) !important;
+      stroke: var(--border) !important;
+    }
+
+    .markdown-mermaid-wrap svg .cluster rect {
+      fill: var(--panel) !important;
+      stroke: var(--border) !important;
+    }
+
+    .markdown-mermaid-wrap svg g.cluster-label text {
+      text-anchor: start;
+    }
+
+    .markdown-mermaid-wrap svg .nodeLabel,
+    .markdown-mermaid-wrap svg .cluster-label .nodeLabel,
+    .markdown-mermaid-wrap svg .label text,
+    .markdown-mermaid-wrap svg .edgeLabel {
+      color: var(--text);
+      fill: var(--text) !important;
+    }
+
+    .markdown-mermaid-wrap svg .edgePath .path,
+    .markdown-mermaid-wrap svg .flowchart-link {
+      stroke: var(--muted) !important;
+    }
+
+    .markdown-mermaid-wrap svg .marker {
+      fill: var(--muted) !important;
+      stroke: var(--muted) !important;
+    }
+
+    .detail-link-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--accent);
+      cursor: pointer;
+      font: inherit;
+      padding: 6px 10px;
+    }
+
+    .detail-link-btn:hover {
+      border-color: var(--accent);
+    }
+
+    .evidence-timeline-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .evidence-timeline-item {
+      border-left: 2px solid var(--border);
+      margin: 0 0 10px;
+      padding: 0 0 0 12px;
+    }
+
+    .evidence-timeline-item time,
+    .evidence-timeline-kind {
+      color: var(--muted);
+      display: block;
+      font: var(--font-size-sm)/1.3 var(--mono);
+    }
+
+    .evidence-timeline-summary {
+      color: var(--text);
+      margin: 4px 0 0;
+      overflow-wrap: anywhere;
+      white-space: pre-wrap;
+    }
+
+    .pvrg-scope-panel ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .pvrg-scope-panel li {
+      color: var(--muted);
+      margin: 2px 0;
+      overflow-wrap: anywhere;
+    }
+
+    .pvrg-edge-rel {
+      color: var(--accent);
+      font: var(--font-size-sm)/1.2 inherit;
+    }
+
+    .pvrg-node-kind {
+      color: var(--text);
+      font: var(--font-size-sm)/1.2 var(--mono);
+    }
+
+    .linkage-drilldown-panel ul {
+      margin: 0;
+      padding-left: 0;
+      list-style: none;
+    }
+
+    .linkage-drilldown-panel li {
+      align-items: center;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 4px 0;
+    }
+
+    .linkage-ref-button {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--accent);
+      cursor: pointer;
+      font: inherit;
+      padding: 4px 8px;
+      text-align: left;
+    }
+
+    .linkage-ref-button:hover {
+      border-color: var(--accent);
+    }
+
+    .linkage-ref-kind {
+      color: var(--muted);
+      font: var(--font-size-sm)/1.2 var(--mono);
+      text-transform: uppercase;
+    }
+
+    .detail-back-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .detail-back-button {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      cursor: pointer;
+      font: inherit;
+      padding: 6px 10px;
+    }
+
+    .detail-back-button:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .block-l2-wrap {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: auto;
+      padding: 8px;
+    }
+
+    .block-l2-canvas {
+      min-height: 180px;
+      position: relative;
+    }
+
+    .block-l2-node {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: var(--shadow-card);
+      box-sizing: border-box;
+      color: inherit;
+      cursor: pointer;
+      font: inherit;
+      font-size: var(--text-base);
+      overflow: hidden;
+      padding: 8px 10px;
+      position: absolute;
+      text-align: left;
+      z-index: 2;
+    }
+
+    .block-l2-node:hover,
+    .block-l2-node:focus-visible {
+      border-color: var(--accent);
+      outline: none;
+    }
+
+    .block-l2-node.container {
+      border-left: 3px solid var(--accent);
+    }
+
+    .block-l2-node.file {
+      border-left: 3px solid var(--ok);
+    }
+
+    .block-l2-node .kind {
+      color: var(--muted);
+      font-size: var(--text-sm);
+      letter-spacing: .04em;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+
+    .block-l2-node strong {
+      display: block;
+      font-size: var(--text-base);
+      margin-bottom: 2px;
+    }
+
+    .block-l2-node span {
+      color: var(--muted);
+      display: block;
+      overflow-wrap: anywhere;
+    }
+
+    .block-l2-edges {
+      inset: 0;
+      pointer-events: none;
+      position: absolute;
+    }
+
+    .block-l2-edge {
+      fill: none;
+      stroke: var(--muted);
+      stroke-width: 1.25;
+    }
+
+    .block-l2-edge-label {
+      fill: var(--text);
+      font-size: var(--text-sm);
+      paint-order: stroke fill;
+      stroke: var(--panel-2);
+      stroke-width: 4px;
+      text-anchor: middle;
+    }
+
+    .view[hidden] {
+      display: none !important;
+    }
+
+    .board-filter-select {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: var(--text);
+      font-size: var(--font-size-sm);
+      line-height: 1.2;
+      max-width: 148px;
+      padding: 3px 6px;
+    }
+
+    .board-filter-select:focus {
+      border-color: var(--accent);
+      outline: none;
+    }
+
+    .task-atom.is-highlighted,
+    .architecture-block.is-highlighted {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent);
+    }
+
+    .architecture-block.is-peer-highlight {
+      border-color: var(--ok);
+    }
+
+    .architecture-block-group-header {
+      padding: 10px 14px 6px;
+      font-size: var(--text-xs);
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      margin-top: 4px;
+    }
+
+    .architecture-block-group-header:first-child {
+      border-top: none;
+      margin-top: 0;
+    }
+
+    @media (max-width: 900px) {
+      .app-shell { grid-template-columns: 1fr; }
+      .sidebar {
+        border-bottom: 1px solid var(--border);
+        border-right: 0;
+        max-width: none;
+        min-width: 0;
+        width: 100%;
+      }
+      .sidebar-nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .board { grid-template-columns: minmax(260px, 1fr); }
+      .detail-drawer { width: 100vw; }
+    }
+    ${MISSION_CONTROL_CSS}
+    ${UI_BUTTON_CSS}
+    ${UI_BADGE_CSS}
+    ${UI_SELECT_CSS}
+    ${UI_TABS_CSS}
+    .toolbar .search,
+    .toolbar .wg-select {
+      box-sizing: border-box;
+      height: 36px;
+      min-height: 36px;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      background-color: var(--panel-2);
+      color: var(--text);
+      font-size: var(--text-sm);
+      line-height: 1.2;
+    }
+    .toolbar .search {
+      flex: 0 1 280px;
+      min-width: 180px;
+      padding: 0 10px;
+    }
+    .toolbar .wg-select {
+      padding: 0 28px 0 10px;
+      appearance: none;
+      -webkit-appearance: none;
+      background-repeat: no-repeat;
+      background-size: 12px 12px;
+      background-position: right 8px center;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%235e6c84' d='M2.5 4.5 6 8l3.5-3.5'/%3E%3C/svg%3E");
+    }
+    body[data-theme="dark"] .toolbar .wg-select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%239d9d9d' d='M2.5 4.5 6 8l3.5-3.5'/%3E%3C/svg%3E");
+    }
+    .toolbar .search:hover,
+    .toolbar .wg-select:hover {
+      background-color: var(--panel);
+    }
+    .toolbar .search:focus,
+    .toolbar .wg-select:focus {
+      background-color: var(--panel);
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent);
+      outline: none;
+    }
+    .column h2 .wg-badge { flex-shrink: 0; text-transform: none; }
+    .code-gap-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+    .workflow-page-controls { align-items: center; display: flex; gap: 8px; }
+    .architecture-view-shell {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: 0;
+    }
+
+    .architecture-view-shell .architecture-subtabs {
+      flex-shrink: 0;
+    }
+
+    .architecture-tab-panel {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      min-height: 420px;
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    #architecture-list-panel.architecture-tab-panel {
+      flex: none;
+      min-height: auto;
+      overflow: visible;
+    }
+
+    .architecture-tab-panel[hidden] {
+      display: none !important;
+    }
+
+    .architecture-tab-panel .architecture-matrix {
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+    }
+
+    #architecture-list-panel .backlog-list {
+      flex: none;
+      min-height: auto;
+      overflow: visible;
+    }
+
+    .architecture-matrix-panel .architecture-matrix {
+      min-height: 320px;
+    }
+    .architecture-matrix {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      display: grid;
+      gap: 1px;
+      background: var(--border);
+      overflow: auto;
+    }
+    .architecture-matrix-cell,
+    .architecture-matrix-header,
+    .architecture-matrix-row-label {
+      background: var(--panel);
+      font-size: var(--font-size-sm);
+      min-height: 36px;
+      padding: 8px 10px;
+    }
+    .architecture-matrix-header {
+      color: var(--muted);
+      font-weight: 600;
+      text-align: center;
+    }
+    .architecture-matrix-row-label {
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .architecture-matrix-cell {
+      text-align: center;
+    }
+    .architecture-matrix-cell.is-zero {
+      color: var(--muted);
+    }
+    .workflow-tree-node { display: block; }
+    .workflow-tree-node .task-atom.list-row {
+      margin-left: calc(var(--tree-depth, 0) * 16px);
+    }
+    .workflow-tree-toggle {
+      color: var(--muted);
+      font-size: var(--font-size-sm);
+      margin-left: 8px;
+    }
+    #workflow-display-mode { max-width: 140px; }
+  </style>
+</head>
+<body>
+  <div class="app-shell layout-root" id="layout-root">
+    <aside class="sidebar" aria-label="Навигация Work Graph">
+      <div class="project-title">
+        <img
+          class="project-logo"
+          src="/assets/workgraph-logo.svg"
+          height="24"
+          width="146"
+          alt="Work Graph"
+          data-testid="workgraph-logo"
+        >
+      </div>
+      <nav class="sidebar-nav" aria-label="Разделы">
+        ${shellNavHome}
+        ${shellNavBoard}
+        ${shellNavWorkflow}
+        ${shellNavVerification}
+        ${shellNavArchitecture}
+        ${shellNavPrompts}
+        ${shellNavMemory}
+        ${shellNavAnalytics}
+      </nav>
+      <div class="sidebar-footer">
+        ${shellThemeToggle}
+      </div>
+    </aside>
+    <main class="content">
+      <header class="page-header">
+        <nav class="breadcrumbs" aria-label="Хлебные крошки">
+          <span class="breadcrumb-current" id="breadcrumb-project">Work Graph</span>
+        </nav>
+        <h1 id="view-title">Главная</h1>
+      </header>
+      <section id="home-view" class="view" data-testid="home-view" aria-live="polite">
+        <article id="home-mission-control-root" class="home-mission-control"></article>
+      </section>
+      <section id="view-toolbar" class="toolbar" hidden>
+        <input id="search" class="search" type="search" placeholder="Поиск задач..." autocomplete="off">
+        ${shellSearchModeSelect}
+        <div id="workflow-filters" class="workflow-filters" aria-label="Фильтры потока">
+          ${shellCycleFilterSelect}
+          ${shellIntentDomainFilterSelect}
+          ${shellIntentDomainClear}
+          ${shellWorkflowDisplayModeSelect}
+        </div>
+      </section>
+      <section id="verification-view" class="view" aria-live="polite" hidden>
+        <article id="verification-panel" class="verification-panel">
+          <header class="verification-panel-header">
+            <div>
+              <h2>Цикл проверки</h2>
+              <p>Детерминированные тесты уровня A отделены от опциональных гейтов OneBase и LLM. Только чтение — проекция из свидетельств Work Graph.</p>
+            </div>
+            <div id="verification-tier-badges" class="verification-tier-badges"></div>
+          </header>
+          <div id="verification-matrix-wrap"></div>
+          <div>
+            <h3 style="font-size:14px;margin:0 0 6px">Гейт codegen <span id="codegen-gate-count" class="badge">0</span></h3>
+            <p class="empty" style="margin:0 0 8px">Успех или провал проверки codegen для WorkItems с меткой trace.codegen (целостность, roundtrip, bracket IR).</p>
+            <div id="codegen-gate-summary" class="prompts-summary" data-testid="codegen-gate-summary"></div>
+            <ul id="codegen-gate-list" class="verification-evidence-list" data-testid="codegen-gate-list"></ul>
+          </div>
+          <div>
+            <h3 style="font-size:14px;margin:0 0 6px">Запуски воркера</h3>
+            <ul id="verification-worker-runs" class="verification-evidence-list"></ul>
+          </div>
+          <div>
+            <h3 style="font-size:14px;margin:0 0 6px">Журнал daemon <span id="daemon-audit-count" class="badge">0</span></h3>
+            <p class="empty" style="margin:0 0 8px">Последние tick-события планировщика: observe → schedule → run → recovery → audit. Хвост JSONL только для чтения.</p>
+            <ul id="daemon-audit-list" class="verification-evidence-list" data-testid="daemon-audit-list"></ul>
+          </div>
+          <div>
+            <h3 style="font-size:14px;margin:0 0 6px">Недавние свидетельства</h3>
+            <ul id="verification-evidence-list" class="verification-evidence-list"></ul>
+          </div>
+          <div>
+            <h3 style="font-size:14px;margin:0 0 6px">Пробелы code↔step <span id="code-gap-count" class="badge">0</span></h3>
+            <p class="empty" style="margin:0 0 8px">Здесь — предложения задач по расхождениям «код ↔ step». Сначала «Просмотр черновика», затем «Добавить в бэклог». Без вашего нажатия задачи не создаются.</p>
+            <div id="code-gap-summary" class="prompts-summary" data-testid="code-gap-summary"></div>
+            <ul id="code-gap-list" class="verification-evidence-list" data-testid="code-gap-list"></ul>
+            <pre id="code-gap-intake-preview" class="code-gap-intake-preview" data-testid="code-gap-intake-preview" hidden></pre>
+            <pre id="code-gap-intake-errors" class="code-gap-intake-errors" data-testid="code-gap-intake-errors" hidden></pre>
+          </div>
+        </article>
+      </section>
+      <section id="intent-view" class="view" aria-live="polite" hidden>
+        <article id="intent-composer-panel" class="intent-composer-panel" data-testid="intent-composer-panel">
+          <header class="intent-composer-panel-header">
+            <div>
+              <h2>Замысел</h2>
+              <p>Опишите намерение естественным языком. Chat transcript ephemeral; в backlog попадает только WorkItem draft после explicit apply.</p>
+            </div>
+          </header>
+          <div id="intent-composer-chat" class="intent-composer-chat" data-testid="intent-composer-chat">
+            <div class="intent-composer-message is-system">Введите намерение и нажмите «Preview draft».</div>
+          </div>
+          <div class="intent-composer-input-row">
+            <label for="intent-composer-input">Намерение</label>
+            <textarea id="intent-composer-input" data-testid="intent-composer-input" placeholder="Например: добавить вкладку памяти с журналом записей"></textarea>
+          </div>
+          <div class="intent-composer-actions">
+            ${shellIntentComposerActions}
+          </div>
+          <pre id="intent-composer-preview" class="intent-composer-preview" data-testid="intent-composer-preview" hidden></pre>
+          <pre id="intent-composer-errors" class="intent-composer-errors" data-testid="intent-composer-errors" hidden></pre>
+        </article>
+      </section>
+      <section id="prompts-view" class="view" aria-live="polite" hidden>
+        <article id="prompts-panel" class="list-panel prompts-panel" data-testid="prompts-panel">
+          <header class="list-panel-header">
+            <h2>Правила промптов</h2>
+            <span id="prompts-panel-count" class="count">0</span>
+          </header>
+          <div id="prompts-summary" class="prompts-summary" data-testid="prompts-summary" hidden></div>
+          <div id="prompts-list" class="backlog-list list-rows" data-testid="prompts-list"></div>
+          <footer id="prompts-pagination" class="workflow-pagination" aria-label="Страницы промптов" hidden></footer>
+        </article>
+      </section>
+      <section id="memory-view" class="view" aria-live="polite" hidden>
+        <article id="memory-panel" class="list-panel memory-panel" data-testid="memory-panel">
+          <header class="list-panel-header">
+            <h2>Записи памяти</h2>
+            <span id="memory-panel-count" class="count">0</span>
+          </header>
+          <div id="memory-summary" class="memory-summary" data-testid="memory-summary" hidden></div>
+          <div id="memory-list" class="backlog-list list-rows" data-testid="memory-list"></div>
+          <footer id="memory-pagination" class="workflow-pagination" aria-label="Страницы памяти" hidden></footer>
+        </article>
+      </section>
+      <section id="analytics-view" class="view" aria-live="polite" hidden>
+        ${shellAnalyticsSubtabs}
+        <article id="analytics-panel" class="list-panel analytics-panel" data-testid="analytics-panel">
+          <header class="list-panel-header">
+            <h2 id="analytics-panel-title">Аналитические разборы</h2>
+            <span id="analytics-panel-count" class="count">0</span>
+          </header>
+          <div id="analytics-summary" class="analytics-summary" data-testid="analytics-summary" hidden></div>
+          <div id="analytics-list" class="backlog-list list-rows" data-testid="analytics-list"></div>
+          <footer id="analytics-pagination" class="workflow-pagination" aria-label="Страницы аналитики" hidden></footer>
+        </article>
+      </section>
+      <section id="architecture-view" class="view architecture-view-shell" aria-live="polite" hidden>
+        ${shellArchitectureSubtabs}
+        <article id="architecture-list-panel" class="list-panel architecture-panel architecture-tab-panel" data-testid="architecture-list-panel">
+          <header class="list-panel-header architecture-panel-header">
+            <div>
+              <h2>Блоки архитектуры</h2>
+              <p>Список блоков L1; клик по строке открывает детали L2.</p>
+              <p id="architecture-canon-badge" class="architecture-canon-badge muted" data-testid="architecture-canon-badge" hidden></p>
+            </div>
+            <span id="architecture-panel-count" class="count">0</span>
+          </header>
+          <div id="architecture-blocks-list" class="backlog-list list-rows" data-testid="architecture-blocks-list"></div>
+        </article>
+      </section>
+      <section id="board-view" class="view" aria-live="polite" hidden>
+        <div id="kanban-board" class="board kanban-board" data-testid="kanban-board-panel" aria-label="Kanban planning columns"></div>
+        <div id="board" class="board"></div>
+      </section>
+      <section id="workflow-view" class="view" aria-live="polite" hidden>
+        ${shellWorkflowSubtabs}
+        <article id="workflow-backlog-panel" class="list-panel backlog-panel workflow-panel" role="tabpanel" aria-labelledby="workflow-tab-backlog">
+          <header class="list-panel-header backlog-panel-header">
+            <h2>Бэклог</h2>
+            <span id="backlog-panel-count" class="count">0</span>
+          </header>
+          <div id="backlog-list" class="backlog-list list-rows"></div>
+          <footer id="backlog-pagination" class="workflow-pagination" aria-label="Страницы backlog" hidden></footer>
+        </article>
+        <article id="workflow-archive-panel" class="list-panel backlog-panel workflow-panel" role="tabpanel" aria-labelledby="workflow-tab-archive" hidden>
+          <header class="list-panel-header backlog-panel-header">
+            <h2>Архив</h2>
+            <span id="archive-panel-count" class="count">0</span>
+          </header>
+          <div id="archive-list" class="backlog-list list-rows"></div>
+          <footer id="archive-pagination" class="workflow-pagination" aria-label="Страницы архива" hidden></footer>
+        </article>
+      </section>
+    </main>
+  </div>
+  <div id="detail-overlay" class="detail-overlay" hidden aria-hidden="true"></div>
+  <aside id="detail-drawer" class="detail-drawer" aria-label="Подробности задачи" aria-hidden="true">
+    <div id="detail-resize-handle" class="detail-resize-handle" role="separator" tabindex="0" aria-orientation="vertical" aria-label="Изменить ширину панели"></div>
+    <header class="detail-header">
+      <div>
+        <h2 id="detail-title">Задача</h2>
+        <div id="detail-id" class="id"></div>
+      </div>
+      ${shellDetailClose}
+    </header>
+    <div id="detail-body" class="detail-body"></div>
+  </aside>
+  <div id="detail-sub-overlay" class="detail-overlay detail-sub-overlay" hidden aria-hidden="true"></div>
+  <aside id="detail-sub-drawer" class="detail-drawer detail-sub-drawer" aria-label="Описание узла L2" aria-hidden="true">
+    <div id="detail-sub-resize-handle" class="detail-resize-handle" role="separator" tabindex="0" aria-orientation="vertical" aria-label="Изменить ширину панели L2"></div>
+    <header class="detail-header">
+      <div>
+        <h2 id="detail-sub-title">Узел L2</h2>
+        <div id="detail-sub-id" class="id"></div>
+      </div>
+      ${shellDetailSubClose}
+    </header>
+    <div id="detail-sub-body" class="detail-body"></div>
+  </aside>
+  <aside id="agent-run-dock" class="agent-run-dock" data-testid="agent-run-dock" aria-label="Панель запуска агента">
+    <header class="agent-dock-header">
+      <strong id="agent-run-dock-title">Запуск агента</strong>
+      ${shellAgentDockClose}
+    </header>
+    <section id="agent-scope-panel" class="agent-scope-panel" data-testid="agent-scope-panel" aria-label="Scope эпика (read-only)">
+      <div class="agent-scope-panel-header">Scope (read-only)</div>
+      <div data-testid="agent-scope-summary"></div>
+      <ul class="agent-scope-list" data-testid="agent-scope-list"></ul>
+    </section>
+    <div class="agent-dock-log-label">Журнал запуска</div>
+    <div id="agent-run-dock-body" class="agent-dock-body"></div>
+    <footer class="agent-dock-footer">
+      ${shellAgentRunFooter}
+    </footer>
+  </aside>
+  <div id="cmd-k-overlay" data-testid="cmd-k-overlay" aria-hidden="true">
+    <div id="cmd-k-panel" role="dialog" aria-label="Палитра команд">
+      <input id="cmd-k-input" type="search" placeholder="task: / an: / cmd: / run:" autocomplete="off">
+      <div id="cmd-k-results"></div>
+    </div>
+  </div>
+  <script src="/vendor/mermaid.min.js"></script>
+  <script src="/assets/graph-canvas-lit-flow.js" defer></script>
+  <script>
+    ${uiButtonClientSource}
+    ${uiBadgeClientSource}
+    ${workItemStatusToneSource}
+    const statusGroups = ${JSON.stringify(STATUS_GROUPS)};
+    const operationalBoardGroups = ${JSON.stringify(OPERATIONAL_BOARD_GROUPS)};
+    const doneArchiveGroup = ${JSON.stringify(DONE_ARCHIVE_GROUP)};
+    const doneArchiveCap = ${DEFAULT_DONE_ARCHIVE_CAP};
+    const workflowPageSize = doneArchiveCap;
+    const backlogGroup = ${JSON.stringify(BACKLOG_GROUP)};
+    const workItemStatusOptions = ${JSON.stringify(workItemStatusOptions())};
+    const schematicModelFull = ${JSON.stringify(schematicModelFull)};
+    const schematicModelPipeline = ${JSON.stringify(schematicModelPipeline)};
+    let schematicModel = schematicModelFull;
+    ${architectureLayoutSource}
+    ${graphCanvasProjectionSource}
+    ${markdownDocumentRenderSource}
+    ${pipelineProseRenderSource}
+    ${workflowEpicGroupingSource}
+    ${architectureViewsProjectionSource}
+    ${workflowTreeProjectionSource}
+    ${missionControlClientSource}
+    const themeStorageKey = 'workGraphBacklogTheme';
+    const viewStorageKey = 'workGraphBacklogView';
+    const workflowTabStorageKey = 'workGraphWorkflowTab';
+    const analyticsTabStorageKey = 'workGraphAnalyticsTab';
+    const backlogPageStorageKey = 'workGraphBacklogPage';
+    const archivePageStorageKey = 'workGraphArchivePage';
+    const promptsPageStorageKey = 'workGraphPromptsPage';
+    const memoryPageStorageKey = 'workGraphMemoryPage';
+    const analyticsPageStorageKey = 'workGraphAnalyticsPage';
+    const cycleFilterStorageKey = 'workGraphCycleFilter';
+    const intentDomainFilterStorageKey = 'workGraphIntentDomainFilter';
+    const detailDrawerWidthStorageKey = 'workGraphDetailDrawerWidth';
+    const detailSubDrawerWidthStorageKey = 'workGraphDetailSubDrawerWidth';
+    const graphCanvasModeStorageKey = 'workGraphGraphCanvasMode';
+    const workflowDisplayModeStorageKey = 'workGraphWorkflowDisplayMode';
+    const collapsedWorkflowTreeIdsStorageKey = 'workGraphWorkflowTreeCollapsed.v1';
+    localStorage.removeItem('workGraphArchitectureMatrixFilter');
+
+    let graphCanvasViewMode = localStorage.getItem(graphCanvasModeStorageKey) === 'full' ? 'full' : 'pipeline';
+    let snapshot = null;
+    let architectureSnapshot = null;
+    let architectureLoaded = false;
+    let architectureLoadError = null;
+    let dashboardSnapshot = null;
+    let operatorShellSnapshot = null;
+    let focusedBlockId = null;
+    let highlightTaskId = null;
+    let intentDomainFilter = localStorage.getItem(intentDomainFilterStorageKey) || '';
+    let cycleFilter = localStorage.getItem(cycleFilterStorageKey) || 'current';
+    let detailContext = null;
+    let detailInspectorState = { workId: null, draft: null, mode: 'view' };
+    let promptsProjection = null;
+    let promptsPanelLoaded = false;
+    let selectedPromptRuleId = null;
+    let codeGapProjection = null;
+    let codeGapPanelLoaded = false;
+    let daemonAuditTail = null;
+    let daemonAuditPanelLoaded = false;
+    let codeGapIntakeProposal = null;
+    let codeGapIntakeActiveId = null;
+    let intentComposerProposal = null;
+    let intentComposerMessages = [];
+    let memoryProjection = null;
+    let memoryPanelLoaded = false;
+    let selectedMemoryRecordId = null;
+    let analyticsProjection = null;
+    let analyticsPanelLoaded = false;
+    let selectedAnalyticsRecordId = null;
+    let intentRoadmapProjection = null;
+    let epicRoadmapProjection = null;
+    let intentRoadmapLoaded = false;
+    const collapsedEpicIdsStorageKey = 'workgraph.intentRoadmap.collapsedEpics.v1';
+    let collapsedEpicIds = new Set(JSON.parse(localStorage.getItem(collapsedEpicIdsStorageKey) || '[]'));
+    let semanticSearchWorkIds = null;
+    let semanticSearchTimer = null;
+    let homeSnapshot = null;
+    let homePanelLoaded = false;
+    let cmdKRows = [];
+    let cmdKActiveIndex = 0;
+    let lastAgentRunTaskId = null;
+    let homePollTimer = null;
+    let agentDockPollTimer = null;
+    let agentScopePollTimer = null;
+    const agentScopePollMs = 20000;
+    const ownerRoleStorageKey = 'workGraphOwnerRoleFilter';
+    const agentDockOpenStorageKey = 'workGraphAgentDockOpen';
+    let activeView = readStoredView();
+    let activeWorkflowTab = readStoredWorkflowTab();
+    let activeAnalyticsTab = readStoredAnalyticsTab();
+    let workflowDisplayMode = readStoredWorkflowDisplayMode();
+    let collapsedWorkflowTreeIds = new Set(JSON.parse(localStorage.getItem(collapsedWorkflowTreeIdsStorageKey) || '[]'));
+    let backlogPage = Math.max(1, Number(localStorage.getItem(backlogPageStorageKey)) || 1);
+    let archivePage = Math.max(1, Number(localStorage.getItem(archivePageStorageKey)) || 1);
+    let promptsPage = Math.max(1, Number(localStorage.getItem(promptsPageStorageKey)) || 1);
+    let memoryPage = Math.max(1, Number(localStorage.getItem(memoryPageStorageKey)) || 1);
+    let analyticsPage = Math.max(1, Number(localStorage.getItem(analyticsPageStorageKey)) || 1);
+
+    const architecturePanelCount = document.querySelector('#architecture-panel-count');
+    const architectureView = document.querySelector('#architecture-view');
+    const architectureBlocksList = document.querySelector('#architecture-blocks-list');
+    const workflowDisplayModeSelect = document.querySelector('#workflow-display-mode');
+    const intentGraphView = document.querySelector('#intent-graph-view');
+    const intentRoadmapBody = document.querySelector('#intent-roadmap-body');
+    const contentRoot = document.querySelector('.content');
+    const schematicCanvas = document.querySelector('#schematic-canvas');
+    const schematicPanelCount = document.querySelector('#schematic-panel-count');
+    const schematicView = document.querySelector('#schematic-view');
+
+    const archiveList = document.querySelector('#archive-list');
+    const archivePanelCount = document.querySelector('#archive-panel-count');
+    const archivePagination = document.querySelector('#archive-pagination');
+    const workflowArchivePanel = document.querySelector('#workflow-archive-panel');
+    const workflowBacklogPanel = document.querySelector('#workflow-backlog-panel');
+    const workflowArchiveTabCount = document.querySelector('#workflow-archive-tab-count');
+    const workflowBacklogTabCount = document.querySelector('#workflow-backlog-tab-count');
+    const workflowSubtabs = [...document.querySelectorAll('[data-workflow-tab]')];
+    const workflowView = document.querySelector('#workflow-view');
+    const board = document.querySelector('#board');
+    const kanbanBoard = document.querySelector('#kanban-board');
+    const boardView = document.querySelector('#board-view');
+    const homeView = document.querySelector('#home-view');
+    const homeMissionControlRoot = document.querySelector('#home-mission-control-root');
+    const layoutRoot = document.querySelector('#layout-root');
+    const agentRunDock = document.querySelector('#agent-run-dock');
+    const agentRunDockBody = document.querySelector('#agent-run-dock-body');
+    const agentScopePanel = document.querySelector('#agent-scope-panel');
+    const agentRunDockClose = document.querySelector('#agent-run-dock-close');
+    const agentRunRetry = document.querySelector('#agent-run-retry');
+    const agentRunOpenTask = document.querySelector('#agent-run-open-task');
+    const cmdKOverlay = document.querySelector('#cmd-k-overlay');
+    const cmdKInput = document.querySelector('#cmd-k-input');
+    const cmdKResults = document.querySelector('#cmd-k-results');
+    const workflowFilters = document.querySelector('#workflow-filters');
+    const viewToolbar = document.querySelector('#view-toolbar');
+    const backlogList = document.querySelector('#backlog-list');
+    const backlogPagination = document.querySelector('#backlog-pagination');
+    const promptsPagination = document.querySelector('#prompts-pagination');
+    const memoryPagination = document.querySelector('#memory-pagination');
+    const analyticsPagination = document.querySelector('#analytics-pagination');
+    const backlogPanelCount = document.querySelector('#backlog-panel-count');
+    const detailBody = document.querySelector('#detail-body');
+    const detailClose = document.querySelector('#detail-close');
+    const detailDrawer = document.querySelector('#detail-drawer');
+    const detailId = document.querySelector('#detail-id');
+    const detailOverlay = document.querySelector('#detail-overlay');
+    const detailSubBody = document.querySelector('#detail-sub-body');
+    const detailSubClose = document.querySelector('#detail-sub-close');
+    const detailSubDrawer = document.querySelector('#detail-sub-drawer');
+    const detailSubId = document.querySelector('#detail-sub-id');
+    const detailSubOverlay = document.querySelector('#detail-sub-overlay');
+    const detailSubTitle = document.querySelector('#detail-sub-title');
+    const detailResizeHandle = document.querySelector('#detail-resize-handle');
+    const detailSubResizeHandle = document.querySelector('#detail-sub-resize-handle');
+    const detailTitle = document.querySelector('#detail-title');
+    const navTabs = [...document.querySelectorAll('.nav-tab[data-view]')];
+    const search = document.querySelector('#search');
+    const searchMode = document.querySelector('#search-mode');
+    const themeToggle = document.querySelector('#theme-toggle');
+    const verificationEvidenceList = document.querySelector('#verification-evidence-list');
+    const verificationWorkerRuns = document.querySelector('#verification-worker-runs');
+    const daemonAuditList = document.querySelector('#daemon-audit-list');
+    const daemonAuditCount = document.querySelector('#daemon-audit-count');
+    const verificationMatrixWrap = document.querySelector('#verification-matrix-wrap');
+    const codegenGateList = document.querySelector('#codegen-gate-list');
+    const codegenGateSummary = document.querySelector('#codegen-gate-summary');
+    const codegenGateCount = document.querySelector('#codegen-gate-count');
+    const verificationTierBadges = document.querySelector('#verification-tier-badges');
+    const verificationView = document.querySelector('#verification-view');
+    const codeGapSummary = document.querySelector('#code-gap-summary');
+    const codeGapList = document.querySelector('#code-gap-list');
+    const codeGapCount = document.querySelector('#code-gap-count');
+    const codeGapIntakePreview = document.querySelector('#code-gap-intake-preview');
+    const codeGapIntakeErrors = document.querySelector('#code-gap-intake-errors');
+    const promptsView = document.querySelector('#prompts-view');
+    const promptsList = document.querySelector('#prompts-list');
+    const promptsSummary = document.querySelector('#prompts-summary');
+    const promptsPanelCount = document.querySelector('#prompts-panel-count');
+    const intentView = document.querySelector('#intent-view');
+    const intentComposerChat = document.querySelector('#intent-composer-chat');
+    const intentComposerInput = document.querySelector('#intent-composer-input');
+    const intentComposerPreview = document.querySelector('#intent-composer-preview');
+    const intentComposerErrors = document.querySelector('#intent-composer-errors');
+    const intentComposerPanel = document.querySelector('#intent-composer-panel');
+    const memoryView = document.querySelector('#memory-view');
+    const memoryList = document.querySelector('#memory-list');
+    const memorySummary = document.querySelector('#memory-summary');
+    const memoryPanelCount = document.querySelector('#memory-panel-count');
+    const analyticsView = document.querySelector('#analytics-view');
+    const analyticsList = document.querySelector('#analytics-list');
+    const analyticsSummary = document.querySelector('#analytics-summary');
+    const analyticsPanelCount = document.querySelector('#analytics-panel-count');
+    const analyticsPanelTitle = document.querySelector('#analytics-panel-title');
+    const analyticsIntakeTabCount = document.querySelector('#analytics-intake-tab-count');
+    const analyticsClosingTabCount = document.querySelector('#analytics-closing-tab-count');
+    const analyticsSubtabs = [...document.querySelectorAll('[data-analytics-tab]')];
+    const viewTitle = document.querySelector('#view-title');
+    const breadcrumbProject = document.querySelector('#breadcrumb-project');
+    const cycleFilterSelect = document.querySelector('#cycle-filter');
+    const intentDomainFilterSelect = document.querySelector('#intent-domain-filter');
+    const intentDomainClear = document.querySelector('#intent-domain-clear');
+
+    applyTheme(readStoredTheme());
+    applyStoredDetailDrawerWidth();
+    applyStoredDetailSubDrawerWidth();
+    applyView(activeView);
+    applyWorkflowTab(activeWorkflowTab);
+    applyAnalyticsTab(activeAnalyticsTab);
+    if (workflowDisplayModeSelect) {
+      workflowDisplayModeSelect.value = workflowDisplayMode;
+    }
+    initMissionControlUi();
+
+    fetch('/api/snapshot')
+      .then((response) => {
+        if (!response.ok) throw new Error('запрос snapshot завершился с кодом ' + response.status);
+        return response.json();
+      })
+      .then((data) => {
+        snapshot = data;
+        return fetch('/api/dashboard-snapshot').then((response) => {
+          if (!response.ok) throw new Error('запрос dashboard snapshot завершился с кодом ' + response.status);
+          return response.json();
+        });
+      })
+      .then((data) => {
+        dashboardSnapshot = data;
+        return fetch('/api/operator-shell-snapshot').then((response) => {
+          if (!response.ok) throw new Error('запрос operator shell snapshot завершился с кодом ' + response.status);
+          return response.json();
+        });
+      })
+      .then((data) => {
+        operatorShellSnapshot = data;
+        populateCycleFilterOptions();
+        return ensureLazyViewData(activeView).then(() => {
+          if (activeView === 'architecture') {
+            renderArchitecturePanels();
+          }
+          render();
+        }).catch(() => {
+          if (activeView === 'architecture') {
+            renderArchitecturePanels();
+          }
+          render();
+        });
+      })
+      .catch((error) => {
+        const message = '<div class="error">Не удалось загрузить срез backlog: ' + escapeHtml(error.message) + '</div>';
+        board.innerHTML = message;
+        backlogList.innerHTML = message;
+        verificationMatrixWrap.innerHTML = message;
+        verificationEvidenceList.innerHTML = '';
+        verificationTierBadges.innerHTML = '';
+      });
+
+    search.addEventListener('input', () => {
+      resetListPages();
+      scheduleSemanticSearchRefresh();
+      render();
+    });
+    if (searchMode) {
+      searchMode.addEventListener('change', () => {
+        resetListPages();
+        scheduleSemanticSearchRefresh();
+        render();
+      });
+    }
+    cycleFilterSelect.addEventListener('change', () => {
+      cycleFilter = cycleFilterSelect.value;
+      localStorage.setItem(cycleFilterStorageKey, cycleFilter);
+      resetListPages();
+      render();
+    });
+    intentDomainFilterSelect.addEventListener('change', () => {
+      intentDomainFilter = intentDomainFilterSelect.value;
+      if (intentDomainFilter) localStorage.setItem(intentDomainFilterStorageKey, intentDomainFilter);
+      else localStorage.removeItem(intentDomainFilterStorageKey);
+      resetListPages();
+      render();
+    });
+    intentDomainClear.addEventListener('click', () => {
+      intentDomainFilter = '';
+      intentDomainFilterSelect.value = '';
+      localStorage.removeItem(intentDomainFilterStorageKey);
+      resetListPages();
+      render();
+    });
+    if (boardView) boardView.addEventListener('click', handleBoardClick);
+    archiveList.addEventListener('click', handleBoardClick);
+    backlogList.addEventListener('click', handleBoardClick);
+    backlogPagination.addEventListener('click', handleWorkflowPaginationClick);
+    archivePagination.addEventListener('click', handleWorkflowPaginationClick);
+    if (promptsPagination) promptsPagination.addEventListener('click', handleWorkflowPaginationClick);
+    if (memoryPagination) memoryPagination.addEventListener('click', handleWorkflowPaginationClick);
+    if (analyticsPagination) analyticsPagination.addEventListener('click', handleWorkflowPaginationClick);
+    detailBody.addEventListener('click', handleBoardClick);
+    document.addEventListener('workgraph-graph-node-click', handleWorkGraphGraphNodeClick);
+    document.querySelectorAll('.graph-canvas-mode-toggle button[data-graph-canvas-mode]').forEach((button) => {
+      button.addEventListener('click', () => {
+        setGraphCanvasViewMode(button.dataset.graphCanvasMode === 'pipeline' ? 'pipeline' : 'full');
+      });
+    });
+    syncGraphCanvasModeUi();
+    detailClose.addEventListener('click', closeTaskDetails);
+    detailOverlay.addEventListener('click', closeTaskDetails);
+    if (detailSubClose) detailSubClose.addEventListener('click', closeL2NodeDetails);
+    if (detailSubOverlay) detailSubOverlay.addEventListener('click', closeL2NodeDetails);
+    if (detailSubBody) detailSubBody.addEventListener('click', handleBoardClick);
+    detailResizeHandle.addEventListener('pointerdown', startDetailDrawerResize);
+    detailResizeHandle.addEventListener('keydown', handleDetailDrawerResizeKeydown);
+    if (detailSubResizeHandle) {
+      detailSubResizeHandle.addEventListener('pointerdown', startDetailSubDrawerResize);
+      detailSubResizeHandle.addEventListener('keydown', handleDetailSubDrawerResizeKeydown);
+    }
+    window.addEventListener('resize', () => {
+      applyDetailDrawerWidth(clampDetailDrawerWidth(getDetailDrawerWidth()), { persist: true });
+      applyDetailSubDrawerWidth(clampDetailSubDrawerWidth(getDetailSubDrawerWidth()), { persist: true });
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      if (detailSubDrawer?.classList.contains('is-open')) {
+        closeL2NodeDetails();
+        return;
+      }
+      if (!detailDrawer.classList.contains('is-open')) return;
+      const backButton = document.querySelector('#detail-nav-back');
+      if (backButton) backButton.click();
+      else closeTaskDetails();
+    });
+    promptsList.addEventListener('click', handlePromptRuleCardClick);
+    intentComposerPanel.addEventListener('click', handleIntentComposerClick);
+    memoryList.addEventListener('click', handleMemoryRecordClick);
+    analyticsList.addEventListener('click', handleAnalyticsRecordClick);
+    codeGapList.addEventListener('click', handleCodeGapIntakeClick);
+    navTabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        activeView = ['home', 'workflow', 'verification', 'prompts', 'memory', 'analytics', 'board', 'architecture'].includes(tab.dataset.view)
+          ? tab.dataset.view
+          : 'home';
+        localStorage.setItem(viewStorageKey, activeView);
+        applyView(activeView);
+        ensureLazyViewData(activeView).then(() => {
+          if (activeView === 'architecture') {
+            renderArchitecturePanels();
+          }
+          render();
+        }).catch(() => {
+          if (activeView === 'architecture') {
+            renderArchitecturePanels();
+          }
+          render();
+        });
+      });
+    });
+
+    if (architectureView) {
+      architectureView.addEventListener('click', handleArchitectureBlocksListClick);
+    }
+
+    if (workflowDisplayModeSelect) {
+      workflowDisplayModeSelect.addEventListener('change', () => {
+        workflowDisplayMode = ['flat', 'tree'].includes(workflowDisplayModeSelect.value)
+          ? workflowDisplayModeSelect.value
+          : 'epic-groups';
+        localStorage.setItem(workflowDisplayModeStorageKey, workflowDisplayMode);
+        resetListPages();
+        render();
+      });
+    }
+
+    workflowSubtabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        activeWorkflowTab = tab.dataset.workflowTab === 'archive' ? 'archive' : 'backlog';
+        localStorage.setItem(workflowTabStorageKey, activeWorkflowTab);
+        applyWorkflowTab(activeWorkflowTab);
+      });
+    });
+    analyticsSubtabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        activeAnalyticsTab = tab.dataset.analyticsTab === 'closing' ? 'closing' : 'intake';
+        localStorage.setItem(analyticsTabStorageKey, activeAnalyticsTab);
+        selectedAnalyticsRecordId = null;
+        analyticsPage = 1;
+        localStorage.setItem(analyticsPageStorageKey, '1');
+        applyAnalyticsTab(activeAnalyticsTab);
+        renderAnalyticsPanel();
+      });
+    });
+    themeToggle.addEventListener('click', () => {
+      const nextTheme = document.body.dataset.theme === 'light' ? 'dark' : 'light';
+      applyTheme(nextTheme);
+      localStorage.setItem(themeStorageKey, nextTheme);
+    });
+
+    function readStoredTheme() {
+      return localStorage.getItem(themeStorageKey) === 'dark' ? 'dark' : 'light';
+    }
+
+    function readStoredView() {
+      const storedView = localStorage.getItem(viewStorageKey);
+      if (storedView === 'backlog' || storedView === 'archive') {
+        return 'workflow';
+      }
+      if (storedView === 'architecture' || storedView === 'intent-graph' || storedView === 'schematic') {
+        return storedView === 'architecture' ? 'architecture' : 'workflow';
+      }
+      if (storedView === 'home') {
+        return 'home';
+      }
+      if (['workflow', 'verification', 'prompts', 'memory', 'analytics', 'board', 'architecture'].includes(storedView)) {
+        return storedView;
+      }
+      return 'home';
+    }
+
+    function readStoredWorkflowTab() {
+      const storedTab = localStorage.getItem(workflowTabStorageKey);
+      if (storedTab === 'archive') {
+        return 'archive';
+      }
+      const storedView = localStorage.getItem(viewStorageKey);
+      if (storedView === 'archive') {
+        return 'archive';
+      }
+      return 'backlog';
+    }
+
+    function applyWorkflowTab(tab) {
+      const isBacklog = tab !== 'archive';
+      workflowBacklogPanel.hidden = !isBacklog;
+      workflowArchivePanel.hidden = isBacklog;
+      workflowSubtabs.forEach((button) => {
+        const selected = button.dataset.workflowTab === tab;
+        button.classList.toggle('is-active', selected);
+        button.setAttribute('aria-selected', String(selected));
+      });
+    }
+
+    function readStoredAnalyticsTab() {
+      const storedTab = localStorage.getItem(analyticsTabStorageKey);
+      if (storedTab === 'closing') {
+        return 'closing';
+      }
+      return 'intake';
+    }
+
+    function readStoredWorkflowDisplayMode() {
+      const storedMode = localStorage.getItem(workflowDisplayModeStorageKey);
+      if (storedMode === 'flat' || storedMode === 'tree') {
+        return storedMode;
+      }
+      return 'epic-groups';
+    }
+
+    function applyAnalyticsTab(tab) {
+      const isClosing = tab === 'closing';
+      analyticsSubtabs.forEach((button) => {
+        const selected = (button.dataset.analyticsTab === 'closing') === isClosing;
+        button.classList.toggle('is-active', selected);
+        button.setAttribute('aria-selected', String(selected));
+      });
+      if (analyticsPanelTitle) {
+        analyticsPanelTitle.textContent = isClosing
+          ? 'Итоги закрытых эпиков'
+          : 'Аналитические разборы';
+      }
+    }
+
+    function readAnalyticsRecordKind(record) {
+      if (record && record.recordKind === 'closing') {
+        return 'closing';
+      }
+      if (record && record.recordKind === 'intake') {
+        return 'intake';
+      }
+      const id = String(record?.id ?? '').trim().toLowerCase();
+      const bodyPath = String(record?.bodyPath ?? '').trim().toLowerCase();
+      const title = String(record?.title ?? '').trim().toLowerCase();
+      if (
+        id.includes('closing-')
+        || bodyPath.includes('/closing-')
+        || bodyPath.includes('closing-epic')
+      ) {
+        return 'closing';
+      }
+      if (/^an-\d+:\s*closing\b/iu.test(title)) {
+        return 'closing';
+      }
+      return 'intake';
+    }
+
+    function getFilteredItems() {
+      if (!snapshot) {
+        return [];
+      }
+
+      const query = search.value.trim().toLowerCase();
+      let items = snapshot.items.filter((item) => matchesQuery(item, query));
+      if (semanticSearchWorkIds && semanticSearchWorkIds.size > 0) {
+        items = items.filter((item) => semanticSearchWorkIds.has(item.id));
+      }
+      items = applyIntentDomainFilter(items);
+      items = applyCycleWorkflowFilter(items);
+      return items;
+    }
+
+    function scheduleSemanticSearchRefresh() {
+      if (!searchMode || searchMode.value === 'local') {
+        semanticSearchWorkIds = null;
+        return;
+      }
+
+      const query = search.value.trim();
+      if (query.length < 2) {
+        semanticSearchWorkIds = null;
+        return;
+      }
+
+      if (semanticSearchTimer) {
+        clearTimeout(semanticSearchTimer);
+      }
+
+      semanticSearchTimer = setTimeout(() => {
+        const mode = searchMode.value;
+        fetch('/api/semantic-search?q=' + encodeURIComponent(query) + '&mode=' + encodeURIComponent(mode))
+          .then((response) => {
+            if (!response.ok) throw new Error('semantic search HTTP ' + response.status);
+            return response.json();
+          })
+          .then((payload) => {
+            semanticSearchWorkIds = new Set((payload.hits ?? []).map((hit) => hit.workId).filter(Boolean));
+            render();
+          })
+          .catch(() => {
+            semanticSearchWorkIds = null;
+          });
+      }, 250);
+    }
+
+    function readStoredDetailDrawerWidth() {
+      const raw = Number(localStorage.getItem(detailDrawerWidthStorageKey));
+      return Number.isFinite(raw) ? raw : 720;
+    }
+
+    function getDetailDrawerWidth() {
+      const rectWidth = detailDrawer.getBoundingClientRect().width;
+      return rectWidth > 0 ? rectWidth : readStoredDetailDrawerWidth();
+    }
+
+    function minDetailDrawerWidth() {
+      return Math.min(420, window.innerWidth);
+    }
+
+    function maxDetailDrawerWidth() {
+      return Math.max(minDetailDrawerWidth(), window.innerWidth - 48);
+    }
+
+    function clampDetailDrawerWidth(width) {
+      return Math.max(minDetailDrawerWidth(), Math.min(maxDetailDrawerWidth(), Number(width) || 720));
+    }
+
+    function applyStoredDetailDrawerWidth() {
+      applyDetailDrawerWidth(clampDetailDrawerWidth(readStoredDetailDrawerWidth()), { persist: false });
+    }
+
+    function applyDetailDrawerWidth(width, { persist = true } = {}) {
+      const clamped = clampDetailDrawerWidth(width);
+      detailDrawer.style.width = clamped + 'px';
+      if (persist) localStorage.setItem(detailDrawerWidthStorageKey, String(Math.round(clamped)));
+    }
+
+    function startDetailDrawerResize(event) {
+      event.preventDefault();
+      detailResizeHandle.setPointerCapture?.(event.pointerId);
+      document.body.classList.add('is-resizing-detail');
+      const onPointerMove = (moveEvent) => {
+        applyDetailDrawerWidth(window.innerWidth - moveEvent.clientX, { persist: false });
+      };
+      const onPointerUp = (upEvent) => {
+        document.body.classList.remove('is-resizing-detail');
+        applyDetailDrawerWidth(window.innerWidth - upEvent.clientX, { persist: true });
+        detailResizeHandle.releasePointerCapture?.(event.pointerId);
+        window.removeEventListener('pointermove', onPointerMove);
+        window.removeEventListener('pointerup', onPointerUp);
+        window.removeEventListener('pointercancel', onPointerUp);
+      };
+      window.addEventListener('pointermove', onPointerMove);
+      window.addEventListener('pointerup', onPointerUp);
+      window.addEventListener('pointercancel', onPointerUp);
+    }
+
+    function handleDetailDrawerResizeKeydown(event) {
+      if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+      event.preventDefault();
+      const step = event.shiftKey ? 80 : 24;
+      const current = getDetailDrawerWidth();
+      if (event.key === 'ArrowLeft') applyDetailDrawerWidth(current + step);
+      if (event.key === 'ArrowRight') applyDetailDrawerWidth(current - step);
+      if (event.key === 'Home') applyDetailDrawerWidth(minDetailDrawerWidth());
+      if (event.key === 'End') applyDetailDrawerWidth(maxDetailDrawerWidth());
+    }
+
+    function readStoredDetailSubDrawerWidth() {
+      const raw = Number(localStorage.getItem(detailSubDrawerWidthStorageKey));
+      return Number.isFinite(raw) ? raw : 640;
+    }
+
+    function getDetailSubDrawerWidth() {
+      if (!detailSubDrawer) return readStoredDetailSubDrawerWidth();
+      const rectWidth = detailSubDrawer.getBoundingClientRect().width;
+      return rectWidth > 0 ? rectWidth : readStoredDetailSubDrawerWidth();
+    }
+
+    function minDetailSubDrawerWidth() {
+      return Math.min(360, window.innerWidth);
+    }
+
+    function maxDetailSubDrawerWidth() {
+      return Math.max(minDetailSubDrawerWidth(), window.innerWidth - 48);
+    }
+
+    function clampDetailSubDrawerWidth(width) {
+      return Math.max(minDetailSubDrawerWidth(), Math.min(maxDetailSubDrawerWidth(), Number(width) || 640));
+    }
+
+    function applyStoredDetailSubDrawerWidth() {
+      if (!detailSubDrawer) return;
+      applyDetailSubDrawerWidth(clampDetailSubDrawerWidth(readStoredDetailSubDrawerWidth()), { persist: false });
+    }
+
+    function applyDetailSubDrawerWidth(width, { persist = true } = {}) {
+      if (!detailSubDrawer) return;
+      const clamped = clampDetailSubDrawerWidth(width);
+      detailSubDrawer.style.width = clamped + 'px';
+      if (persist) localStorage.setItem(detailSubDrawerWidthStorageKey, String(Math.round(clamped)));
+    }
+
+    function startDetailSubDrawerResize(event) {
+      if (!detailSubDrawer || !detailSubResizeHandle) return;
+      event.preventDefault();
+      detailSubResizeHandle.setPointerCapture?.(event.pointerId);
+      document.body.classList.add('is-resizing-detail');
+      const onPointerMove = (moveEvent) => {
+        applyDetailSubDrawerWidth(window.innerWidth - moveEvent.clientX, { persist: false });
+      };
+      const onPointerUp = (upEvent) => {
+        document.body.classList.remove('is-resizing-detail');
+        applyDetailSubDrawerWidth(window.innerWidth - upEvent.clientX, { persist: true });
+        detailSubResizeHandle.releasePointerCapture?.(event.pointerId);
+        window.removeEventListener('pointermove', onPointerMove);
+        window.removeEventListener('pointerup', onPointerUp);
+        window.removeEventListener('pointercancel', onPointerUp);
+      };
+      window.addEventListener('pointermove', onPointerMove);
+      window.addEventListener('pointerup', onPointerUp);
+      window.addEventListener('pointercancel', onPointerUp);
+    }
+
+    function handleDetailSubDrawerResizeKeydown(event) {
+      if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+      event.preventDefault();
+      const step = event.shiftKey ? 80 : 24;
+      const current = getDetailSubDrawerWidth();
+      if (event.key === 'ArrowLeft') applyDetailSubDrawerWidth(current + step);
+      if (event.key === 'ArrowRight') applyDetailSubDrawerWidth(current - step);
+      if (event.key === 'Home') applyDetailSubDrawerWidth(minDetailSubDrawerWidth());
+      if (event.key === 'End') applyDetailSubDrawerWidth(maxDetailSubDrawerWidth());
+    }
+
+    function applyTheme(theme) {
+      document.documentElement.dataset.theme = theme;
+      document.documentElement.dataset.iohascTheme = 'workgraph-dark';
+      document.body.dataset.theme = theme;
+      const isDark = theme === 'dark';
+      themeToggle.textContent = isDark ? 'Светлая тема' : 'Тёмная тема';
+      themeToggle.setAttribute('aria-pressed', String(isDark));
+      themeToggle.setAttribute('aria-label', 'Тема: ' + (isDark ? 'тёмная' : 'светлая'));
+    }
+
+    function remountActiveGraphWorkspace() {
+      return;
+    }
+
+    let graphCanvasResizeTimer = null;
+    window.addEventListener('resize', () => {
+      return;
+    });
+
+    async function refreshHomeSnapshot() {
+      const ownerRole = localStorage.getItem(ownerRoleStorageKey) || '';
+      const query = ownerRole ? ('?ownerRole=' + encodeURIComponent(ownerRole)) : '';
+      const response = await fetch('/api/home-snapshot' + query);
+      if (!response.ok) throw new Error('home snapshot ' + response.status);
+      homeSnapshot = await response.json();
+      if (activeView === 'home' && homeMissionControlRoot) {
+        renderHomeMissionControl(homeMissionControlRoot, homeSnapshot);
+      }
+      cmdKRows = buildCommandPaletteIndex(snapshot, analyticsProjection);
+      return homeSnapshot;
+    }
+
+    async function refreshAgentRunDock() {
+      if (!agentRunDockBody) return;
+      const response = await fetch('/api/agent-run/journal');
+      if (!response.ok) return;
+      const journal = await response.json();
+      renderAgentRunDockLog(agentRunDockBody, journal);
+      const latest = Array.isArray(journal.entries) ? journal.entries[0] : null;
+      if (latest?.taskId) lastAgentRunTaskId = latest.taskId;
+      await refreshAgentScopePanel().catch(() => undefined);
+    }
+
+    async function resolveAgentScopeEpicId() {
+      await ensureWorkSnapshotLoaded();
+      const focusTaskId = lastAgentRunTaskId;
+      const fromTask = resolveEpicIdForWorkItem(snapshot?.items ?? [], focusTaskId);
+      if (fromTask) return fromTask;
+      if (homeSnapshot?.sessionEpicId) return homeSnapshot.sessionEpicId;
+      const activeRunIds = (homeSnapshot?.activeRuns ?? []).map((run) => run.workId).filter(Boolean);
+      return resolveSessionEpicId(snapshot?.items ?? [], {
+        focusTaskId,
+        activeRunIds,
+      });
+    }
+
+    async function refreshAgentScopePanel() {
+      if (!agentScopePanel) return;
+      const epicId = await resolveAgentScopeEpicId();
+      if (!epicId) {
+        renderAgentScopePanel(agentScopePanel, null);
+        return;
+      }
+      const response = await fetch('/api/epic-scope?epicId=' + encodeURIComponent(epicId));
+      if (!response.ok) {
+        renderAgentScopePanel(agentScopePanel, null);
+        return;
+      }
+      const scopeSlice = await response.json();
+      renderAgentScopePanel(agentScopePanel, scopeSlice);
+    }
+
+    function stopAgentScopePoll() {
+      if (agentScopePollTimer) {
+        window.clearInterval(agentScopePollTimer);
+        agentScopePollTimer = null;
+      }
+    }
+
+    function startAgentScopePoll() {
+      if (agentScopePollTimer) return;
+      agentScopePollTimer = window.setInterval(
+        () => refreshAgentScopePanel().catch(() => undefined),
+        agentScopePollMs,
+      );
+    }
+
+    function setAgentDockOpen(open) {
+      if (!agentRunDock || !layoutRoot) return;
+      agentRunDock.classList.toggle('is-open', open);
+      layoutRoot.classList.toggle('has-agent-dock', open);
+      localStorage.setItem(agentDockOpenStorageKey, open ? '1' : '0');
+      if (open) {
+        refreshAgentRunDock().catch(() => undefined);
+        if (!agentDockPollTimer) {
+          agentDockPollTimer = window.setInterval(() => refreshAgentRunDock().catch(() => undefined), 5000);
+        }
+        startAgentScopePoll();
+      } else {
+        if (agentDockPollTimer) {
+          window.clearInterval(agentDockPollTimer);
+          agentDockPollTimer = null;
+        }
+        stopAgentScopePoll();
+      }
+    }
+
+    function openCommandPalette() {
+      if (!cmdKOverlay || !cmdKInput) return;
+      cmdKRows = buildCommandPaletteIndex(snapshot, analyticsProjection);
+      cmdKActiveIndex = 0;
+      cmdKOverlay.classList.add('is-open');
+      cmdKOverlay.setAttribute('aria-hidden', 'false');
+      cmdKInput.value = '';
+      renderCommandPaletteResults('');
+      cmdKInput.focus();
+    }
+
+    function closeCommandPalette() {
+      if (!cmdKOverlay) return;
+      cmdKOverlay.classList.remove('is-open');
+      cmdKOverlay.setAttribute('aria-hidden', 'true');
+    }
+
+    function renderCommandPaletteResults(query) {
+      if (!cmdKResults) return;
+      const rows = filterCommandPaletteRows(cmdKRows, query);
+      cmdKResults.innerHTML = rows.map((row, index) =>
+        '<div class="cmd-k-row' + (index === cmdKActiveIndex ? ' is-active' : '') + '" data-cmd-index="' + index + '">' +
+        '<strong>' + escapeHtml(row.scope + ':') + '</strong> ' + escapeHtml(row.label) +
+        '</div>',
+      ).join('');
+      cmdKResults._rows = rows;
+    }
+
+    async function executeCommandPaletteRow(row) {
+      if (!row) return;
+      closeCommandPalette();
+      if (row.view) {
+        activeView = row.view;
+        localStorage.setItem(viewStorageKey, activeView);
+        applyView(activeView);
+        ensureLazyViewData(activeView).then(render).catch(render);
+        return;
+      }
+      if (row.workId) {
+        openTaskDetails(row.workId);
+        return;
+      }
+      if (row.scope === 'run') {
+        const ready = (snapshot?.items ?? []).find((item) => item.status === 'ready');
+        const taskId = ready?.id ?? lastAgentRunTaskId;
+        if (!taskId) return;
+        setAgentDockOpen(true);
+        await fetch('/api/agent-run', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ taskId, provider: 'local', persistBacklog: true }),
+        });
+        await refreshAgentRunDock();
+      }
+    }
+
+    async function ensureWorkSnapshotLoaded() {
+      if (snapshot && Array.isArray(snapshot.items)) {
+        return snapshot;
+      }
+      try {
+        const response = await fetch('/api/snapshot');
+        if (!response.ok) return null;
+        snapshot = await response.json();
+        return snapshot;
+      } catch {
+        return null;
+      }
+    }
+
+    async function ensureAnalyticsProjectionLoaded() {
+      if (analyticsProjection && Array.isArray(analyticsProjection.records)) {
+        return analyticsProjection;
+      }
+      try {
+        const response = await fetch('/api/analytics-projection');
+        if (!response.ok) return null;
+        analyticsProjection = await response.json();
+        analyticsPanelLoaded = true;
+        return analyticsProjection;
+      } catch {
+        return null;
+      }
+    }
+
+    async function handleHomeWorkItemClick(workId) {
+      const trimmed = String(workId ?? '').trim();
+      if (!trimmed) return;
+      const loaded = await ensureWorkSnapshotLoaded();
+      const item = (loaded?.items ?? []).find((candidate) => candidate.id === trimmed);
+      if (!item) {
+        return;
+      }
+      openTaskDetails(item);
+    }
+
+    async function handleHomeAnalyticsClick(analyticsKey) {
+      const trimmed = String(analyticsKey ?? '').trim();
+      if (!trimmed) return;
+      const projection = await ensureAnalyticsProjectionLoaded();
+      const records = projection?.records ?? [];
+      const record = records.find((entry) => entry.key === trimmed)
+        ?? records.find((entry) => entry.id === trimmed);
+      if (!record) {
+        return;
+      }
+      selectedAnalyticsRecordId = record.id;
+      openAnalyticsRecordDetails(record);
+    }
+
+    function initMissionControlUi() {
+      if (localStorage.getItem(agentDockOpenStorageKey) === '1') {
+        setAgentDockOpen(true);
+      }
+      if (homeMissionControlRoot) {
+        homeMissionControlRoot.addEventListener('click', (event) => {
+          const row = event.target.closest('[data-work-id], [data-analytics-key]');
+          if (!row) return;
+          const analyticsKey = row.getAttribute('data-analytics-key');
+          if (analyticsKey) {
+            handleHomeAnalyticsClick(analyticsKey).catch(() => undefined);
+            return;
+          }
+          const workId = row.getAttribute('data-work-id');
+          if (workId) handleHomeWorkItemClick(workId).catch(() => undefined);
+        });
+      }
+      if (agentRunDockClose) {
+        agentRunDockClose.addEventListener('click', () => setAgentDockOpen(false));
+      }
+      if (agentRunRetry) {
+        agentRunRetry.addEventListener('click', async () => {
+          if (!lastAgentRunTaskId) return;
+          await fetch('/api/agent-run', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ taskId: lastAgentRunTaskId, provider: 'local', persistBacklog: true }),
+          });
+          await refreshAgentRunDock();
+        });
+      }
+      if (agentRunOpenTask) {
+        agentRunOpenTask.addEventListener('click', () => {
+          if (lastAgentRunTaskId) openTaskDetails(lastAgentRunTaskId);
+        });
+      }
+      if (agentScopePanel) {
+        agentScopePanel.addEventListener('click', (event) => {
+          const row = event.target.closest('[data-work-id]');
+          if (!row) return;
+          const workId = row.getAttribute('data-work-id');
+          if (workId) handleHomeWorkItemClick(workId).catch(() => undefined);
+        });
+      }
+      if (cmdKOverlay) {
+        cmdKOverlay.addEventListener('click', (event) => {
+          if (event.target === cmdKOverlay) closeCommandPalette();
+        });
+      }
+      if (cmdKInput) {
+        cmdKInput.addEventListener('input', () => {
+          cmdKActiveIndex = 0;
+          renderCommandPaletteResults(cmdKInput.value);
+        });
+        cmdKInput.addEventListener('keydown', (event) => {
+          const rows = cmdKResults?._rows ?? [];
+          if (event.key === 'ArrowDown') {
+            event.preventDefault();
+            cmdKActiveIndex = Math.min(cmdKActiveIndex + 1, Math.max(rows.length - 1, 0));
+            renderCommandPaletteResults(cmdKInput.value);
+          } else if (event.key === 'ArrowUp') {
+            event.preventDefault();
+            cmdKActiveIndex = Math.max(cmdKActiveIndex - 1, 0);
+            renderCommandPaletteResults(cmdKInput.value);
+          } else if (event.key === 'Enter') {
+            event.preventDefault();
+            executeCommandPaletteRow(rows[cmdKActiveIndex]).catch(() => undefined);
+          } else if (event.key === 'Escape') {
+            closeCommandPalette();
+          }
+        });
+      }
+      if (cmdKResults) {
+        cmdKResults.addEventListener('click', (event) => {
+          const rowEl = event.target.closest('[data-cmd-index]');
+          if (!rowEl) return;
+          const index = Number(rowEl.getAttribute('data-cmd-index'));
+          const rows = cmdKResults._rows ?? [];
+          executeCommandPaletteRow(rows[index]).catch(() => undefined);
+        });
+      }
+      document.addEventListener('keydown', (event) => {
+        const isMac = navigator.platform.toLowerCase().includes('mac');
+        const mod = isMac ? event.metaKey : event.ctrlKey;
+        if (mod && String(event.key).toLowerCase() === 'k') {
+          event.preventDefault();
+          openCommandPalette();
+        }
+      });
+      if (!homePollTimer) {
+        homePollTimer = window.setInterval(() => {
+          if (activeView === 'home') refreshHomeSnapshot().catch(() => undefined);
+        }, 30000);
+      }
+    }
+
+    function applyView(view) {
+      const isHome = view === 'home';
+      const isWorkflow = view === 'workflow';
+      const isVerification = view === 'verification';
+      const isArchitecture = view === 'architecture';
+      const isIntent = false;
+      const isPrompts = view === 'prompts';
+      const isMemory = view === 'memory';
+      const isAnalytics = view === 'analytics';
+      if (contentRoot) {
+        contentRoot.classList.remove('is-graph-workspace');
+      }
+      workflowFilters.hidden = !(view === 'board' || isWorkflow);
+      if (workflowDisplayModeSelect) {
+        workflowDisplayModeSelect.hidden = !isWorkflow;
+      }
+      if (viewToolbar) viewToolbar.hidden = isHome;
+      if (homeView) homeView.hidden = !isHome;
+      boardView.hidden = isHome || isWorkflow || isVerification || isIntent || isPrompts || isMemory || isAnalytics || isArchitecture;
+      workflowView.hidden = !isWorkflow;
+      if (isWorkflow) {
+        applyWorkflowTab(activeWorkflowTab);
+      }
+      verificationView.hidden = !isVerification;
+      intentView.hidden = !isIntent;
+      promptsView.hidden = !isPrompts;
+      memoryView.hidden = !isMemory;
+      analyticsView.hidden = !isAnalytics;
+      if (architectureView) architectureView.hidden = !isArchitecture;
+      if (isArchitecture) {
+        renderArchitecturePanels();
+      }
+      if (isAnalytics) {
+        applyAnalyticsTab(activeAnalyticsTab);
+      }
+      const viewCopy = {
+        home: 'Главная',
+        board: 'Доска',
+        workflow: 'Задачи',
+        architecture: 'Архитектура',
+        verification: 'Проверки',
+        prompts: 'Промпты',
+        memory: 'Память',
+        analytics: 'Аналитика',
+      };
+      const title = viewCopy[view] ?? viewCopy.home;
+      viewTitle.textContent = title;
+      if (breadcrumbProject) {
+        breadcrumbProject.textContent = 'Work Graph';
+      }
+      navTabs.forEach((tab) => {
+        tab.setAttribute('aria-selected', String(tab.dataset.view === view));
+      });
+    }
+
+    function render() {
+      if (!snapshot) return;
+      if (activeView === 'home' && homeMissionControlRoot && homeSnapshot) {
+        renderHomeMissionControl(homeMissionControlRoot, homeSnapshot);
+      }
+      const items = getFilteredItems();
+      renderIntentDomainFilter();
+      renderNavigationCounts(items);
+      renderKanbanBoard(items);
+      renderBoard(items);
+      renderArchive(items);
+      renderBacklog(items);
+      renderVerificationPanel();
+      renderIntentComposerPanel();
+      renderPromptsPanel();
+      renderMemoryPanel();
+      renderAnalyticsPanel();
+    }
+
+    function ensureLazyViewData(view) {
+      if (view === 'home' && !homePanelLoaded) {
+        return refreshHomeSnapshot().then(() => {
+          homePanelLoaded = true;
+        });
+      }
+
+      if (view === 'prompts' && !promptsPanelLoaded) {
+        return fetch('/api/prompt-rules-projection').then((response) => {
+          if (!response.ok) throw new Error('запрос prompt rules projection завершился с кодом ' + response.status);
+          return response.json();
+        }).then((data) => {
+          promptsProjection = data;
+          promptsPanelLoaded = true;
+        });
+      }
+
+      if (view === 'verification' && (!codeGapPanelLoaded || !daemonAuditPanelLoaded)) {
+        const requests = [];
+
+        if (!codeGapPanelLoaded) {
+          requests.push(
+            fetch('/api/code-gap-projection').then((response) => {
+              if (!response.ok) throw new Error('запрос code-gap projection завершился с кодом ' + response.status);
+              return response.json().then((data) => {
+                codeGapProjection = data;
+                codeGapPanelLoaded = true;
+              });
+            }),
+          );
+        }
+
+        if (!daemonAuditPanelLoaded) {
+          requests.push(
+            fetch('/api/daemon-audit-tail?limit=12').then((response) => {
+              if (!response.ok) throw new Error('запрос daemon audit tail завершился с кодом ' + response.status);
+              return response.json().then((data) => {
+                daemonAuditTail = data;
+                daemonAuditPanelLoaded = true;
+              });
+            }),
+          );
+        }
+
+        return Promise.all(requests).then(() => undefined);
+      }
+
+      if (view === 'memory' && !memoryPanelLoaded) {
+        return fetch('/api/memory-projection').then((response) => {
+          if (!response.ok) throw new Error('запрос memory projection завершился с кодом ' + response.status);
+          return response.json();
+        }).then((data) => {
+          memoryProjection = data;
+          memoryPanelLoaded = true;
+        });
+      }
+
+      if (view === 'analytics' && !analyticsPanelLoaded) {
+        return fetch('/api/analytics-projection').then((response) => {
+          if (!response.ok) throw new Error('запрос analytics projection завершился с кодом ' + response.status);
+          return response.json();
+        }).then((data) => {
+          analyticsProjection = data;
+          analyticsPanelLoaded = true;
+        });
+      }
+
+      if (view === 'architecture' && !architectureLoaded) {
+        return ensureArchitectureSnapshotLoaded().then(() => undefined);
+      }
+
+      return Promise.resolve();
+    }
+
+    function populateCycleFilterOptions() {
+      const cycles = operatorShellSnapshot?.cycleSlice?.cycles ?? [];
+      const existing = new Set([...cycleFilterSelect.options].map((option) => option.value));
+      cycles.forEach((cycle) => {
+        if (existing.has(cycle.id)) return;
+        const option = document.createElement('option');
+        option.value = cycle.id;
+        option.textContent = cycle.label + ' (' + cycle.active + ' active / ' + cycle.done + ' done)';
+        cycleFilterSelect.appendChild(option);
+      });
+      cycleFilterSelect.value = cycleFilter;
+    }
+
+    function applyCycleWorkflowFilter(items) {
+      if (activeView !== 'board' && activeView !== 'workflow') {
+        return items;
+      }
+
+      const derivedByWorkId = operatorShellSnapshot?.cycleSlice?.derivedByWorkId ?? {};
+      const resolvedCycle = cycleFilter === 'current'
+        ? (operatorShellSnapshot?.cycleSlice?.currentCycle ?? 'uncategorized')
+        : cycleFilter;
+
+      if (resolvedCycle === 'all') {
+        return items;
+      }
+
+      return items.filter((item) => derivedByWorkId[item.id] === resolvedCycle);
+    }
+
+    function applyIntentDomainFilter(items) {
+      if ((activeView !== 'board' && activeView !== 'workflow') || !intentDomainFilter || !operatorShellSnapshot?.intentSidebar?.nodes) {
+        return items;
+      }
+
+      const allowedIds = new Set(
+        operatorShellSnapshot.intentSidebar.nodes
+          .filter((node) => node.domain === intentDomainFilter)
+          .map((node) => node.workId),
+      );
+
+      return items.filter((item) => allowedIds.has(item.id));
+    }
+
+    function renderIntentDomainFilter() {
+      const domains = operatorShellSnapshot?.intentSidebar?.domains ?? [];
+      const current = intentDomainFilter;
+      intentDomainFilterSelect.innerHTML =
+        '<option value="">Все домены</option>' +
+        domains.map((domain) =>
+          '<option value="' + escapeHtml(domain.id) + '"' + (current === domain.id ? ' selected' : '') + '>' +
+            escapeHtml(domain.label) + ' (' + domain.count + ')' +
+          '</option>'
+        ).join('');
+      if (current && !domains.some((domain) => domain.id === current)) {
+        intentDomainFilterSelect.innerHTML +=
+          '<option value="' + escapeHtml(current) + '" selected>' + escapeHtml(current) + '</option>';
+      }
+      intentDomainFilterSelect.disabled = domains.length === 0;
+      intentDomainClear.hidden = !current;
+    }
+
+    function crossHighlightTargets(taskId) {
+      const row = operatorShellSnapshot?.semanticCrossHighlight?.find((entry) => entry.workId === taskId);
+      if (!row) {
+        return { architectureBlockId: null, peerIds: [] };
+      }
+      const peerIds = (operatorShellSnapshot.semanticCrossHighlight ?? [])
+        .filter((entry) => entry.architectureBlockId === row.architectureBlockId && entry.workId !== taskId)
+        .map((entry) => entry.workId);
+      return { architectureBlockId: row.architectureBlockId, peerIds };
+    }
+
+    function applyCrossHighlight(taskId) {
+      highlightTaskId = taskId;
+      const targets = crossHighlightTargets(taskId);
+      if (targets.architectureBlockId) {
+        focusedBlockId = targets.architectureBlockId;
+      }
+    }
+
+    function renderIntentComposerPanel() {
+      const applyButton = intentComposerPanel.querySelector('[data-action="apply"]');
+      if (applyButton) {
+        applyButton.disabled = !intentComposerProposal?.ok;
+      }
+
+      if (intentComposerMessages.length === 0) {
+        intentComposerChat.innerHTML = '<div class="intent-composer-message is-system">Введите намерение и нажмите «Preview draft».</div>';
+        return;
+      }
+
+      intentComposerChat.innerHTML = intentComposerMessages.map((entry) =>
+        '<div class="intent-composer-message is-' + escapeHtml(entry.role) + '">' + escapeHtml(entry.text) + '</div>'
+      ).join('');
+    }
+
+    function resetIntentComposerDraft() {
+      intentComposerProposal = null;
+      intentComposerPreview.hidden = true;
+      intentComposerPreview.textContent = '';
+      intentComposerErrors.hidden = true;
+      intentComposerErrors.textContent = '';
+      renderIntentComposerPanel();
+    }
+
+    function handleIntentComposerClick(event) {
+      const button = event.target.closest('button[data-action]');
+      if (!button) {
+        return;
+      }
+
+      if (button.dataset.action === 'propose') {
+        submitIntentProposal();
+      } else if (button.dataset.action === 'apply') {
+        submitIntentApply();
+      } else if (button.dataset.action === 'cancel') {
+        intentComposerMessages = [];
+        intentComposerInput.value = '';
+        resetIntentComposerDraft();
+      }
+    }
+
+    async function submitIntentProposal() {
+      const message = intentComposerInput.value.trim();
+      if (!message) {
+        intentComposerErrors.hidden = false;
+        intentComposerErrors.textContent = 'Введите текст намерения.';
+        return;
+      }
+
+      const proposeButton = intentComposerPanel.querySelector('[data-action="propose"]');
+      const applyButton = intentComposerPanel.querySelector('[data-action="apply"]');
+      proposeButton.disabled = true;
+      applyButton.disabled = true;
+      intentComposerErrors.hidden = true;
+      intentComposerErrors.textContent = '';
+
+      try {
+        const response = await fetch('/api/intent-composer/proposal', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ message }),
+        });
+        const payload = await response.json();
+
+        intentComposerMessages.push({ role: 'user', text: message });
+        intentComposerProposal = payload;
+
+        if (!response.ok || !payload.ok) {
+          intentComposerPreview.hidden = true;
+          intentComposerErrors.hidden = false;
+          intentComposerErrors.textContent = (payload.validationErrors ?? [payload.error ?? 'proposal_failed']).join('\\n');
+          intentComposerMessages.push({
+            role: 'system',
+            text: 'Draft не прошёл validation. Исправьте намерение и повторите preview.',
+          });
+        } else {
+          intentComposerPreview.hidden = false;
+          intentComposerPreview.textContent = payload.formattedAtom || JSON.stringify(payload.intentDraft, null, 2);
+          intentComposerMessages.push({
+            role: 'system',
+            text: 'Draft готов: ' + payload.intentDraft.suggestedWorkId + '. Нажмите «Создать задачу» для apply в backlog.',
+          });
+        }
+      } catch (error) {
+        intentComposerErrors.hidden = false;
+        intentComposerErrors.textContent = error instanceof Error ? error.message : String(error);
+      } finally {
+        proposeButton.disabled = false;
+        renderIntentComposerPanel();
+      }
+    }
+
+    async function submitIntentApply() {
+      if (!intentComposerProposal?.ok) {
+        return;
+      }
+
+      const proposeButton = intentComposerPanel.querySelector('[data-action="propose"]');
+      const applyButton = intentComposerPanel.querySelector('[data-action="apply"]');
+      proposeButton.disabled = true;
+      applyButton.disabled = true;
+
+      try {
+        const response = await fetch('/api/intent-composer/apply', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ proposal: intentComposerProposal }),
+        });
+        const payload = await response.json();
+
+        if (!response.ok || !payload.ok) {
+          intentComposerErrors.hidden = false;
+          intentComposerErrors.textContent = (payload.validationErrors ?? [payload.error ?? 'apply_failed']).join('\\n');
+          return;
+        }
+
+        intentComposerMessages.push({
+          role: 'system',
+          text: 'WorkItem ' + payload.workId + ' добавлен в backlog.',
+        });
+        intentComposerInput.value = '';
+        resetIntentComposerDraft();
+        intentComposerMessages = intentComposerMessages.slice(-6);
+
+        await reloadOperatorSnapshots();
+        render();
+      } catch (error) {
+        intentComposerErrors.hidden = false;
+        intentComposerErrors.textContent = error instanceof Error ? error.message : String(error);
+      } finally {
+        proposeButton.disabled = false;
+        renderIntentComposerPanel();
+      }
+    }
+
+    function matchesPromptRuleQuery(rule, query) {
+      if (!query) {
+        return true;
+      }
+
+      const haystack = [
+        rule.id,
+        rule.name,
+        rule.filePath,
+        rule.basis,
+        rule.vector,
+        rule.goal,
+        rule.traceStatus,
+        rule.protocolId,
+        rule.decisionId,
+        ...(rule.evidence ? [rule.evidence] : []),
+        ...(rule.checks ? [rule.checks] : []),
+        ...Object.entries(rule.labels || {}).map(([key, value]) => key + ' ' + value),
+      ].join(' ').toLowerCase();
+
+      return haystack.includes(query);
+    }
+
+    function renderListRow({
+      title,
+      lines = [],
+      footerLeft = '',
+      footerRight = '',
+      extraClass = '',
+      selected = false,
+      highlighted = false,
+      attrs = {},
+    }) {
+      const attrParts = Object.entries(attrs)
+        .filter(([, value]) => value != null && value !== '')
+        .map(([key, value]) => key + '="' + escapeHtml(String(value)) + '"');
+      const className = 'task-atom list-row' +
+        (extraClass ? ' ' + extraClass : '') +
+        (selected ? ' is-selected' : '') +
+        (highlighted ? ' is-highlighted' : '');
+      const lineHtml = lines
+        .filter((line) => line != null && line !== '')
+        .map((line) => '<p class="list-row-line">' + line + '</p>')
+        .join('');
+      const footer = footerLeft || footerRight
+        ? '<div class="issue-footer"><div class="issue-footer-left">' + footerLeft + '</div>' +
+          '<div class="issue-footer-right">' + footerRight + '</div></div>'
+        : '';
+      return '<button class="' + className + '" type="button" ' + attrParts.join(' ') + '>' +
+        '<h3>' + escapeHtml(title) + '</h3>' +
+        lineHtml +
+        footer +
+      '</button>';
+    }
+
+    function renderPromptsPanel() {
+      if (!promptsProjection) {
+        if (promptsSummary) promptsSummary.innerHTML = '';
+        promptsList.innerHTML = activeView === 'prompts'
+          ? '<div class="empty">Загрузка prompt rules...</div>'
+          : '';
+        if (promptsPanelCount) promptsPanelCount.textContent = '0';
+        if (promptsPagination) {
+          promptsPagination.hidden = true;
+          promptsPagination.innerHTML = '';
+        }
+        return;
+      }
+
+      const query = search.value.trim().toLowerCase();
+      const rules = (promptsProjection.rules ?? []).filter((rule) => matchesPromptRuleQuery(rule, query));
+      const summary = promptsProjection.summary ?? { total: 0, valid: 0, invalid: 0 };
+
+      if (promptsPanelCount) promptsPanelCount.textContent = String(rules.length);
+
+      const pagination = paginateItems(rules, promptsPage, workflowPageSize);
+      if (pagination.page !== promptsPage) {
+        persistPanelPage('prompts', pagination.page);
+      }
+
+      promptsList.innerHTML = pagination.items.length
+        ? pagination.items.map((rule) =>
+          renderListRow({
+            title: rule.name,
+            lines: [
+              '<span class="list-row-tag is-' + escapeHtml(rule.validationStatus) + '">' + escapeHtml(rule.validationStatus) + '</span> · ' + escapeHtml(rule.filePath),
+              escapeHtml(preview(rule.basis || rule.vector || rule.goal || '')),
+            ],
+            footerLeft: '<span class="id">' + escapeHtml(rule.id) + '</span>',
+            selected: selectedPromptRuleId === rule.id,
+            attrs: { 'data-prompt-rule-id': rule.id },
+          })
+        ).join('')
+        : '<div class="empty">Prompt rules не найдены для текущего фильтра.</div>';
+      renderWorkflowPagination(promptsPagination, pagination, 'prompts');
+    }
+
+    function matchesMemoryRecordQuery(record, query) {
+      if (!query) {
+        return true;
+      }
+
+      if (query.startsWith('work:')) {
+        const workId = query.slice(5).trim();
+        return workId !== '' && record.sourceWorkItem === workId;
+      }
+
+      const haystack = [
+        record.id,
+        record.type,
+        record.status,
+        record.summary,
+        record.sourceWorkItem,
+        record.confidence,
+        ...(record.relatedFiles ?? []),
+        ...(record.relatedTasks ?? []),
+        ...(record.evidenceIds ?? []),
+      ].join(' ').toLowerCase();
+
+      return haystack.includes(query);
+    }
+
+    function renderMemoryPanel() {
+      if (!memoryProjection) {
+        if (memorySummary) memorySummary.innerHTML = '';
+        memoryList.innerHTML = activeView === 'memory'
+          ? '<div class="empty">Загрузка memory projection...</div>'
+          : '';
+        if (memoryPanelCount) memoryPanelCount.textContent = '0';
+        if (memoryPagination) {
+          memoryPagination.hidden = true;
+          memoryPagination.innerHTML = '';
+        }
+        return;
+      }
+
+      const query = search.value.trim().toLowerCase();
+      const records = (memoryProjection.records ?? []).filter((record) => matchesMemoryRecordQuery(record, query));
+      const summary = memoryProjection.summary ?? { total: 0, reviewRequired: 0 };
+
+      if (memoryPanelCount) memoryPanelCount.textContent = String(records.length);
+
+      const pagination = paginateItems(records, memoryPage, workflowPageSize);
+      if (pagination.page !== memoryPage) {
+        persistPanelPage('memory', pagination.page);
+      }
+
+      memoryList.innerHTML = pagination.items.length
+        ? pagination.items.map((record) => {
+          const owner = record.sourceWorkItem || record.type || 'WG';
+          return renderListRow({
+            title: record.summary,
+            lines: [
+              escapeHtml(record.type) + ' · ' + escapeHtml(record.status) + ' · confidence: ' + escapeHtml(record.confidence),
+              escapeHtml((record.relatedFiles ?? []).join(', ') || 'no related files'),
+            ],
+            footerLeft: '<span class="id">' + escapeHtml(record.id) + '</span>',
+            footerRight: '<span class="owner-avatar" title="' + escapeHtml(owner) + '">' + escapeHtml(ownerInitials(owner)) + '</span>',
+            selected: selectedMemoryRecordId === record.id,
+            attrs: { 'data-memory-record-id': record.id },
+          });
+        }).join('')
+        : '<div class="empty">Memory records не найдены для текущего фильтра.</div>';
+      renderWorkflowPagination(memoryPagination, pagination, 'memory');
+    }
+
+    function handleMemoryRecordClick(event) {
+      const button = event.target.closest('.list-row[data-memory-record-id]');
+      if (!button || !memoryProjection) {
+        return;
+      }
+
+      const record = (memoryProjection.records ?? []).find((entry) => entry.id === button.dataset.memoryRecordId);
+      if (!record) {
+        return;
+      }
+
+      selectedMemoryRecordId = record.id;
+      renderMemoryPanel();
+      openMemoryRecordDetails(record);
+    }
+
+    function openMemoryRecordDetails(record) {
+      detailTitle.textContent = record.summary;
+      detailId.textContent = record.id;
+      detailBody.innerHTML =
+        renderDetailBackButton('← К памяти') +
+        renderDetailText('Type', record.type) +
+        renderDetailText('Status', record.status) +
+        renderDetailText('Confidence', record.confidence) +
+        renderDetailText('Source WorkItem', record.sourceWorkItem) +
+        renderDetailList('Related files', record.relatedFiles ?? []) +
+        renderDetailList('Related tasks', record.relatedTasks ?? []) +
+        renderDetailList('Evidence ids', record.evidenceIds ?? []) +
+        renderDetailText('Review required', record.reviewRequired ? 'yes' : 'no');
+      openDetailDrawer();
+      bindDetailNavBack(() => {
+        selectedMemoryRecordId = null;
+        renderMemoryPanel();
+        closeTaskDetails();
+      });
+      detailClose.focus();
+    }
+
+    function matchesAnalyticsRecordQuery(record, query) {
+      if (!query) {
+        return true;
+      }
+
+      const haystack = [
+        record.key,
+        record.id,
+        record.title,
+        record.query,
+        record.topic,
+        record.status,
+        ...(record.tags ?? []),
+        ...(record.relatedFiles ?? []),
+        record.body ?? '',
+      ].join(' ').toLowerCase();
+
+      return haystack.includes(query);
+    }
+
+    function renderAnalyticsPanel() {
+      if (!analyticsProjection) {
+        if (analyticsSummary) analyticsSummary.innerHTML = '';
+        analyticsList.innerHTML = activeView === 'analytics'
+          ? '<div class="empty">Загрузка analytics projection...</div>'
+          : '';
+        if (analyticsPanelCount) analyticsPanelCount.textContent = '0';
+        if (analyticsIntakeTabCount) analyticsIntakeTabCount.textContent = '0';
+        if (analyticsClosingTabCount) analyticsClosingTabCount.textContent = '0';
+        if (analyticsPagination) {
+          analyticsPagination.hidden = true;
+          analyticsPagination.innerHTML = '';
+        }
+        return;
+      }
+
+      const query = search.value.trim().toLowerCase();
+      const queryMatched = (analyticsProjection.records ?? []).filter((record) => matchesAnalyticsRecordQuery(record, query));
+      const intakeRecords = queryMatched.filter((record) => readAnalyticsRecordKind(record) === 'intake');
+      const closingRecords = queryMatched.filter((record) => readAnalyticsRecordKind(record) === 'closing');
+      const records = activeAnalyticsTab === 'closing' ? closingRecords : intakeRecords;
+
+      if (analyticsIntakeTabCount) analyticsIntakeTabCount.textContent = String(intakeRecords.length);
+      if (analyticsClosingTabCount) analyticsClosingTabCount.textContent = String(closingRecords.length);
+      if (analyticsPanelCount) analyticsPanelCount.textContent = String(records.length);
+
+      const pagination = paginateItems(records, analyticsPage, workflowPageSize);
+      if (pagination.page !== analyticsPage) {
+        persistPanelPage('analytics', pagination.page);
+      }
+
+      const emptyCopy = activeAnalyticsTab === 'closing'
+        ? 'Итоги закрытых эпиков не найдены для текущего фильтра.'
+        : 'Аналитические разборы не найдены для текущего фильтра.';
+
+      analyticsList.innerHTML = pagination.items.length
+        ? pagination.items.map((record) => {
+          const isClosing = readAnalyticsRecordKind(record) === 'closing';
+          const queryPreview = String(record.query ?? '').slice(0, 120);
+          const relatedCount = Array.isArray(record.relatedWorkItems) ? record.relatedWorkItems.length : 0;
+          const relatedNote = relatedCount > 0
+            ? ' · ' + relatedCount + ' ' + (relatedCount === 1 ? 'задача' : (relatedCount < 5 ? 'задачи' : 'задач'))
+            : '';
+          const feedsEpics = Array.isArray(record.feeds_epics) ? record.feeds_epics : [];
+          const epicNote = isClosing && feedsEpics.length > 0
+            ? ' · ' + escapeHtml(feedsEpics.join(', '))
+            : '';
+          const kindLine = isClosing
+            ? 'closing · post-mortem' + epicNote
+            : escapeHtml(record.topic) + ' · ' + escapeHtml(record.status);
+          return renderListRow({
+            title: record.title,
+            lines: [
+              kindLine + ' · ' + escapeHtml((record.tags ?? []).filter((tag) => tag !== 'closing-analysis').join(', ') || 'no tags'),
+              escapeHtml(queryPreview + (String(record.query ?? '').length > 120 ? '…' : '')),
+            ],
+            footerLeft: '<span class="id">' + escapeHtml(record.key || record.id) + relatedNote + '</span>',
+            footerRight: '<span class="owner-avatar" title="' + escapeHtml(record.author || 'operator') + '">' + escapeHtml(ownerInitials(record.author || 'AG')) + '</span>',
+            selected: selectedAnalyticsRecordId === record.id,
+            attrs: { 'data-analytics-record-id': record.id },
+          });
+        }).join('')
+        : '<div class="empty">' + emptyCopy + '</div>';
+      renderWorkflowPagination(analyticsPagination, pagination, 'analytics');
+    }
+
+    function handleAnalyticsRecordClick(event) {
+      const button = event.target.closest('.list-row[data-analytics-record-id]');
+      if (!button || !analyticsProjection) {
+        return;
+      }
+
+      const record = (analyticsProjection.records ?? []).find((entry) => entry.id === button.dataset.analyticsRecordId);
+      if (!record) {
+        return;
+      }
+
+      selectedAnalyticsRecordId = record.id;
+      renderAnalyticsPanel();
+      openAnalyticsRecordDetails(record);
+    }
+
+    function renderAnalyticsIntentGraphSections(record) {
+      const graph = record.intentGraph;
+      if (!graph || !graph.question) {
+        return '';
+      }
+
+      const optionsHtml = (graph.options ?? []).map((option) =>
+        '<div class="analytics-intent-option' + (option.selected ? ' is-selected' : '') + '" data-testid="analytics-intent-option">' +
+          '<strong>' + escapeHtml(option.title || option.id) + '</strong>' +
+          (option.selected ? ' <span class="pill">выбран</span>' : '') +
+        '</div>',
+      ).join('');
+
+      const decision = graph.selectedDecision;
+      const decisionHtml = decision
+        ? '<section class="detail-section analytics-intent-decision" data-testid="analytics-selected-decision">' +
+          '<h3 class="analytics-section-title">Выбранное решение</h3>' +
+          '<p><strong>' + escapeHtml(decision.title || decision.id) + '</strong></p>' +
+          '</section>'
+        : '';
+
+      const drilldownItems = [];
+      drilldownItems.push('Вопрос: ' + escapeHtml(graph.question.title || graph.question.id));
+      (graph.options ?? []).forEach((option) => {
+        drilldownItems.push((option.selected ? '✓ ' : '○ ') + 'Вариант: ' + escapeHtml(option.title || option.id));
+      });
+      if (decision) {
+        drilldownItems.push('→ Решение: ' + escapeHtml(decision.title || decision.id));
+      }
+      const related = Array.isArray(record.relatedWorkItems) ? record.relatedWorkItems : [];
+      related.forEach((entry) => {
+        drilldownItems.push('→ Задача: ' + escapeHtml(entry.title || entry.id) + ' (' + escapeHtml(entry.status || '—') + ')');
+      });
+
+      return '<section class="detail-section" data-testid="analytics-intent-question">' +
+          '<h3 class="analytics-section-title">Аналитический вопрос</h3>' +
+          '<p>' + escapeHtml(graph.question.title || graph.question.id) + '</p>' +
+        '</section>' +
+        (optionsHtml
+          ? '<section class="detail-section analytics-intent-options" data-testid="analytics-intent-options">' +
+            '<h3 class="analytics-section-title">Варианты решений</h3>' + optionsHtml + '</section>'
+          : '') +
+        decisionHtml +
+        '<section class="detail-section intent-graph-drilldown" data-testid="intent-graph-drilldown">' +
+          '<h3 class="analytics-section-title">Lineage</h3>' +
+          '<div class="pipeline-prose">' +
+          drilldownItems.map((line) => '<p class="pipeline-prose-p">' + line + '</p>').join('') +
+          '</div></section>';
+    }
+
+    function renderAnalyticsRelatedWorkItemsSection(record) {
+      const related = Array.isArray(record.relatedWorkItems) ? record.relatedWorkItems : [];
+      if (related.length === 0) {
+        return '<section class="detail-section analytics-related-tasks" data-testid="analytics-related-tasks">' +
+          '<h3 class="analytics-section-title">Задачи из разбора</h3>' +
+          '<p class="muted">По этому разбору задачи в бэклоге пока не найдены.</p>' +
+          '</section>';
+      }
+
+      const rows = related.map((entry) =>
+        '<li class="analytics-related-task-row">' +
+          '<button type="button" class="analytics-related-task-btn" data-task-id="' + escapeHtml(entry.id) + '" data-testid="analytics-related-task">' +
+            escapeHtml(entry.title || entry.id) +
+          '</button>' +
+          '<span class="analytics-related-task-meta">' + escapeHtml(entry.status || '—') + '</span>' +
+        '</li>',
+      ).join('');
+
+      return '<section class="detail-section analytics-related-tasks" data-testid="analytics-related-tasks">' +
+        '<h3 class="analytics-section-title">Задачи из разбора</h3>' +
+        '<ul class="analytics-related-tasks-list">' + rows + '</ul>' +
+        '</section>';
+    }
+
+    function openAnalyticsRecordDetails(record) {
+      const isClosing = readAnalyticsRecordKind(record) === 'closing';
+      detailContext = { type: 'analytics', recordId: record.id, recordKey: record.key || record.id, recordKind: isClosing ? 'closing' : 'intake' };
+      detailTitle.textContent = record.title;
+      detailId.textContent = record.key || record.id;
+      const answerBody = stripAnalyticsBodyPreamble(record.body || '');
+      const feedsEpics = Array.isArray(record.feeds_epics) ? record.feeds_epics : [];
+      const metadataHtml =
+        renderDetailText('Ключ', record.key || '—') +
+        renderDetailText('Тип', isClosing ? 'Итог эпика (closing)' : 'Разбор (intake)') +
+        renderDetailText('ID', record.id) +
+        renderDetailText('Тема', record.topic) +
+        renderDetailText('Статус', record.status) +
+        renderDetailText('Автор', record.author || 'operator') +
+        renderDetailText('Создано', record.createdAt || '—') +
+        (isClosing && feedsEpics.length > 0 ? renderDetailList('Эпики', feedsEpics) : '') +
+        renderDetailList('Теги', record.tags ?? []) +
+        renderDetailList('Связанные файлы', record.relatedFiles ?? []);
+
+      const querySection = isClosing
+        ? (String(record.query ?? '').trim() !== ''
+          ? '<section class="detail-section analytics-query-section" data-testid="analytics-query-section">' +
+            '<h3 class="analytics-section-title">Контекст</h3>' +
+            '<p class="analytics-query-text">' + escapeHtml(record.query) + '</p>' +
+            '</section>'
+          : '')
+        : '<section class="detail-section analytics-query-section" data-testid="analytics-query-section">' +
+          '<h3 class="analytics-section-title">Запрос</h3>' +
+          '<p class="analytics-query-text">' + escapeHtml(record.query || '—') + '</p>' +
+          '</section>';
+
+      const bodySectionTitle = isClosing ? 'Итоги эпика' : 'Ответ';
+
+      detailBody.innerHTML =
+        renderDetailBackButton('← К аналитике') +
+        '<div class="analytics-qna" data-testid="analytics-qna">' +
+          querySection +
+          '<section class="detail-section analytics-record-body" data-testid="analytics-record-body">' +
+            '<h3 class="analytics-section-title">' + bodySectionTitle + '</h3>' +
+            renderMarkdownDocument(answerBody || '—') +
+          '</section>' +
+        '</div>' +
+        (isClosing ? '' : renderAnalyticsIntentGraphSections(record)) +
+        renderAnalyticsRelatedWorkItemsSection(record) +
+        wrapDetailAccordion('Метаданные', metadataHtml, { testid: 'analytics-record-meta' });
+      openDetailDrawer();
+      queueMicrotask(function() {
+        mountMarkdownMermaidDiagrams(detailBody.querySelector('.analytics-record-body'));
+      });
+      bindDetailNavBack(() => {
+        selectedAnalyticsRecordId = null;
+        detailContext = null;
+        renderAnalyticsPanel();
+        closeTaskDetails();
+      });
+      detailClose.focus();
+    }
+
+    function readMermaidThemeVariables() {
+      const styles = getComputedStyle(document.body);
+      const pick = function(name, fallback) {
+        const value = styles.getPropertyValue(name).trim();
+        return value || fallback;
+      };
+      const panel = pick('--panel', '#ffffff');
+      const panel2 = pick('--panel-2', '#f4f5f7');
+      const border = pick('--border', '#dfe1e6');
+      const text = pick('--text', '#172b4d');
+      const muted = pick('--muted', '#5e6c84');
+      const bg = pick('--bg', '#ffffff');
+
+      return {
+        background: bg,
+        mainBkg: panel2,
+        primaryColor: panel2,
+        primaryTextColor: text,
+        primaryBorderColor: border,
+        secondaryColor: panel2,
+        secondaryTextColor: text,
+        secondaryBorderColor: border,
+        tertiaryColor: panel2,
+        tertiaryTextColor: text,
+        tertiaryBorderColor: border,
+        lineColor: muted,
+        textColor: text,
+        nodeBorder: border,
+        clusterBkg: panel,
+        clusterBorder: border,
+        titleColor: text,
+        edgeLabelBackground: bg,
+      };
+    }
+
+    function fixMermaidSvgSizing(root) {
+      root.querySelectorAll('.markdown-mermaid-wrap svg').forEach(function(svg) {
+        svg.style.removeProperty('max-height');
+        svg.style.height = 'auto';
+        svg.style.width = '100%';
+        svg.setAttribute('preserveAspectRatio', 'xMinYMin meet');
+
+        const viewBox = svg.getAttribute('viewBox');
+        if (viewBox) {
+          const parts = viewBox.split(/\s+/u).map(Number);
+          if (parts.length === 4 && parts.every((value) => Number.isFinite(value))) {
+            svg.removeAttribute('height');
+          }
+        }
+      });
+    }
+
+    function alignMermaidClusterLabels(root) {
+      const padding = 12;
+      root.querySelectorAll('.markdown-mermaid-wrap svg g.cluster').forEach(function(cluster) {
+        const clusterRect = cluster.querySelector(':scope > rect');
+        const labelGroup = cluster.querySelector(':scope > g.cluster-label');
+        if (!clusterRect || !labelGroup) {
+          return;
+        }
+
+        const rectX = Number.parseFloat(clusterRect.getAttribute('x') || '0');
+        const rectY = clusterRect.getAttribute('y') || '0';
+        const labelX = rectX + padding;
+        const transform = labelGroup.getAttribute('transform') || '';
+        const transformMatch = transform.match(/translate\(\s*[-\d.]+\s*[,\s]\s*([-\d.]+)\s*\)/u);
+        const labelY = transformMatch ? transformMatch[1] : rectY;
+
+        labelGroup.setAttribute('transform', 'translate(' + labelX + ', ' + labelY + ')');
+        labelGroup.querySelectorAll('text, tspan').forEach(function(textNode) {
+          textNode.setAttribute('text-anchor', 'start');
+          textNode.setAttribute('x', '0');
+        });
+      });
+    }
+
+    async function mountMarkdownMermaidDiagrams(root) {
+      if (!root || typeof mermaid === 'undefined') {
+        return;
+      }
+
+      const blocks = [...root.querySelectorAll('pre.mermaid, div.mermaid')];
+      if (blocks.length === 0) {
+        return;
+      }
+
+      try {
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: 'base',
+          themeVariables: readMermaidThemeVariables(),
+          securityLevel: 'loose',
+          fontFamily: 'inherit',
+          flowchart: {
+            htmlLabels: false,
+            curve: 'linear',
+          },
+        });
+        await mermaid.run({ nodes: blocks, suppressErrors: true });
+        fixMermaidSvgSizing(root);
+        alignMermaidClusterLabels(root);
+      } catch (error) {
+        console.warn('mermaid render failed', error);
+      }
+    }
+
+    function handlePromptRuleCardClick(event) {
+      const button = event.target.closest('.list-row[data-prompt-rule-id]');
+      if (!button || !promptsProjection) {
+        return;
+      }
+
+      const rule = (promptsProjection.rules ?? []).find((entry) => entry.id === button.dataset.promptRuleId);
+      if (!rule) {
+        return;
+      }
+
+      selectedPromptRuleId = rule.id;
+      renderPromptsPanel();
+      openPromptRuleDetails(rule);
+    }
+
+    function openPromptRuleDetails(rule) {
+      detailTitle.textContent = rule.name;
+      detailId.textContent = rule.id;
+      detailBody.innerHTML =
+        renderDetailBackButton('← К промптам') +
+        renderDetailText('Файл', rule.filePath) +
+        renderDetailText('Validation', rule.validationStatus) +
+        renderDetailText('Trace status', rule.traceStatus) +
+        renderDetailText('Базис', rule.basis) +
+        renderDetailText('Вектор', rule.vector) +
+        renderDetailText('Цель', rule.goal) +
+        renderDetailList('Проверки', rule.checks ? rule.checks.split('\\n').filter(Boolean) : []) +
+        renderDetailList('Свидетельства', rule.evidence ? rule.evidence.split('\\n').filter(Boolean) : []) +
+        renderDetailList('Labels', Object.entries(rule.labels || {}).map(([key, value]) => key + ': ' + value)) +
+        (rule.validationErrors?.length
+          ? renderDetailList('Validation errors', rule.validationErrors)
+          : '') +
+        (rule.validationWarnings?.length
+          ? renderDetailList('Validation warnings', rule.validationWarnings)
+          : '') +
+        '<section class="detail-section prompt-rule-editor" data-testid="prompt-rule-editor">' +
+          '<h3>Редактирование</h3>' +
+          '<p>Bounded save: только <code>rules/agent-behavior/*.bvc</code>.</p>' +
+          '<textarea id="prompt-rule-source" data-testid="prompt-rule-source" spellcheck="false" disabled>Загрузка...</textarea>' +
+          '<div id="prompt-rule-editor-errors" class="prompt-rule-editor-errors" data-testid="prompt-rule-editor-errors" hidden></div>' +
+          '<button type="button" id="prompt-rule-save" data-testid="prompt-rule-save" disabled>Сохранить</button>' +
+        '</section>';
+      openDetailDrawer();
+      bindDetailNavBack(() => {
+        selectedPromptRuleId = null;
+        renderPromptsPanel();
+        closeTaskDetails();
+      });
+      loadPromptRuleEditor(rule.id);
+      detailClose.focus();
+    }
+
+    async function loadPromptRuleEditor(ruleId) {
+      const textarea = document.querySelector('#prompt-rule-source');
+      const saveButton = document.querySelector('#prompt-rule-save');
+      const errorsEl = document.querySelector('#prompt-rule-editor-errors');
+      if (!textarea || !saveButton) {
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/prompt-rules/source?ruleId=' + encodeURIComponent(ruleId));
+        const payload = await response.json();
+        if (!response.ok || !payload.sourceText) {
+          throw new Error(payload.message || payload.error || ('HTTP ' + response.status));
+        }
+
+        textarea.value = payload.sourceText;
+        textarea.disabled = false;
+        saveButton.disabled = false;
+        saveButton.onclick = () => submitPromptRuleSave(payload.filePath, textarea, errorsEl, ruleId);
+        if (errorsEl) {
+          errorsEl.hidden = true;
+          errorsEl.textContent = '';
+        }
+      } catch (error) {
+        textarea.value = '';
+        textarea.disabled = true;
+        saveButton.disabled = true;
+        if (errorsEl) {
+          errorsEl.hidden = false;
+          errorsEl.textContent = String(error.message || error);
+        }
+      }
+    }
+
+    async function submitPromptRuleSave(filePath, textarea, errorsEl, ruleId) {
+      try {
+        const response = await fetch('/api/prompt-rules/save', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ filePath, sourceText: textarea.value }),
+        });
+        const payload = await response.json();
+        if (!response.ok || !payload.ok) {
+          const validationText = (payload.validation?.errors ?? []).join('\\n');
+          throw new Error((payload.error || 'save failed') + (validationText ? ': ' + validationText : ''));
+        }
+
+        promptsPanelLoaded = false;
+        await ensureLazyViewData('prompts');
+        renderPromptsPanel();
+        const updated = (promptsProjection?.rules ?? []).find((entry) => entry.id === ruleId);
+        if (updated) {
+          openPromptRuleDetails(updated);
+        }
+        if (errorsEl) {
+          errorsEl.hidden = true;
+          errorsEl.textContent = '';
+        }
+      } catch (error) {
+        if (errorsEl) {
+          errorsEl.hidden = false;
+          errorsEl.textContent = String(error.message || error);
+        }
+      }
+    }
+
+    async function reloadOperatorSnapshots() {
+      const snapshotResponse = await fetch('/api/snapshot');
+      if (!snapshotResponse.ok) {
+        throw new Error('запрос snapshot завершился с кодом ' + snapshotResponse.status);
+      }
+      snapshot = await snapshotResponse.json();
+
+      const dashboardResponse = await fetch('/api/dashboard-snapshot');
+      if (!dashboardResponse.ok) {
+        throw new Error('запрос dashboard snapshot завершился с кодом ' + dashboardResponse.status);
+      }
+      dashboardSnapshot = await dashboardResponse.json();
+
+      const shellResponse = await fetch('/api/operator-shell-snapshot');
+      if (!shellResponse.ok) {
+        throw new Error('запрос operator shell snapshot завершился с кодом ' + shellResponse.status);
+      }
+      operatorShellSnapshot = await shellResponse.json();
+    }
+
+    async function submitPromoteReady(workId) {
+      if (!workId) return;
+
+      try {
+        const response = await fetch('/api/work-item/promote-ready', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ workId }),
+        });
+        const payload = await response.json();
+
+        if (!response.ok || !payload.ok) {
+          const detail = payload.unsatisfiedDependencies?.length
+            ? ' (' + payload.unsatisfiedDependencies.join(', ') + ')'
+            : '';
+          throw new Error((payload.error || payload.message || ('HTTP ' + response.status)) + detail);
+        }
+
+        await reloadOperatorSnapshots();
+        render();
+
+        const updated = snapshot.items.find((item) => item.id === workId);
+        if (updated) {
+          openTaskDetails(updated, { parentContext: detailContext?.parent ?? null });
+        }
+      } catch (error) {
+        window.alert('Promote failed: ' + error.message);
+      }
+    }
+
+    function formatVerificationStatusLabel(status) {
+      const labels = {
+        passed: 'пройдено',
+        pending: 'ожидает',
+        blocked: 'заблокировано',
+        not_run: 'не запускалось',
+        failed: 'провалено',
+      };
+      return labels[status] || status || 'ожидает';
+    }
+
+    function formatVerificationTierLabel(tier) {
+      const labels = {
+        deterministic: 'детерминированный',
+        'optional-env': 'опционально (окружение)',
+        'optional-llm': 'опционально (LLM)',
+      };
+      return labels[tier] || tier;
+    }
+
+    function renderVerificationPanel() {
+      if (!dashboardSnapshot?.verification) {
+        verificationTierBadges.innerHTML = '';
+        verificationMatrixWrap.innerHTML = '<div class="empty">Сводка проверок не загружена</div>';
+        verificationEvidenceList.innerHTML = '';
+        verificationWorkerRuns.innerHTML = '';
+        renderCodegenGatePanel();
+        renderDaemonAuditPanel();
+        renderCodeGapPanel();
+        return;
+      }
+
+      const verification = dashboardSnapshot.verification;
+      const counts = verification.tierCounts;
+      verificationTierBadges.innerHTML =
+        renderVerificationTierBadge('Уровень A', counts.deterministic) +
+        renderVerificationTierBadge('OneBase (окружение)', counts.optionalEnv) +
+        renderVerificationTierBadge('LLM (опционально)', counts.optionalLlm);
+
+      verificationMatrixWrap.innerHTML =
+        '<table class="verification-matrix"><thead><tr><th>Проверка</th><th>Уровень</th><th>Команда</th><th>Статус</th></tr></thead><tbody>' +
+        verification.matrix.map((row) =>
+          '<tr><td>' + escapeHtml(row.title) + '</td><td>' + escapeHtml(formatVerificationTierLabel(row.tier)) + '</td><td><code>' + escapeHtml(row.command) + '</code></td><td>' +
+          renderVerificationStatus(row.status) + '</td></tr>'
+        ).join('') +
+        '</tbody></table>' +
+        (verification.onebaseGate?.status === 'blocked'
+          ? '<p class="empty">Гейт OneBase заблокирован' + (verification.onebaseGate.blockedTaskId ? ': ' + escapeHtml(verification.onebaseGate.blockedTaskId) : '') + '. Установите Go и запустите npm run test:optional:onebase.</p>'
+          : '');
+
+      const evidenceRows = dashboardSnapshot.recentEvidence || [];
+      renderCodegenGatePanel();
+      verificationEvidenceList.innerHTML = evidenceRows.length
+        ? evidenceRows.map((row) =>
+          '<li><h3>' + escapeHtml(row.taskId) + '</h3>' +
+          '<p class="list-row-line">' + escapeHtml(row.status) + ' · ' + escapeHtml(preview(row.summary)) + '</p></li>'
+        ).join('')
+        : '<li class="empty">Нет недавних свидетельств в snapshot</li>';
+
+      const workerRuns = dashboardSnapshot.workerRunSummaries || [];
+      verificationWorkerRuns.innerHTML = workerRuns.length
+        ? workerRuns.map((row) =>
+          '<li><h3>' + escapeHtml(row.taskId || 'неизвестно') + '</h3>' +
+          '<p class="list-row-line">' + escapeHtml(row.status || 'неизвестно') + ' · ' +
+          escapeHtml(preview(row.summary || row.runId || '')) +
+          (row.appliedTransition ? ' · переход: ' + escapeHtml(String(row.appliedTransition)) : '') +
+          '</p></li>'
+        ).join('')
+        : '<li class="empty">Нет записей live-loop воркера в журнале</li>';
+
+      renderDaemonAuditPanel();
+      renderCodeGapPanel();
+    }
+
+    function renderCodegenGatePanel() {
+      if (!codegenGateList || !codegenGateSummary || !codegenGateCount) {
+        return;
+      }
+
+      const gate = dashboardSnapshot?.verification?.codegenGate;
+      if (!gate) {
+        codegenGateCount.textContent = '0';
+        codegenGateSummary.innerHTML = '';
+        codegenGateList.innerHTML = '<li class="empty">Гейт codegen не загружен</li>';
+        return;
+      }
+
+      codegenGateCount.textContent = String(gate.codegenFacingCount ?? 0);
+      codegenGateSummary.innerHTML =
+        renderVerificationStatus(gate.status ?? 'not_run') +
+        '<span class="pill">С codegen: <strong>' + escapeHtml(String(gate.codegenFacingCount ?? 0)) + '</strong></span>' +
+        '<span class="pill">Пройдено: <strong>' + escapeHtml(String(gate.passedCount ?? 0)) + '</strong></span>' +
+        '<span class="pill">Провалено: <strong>' + escapeHtml(String(gate.failedCount ?? 0)) + '</strong></span>';
+
+      const items = gate.items ?? [];
+      codegenGateList.innerHTML = items.length
+        ? items.map((entry) =>
+          '<li data-work-id="' + escapeHtml(entry.workId) + '">' +
+          '<h3>' + escapeHtml(entry.title || entry.workId) + '</h3>' +
+          '<p class="list-row-line">' + renderVerificationStatus(entry.ok ? 'passed' : 'failed') +
+          ' · ' + escapeHtml(formatVerificationStatusLabel(entry.status) || 'неизвестно') + '</p>' +
+          (entry.diagnostics?.length
+            ? '<ul>' + entry.diagnostics.map((diagnostic) =>
+              '<li><strong>' + escapeHtml(diagnostic.code) + '</strong>: ' + escapeHtml(diagnostic.message) + '</li>'
+            ).join('') + '</ul>'
+            : '') +
+          '</li>',
+        ).join('')
+        : '<li class="empty">Нет WorkItems с codegen в текущем snapshot</li>';
+    }
+
+    function renderDaemonAuditPanel() {
+      if (!daemonAuditList || !daemonAuditCount) {
+        return;
+      }
+
+      if (!daemonAuditPanelLoaded) {
+        daemonAuditCount.textContent = '0';
+        daemonAuditList.innerHTML = activeView === 'verification'
+          ? '<li class="empty">Загрузка журнала daemon...</li>'
+          : '';
+        return;
+      }
+
+      const entries = daemonAuditTail?.entries ?? [];
+      daemonAuditCount.textContent = String(daemonAuditTail?.totalCount ?? entries.length);
+
+      daemonAuditList.innerHTML = entries.length
+        ? entries.map((entry) =>
+          '<li data-tick-id="' + escapeHtml(entry.tickId || '') + '">' +
+          '<h3>' + escapeHtml(entry.event || 'событие_daemon') + '</h3>' +
+          '<p class="list-row-line">' +
+          escapeHtml(entry.recordedAt || '') +
+          (entry.taskId ? ' · задача: ' + escapeHtml(entry.taskId) : '') +
+          (entry.workerStatus ? ' · воркер: ' + escapeHtml(entry.workerStatus) : '') +
+          (entry.recoveryClass ? ' · восстановление: ' + escapeHtml(entry.recoveryClass) : '') +
+          '</p>' +
+          (entry.summary ? '<p class="list-row-line">' + escapeHtml(entry.summary) + '</p>' : '') +
+          '</li>',
+        ).join('')
+        : '<li class="empty">Журнал daemon пуст. Запустите npm run daemon -- --once.</li>';
+    }
+
+    function renderCodeGapPanel() {
+      if (!codeGapProjection) {
+        codeGapSummary.innerHTML = '';
+        codeGapList.innerHTML = activeView === 'verification'
+          ? '<li class="empty">Загрузка подсказок code-gap...</li>'
+          : '';
+        codeGapCount.textContent = '0';
+        return;
+      }
+
+      const suggestions = codeGapProjection.suggestions ?? [];
+      const query = search.value.trim().toLowerCase();
+      const filtered = suggestions.filter((entry) => {
+        if (!query) {
+          return true;
+        }
+
+        const haystack = [
+          entry.suggestedWorkId,
+          entry.title,
+          entry.gapKind,
+          entry.reason,
+          ...(entry.targetFiles ?? []),
+        ].join(' ').toLowerCase();
+
+        return haystack.includes(query);
+      });
+
+      codeGapCount.textContent = String(codeGapProjection.suggestionCount ?? suggestions.length);
+      codeGapSummary.innerHTML =
+        '<span class="pill">Подсказок: <strong>' + escapeHtml(String(codeGapProjection.suggestionCount ?? 0)) + '</strong></span>' +
+        '<span class="pill">Нужен обзор: <strong>' + escapeHtml(String(codeGapProjection.reviewRequired ? 'да' : 'нет')) + '</strong></span>' +
+        '<span class="pill">Источник: <strong>' + escapeHtml(codeGapProjection.sourceReportPath ?? 'fixture') + '</strong></span>';
+
+      codeGapList.innerHTML = filtered.length
+        ? filtered.map((entry) =>
+          '<li data-suggested-id="' + escapeHtml(entry.suggestedWorkId) + '">' +
+          '<h3>' + escapeHtml(entry.suggestedWorkId) + '</h3>' +
+          '<p class="list-row-line">' + escapeHtml(entry.gapKind) + ' · уверенность ' + escapeHtml(entry.confidence) + '</p>' +
+          '<p class="list-row-line">' + escapeHtml(entry.title) + '</p>' +
+          (entry.targetFiles?.length ? '<p class="list-row-line">' + escapeHtml(entry.targetFiles.join(', ')) + '</p>' : '') +
+          (entry.reason ? '<p class="list-row-line">' + escapeHtml(entry.reason) + '</p>' : '') +
+          '<div class="code-gap-actions">' +
+          renderClientUiButton({ label: 'Просмотр черновика', variant: 'secondary', attrs: { 'data-action': 'code-gap-preview', 'data-suggested-id': entry.suggestedWorkId } }) +
+          renderClientUiButton({ label: 'Добавить в бэклог', variant: 'primary', disabled: !(codeGapIntakeProposal?.ok && codeGapIntakeActiveId === entry.suggestedWorkId), attrs: { 'data-action': 'code-gap-apply', 'data-suggested-id': entry.suggestedWorkId } }) +
+          renderClientUiButton({ label: 'Отмена', variant: 'flat', attrs: { 'data-action': 'code-gap-cancel', 'data-suggested-id': entry.suggestedWorkId } }) +
+          '</div></li>'
+        ).join('')
+        : '<li class="empty">Подсказки code-gap не найдены для текущего фильтра.</li>';
+
+      if (codeGapIntakeProposal?.ok && codeGapIntakeActiveId && codeGapIntakePreview) {
+        codeGapIntakePreview.hidden = false;
+        codeGapIntakePreview.textContent = codeGapIntakeProposal.formattedAtom || '';
+      } else if (codeGapIntakePreview) {
+        codeGapIntakePreview.hidden = true;
+        codeGapIntakePreview.textContent = '';
+      }
+    }
+
+    function resetCodeGapIntakeDraft() {
+      codeGapIntakeProposal = null;
+      codeGapIntakeActiveId = null;
+      if (codeGapIntakePreview) {
+        codeGapIntakePreview.hidden = true;
+        codeGapIntakePreview.textContent = '';
+      }
+      if (codeGapIntakeErrors) {
+        codeGapIntakeErrors.hidden = true;
+        codeGapIntakeErrors.textContent = '';
+      }
+      renderCodeGapPanel();
+    }
+
+    function findCodeGapSuggestion(suggestedWorkId) {
+      return (codeGapProjection?.suggestions ?? []).find((entry) => entry.suggestedWorkId === suggestedWorkId) ?? null;
+    }
+
+    function handleCodeGapIntakeClick(event) {
+      const button = event.target.closest('button[data-action]');
+      if (!button || !codeGapList.contains(button)) {
+        return;
+      }
+
+      const suggestedWorkId = button.dataset.suggestedId ?? '';
+      if (button.dataset.action === 'code-gap-preview') {
+        submitCodeGapIntakeProposal(suggestedWorkId);
+      } else if (button.dataset.action === 'code-gap-apply') {
+        submitCodeGapIntakeApply(suggestedWorkId);
+      } else if (button.dataset.action === 'code-gap-cancel') {
+        resetCodeGapIntakeDraft();
+      }
+    }
+
+    async function submitCodeGapIntakeProposal(suggestedWorkId) {
+      const suggestion = findCodeGapSuggestion(suggestedWorkId);
+      if (!suggestion) {
+        return;
+      }
+
+      if (codeGapIntakeErrors) {
+        codeGapIntakeErrors.hidden = true;
+        codeGapIntakeErrors.textContent = '';
+      }
+
+      try {
+        const response = await fetch('/api/code-gap-intake/proposal', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({
+            suggestion,
+            sourceReportPath: codeGapProjection?.sourceReportPath ?? '',
+          }),
+        });
+        const payload = await response.json();
+        codeGapIntakeProposal = payload;
+        codeGapIntakeActiveId = suggestedWorkId;
+
+        if (!response.ok || !payload.ok) {
+          if (codeGapIntakePreview) {
+            codeGapIntakePreview.hidden = true;
+            codeGapIntakePreview.textContent = '';
+          }
+          if (codeGapIntakeErrors) {
+            codeGapIntakeErrors.hidden = false;
+            codeGapIntakeErrors.textContent = (payload.validationErrors ?? [payload.error ?? 'proposal_failed']).join('\\n');
+          }
+        } else if (codeGapIntakePreview) {
+          codeGapIntakePreview.hidden = false;
+          codeGapIntakePreview.textContent = payload.formattedAtom || JSON.stringify(payload.codeGapDraft, null, 2);
+        }
+      } catch (error) {
+        if (codeGapIntakeErrors) {
+          codeGapIntakeErrors.hidden = false;
+          codeGapIntakeErrors.textContent = error instanceof Error ? error.message : String(error);
+        }
+      } finally {
+        renderCodeGapPanel();
+      }
+    }
+
+    async function submitCodeGapIntakeApply(suggestedWorkId) {
+      if (!codeGapIntakeProposal?.ok || codeGapIntakeActiveId !== suggestedWorkId) {
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/code-gap-intake/apply', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ proposal: codeGapIntakeProposal }),
+        });
+        const payload = await response.json();
+
+        if (!response.ok || !payload.ok) {
+          if (codeGapIntakeErrors) {
+            codeGapIntakeErrors.hidden = false;
+            codeGapIntakeErrors.textContent = (payload.validationErrors ?? [payload.error ?? 'apply_failed']).join('\\n');
+          }
+          return;
+        }
+
+        resetCodeGapIntakeDraft();
+        await loadSnapshot();
+      } catch (error) {
+        if (codeGapIntakeErrors) {
+          codeGapIntakeErrors.hidden = false;
+          codeGapIntakeErrors.textContent = error instanceof Error ? error.message : String(error);
+        }
+      }
+    }
+
+    function renderVerificationTierBadge(label, counts) {
+      return '<span class="verification-tier-badge">' + escapeHtml(label) + ': ' +
+        counts.passed + ' пройдено / ' + counts.pending + ' ожидает / ' + counts.blocked + ' заблокировано</span>';
+    }
+
+    function renderVerificationStatus(status) {
+      const cssClass = 'verification-status is-' + String(status || 'pending').replace(/_/g, '_');
+      return '<span class="' + cssClass + '">' + escapeHtml(formatVerificationStatusLabel(status)) + '</span>';
+    }
+
+    function renderNavigationCounts(items) {
+      const counts = countByStatus(items);
+      const backlogTotal = countGroupItems(counts, backlogGroup);
+      const doneTotal = countGroupItems(counts, doneArchiveGroup);
+      workflowBacklogTabCount.textContent = String(backlogTotal);
+      workflowArchiveTabCount.textContent = String(doneTotal);
+    }
+
+    function sortDoneArchiveItems(items) {
+      return [...items].sort((left, right) => String(right.id).localeCompare(String(left.id), 'en', { sensitivity: 'variant' }));
+    }
+
+    function resetListPages() {
+      backlogPage = 1;
+      archivePage = 1;
+      promptsPage = 1;
+      memoryPage = 1;
+      analyticsPage = 1;
+      localStorage.setItem(backlogPageStorageKey, '1');
+      localStorage.setItem(archivePageStorageKey, '1');
+      localStorage.setItem(promptsPageStorageKey, '1');
+      localStorage.setItem(memoryPageStorageKey, '1');
+      localStorage.setItem(analyticsPageStorageKey, '1');
+    }
+
+    function paginateItems(items, page, pageSize) {
+      const total = items.length;
+      const totalPages = Math.max(1, Math.ceil(total / pageSize));
+      const safePage = Math.min(Math.max(1, page), totalPages);
+      const start = (safePage - 1) * pageSize;
+      return {
+        items: items.slice(start, start + pageSize),
+        page: safePage,
+        totalPages,
+        total,
+        from: total ? start + 1 : 0,
+        to: Math.min(start + pageSize, total),
+      };
+    }
+
+    function getPanelPage(kind) {
+      if (kind === 'archive') return archivePage;
+      if (kind === 'prompts') return promptsPage;
+      if (kind === 'memory') return memoryPage;
+      if (kind === 'analytics') return analyticsPage;
+      return backlogPage;
+    }
+
+    function persistPanelPage(kind, page) {
+      if (kind === 'archive') {
+        archivePage = page;
+        localStorage.setItem(archivePageStorageKey, String(page));
+        return;
+      }
+      if (kind === 'prompts') {
+        promptsPage = page;
+        localStorage.setItem(promptsPageStorageKey, String(page));
+        return;
+      }
+      if (kind === 'memory') {
+        memoryPage = page;
+        localStorage.setItem(memoryPageStorageKey, String(page));
+        return;
+      }
+      if (kind === 'analytics') {
+        analyticsPage = page;
+        localStorage.setItem(analyticsPageStorageKey, String(page));
+        return;
+      }
+      backlogPage = page;
+      localStorage.setItem(backlogPageStorageKey, String(page));
+    }
+
+    function renderWorkflowPagination(container, pagination, kind) {
+      if (!container) return;
+      if (pagination.total <= workflowPageSize) {
+        container.hidden = true;
+        container.innerHTML = '';
+        return;
+      }
+      container.hidden = false;
+      const prevDisabled = pagination.page <= 1;
+      const nextDisabled = pagination.page >= pagination.totalPages;
+      container.innerHTML =
+        renderClientUiButton({ label: 'Назад', variant: 'secondary', className: 'workflow-page-btn', disabled: prevDisabled, attrs: { 'data-workflow-page': kind, 'data-page-action': 'prev' } }) +
+        '<span class="workflow-page-meta">Стр. ' + pagination.page + ' из ' + pagination.totalPages + ' · ' + pagination.from + '–' + pagination.to + ' из ' + pagination.total + '</span>' +
+        renderClientUiButton({ label: 'Вперёд', variant: 'secondary', className: 'workflow-page-btn', disabled: nextDisabled, attrs: { 'data-workflow-page': kind, 'data-page-action': 'next' } });
+    }
+
+    function handleWorkflowPaginationClick(event) {
+      const button = event.target.closest('[data-workflow-page][data-page-action]');
+      if (!button || button.disabled) return;
+      const kind = button.dataset.workflowPage;
+      const action = button.dataset.pageAction;
+      const currentPage = getPanelPage(kind);
+      const nextPage = action === 'next' ? currentPage + 1 : currentPage - 1;
+      persistPanelPage(kind, nextPage);
+      render();
+    }
+
+    function dependenciesSatisfied(items, item) {
+      const doneIds = new Set(items.filter((entry) => entry.status === 'done' || entry.status === 'verified').map((entry) => entry.id));
+      return (item.dependsOn || []).every((dependencyId) => doneIds.has(dependencyId));
+    }
+
+    function isPromotableBacklogItem(items, item) {
+      return item.status === 'backlog' && dependenciesSatisfied(items, item);
+    }
+
+    function collectReadyColumnEntries(allItems, visibleItems) {
+      const readyItems = visibleItems.filter((item) => item.status === 'ready');
+      const plannedItems = visibleItems.filter((item) => isPromotableBacklogItem(allItems, item));
+      const seen = new Set();
+      const entries = [];
+
+      for (const item of [...readyItems, ...plannedItems]) {
+        if (seen.has(item.id)) continue;
+        seen.add(item.id);
+        entries.push({
+          item,
+          queueKind: item.status === 'ready' ? 'ready' : 'planned',
+        });
+      }
+
+      return entries;
+    }
+
+    function renderKanbanBoard(items) {
+      if (!kanbanBoard) {
+        return;
+      }
+
+      const projection = operatorShellSnapshot?.kanbanBoard
+        ?? null;
+
+      if (!projection) {
+        kanbanBoard.innerHTML = '<div class="empty">Kanban projection не загружен</div>';
+        return;
+      }
+
+      kanbanBoard.innerHTML = projection.columns.map((column) => {
+        const cards = column.workIds
+          .map((workId) => items.find((item) => item.id === workId) ?? snapshot.items.find((item) => item.id === workId))
+          .filter(Boolean)
+          .map((item) => renderTaskAtomCard(item, 'kanban-card'))
+          .join('');
+
+        return '<article class="column" data-kanban-column="' + escapeHtml(column.id) + '">' +
+          '<h2>' + escapeHtml(column.title) + renderClientUiBadge({ label: String(column.count), tone: 'muted', testId: 'kanban-col-count-' + column.id }) + '</h2>' +
+          (cards || '<div class="empty">Нет задач</div>') +
+          '</article>';
+      }).join('');
+    }
+
+    function renderBoard(items) {
+      const allItems = snapshot.items;
+      const operational = items.filter((item) => operationalBoardGroups.some((group) => group.statuses.includes(item.status)));
+
+      board.innerHTML = operationalBoardGroups.map((group) => {
+        const groupEntries = group.id === 'ready'
+          ? collectReadyColumnEntries(allItems, items)
+          : operational
+            .filter((item) => group.statuses.includes(item.status))
+            .map((item) => ({ item, queueKind: null }));
+
+        return '<article class="column">' +
+          '<h2>' + escapeHtml(group.title) + renderClientUiBadge({ label: String(groupEntries.length), tone: 'muted', testId: 'board-col-count-' + group.id }) + '</h2>' +
+          (groupEntries.length
+            ? groupEntries.map((entry) => renderTaskAtomCard(entry.item, '', {
+              queueKind: entry.queueKind,
+              promoteEligible: entry.queueKind === 'planned',
+            })).join('')
+            : '<div class="empty">Нет атомов задач</div>') +
+          '</article>';
+      }).join('');
+    }
+
+    function renderWorkflowEpicGroup(group) {
+      const epic = group.epic;
+      const collapsed = collapsedEpicIds.has(epic.id);
+      const progress = group.childCount > 0
+        ? group.doneChildCount + '/' + group.childCount
+        : '0';
+      const toggleLabel = collapsed ? 'Развернуть' : 'Свернуть';
+      const childrenHtml = group.children.length
+        ? group.children.map((child) => renderTaskAtom(child, 'list-row')).join('')
+        : '<div class="empty">Нет подзадач в этом списке</div>';
+
+      return '<article class="workflow-epic-group" data-testid="workflow-epic-' + escapeHtml(epic.id) + '">' +
+        '<div class="workflow-epic-header">' +
+          '<button class="task-atom list-row" type="button" data-task-id="' + escapeHtml(epic.id) + '">' +
+            '<h3><span class="workflow-epic-badge">Эпик</span>' + escapeHtml(epic.title || epic.id) +
+            '<span class="workflow-epic-meta">' + escapeHtml(progress) + '</span></h3>' +
+            renderSemanticCore(epic) +
+            renderIssueFooter(epic) +
+          '</button>' +
+          (group.childCount > 0
+            ? renderClientUiButton({
+              label: toggleLabel,
+              unstyled: true,
+              className: 'workflow-epic-toggle',
+              testId: 'workflow-epic-toggle-' + epic.id,
+              attrs: { 'data-workflow-epic-toggle': epic.id },
+            })
+            : '') +
+        '</div>' +
+        (collapsed ? '' : '<div class="workflow-epic-children">' + childrenHtml + '</div>') +
+      '</article>';
+    }
+
+    function renderWorkflowTreeNode(node) {
+      const item = node.item;
+      const collapsed = collapsedWorkflowTreeIds.has(item.id);
+      const hasChildren = node.children.length > 0;
+      const toggleLabel = collapsed ? '▸' : '▾';
+      const kindBadge = item.itemKind === 'epic'
+        ? '<span class="workflow-epic-badge">Эпик</span>'
+        : (item.itemKind === 'subtask' ? '<span class="workflow-epic-badge">Sub</span>' : '');
+      const childrenHtml = collapsed
+        ? ''
+        : node.children.map((child) => renderWorkflowTreeNode(child)).join('');
+
+      return '<div class="workflow-tree-node" style="--tree-depth:' + node.depth + '" data-testid="workflow-tree-node-' + escapeHtml(item.id) + '">' +
+        '<div class="workflow-epic-header">' +
+          '<button class="task-atom list-row" type="button" data-task-id="' + escapeHtml(item.id) + '">' +
+            '<h3>' + kindBadge + escapeHtml(item.title || item.id) + '</h3>' +
+            renderSemanticCore(item) +
+            renderIssueFooter(item) +
+          '</button>' +
+          (hasChildren
+            ? renderClientUiButton({
+              label: toggleLabel,
+              unstyled: true,
+              className: 'workflow-tree-toggle',
+              testId: 'workflow-tree-toggle-' + item.id,
+              attrs: { 'data-workflow-tree-toggle': item.id },
+            })
+            : '') +
+        '</div>' +
+        (collapsed ? '' : '<div class="workflow-epic-children">' + childrenHtml + '</div>') +
+      '</div>';
+    }
+
+    function buildWorkflowListUnits(items) {
+      if (workflowDisplayMode === 'flat') {
+        return [...items]
+          .sort((left, right) => String(left.title ?? left.id).localeCompare(String(right.title ?? right.id), 'en', { sensitivity: 'variant' }))
+          .map((item) => ({ type: 'orphan', item }));
+      }
+
+      if (workflowDisplayMode === 'tree') {
+        return buildWorkflowTreeDisplayUnits(buildWorkflowTreeForest(items));
+      }
+
+      return buildWorkflowDisplayUnits(items);
+    }
+
+    function renderWorkflowGroupedList(items, page, pageKind) {
+      const units = buildWorkflowListUnits(items);
+      const pagination = paginateItems(units, page, workflowPageSize);
+      if (pagination.page !== page) {
+        persistPanelPage(pageKind, pagination.page);
+      }
+
+      const html = pagination.items.length
+        ? pagination.items.map((unit) => {
+          if (unit.type === 'epic') {
+            return renderWorkflowEpicGroup(unit.group);
+          }
+          if (unit.type === 'tree-root') {
+            return renderWorkflowTreeNode(unit.root);
+          }
+          return renderTaskAtom(unit.item, 'list-row');
+        }).join('')
+        : '';
+
+      return { pagination, html };
+    }
+
+    function renderArchive(items) {
+      const doneItems = sortDoneArchiveItems(items.filter((item) => doneArchiveGroup.statuses.includes(item.status)));
+      const { pagination, html } = renderWorkflowGroupedList(doneItems, archivePage, 'archive');
+
+      archivePanelCount.textContent = String(doneItems.length);
+      archiveList.innerHTML = html || '<div class="empty">В архиве сейчас нет завершённых задач</div>';
+      renderWorkflowPagination(archivePagination, pagination, 'archive');
+    }
+
+    function renderBacklog(items) {
+      const backlogItems = items.filter((item) => backlogGroup.statuses.includes(item.status));
+      const { pagination, html } = renderWorkflowGroupedList(backlogItems, backlogPage, 'backlog');
+
+      backlogPanelCount.textContent = String(backlogItems.length);
+      backlogList.innerHTML = html || '<div class="empty">В backlog сейчас нет атомов задач</div>';
+      renderWorkflowPagination(backlogPagination, pagination, 'backlog');
+    }
+
+    function encodeGraphCanvasProjectionAttribute(projection) {
+      return JSON.stringify(projection)
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function renderGraphCanvasLitFlowHost(projection, options) {
+      options = options || {};
+      if (!projection || !Array.isArray(projection.nodes) || projection.nodes.length === 0) {
+        return '<div class="empty">Проекция графа пуста</div>';
+      }
+      const testId = options.testId || 'graph-canvas-lit-flow';
+      const fill = options.fill === true;
+      const height = options.height || 480;
+      const encoded = encodeGraphCanvasProjectionAttribute(projection);
+      const sizeAttr = fill
+        ? ' data-graph-canvas-fill="true"'
+        : ' data-graph-canvas-height="' + height + '"';
+      return '<div class="graph-canvas-lit-flow-host" data-testid="' + testId + '"' + sizeAttr + ' data-graph-canvas-projection="' + encoded + '"></div>';
+    }
+
+    function initGraphCanvasLitFlowMounts(root) {
+      if (typeof window.__WORKGRAPH_MOUNT_GRAPH_CANVAS__ === 'function') {
+        window.__WORKGRAPH_MOUNT_GRAPH_CANVAS__(root || document);
+      }
+    }
+
+    function persistCollapsedEpicIds() {
+      localStorage.setItem(collapsedEpicIdsStorageKey, JSON.stringify([...collapsedEpicIds]));
+    }
+
+    function buildIntentRoadmapCollapsedQuery() {
+      return collapsedEpicIds.size > 0
+        ? '?collapsed=' + encodeURIComponent([...collapsedEpicIds].join(','))
+        : '';
+    }
+
+    async function reloadIntentRoadmapProjections() {
+      const collapsedQuery = buildIntentRoadmapCollapsedQuery();
+      const [intentResponse, epicResponse] = await Promise.all([
+        fetch('/api/intent-roadmap-projection' + collapsedQuery),
+        fetch('/api/roadmap/epics' + collapsedQuery),
+      ]);
+      if (!intentResponse.ok || !epicResponse.ok) {
+        throw new Error('не удалось обновить intent roadmap projection');
+      }
+      intentRoadmapProjection = await intentResponse.json();
+      epicRoadmapProjection = await epicResponse.json();
+      renderIntentGraphPanel();
+    }
+
+    function toggleEpicCollapse(epicId) {
+      if (collapsedEpicIds.has(epicId)) {
+        collapsedEpicIds.delete(epicId);
+      } else {
+        collapsedEpicIds.add(epicId);
+      }
+      persistCollapsedEpicIds();
+      render();
+    }
+
+    function renderEpicRoadmapPanel(epic) {
+      const collapsed = collapsedEpicIds.has(epic.epicId);
+      const rollup = epic.rollup ?? {};
+      const progress = (epic.childCount ?? 0) > 0
+        ? (epic.doneChildCount ?? 0) + '/' + (epic.childCount ?? 0) + ' closed'
+        : '0 children';
+      const toggleLabel = collapsed ? 'Развернуть' : 'Свернуть';
+
+      return '<article class="graph-workspace-panel intent-roadmap-panel intent-roadmap-epic-panel" data-testid="intent-roadmap-epic-' + escapeHtml(epic.epicId) + '">' +
+        '<div class="intent-roadmap-epic-header">' +
+          '<h3>' + escapeHtml(epic.title || epic.epicId) + '</h3>' +
+          '<div class="intent-roadmap-epic-meta">' +
+            '<span class="count" data-testid="epic-rollup-' + escapeHtml(epic.epicId) + '">' + escapeHtml(progress) + '</span>' +
+            '<span>' + escapeHtml(epic.status || '—') + '</span>' +
+            ((epic.childCount ?? 0) > 0
+              ? '<button type="button" class="intent-roadmap-epic-toggle" data-epic-toggle="' + escapeHtml(epic.epicId) + '">' + toggleLabel + '</button>'
+              : '') +
+          '</div>' +
+        '</div>' +
+        '<div class="graph-workspace-canvas intent-roadmap-canvas-wrap">' +
+          renderIntentRoadmapCanvas(epic.canvas) +
+        '</div>' +
+      '</article>';
+    }
+
+    function renderIntentRoadmapCanvas(canvas) {
+      if (!canvas || !Array.isArray(canvas.nodes) || canvas.nodes.length === 0) {
+        return '<div class="empty">Проекция графа пуста</div>';
+      }
+      const projection = buildGraphCanvasProjectionFromIntentCanvas(canvas, { viewId: 'intent-roadmap' });
+      return renderGraphCanvasLitFlowHost(projection, {
+        testId: 'intent-roadmap-canvas',
+        fill: true,
+      });
+    }
+
+    function renderIntentRoadmapNode(node, depth) {
+      const indent = depth > 0 ? ' intent-roadmap-node' : '';
+      const progress = node.childCount > 0 ? ' <span class="count">' + node.doneChildCount + '/' + node.childCount + '</span>' : '';
+      return '<div class="' + indent.trim() + '">' +
+        '<button type="button" class="task-atom list-row" data-task-id="' + escapeHtml(node.workId) + '">' +
+          '<h3>' + escapeHtml(node.title || node.workId) + progress + '</h3>' +
+          '<p class="list-row-line">' + escapeHtml(node.status || '—') + '</p>' +
+        '</button>' +
+        (node.children ?? []).map((child) => renderIntentRoadmapNode(child, depth + 1)).join('') +
+      '</div>';
+    }
+
+    function renderIntentGraphPanel() {
+      if (!intentRoadmapBody) {
+        return;
+      }
+
+      if (activeView !== 'intent-graph') {
+        intentRoadmapBody.innerHTML = '';
+        return;
+      }
+
+      const epics = epicRoadmapProjection?.epics ?? [];
+      const branches = intentRoadmapProjection?.branches ?? [];
+      if (epics.length === 0 && branches.length === 0) {
+        intentRoadmapBody.innerHTML = '<div class="empty" style="padding:24px">Intent graph projection пуст</div>';
+        return;
+      }
+
+      const epicHtml = epics.length > 0
+        ? '<section class="intent-roadmap-epics">' +
+            '<p class="intent-roadmap-section-heading">Эпики</p>' +
+            epics.map((epic) => renderEpicRoadmapPanel(epic)).join('') +
+          '</section>'
+        : '';
+
+      const branchHtml = branches.map((branch) =>
+        '<article class="graph-workspace-panel intent-roadmap-panel intent-roadmap-branch">' +
+          '<div class="graph-workspace-canvas intent-roadmap-canvas-wrap">' +
+            renderIntentRoadmapCanvas(branch.canvas) +
+          '</div>' +
+        '</article>',
+      ).join('');
+
+      intentRoadmapBody.innerHTML = epicHtml + branchHtml;
+      initGraphCanvasLitFlowMounts(intentRoadmapBody);
+
+      intentRoadmapBody.querySelectorAll('[data-epic-toggle]').forEach((button) => {
+        button.addEventListener('click', (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          const epicId = button.getAttribute('data-epic-toggle');
+          if (epicId) {
+            toggleEpicCollapse(epicId);
+          }
+        });
+      });
+    }
+
+    function handleWorkGraphGraphNodeClick(event) {
+      const detail = event.detail || {};
+
+      if (detail.taskId && snapshot) {
+        const item = (snapshot.items ?? []).find((candidate) => candidate.id === detail.taskId);
+        if (item) {
+          openTaskDetails(item);
+        }
+        return;
+      }
+
+      if (detail.intentNodeId) {
+        const nodeId = detail.intentNodeId;
+        const branch = (intentRoadmapProjection?.branches ?? []).find((candidate) =>
+          candidate.question?.id === nodeId
+          || candidate.selectedOption?.id === nodeId
+          || (candidate.allOptions ?? []).some((option) => option.id === nodeId)
+          || candidate.decisionId === nodeId
+          || candidate.decision?.id === nodeId
+          || String(nodeId).startsWith('analysis:'),
+        );
+        if (!branch) return;
+
+        let summary = 'Узел intent graph: ' + nodeId;
+        if (branch.question?.id === nodeId) {
+          summary = 'Вопрос: ' + (branch.question.title ?? nodeId);
+        } else if (branch.selectedOption?.id === nodeId) {
+          summary = 'Выбранный вариант: ' + (branch.selectedOption.title ?? nodeId);
+        } else if ((branch.allOptions ?? []).some((option) => option.id === nodeId)) {
+          const option = branch.allOptions.find((entry) => entry.id === nodeId);
+          summary = 'Отклонённый вариант: ' + (option?.title ?? nodeId);
+        } else if (branch.decisionId === nodeId || branch.decision?.id === nodeId) {
+          summary = 'Решение: ' + (branch.decisionTitle ?? nodeId);
+        } else if (String(nodeId).startsWith('analysis:')) {
+          summary = 'Аналитический разбор ветки';
+        }
+
+        openDetailDrawer();
+        detailTitle.textContent = 'Intent graph';
+        detailId.textContent = nodeId;
+        detailBody.innerHTML = '<section class="detail-section"><h3>Узел ветки</h3><p>' + escapeHtml(summary) + '</p>' +
+          '<p class="muted">Полный drilldown с evidence — вкладка «Аналитика».</p></section>';
+        detailDrawer.classList.add('is-open');
+        detailDrawer.setAttribute('aria-hidden', 'false');
+        detailOverlay.hidden = false;
+        detailOverlay.setAttribute('aria-hidden', 'false');
+        document.documentElement.classList.add('detail-drawer-open');
+        return;
+      }
+
+      if (detail.blockId && architectureSnapshot) {
+        focusedBlockId = detail.blockId;
+        renderArchitecture();
+        const block = architectureSnapshot.blocks.find((candidate) => candidate.id === focusedBlockId);
+        if (block) {
+          openBlockDetails(block);
+        }
+        return;
+      }
+
+      if (detail.schematicId && schematicModel) {
+        const node = schematicModel.nodes.find((candidate) => candidate.id === detail.schematicId);
+        if (!node) return;
+
+        if (node.action && node.action.startsWith('view:')) {
+          const targetView = node.action.slice('view:'.length);
+          if (['board', 'workflow'].includes(targetView)) {
+            if (targetView === 'workflow') {
+              activeWorkflowTab = 'backlog';
+              localStorage.setItem(workflowTabStorageKey, activeWorkflowTab);
+              applyWorkflowTab(activeWorkflowTab);
+            }
+            activeView = targetView === 'backlog' ? 'workflow' : targetView;
+            localStorage.setItem(viewStorageKey, activeView);
+            applyView(activeView);
+            render();
+          }
+          return;
+        }
+
+        openSchematicNodeDetails(node);
+      }
+    }
+
+    function resolveSchematicModel() {
+      return graphCanvasViewMode === 'pipeline' ? schematicModelPipeline : schematicModelFull;
+    }
+
+    function syncGraphCanvasModeUi() {
+      schematicModel = resolveSchematicModel();
+      document.querySelectorAll('.graph-canvas-mode-toggle button[data-graph-canvas-mode]').forEach((button) => {
+        const isActive = button.dataset.graphCanvasMode === graphCanvasViewMode;
+        button.classList.toggle('is-active', isActive);
+        button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+      });
+    }
+
+    function setGraphCanvasViewMode(nextMode) {
+      graphCanvasViewMode = nextMode === 'pipeline' ? 'pipeline' : 'full';
+      localStorage.setItem(graphCanvasModeStorageKey, graphCanvasViewMode);
+      syncGraphCanvasModeUi();
+      renderSchematic();
+    }
+
+    function renderArchitectureBlockListRow(block) {
+      const summary = summarizeArchitectureBlockForList(block);
+      return '<button type="button" class="task-atom list-row architecture-block-row" data-architecture-block-id="' + escapeHtml(block.id) + '" data-testid="architecture-block-' + escapeHtml(block.id) + '">' +
+        '<h3>' + escapeHtml(summary.title) + '</h3>' +
+        '<p class="list-row-line">' + escapeHtml(summary.summary) + '</p>' +
+        '<p class="list-row-line muted">' + summary.taskCount + ' задач · в работе ' + summary.activeCount + ' · завершено ' + summary.doneCount + '</p>' +
+      '</button>';
+    }
+
+    function renderArchitectureBlocksListHtml(blocks) {
+      return blocks.map((block) => renderArchitectureBlockListRow(block)).join('');
+    }
+
+    function renderArchitectureBlocksList() {
+      if (!architectureBlocksList) {
+        return;
+      }
+      if (!architectureSnapshot) {
+        architectureBlocksList.innerHTML = architectureLoadError
+          ? '<div class="error">' + escapeHtml(architectureLoadError) + '</div>'
+          : architectureLoaded
+          ? '<div class="empty">Снимок архитектуры пуст</div>'
+          : '<div class="empty">Загрузка блоков архитектуры…</div>';
+        if (architecturePanelCount) architecturePanelCount.textContent = '0';
+        return;
+      }
+
+      const blocks = architectureSnapshot.blocks ?? [];
+      const canonBadge = document.querySelector('#architecture-canon-badge');
+      if (canonBadge) {
+        const canon = architectureSnapshot.l1Canon;
+        if (canon?.digest) {
+          canonBadge.textContent = 'Канон L1 v' + String(canon.version ?? 1) + ' · ' + canon.digest;
+          canonBadge.title = (canon.sourcePath || 'architecture/main.bvc') + (canon.charterRef ? ' · ' + canon.charterRef : '');
+          canonBadge.hidden = false;
+        } else {
+          canonBadge.hidden = true;
+          canonBadge.textContent = '';
+        }
+      }
+      if (architecturePanelCount) {
+        architecturePanelCount.textContent = String(blocks.length);
+      }
+      architectureBlocksList.innerHTML = blocks.length
+        ? renderArchitectureBlocksListHtml(blocks)
+        : '<div class="empty">Нет блоков архитектуры</div>';
+    }
+
+    function architectureBlockBackLabel() {
+      return '← К списку блоков';
+    }
+
+    function renderArchitecturePanels() {
+      renderArchitectureBlocksList();
+    }
+
+    function renderArchitecture() {
+      renderArchitecturePanels();
+    }
+
+    function ensureArchitectureSnapshotLoaded() {
+      if (architectureLoaded && architectureSnapshot) {
+        return Promise.resolve(architectureSnapshot);
+      }
+      if (architectureLoaded && architectureLoadError) {
+        return Promise.reject(new Error(architectureLoadError));
+      }
+      return fetch('/api/architecture-snapshot').then((response) => {
+        if (!response.ok) {
+          return response.json().catch(() => ({})).then((payload) => {
+            const detail = payload?.message || payload?.error || ('HTTP ' + response.status);
+            throw new Error(detail);
+          });
+        }
+        return response.json();
+      }).then((data) => {
+        if (data?.error) {
+          throw new Error(data.message || data.error);
+        }
+        architectureSnapshot = data;
+        architectureLoaded = true;
+        architectureLoadError = null;
+        renderArchitecturePanels();
+        return data;
+      }).catch((error) => {
+        architectureLoadError = error?.message || String(error);
+        architectureLoaded = true;
+        architectureSnapshot = null;
+        renderArchitecturePanels();
+        throw error;
+      });
+    }
+
+    function handleArchitectureBlocksListClick(event) {
+      const row = event.target.closest('[data-architecture-block-id]');
+      if (!row) {
+        return;
+      }
+      event.preventDefault();
+      event.stopPropagation();
+      const blockId = row.getAttribute('data-architecture-block-id');
+      const openBlock = () => {
+        const block = architectureSnapshot?.blocks?.find((candidate) => candidate.id === blockId);
+        if (!block) {
+          return;
+        }
+        focusedBlockId = block.id;
+        openBlockDetails(block);
+      };
+      if (architectureSnapshot) {
+        openBlock();
+        return;
+      }
+      ensureArchitectureSnapshotLoaded().then(openBlock).catch(() => undefined);
+    }
+
+    function renderSchematic() {
+      schematicModel = resolveSchematicModel();
+      if (!schematicModel || !Array.isArray(schematicModel.nodes)) {
+        schematicCanvas.innerHTML = '<div class="empty">Schematic model не загружен</div>';
+        schematicPanelCount.textContent = '0';
+        return;
+      }
+
+      schematicPanelCount.textContent = String(schematicModel.nodes.length + ' / ' + schematicModel.edges.length);
+      const projection = buildGraphCanvasProjectionFromSchematicModel(schematicModel, { viewId: 'schematic' });
+      schematicCanvas.innerHTML = renderGraphCanvasLitFlowHost(projection, {
+        testId: 'schematic-canvas',
+        fill: true,
+      });
+      initGraphCanvasLitFlowMounts(schematicCanvas);
+    }
+
+    function openSchematicNodeDetails(node) {
+      detailTitle.textContent = node.title;
+      detailId.textContent = node.id;
+      detailBody.innerHTML =
+        renderDetailBackButton('← К схеме') +
+        renderDetailText('Слой', node.layer) +
+        renderDetailText('Описание', node.summary) +
+        renderDetailList('Связанные артефакты', node.protocolPath ? [node.protocolPath] : []) +
+        '<section class="detail-section"><h3>Ограничения MVP</h3><p>Readonly derived schematic без ручного graph editor. Зависимости задач доступны в detail drawer и через MCP tools для агента.</p></section>';
+      openDetailDrawer();
+      bindDetailNavBack(closeTaskDetails);
+      detailClose.focus();
+    }
+
+    function openBlockDetails(block, { resetNav = true } = {}) {
+      if (resetNav) detailContext = null;
+      detailContext = { type: 'block', blockId: block.id };
+      detailTitle.textContent = block.title ?? block.id ?? '';
+      detailId.textContent = block.id;
+      detailBody.innerHTML =
+        renderDetailBackButton(architectureBlockBackLabel()) +
+        buildBlockDetailSections(block);
+      openDetailDrawer();
+      bindDetailNavBack(() => {
+        closeL2NodeDetails();
+        closeTaskDetails();
+        focusedBlockId = null;
+        renderArchitecture();
+      });
+    }
+
+    function formatArchitectureContainerKind(kind) {
+      const labels = {
+        protocol: 'протокол',
+        schema: 'схема',
+        runtime: 'рантайм',
+        storage: 'хранилище',
+        ui: 'интерфейс',
+        domain: 'домен',
+        research: 'исследование',
+      };
+      return labels[kind] || kind;
+    }
+
+    function formatL2NodeKindLabel(kind) {
+      if (kind === 'container') return 'Контейнер';
+      if (kind === 'file') return 'Файл';
+      return kind;
+    }
+
+    function formatArchitectureEdgeTypeLabel(type) {
+      const labels = {
+        defines: 'определяет',
+        implements: 'реализует',
+        uses: 'использует',
+        relates_file: 'связан с файлом',
+        feeds: 'питает',
+        maps_to: 'отображает в',
+      };
+      return labels[type] || type;
+    }
+
+    function renderBvcDescription(source, { testid = 'architecture-bvc-description' } = {}) {
+      if (!source) return '';
+      /** @type {Array<[string, string]>} */
+      const fields = [
+        ['Базис', source.basis],
+        ['Вектор', source.vector],
+        ['Цель', source.goal],
+      ].filter((entry) => String(entry[1] ?? '').trim() !== '');
+      if (fields.length === 0) {
+        return '';
+      }
+      return '<div data-testid="' + escapeHtml(testid) + '">' +
+        fields.map(([title, value]) => renderDetailText(title, value)).join('') +
+      '</div>';
+    }
+
+    function renderBlockBvcDescription(block) {
+      return renderBvcDescription(block, { testid: 'architecture-bvc-description' });
+    }
+
+    function renderL2NodeBvcDescription(source) {
+      return renderBvcDescription(source, { testid: 'l2-bvc-description' });
+    }
+
+    function findL2ParentContainer(nodeId, l2Graph) {
+      const edges = l2Graph?.layoutEdges || l2Graph?.edges || [];
+      const nodes = l2Graph?.layoutNodes || l2Graph?.nodes || [];
+      const nodeById = new Map(nodes.map((node) => [node.id, node]));
+      const incoming = edges.filter((edge) => edge.to === nodeId && String(edge.from).startsWith('container:'));
+      const primary = incoming.find((edge) => edge.type !== 'relates_file') || incoming[0];
+      return primary ? nodeById.get(primary.from) : null;
+    }
+
+    function resolveL2NodeDescriptionSource(node, l2Graph) {
+      const hasBvc = [node.basis, node.vector, node.goal].some((value) => String(value ?? '').trim() !== '');
+      if (hasBvc) {
+        return node;
+      }
+      const parent = findL2ParentContainer(node.id, l2Graph);
+      if (node.kind === 'file') {
+        const basis = parent?.basis
+          ? ('Файл контейнера «' + (parent.title || parent.id) + '». ' + parent.basis).trim()
+          : (parent ? 'Файл контейнера «' + (parent.title || parent.id) + '».' : '');
+        return {
+          basis,
+          vector: node.path || parent?.vector || '',
+          goal: parent?.goal || '',
+          analysis: parent?.analysis || '',
+          decision: parent?.decision || '',
+          labels: parent?.labels || {},
+        };
+      }
+      return node;
+    }
+
+    function buildBlockDetailSections(block) {
+      const blockTasks = (block.taskIds || [])
+        .map((taskId) => snapshot?.items?.find((item) => item.id === taskId))
+        .filter(Boolean);
+      const containerLines = (block.containers || []).map((container) => container.title + ' (' + formatArchitectureContainerKind(container.kind) + ')');
+      const tasksHtml = blockTasks.length
+        ? '<div class="backlog-list">' + blockTasks.map((item) => renderTaskAtom(item, 'list-row')).join('') + '</div>'
+        : '<div class="empty">Нет задач в этом блоке</div>';
+      const canonSource = architectureSnapshot?.l1Canon?.sourcePath || 'architecture/main.bvc';
+      const summarySection = block.summary && block.summary !== firstLinePreview(block.vector)
+        ? renderDetailText('Сводка', block.summary)
+        : '';
+      const groupLabel = typeof getArchitectureBlockGroupLabel === 'function'
+        ? getArchitectureBlockGroupLabel(block)
+        : '';
+      const groupSection = groupLabel ? renderDetailText('Раздел', groupLabel) : '';
+      return groupSection +
+        renderBlockBvcDescription(block) +
+        renderPipelineReadOnly(block, { testid: 'architecture-pipeline-panel' }) +
+        renderBlockL2Graph(block.l2Graph) +
+        summarySection +
+        renderOptionalDetailAccordion('Корни intent', block.intentRoots, 'list') +
+        renderOptionalDetailAccordion('Контейнеры L2', containerLines, 'list') +
+        renderOptionalDetailAccordion('Пути артефактов', block.artifactPaths, 'list') +
+        '<section class="detail-section detail-source-link"><p class="muted">Источник: <code>' + escapeHtml(canonSource) + '</code></p></section>' +
+        wrapDetailAccordion('Задачи блока (' + blockTasks.length + ')', tasksHtml, {
+          testid: 'block-tasks-accordion',
+          required: true,
+          defaultOpen: blockTasks.length > 0 && blockTasks.length <= 5,
+        });
+    }
+
+    function firstLinePreview(text) {
+      if (!text) return '';
+      const line = String(text).split('\\n').map((entry) => entry.trim()).find(Boolean);
+      return line || '';
+    }
+
+    function renderBlockL2Graph(l2Graph) {
+      if (!l2Graph || !Array.isArray(l2Graph.layoutNodes) || l2Graph.layoutNodes.length === 0) {
+        return '<section class="detail-section"><h3>Схема L2</h3><div class="empty">Нет L2 nodes для этого блока</div></section>';
+      }
+
+      const width = l2Graph.width || 520;
+      const height = l2Graph.height || 220;
+      const cappedNote = l2Graph.capped
+        ? '<p class="empty">Показано ' + l2Graph.counts.nodes + ' из ' + (l2Graph.counts.nodes + l2Graph.hiddenCount) + ' узлов (скрыто ' + l2Graph.hiddenCount + ')</p>'
+        : '';
+      const svg = renderBlockL2GraphSvg(l2Graph, width, height);
+      const nodes = l2Graph.layoutNodes.map((node) => {
+        const label = node.kind === 'file' ? (node.path || node.title) : node.title;
+        const subtitle = node.kind === 'file' ? '' : (node.subtitle || '');
+        const blockId = l2Graph.blockId || '';
+        return '<button type="button" class="block-l2-node ' + escapeHtml(node.kind) + '" data-l2-node-id="' + escapeHtml(node.id) + '" data-l2-block-id="' + escapeHtml(blockId) + '" style="left:' + node.x + 'px;top:' + node.y + 'px;width:' + node.width + 'px;min-height:' + node.height + 'px" title="' + escapeHtml(node.path || label) + '">' +
+          '<div class="kind">' + escapeHtml(formatL2NodeKindLabel(node.kind)) + '</div>' +
+          '<strong>' + escapeHtml(label) + '</strong>' +
+          (subtitle ? '<span>' + escapeHtml(subtitle) + '</span>' : '') +
+        '</button>';
+      }).join('');
+
+      return '<section class="detail-section"><h3>Схема L2</h3>' + cappedNote +
+        '<div class="block-l2-wrap"><div class="block-l2-canvas" style="width:' + width + 'px;height:' + height + 'px">' +
+          svg + nodes +
+        '</div></div></section>';
+    }
+
+    function renderBlockL2GraphSvg(l2Graph, width, height) {
+      const paths = (l2Graph.layoutEdges || []).map((edge) => {
+        const from = edge.fromNode;
+        const to = edge.toNode;
+        const inSpread = to.height / (edge.inLaneCount + 1);
+        const laneOffset = (edge.inLane - (edge.inLaneCount - 1) / 2) * 12;
+        const startX = from.x + from.width;
+        const startY = from.y + from.height / 2 + laneOffset;
+        const endX = to.x;
+        const endY = to.y + inSpread * (edge.inLane + 1);
+        const horizontalGap = Math.max(48, endX - startX);
+        const midX = startX + horizontalGap * 0.55;
+        const d = 'M ' + startX + ' ' + startY + ' C ' + midX + ' ' + startY + ', ' + midX + ' ' + endY + ', ' + endX + ' ' + endY;
+        const labelX = (startX + endX) / 2;
+        const labelY = (startY + endY) / 2 - 6;
+        return '<path class="block-l2-edge" d="' + d + '" marker-end="url(#block-l2-arrow)" />' +
+          '<text class="block-l2-edge-label" x="' + labelX + '" y="' + labelY + '">' + escapeHtml(formatArchitectureEdgeTypeLabel(edge.type)) + '</text>';
+      }).join('');
+
+      return '<svg class="block-l2-edges" width="' + width + '" height="' + height + '" viewBox="0 0 ' + width + ' ' + height + '" aria-hidden="true">' +
+        '<defs><marker id="block-l2-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"></path></marker></defs>' +
+        paths +
+        '</svg>';
+    }
+
+    function renderTaskAtomCard(item, extraClass = '', options = {}) {
+      const inner = renderTaskAtom(item, extraClass, options);
+      const actions = [];
+      if (options.promoteEligible) {
+        actions.push(renderClientUiButton({
+          label: 'Сделать доступной агенту',
+          variant: 'soft',
+          size: 'sm',
+          className: 'task-promote-button',
+          testId: 'promote-ready-' + item.id,
+          attrs: { 'data-promote-task-id': item.id },
+        }));
+      }
+      if (!actions.length) {
+        return inner;
+      }
+
+      return '<div class="task-atom-wrap">' +
+        inner +
+        actions.join('') +
+        '</div>';
+    }
+
+    function renderTaskAtom(item, extraClass = '', options = {}) {
+      const queueKind = options.queueKind ?? null;
+      const targets = highlightTaskId ? crossHighlightTargets(highlightTaskId) : { peerIds: [] };
+      const highlightClass = item.id === highlightTaskId || targets.peerIds.includes(item.id) ? ' is-highlighted' : '';
+      return '<button class="task-atom' + highlightClass + (extraClass ? ' ' + extraClass : '') + '" type="button" data-task-id="' + escapeHtml(item.id) + '">' +
+        '<h3>' + escapeHtml(item.title || item.id) + '</h3>' +
+        renderSemanticCore(item) +
+        renderIssueFooter(item, { queueKind }) +
+      '</button>';
+    }
+
+    function toggleWorkflowTreeCollapse(itemId) {
+      if (collapsedWorkflowTreeIds.has(itemId)) {
+        collapsedWorkflowTreeIds.delete(itemId);
+      } else {
+        collapsedWorkflowTreeIds.add(itemId);
+      }
+      localStorage.setItem(collapsedWorkflowTreeIdsStorageKey, JSON.stringify([...collapsedWorkflowTreeIds]));
+      render();
+    }
+
+    function handleBoardClick(event) {
+      const epicToggle = event.target.closest('[data-workflow-epic-toggle]');
+      if (epicToggle) {
+        event.preventDefault();
+        event.stopPropagation();
+        const epicId = epicToggle.getAttribute('data-workflow-epic-toggle');
+        if (epicId) {
+          toggleEpicCollapse(epicId);
+        }
+        return;
+      }
+
+      const treeToggle = event.target.closest('[data-workflow-tree-toggle]');
+      if (treeToggle) {
+        event.preventDefault();
+        event.stopPropagation();
+        const itemId = treeToggle.getAttribute('data-workflow-tree-toggle');
+        if (itemId) {
+          toggleWorkflowTreeCollapse(itemId);
+        }
+        return;
+      }
+
+      const linkageButton = event.target.closest('[data-linkage-ref]');
+      if (linkageButton) {
+        event.preventDefault();
+        event.stopPropagation();
+        handleLinkageRefClick(linkageButton);
+        return;
+      }
+
+      const promoteButton = event.target.closest('.task-promote-button[data-promote-task-id], .detail-promote-button[data-promote-task-id]');
+      if (promoteButton) {
+        event.preventDefault();
+        event.stopPropagation();
+        submitPromoteReady(promoteButton.dataset.promoteTaskId);
+        return;
+      }
+
+      handleTaskCardClick(event);
+      handleBlockL2NodeClick(event);
+    }
+
+    function handleBlockL2NodeClick(event) {
+      const card = event.target.closest('[data-l2-node-id]');
+      if (!card) {
+        return false;
+      }
+      const nodeId = card.dataset.l2NodeId;
+      const blockId = card.dataset.l2BlockId;
+      if (!nodeId || !blockId) {
+        return false;
+      }
+      event.preventDefault();
+      event.stopPropagation();
+
+      const fromBlockDrawer = Boolean(card.closest('#detail-body'));
+      const open = () => {
+        const block = architectureSnapshot?.blocks?.find((candidate) => candidate.id === blockId);
+        if (block) {
+          openL2NodeDetails(block, nodeId, { fromBlockDrawer });
+        }
+      };
+
+      if (architectureSnapshot) {
+        open();
+      } else {
+        ensureArchitectureSnapshotLoaded().then(open).catch(() => undefined);
+      }
+      return true;
+    }
+
+    function handleLinkageRefClick(button) {
+      const kind = button.dataset.linkageKind;
+      const ref = button.dataset.linkageRef ?? '';
+      if (!ref) return;
+
+      if (kind === 'work' && snapshot) {
+        const related = snapshot.items.find((item) => item.id === ref);
+        if (related) {
+          openTaskDetails(related, {
+            parentContext: detailContext?.type === 'task'
+              ? { type: 'task', taskId: detailContext.taskId }
+              : null,
+          });
+          render();
+        }
+        return;
+      }
+
+      search.value = ref;
+      activeView = 'workflow';
+      localStorage.setItem(viewStorageKey, activeView);
+      applyView(activeView);
+      resetListPages();
+      search.dispatchEvent(new Event('input', { bubbles: true }));
+      closeTaskDetails();
+    }
+
+    function handleTaskCardClick(event) {
+      const card = event.target.closest('.task-atom[data-task-id], .analytics-related-task-btn[data-task-id]');
+      if (!card || !snapshot) return;
+      const item = snapshot.items.find((candidate) => candidate.id === card.dataset.taskId);
+      if (!item) return;
+      applyCrossHighlight(item.id);
+      const fromDrawer = detailDrawer.classList.contains('is-open') && Boolean(card.closest('#detail-body'));
+      const analyticsParent = card.classList.contains('analytics-related-task-btn') && selectedAnalyticsRecordId
+        ? { type: 'analytics', recordId: selectedAnalyticsRecordId }
+        : detailContext;
+      if (fromDrawer) openTaskDetails(item, { parentContext: analyticsParent });
+      else openTaskDetails(item);
+      render();
+    }
+
+    function findClaimableReadyTask(items) {
+      const doneIds = new Set(items.filter((item) => item.status === 'done' || item.status === 'verified').map((item) => item.id));
+      const readyIds = Array.isArray(snapshot?.readyQueue) ? snapshot.readyQueue : [];
+      const readyItems = readyIds
+        .map((id) => items.find((item) => item.id === id))
+        .filter(Boolean);
+      const candidates = readyItems.length ? readyItems : items.filter((item) => item.status === 'ready');
+
+      return candidates.find((item) => (item.dependsOn || []).every((dependencyId) => doneIds.has(dependencyId))) ?? null;
+    }
+
+    function openDetailDrawer() {
+      detailOverlay.hidden = false;
+      detailOverlay.classList.add('is-open');
+      detailOverlay.setAttribute('aria-hidden', 'false');
+      detailDrawer.classList.add('is-open');
+      detailDrawer.setAttribute('aria-hidden', 'false');
+      document.documentElement.classList.add('detail-drawer-open');
+      document.body.classList.add('detail-drawer-open');
+    }
+
+    function renderDetailBackButton(label) {
+      return '<div class="detail-back-row"><button class="detail-back-button" type="button" id="detail-nav-back">' + escapeHtml(label) + '</button></div>';
+    }
+
+    function renderDetailSubBackButton(label) {
+      return '<div class="detail-back-row"><button class="detail-back-button" type="button" id="detail-sub-nav-back">' + escapeHtml(label) + '</button></div>';
+    }
+
+    function bindDetailNavBack(handler) {
+      const button = document.querySelector('#detail-nav-back');
+      if (button && handler) button.addEventListener('click', handler, { once: true });
+    }
+
+    function bindDetailSubNavBack(handler) {
+      const button = document.querySelector('#detail-sub-nav-back');
+      if (button && handler) button.addEventListener('click', handler, { once: true });
+    }
+
+    function resolveL2NodeLabel(nodeRef, l2Graph) {
+      const id = typeof nodeRef === 'string' ? nodeRef : nodeRef?.id;
+      const nodes = l2Graph.layoutNodes || l2Graph.nodes || [];
+      const node = nodes.find((candidate) => candidate.id === id);
+      if (!node) return id;
+      return node.kind === 'file' ? (node.path || node.title) : node.title;
+    }
+
+    function findL2NodeEdges(l2Graph, nodeId) {
+      const edges = l2Graph.layoutEdges || l2Graph.edges || [];
+      const normalized = edges.map((edge) => ({
+        from: edge.from ?? edge.fromNode?.id,
+        to: edge.to ?? edge.toNode?.id,
+        type: edge.type,
+      }));
+      return {
+        incoming: normalized.filter((edge) => edge.to === nodeId),
+        outgoing: normalized.filter((edge) => edge.from === nodeId),
+      };
+    }
+
+    function collectBlockTasksForL2Node(block, node) {
+      const paths = node.kind === 'file'
+        ? [node.path].filter(Boolean)
+        : [...(node.paths ?? [])];
+      if (paths.length === 0) {
+        return [];
+      }
+      return (block.taskIds || [])
+        .map((taskId) => snapshot?.items?.find((item) => item.id === taskId))
+        .filter(Boolean)
+        .filter((item) => (item.targetFiles || []).some((file) =>
+          paths.some((path) => file === path || file.startsWith(path + '/') || path.startsWith(file + '/'))));
+    }
+
+    function renderL2NodeEdgesAccordion(title, edges, l2Graph, direction) {
+      if (!edges.length) return '';
+      const rows = edges.map((edge) => {
+        const peerId = direction === 'out' ? edge.to : edge.from;
+        const peerLabel = resolveL2NodeLabel(peerId, l2Graph);
+        return peerLabel + ' — ' + formatArchitectureEdgeTypeLabel(edge.type);
+      });
+      return wrapDetailAccordion(title,
+        '<ul>' + rows.map((row) => '<li>' + escapeHtml(row) + '</li>').join('') + '</ul>',
+        { testid: 'l2-node-edges-' + direction });
+    }
+
+    function buildL2NodeDetailSections(node, l2Graph, block) {
+      const descriptionSource = resolveL2NodeDescriptionSource(node, l2Graph);
+      const { incoming, outgoing } = findL2NodeEdges(l2Graph, node.id);
+      const relatedTasks = collectBlockTasksForL2Node(block, node);
+      let html = renderL2NodeBvcDescription(descriptionSource);
+      html += renderPipelineReadOnly(descriptionSource, { testid: 'l2-pipeline-panel' });
+      html += renderDetailText('Тип', formatL2NodeKindLabel(node.kind));
+      if (node.kind === 'container') {
+        html += renderDetailText('Роль', formatArchitectureContainerKind(node.subtitle || ''));
+      }
+      if (node.path) {
+        html += renderDetailText('Путь', node.path);
+      }
+      if (node.kind === 'container' && Array.isArray(node.paths) && node.paths.length > 0) {
+        html += wrapDetailAccordion('Пути (' + node.paths.length + ')',
+          '<ul>' + node.paths.map((path) => '<li>' + escapeHtml(path) + '</li>').join('') + '</ul>',
+          { testid: 'l2-node-paths-accordion' });
+      }
+      html += renderL2NodeEdgesAccordion('Исходящие связи (' + outgoing.length + ')', outgoing, l2Graph, 'out');
+      html += renderL2NodeEdgesAccordion('Входящие связи (' + incoming.length + ')', incoming, l2Graph, 'in');
+      if (relatedTasks.length > 0) {
+        html += wrapDetailAccordion('Связанные задачи (' + relatedTasks.length + ')',
+          '<div class="backlog-list">' + relatedTasks.map((item) => renderTaskAtom(item, 'list-row')).join('') + '</div>',
+          { testid: 'l2-node-tasks-accordion' });
+      }
+      return html;
+    }
+
+    function openL2SubDrawer() {
+      if (!detailSubOverlay || !detailSubDrawer) return;
+      detailSubOverlay.hidden = false;
+      detailSubOverlay.classList.add('is-open');
+      detailSubOverlay.setAttribute('aria-hidden', 'false');
+      detailSubDrawer.classList.add('is-open');
+      detailSubDrawer.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeL2NodeDetails() {
+      if (!detailSubOverlay || !detailSubDrawer) return;
+      detailSubDrawer.classList.remove('is-open');
+      detailSubOverlay.classList.remove('is-open');
+      detailSubDrawer.setAttribute('aria-hidden', 'true');
+      detailSubOverlay.setAttribute('aria-hidden', 'true');
+      detailSubOverlay.hidden = true;
+      if (detailSubBody) detailSubBody.innerHTML = '';
+    }
+
+    function openL2NodeDetails(block, nodeId, { fromBlockDrawer = false } = {}) {
+      const l2Graph = block.l2Graph;
+      const nodes = l2Graph?.layoutNodes || l2Graph?.nodes || [];
+      const node = nodes.find((candidate) => candidate.id === nodeId);
+      if (!node || !detailSubBody || !detailSubTitle || !detailSubId) return;
+
+      const openedFromDrawer = fromBlockDrawer
+        || (detailDrawer.classList.contains('is-open')
+          && detailContext?.type === 'block'
+          && detailContext.blockId === block.id);
+
+      detailSubTitle.textContent = node.kind === 'file' ? (node.title || node.path || node.id) : (node.title || node.id);
+      detailSubId.textContent = node.kind === 'container'
+        ? ('Контейнер · ' + formatArchitectureContainerKind(node.subtitle || ''))
+        : (node.path || node.id);
+      detailSubBody.innerHTML =
+        renderDetailSubBackButton('← ' + (block.title || block.id)) +
+        buildL2NodeDetailSections(node, l2Graph, block);
+      openL2SubDrawer();
+      bindDetailSubNavBack(() => {
+        closeL2NodeDetails();
+        if (!openedFromDrawer && detailSubClose) {
+          detailSubClose.focus();
+        }
+      });
+      detailSubClose?.focus();
+    }
+
+    function wrapDetailAccordion(title, innerHtml, options = {}) {
+      const body = String(innerHtml ?? '').trim();
+      if (!body && options.required !== true) return '';
+      const testId = options.testid ? ' data-testid="' + escapeHtml(options.testid) + '"' : '';
+      const workId = options.dataWorkId ? ' data-work-id="' + escapeHtml(options.dataWorkId) + '"' : '';
+      const extraClass = options.className ? ' ' + options.className : '';
+      const openAttr = options.defaultOpen ? ' open' : '';
+      return '<details class="detail-accordion' + extraClass + '"' + testId + workId + openAttr + '>' +
+        '<summary class="detail-accordion-summary">' + escapeHtml(title) + '</summary>' +
+        '<div class="detail-accordion-body">' + body + '</div></details>';
+    }
+
+    function renderOptionalDetailAccordion(title, value, kind) {
+      if (kind === 'list') {
+        if (!Array.isArray(value) || value.length === 0) return '';
+        return wrapDetailAccordion(title,
+          '<ul>' + value.map((entry) => '<li>' + escapeHtml(entry) + '</li>').join('') + '</ul>');
+      }
+      if (!value) return '';
+      return wrapDetailAccordion(title, '<p>' + escapeHtml(value) + '</p>');
+    }
+
+    function renderParentChildHierarchy(item) {
+      const parentId = String(item.parentId ?? item.labels?.['work.parent_id'] ?? '').trim();
+      const childIds = Array.isArray(item.childIds) ? item.childIds : [];
+      if (parentId === '' && childIds.length === 0) {
+        return '';
+      }
+
+      const parts = [];
+      if (parentId !== '') {
+        const parent = snapshot?.items?.find((candidate) => candidate.id === parentId);
+        parts.push('<div class="detail-section hierarchy-parent" data-testid="hierarchy-parent">' +
+          '<h3>Родитель</h3>' +
+          '<div class="hierarchy-panel">' +
+          '<button type="button" class="task-atom list-row" data-task-id="' + escapeHtml(parentId) + '">' +
+          '<h3>' + escapeHtml(parent?.title ?? parentId) + '</h3>' +
+          (parent ? '<p class="list-row-line">' + escapeHtml(parent.status) + '</p>' : '') +
+          '</button></div></div>');
+      }
+
+      if (childIds.length > 0) {
+        const doneCount = childIds.filter((childId) => {
+          const child = snapshot?.items?.find((candidate) => candidate.id === childId);
+          return child && (child.status === 'done' || child.status === 'verified');
+        }).length;
+        const closeBlocked = doneCount < childIds.length;
+        const childButtons = childIds.map((childId) => {
+          const child = snapshot?.items?.find((candidate) => candidate.id === childId);
+          return '<button type="button" class="task-atom list-row" data-task-id="' + escapeHtml(childId) + '">' +
+            '<h3>' + escapeHtml(child?.title ?? childId) + '</h3>' +
+            (child ? '<p class="list-row-line">' + escapeHtml(child.status) + '</p>' : '') +
+            '</button>';
+        }).join('');
+
+        parts.push('<div class="detail-section hierarchy-children" data-testid="hierarchy-children">' +
+          '<h3>Подзадачи <span class="count">' + doneCount + '/' + childIds.length + '</span></h3>' +
+          (closeBlocked
+            ? '<p class="hierarchy-close-gate">Закрытие родителя заблокировано: не все подзадачи завершены.</p>'
+            : '') +
+          '<div class="hierarchy-panel">' + childButtons + '</div></div>');
+      }
+
+      return parts.join('');
+    }
+
+    function buildTaskDetailSections(item) {
+      return '<div class="meta">' + renderTags(item).join('') + '</div>' +
+        renderParentChildHierarchy(item) +
+        renderDetailText('Базис', item.basis) +
+        renderDetailText('Вектор', item.vector) +
+        renderDetailText('Цель', item.goal) +
+        renderPipelineReadOnly(item) +
+        renderOptionalDetailAccordion('Зависимости', item.dependsOn, 'list') +
+        renderOptionalDetailAccordion('Проверки', item.checks, 'list') +
+        renderOptionalDetailAccordion('Свидетельства', item.evidence, 'list') +
+        renderOptionalDetailAccordion('Следующее действие', item.nextAction, 'text') +
+        renderOptionalDetailAccordion('Блокер', item.blocker, 'text') +
+        renderOptionalDetailAccordion('Трасса файлов', item.targetFiles, 'list') +
+        wrapDetailAccordion('Память',
+          '<button type="button" class="detail-link-btn" data-action="open-memory-for-task" data-work-id="' + escapeHtml(item.id) + '" data-testid="open-memory-for-task">Память по work.id</button>',
+          { required: true });
+    }
+
+    function renderPipelineReadOnly(source, options = {}) {
+      if (!source) return '';
+      const labels = source.labels ?? {};
+      const verdict = String(labels['work.decision.verdict'] ?? labels['architecture.decision.verdict'] ?? '').trim();
+      const analysis = String(source.analysis ?? '').trim();
+      const decision = String(source.decision ?? '').trim();
+
+      const parts = [];
+      if (verdict) {
+        const verdictClass = ' verdict-' + escapeHtml(verdict);
+        parts.push('<div class="pipeline-readonly-meta">' +
+          '<span class="pill' + verdictClass + '">Вердикт: <strong>' + escapeHtml(formatVerdictRu(verdict)) + '</strong></span>' +
+          '</div>');
+      }
+      if (analysis) {
+        parts.push(renderPipelineProse(analysis));
+      }
+      if (decision) {
+        if (analysis) {
+          parts.push('<div class="pipeline-prose-divider"></div>');
+        }
+        parts.push(renderPipelineProse(decision));
+      }
+
+      return wrapDetailAccordion('Анализ и решение', parts.join(''), {
+        testid: options.testid ?? 'work-pipeline-panel',
+        dataWorkId: options.dataWorkId ?? source.id,
+        className: 'pipeline-readonly',
+        required: true,
+        defaultOpen: analysis !== '',
+      });
+    }
+
+    function renderUiReferencesPanel(payload) {
+      if (!payload || (payload.uiFacing !== true && (!payload.items || payload.items.length === 0))) {
+        return '';
+      }
+
+      const cards = (payload.items ?? []).map((entry) =>
+        '<figure class="ui-refs-card" data-testid="ui-ref-card">' +
+        '<a href="' + escapeHtml(entry.url) + '" target="_blank" rel="noopener">' +
+        '<img src="' + escapeHtml(entry.url) + '" alt="' + escapeHtml(entry.caption || entry.originalName || entry.file) + '" loading="lazy" />' +
+        '</a>' +
+        '<figcaption class="ui-refs-caption">' + escapeHtml(entry.caption || entry.originalName || entry.file) + '</figcaption>' +
+        '</figure>',
+      ).join('');
+
+      return '<section class="detail-section ui-refs-panel" data-testid="ui-refs-panel" data-work-id="' + escapeHtml(payload.workId) + '">' +
+        '<h3>UI-референсы</h3>' +
+        '<p class="muted">Скриншоты макетов и референсы интерфейса для этой задачи (хранятся в work/ui-references).</p>' +
+        (cards ? '<div class="ui-refs-grid">' + cards + '</div>' : '<p class="muted">Референсы ещё не прикреплены.</p>') +
+        '<div class="ui-refs-actions">' +
+        '<input type="file" accept="image/png,image/jpeg,image/webp,image/gif" data-testid="ui-ref-file-input" />' +
+        '<button type="button" data-action="ui-ref-pick" data-testid="ui-ref-pick">Прикрепить скрин</button>' +
+        '</div>' +
+        '</section>';
+    }
+
+    async function fetchUiReferencesSection(workId) {
+      const response = await fetch('/api/work-item/ui-refs?workId=' + encodeURIComponent(workId));
+      const payload = await response.json();
+      if (!response.ok || payload.ok === false) {
+        throw new Error(payload.message || payload.error || ('HTTP ' + response.status));
+      }
+      return renderUiReferencesPanel(payload);
+    }
+
+    function bindUiReferenceActions(item) {
+      const panel = detailBody.querySelector('[data-testid="ui-refs-panel"]');
+      if (!panel) return;
+
+      const fileInput = panel.querySelector('[data-testid="ui-ref-file-input"]');
+      const pickButton = panel.querySelector('[data-action="ui-ref-pick"]');
+      if (!fileInput || !pickButton) return;
+
+      pickButton.addEventListener('click', () => fileInput.click());
+
+      fileInput.addEventListener('change', async () => {
+        const file = fileInput.files?.[0];
+        if (!file) return;
+
+        pickButton.disabled = true;
+        try {
+          const buffer = await file.arrayBuffer();
+          const bytes = new Uint8Array(buffer);
+          let binary = '';
+          for (let index = 0; index < bytes.length; index += 1) {
+            binary += String.fromCharCode(bytes[index]);
+          }
+          const contentBase64 = btoa(binary);
+          const uploadResponse = await fetch('/api/work-item/ui-refs/upload', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({
+              workId: item.id,
+              filename: file.name,
+              contentBase64,
+              caption: file.name,
+            }),
+          });
+          const uploadPayload = await uploadResponse.json();
+          if (!uploadResponse.ok || uploadPayload.ok === false) {
+            throw new Error(uploadPayload.message || uploadPayload.error || ('HTTP ' + uploadResponse.status));
+          }
+          await reloadOperatorSnapshots();
+          await renderTaskDetailContent(item, { parentContext: detailContext?.parent ?? null, mode: detailInspectorState.mode ?? 'view' });
+        } catch (error) {
+          window.alert(error.message || String(error));
+        } finally {
+          pickButton.disabled = false;
+          fileInput.value = '';
+        }
+      });
+    }
+
+    function openMemoryPanelForTask(workId) {
+      const normalizedWorkId = String(workId ?? '').trim();
+      if (normalizedWorkId === '') {
+        return;
+      }
+
+      activeView = 'memory';
+      localStorage.setItem('iohasc.workgraph.activeView', activeView);
+      search.value = 'work:' + normalizedWorkId;
+      setActiveView('memory');
+      ensureViewData('memory').then(() => {
+        renderMemoryPanel();
+      }).catch((error) => {
+        console.error(error);
+      });
+    }
+
+    async function fetchEvidenceTimelineSection(workId) {
+      const response = await fetch('/api/evidence-timeline?workId=' + encodeURIComponent(workId));
+      const payload = await response.json();
+      if (!response.ok) {
+        throw new Error(payload.message || payload.error || ('HTTP ' + response.status));
+      }
+
+      const events = payload.events ?? [];
+      const rows = events.length
+        ? events.map((event) =>
+          '<li class="evidence-timeline-item" data-testid="evidence-timeline-item">' +
+          '<span class="evidence-timeline-kind">' + escapeHtml(event.kind) + ' · ' + escapeHtml(event.title || '') + '</span>' +
+          (event.time ? '<time datetime="' + escapeHtml(event.time) + '">' + escapeHtml(event.time) + '</time>' : '<time>legacy order #' + escapeHtml(String(event.sequence ?? '')) + '</time>') +
+          '<p class="evidence-timeline-summary">' + escapeHtml(event.summary || '') + '</p>' +
+          '</li>',
+        ).join('')
+        : '<li class="evidence-timeline-item"><p class="evidence-timeline-summary">События evidence/transitions не найдены.</p></li>';
+
+      return '<section class="detail-section evidence-timeline-panel" data-testid="evidence-timeline-panel">' +
+        '<h3>Evidence timeline</h3>' +
+        '<ol class="evidence-timeline-list">' + rows + '</ol>' +
+        '</section>';
+    }
+
+    function openTaskDetails(itemOrId, { parentContext = null, mode = 'view' } = {}) {
+      let item = itemOrId;
+      if (typeof itemOrId === 'string') {
+        const lookupId = itemOrId.trim();
+        if (!lookupId) return;
+        const found = (snapshot?.items ?? []).find((candidate) => candidate.id === lookupId);
+        if (!found) {
+          // Snapshot not loaded yet — defer lookup so the drawer never opens with empty fields.
+          ensureWorkSnapshotLoaded().then((loaded) => {
+            const resolved = (loaded?.items ?? []).find((candidate) => candidate.id === lookupId);
+            if (resolved) openTaskDetails(resolved, { parentContext, mode });
+          }).catch(() => undefined);
+          return;
+        }
+        item = found;
+      }
+      if (!item || typeof item !== 'object' || !item.id) {
+        return;
+      }
+      detailContext = { type: 'task', taskId: item.id, parent: parentContext };
+      detailTitle.textContent = item.title || item.id;
+      detailId.textContent = item.id;
+      detailInspectorState = { workId: item.id, draft: null, mode };
+      renderTaskDetailContent(item, { parentContext, mode }).catch((error) => {
+        detailBody.innerHTML = '<div class="error">' + escapeHtml(error.message) + '</div>';
+      });
+      openDetailDrawer();
+      detailClose.focus();
+    }
+
+    async function renderTaskDetailContent(item, { parentContext = null, mode = 'view' } = {}) {
+      let backRow = '';
+      let backHandler = null;
+      if (parentContext?.type === 'block') {
+        const block = architectureSnapshot?.blocks?.find((candidate) => candidate.id === parentContext.blockId);
+        backRow = renderDetailBackButton('← ' + (block?.title || block?.id || 'Блок'));
+        backHandler = () => {
+          if (block) openBlockDetails(block, { resetNav: false });
+        };
+      } else if (parentContext?.type === 'analytics') {
+        const record = (analyticsProjection?.records ?? []).find((candidate) => candidate.id === parentContext.recordId);
+        backRow = renderDetailBackButton('← ' + (record?.key || record?.title || 'Аналитика'));
+        backHandler = () => {
+          if (record) openAnalyticsRecordDetails(record);
+        };
+      }
+
+      if (mode === 'edit') {
+        const response = await fetch('/api/atom-inspector/draft?workId=' + encodeURIComponent(item.id));
+        const payload = await response.json();
+        if (!response.ok) {
+          throw new Error(payload.message || payload.error || ('HTTP ' + response.status));
+        }
+        detailInspectorState.draft = payload.draft;
+        detailBody.innerHTML = backRow +
+          renderDetailToolbar('edit') +
+          renderAtomInspectorForm(payload) +
+          '<pre id="atom-inspector-preview" class="atom-inspector-preview" data-testid="atom-inspector-preview"></pre>' +
+          '<pre id="atom-inspector-errors" class="atom-inspector-errors" data-testid="atom-inspector-errors" hidden></pre>';
+      } else {
+        const linkageFallback = (error) =>
+          '<section class="detail-section linkage-drilldown-panel" data-testid="linkage-drilldown-panel">' +
+          '<h3>Trace связи</h3><p class="error">' + escapeHtml(error.message) + '</p></section>';
+        const pvrgFallback = (error) =>
+          '<section class="detail-section pvrg-scope-panel" data-testid="pvrg-task-scope-panel">' +
+          '<h3>PVRG область</h3><p class="error">' + escapeHtml(error.message) + '</p></section>';
+
+        const [linkageSection, pvrgSection, timelineSection, uiRefsSection] = await Promise.all([
+          fetchLinkageDrilldownSection(item.id).catch((error) => linkageFallback(error)),
+          fetchPvrgTaskScopeSection(item.id).catch((error) => pvrgFallback(error)),
+          fetchEvidenceTimelineSection(item.id).catch((error) =>
+            '<section class="detail-section evidence-timeline-panel" data-testid="evidence-timeline-panel">' +
+            '<h3>Evidence timeline</h3><p class="error">' + escapeHtml(error.message) + '</p></section>',
+          ),
+          fetchUiReferencesSection(item.id).catch((error) =>
+            '<section class="detail-section ui-refs-panel" data-testid="ui-refs-panel">' +
+            '<h3>UI-референсы</h3><p class="error">' + escapeHtml(error.message) + '</p></section>',
+          ),
+        ]);
+
+        detailBody.innerHTML = backRow +
+          renderDetailToolbar('view') +
+          buildTaskDetailSections(item) +
+          wrapDetailAccordion('UI-референсы', uiRefsSection, { testid: 'ui-refs-accordion' }) +
+          wrapDetailAccordion('Evidence timeline', timelineSection, { testid: 'evidence-timeline-accordion' }) +
+          wrapDetailAccordion('Trace связи', linkageSection, { testid: 'linkage-drilldown-accordion' }) +
+          wrapDetailAccordion('PVRG область', pvrgSection, { testid: 'pvrg-task-scope-accordion' }) +
+          renderDetailPromoteRow(item);
+      }
+
+      if (backHandler) bindDetailNavBack(backHandler);
+      bindDetailToolbar(item);
+      bindUiReferenceActions(item);
+      detailBody.querySelectorAll('[data-action="open-memory-for-task"]').forEach((button) => {
+        button.addEventListener('click', () => {
+          openMemoryPanelForTask(button.dataset.workId);
+        });
+      });
+    }
+
+    function renderDetailToolbar(mode) {
+      return '<div class="detail-toolbar" data-testid="detail-toolbar">' +
+        renderClientUiButton({
+          label: 'Просмотр',
+          variant: mode === 'view' ? 'primary' : 'secondary',
+          size: 'sm',
+          testId: 'detail-mode-view',
+          attrs: { 'data-detail-mode': 'view' },
+        }) +
+        renderClientUiButton({
+          label: 'Редактор',
+          variant: mode === 'edit' ? 'primary' : 'secondary',
+          size: 'sm',
+          testId: 'detail-mode-edit',
+          attrs: { 'data-detail-mode': 'edit' },
+        }) +
+        '</div>';
+    }
+
+    function bindDetailToolbar(item) {
+      detailBody.querySelectorAll('[data-detail-mode]').forEach((button) => {
+        button.addEventListener('click', () => {
+          const mode = button.dataset.detailMode === 'edit' ? 'edit' : 'view';
+          detailInspectorState.mode = mode;
+          renderTaskDetailContent(item, { parentContext: detailContext?.parent ?? null, mode }).catch((error) => {
+            detailBody.innerHTML = '<div class="error">' + escapeHtml(error.message) + '</div>';
+          });
+        }, { once: true });
+      });
+
+      const proposeButton = detailBody.querySelector('[data-action="proposal"]');
+      const applyButton = detailBody.querySelector('[data-action="apply"]');
+      if (proposeButton) {
+        proposeButton.addEventListener('click', () => submitAtomInspectorProposal(item.id));
+      }
+      if (applyButton) {
+        applyButton.addEventListener('click', () => submitAtomInspectorApply(item.id));
+      }
+    }
+
+    function renderAtomInspectorForm(payload) {
+      const draft = payload.draft ?? {};
+      const labels = draft.labels ?? {};
+      const statusOptions = workItemStatusOptions.map((status) =>
+        '<option value="' + escapeHtml(status) + '"' + (labels['work.status'] === status ? ' selected' : '') + '>' + escapeHtml(status) + '</option>'
+      ).join('');
+
+      return '<form id="atom-inspector-form" class="atom-inspector-form" data-testid="atom-inspector-form">' +
+        '<div class="atom-inspector-field"><label>Atom name</label><input name="name" value="' + escapeHtml(draft.name ?? '') + '" readonly></div>' +
+        '<div class="atom-inspector-field"><label>Базис</label><textarea name="basis">' + escapeHtml((draft.basis ?? []).join('\\n')) + '</textarea></div>' +
+        '<div class="atom-inspector-field"><label>Вектор</label><textarea name="vector">' + escapeHtml((draft.vector ?? []).join('\\n')) + '</textarea></div>' +
+        '<div class="atom-inspector-field"><label>Цель</label><textarea name="goal">' + escapeHtml((draft.goal ?? []).join('\\n')) + '</textarea></div>' +
+        '<div class="atom-inspector-field"><label>work.status</label><select name="work.status">' + statusOptions + '</select></div>' +
+        '<div class="atom-inspector-field"><label>work.owner_role</label><input name="work.owner_role" value="' + escapeHtml(labels['work.owner_role'] ?? '') + '"></div>' +
+        '<div class="atom-inspector-field"><label>work.department</label><input name="work.department" value="' + escapeHtml(labels['work.department'] ?? '') + '"></div>' +
+        '<div class="atom-inspector-field"><label>work.priority</label><input name="work.priority" value="' + escapeHtml(labels['work.priority'] ?? '') + '"></div>' +
+        '<div class="atom-inspector-field"><label>work.risk</label><input name="work.risk" value="' + escapeHtml(labels['work.risk'] ?? '') + '"></div>' +
+        '<div class="atom-inspector-field"><label>work.next_action</label><input name="work.next_action" value="' + escapeHtml(labels['work.next_action'] ?? '') + '"></div>' +
+        '<div class="atom-inspector-field"><label>work.blocker</label><input name="work.blocker" value="' + escapeHtml(labels['work.blocker'] ?? '') + '"></div>' +
+        '<div class="atom-inspector-field"><label>work.depends_on</label><input name="work.depends_on" value="' + escapeHtml(labels['work.depends_on'] ?? '') + '"></div>' +
+        '<div class="atom-inspector-field"><label>work.target_files</label><input name="work.target_files" value="' + escapeHtml(labels['work.target_files'] ?? '') + '"></div>' +
+        '<div class="atom-inspector-field"><label>Проверки</label><textarea name="checks">' + escapeHtml((draft.checks ?? []).join('\\n')) + '</textarea></div>' +
+        '<div class="atom-inspector-field"><label>Свидетельства</label><textarea name="evidence">' + escapeHtml((draft.evidence ?? []).join('\\n')) + '</textarea></div>' +
+        '<div class="atom-inspector-actions">' +
+          '<button type="button" data-action="proposal" data-testid="atom-inspector-propose">Preview proposal</button>' +
+          '<button type="button" data-action="apply" data-testid="atom-inspector-apply">Apply to backlog</button>' +
+        '</div>' +
+        '</form>';
+    }
+
+    function collectAtomInspectorDraftFromForm(workId) {
+      const form = document.querySelector('#atom-inspector-form');
+      if (!form || !detailInspectorState.draft) {
+        throw new Error('atom inspector form is not loaded');
+      }
+
+      const labels = { ...(detailInspectorState.draft.labels ?? {}) };
+      for (const element of form.querySelectorAll('[name^="work."]')) {
+        labels[element.name] = element.value.trim();
+      }
+      labels['work.id'] = workId;
+      labels['atom.profile'] = 'work_item';
+
+      const draft = {
+        profile: 'work_item',
+        name: detailInspectorState.draft.name,
+        basis: splitInspectorLines(form.elements.basis.value),
+        vector: splitInspectorLines(form.elements.vector.value),
+        goal: splitInspectorLines(form.elements.goal.value),
+        labels,
+      };
+
+      const checks = splitInspectorLines(form.elements.checks.value);
+      const evidence = splitInspectorLines(form.elements.evidence.value);
+      if (checks.length > 0) draft.checks = checks;
+      if (evidence.length > 0) draft.evidence = evidence;
+
+      return draft;
+    }
+
+    function splitInspectorLines(value) {
+      return String(value ?? '')
+        .split(/\\r?\\n/u)
+        .map((line) => line.replace(/^-\\s*/u, '').trim())
+        .filter(Boolean);
+    }
+
+    async function submitAtomInspectorProposal(workId) {
+      const preview = document.querySelector('#atom-inspector-preview');
+      const errors = document.querySelector('#atom-inspector-errors');
+      if (!preview || !errors) return;
+
+      try {
+        const draft = collectAtomInspectorDraftFromForm(workId);
+        const response = await fetch('/api/atom-inspector/proposal', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ workId, draft }),
+        });
+        const payload = await response.json();
+
+        if (!payload.ok) {
+          errors.hidden = false;
+          errors.textContent = (payload.validationErrors ?? []).join('\\n') || payload.error || 'validation failed';
+          preview.textContent = '';
+          return;
+        }
+
+        errors.hidden = true;
+        errors.textContent = '';
+        preview.textContent = JSON.stringify(payload, null, 2);
+        detailInspectorState.draft = payload.draft;
+      } catch (error) {
+        errors.hidden = false;
+        errors.textContent = error.message;
+      }
+    }
+
+    async function submitAtomInspectorApply(workId) {
+      const errors = document.querySelector('#atom-inspector-errors');
+      try {
+        const draft = collectAtomInspectorDraftFromForm(workId);
+        const response = await fetch('/api/atom-inspector/apply', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ workId, draft }),
+        });
+        const payload = await response.json();
+
+        if (!response.ok || !payload.ok) {
+          const proposalErrors = payload.proposal?.validationErrors ?? [];
+          throw new Error(proposalErrors.join('; ') || payload.error || 'apply failed');
+        }
+
+        await reloadOperatorSnapshots();
+        render();
+        const updated = snapshot.items.find((item) => item.id === workId);
+        if (updated) {
+          openTaskDetails(updated, { parentContext: detailContext?.parent ?? null, mode: 'view' });
+        }
+      } catch (error) {
+        if (errors) {
+          errors.hidden = false;
+          errors.textContent = error.message;
+        }
+      }
+    }
+
+    function closeTaskDetails() {
+      closeL2NodeDetails();
+      detailDrawer.classList.remove('is-open');
+      detailOverlay.classList.remove('is-open');
+      detailDrawer.setAttribute('aria-hidden', 'true');
+      detailOverlay.setAttribute('aria-hidden', 'true');
+      detailOverlay.hidden = true;
+      document.documentElement.classList.remove('detail-drawer-open');
+      document.body.classList.remove('detail-drawer-open');
+      detailContext = null;
+    }
+
+    function renderDetailText(title, value) {
+      if (!value) return '';
+      return '<section class="detail-section"><h3>' + escapeHtml(title) + '</h3><p>' + renderInlineCode(value) + '</p></section>';
+    }
+
+    function renderDetailList(title, values) {
+      if (!Array.isArray(values) || values.length === 0) return '';
+      return '<section class="detail-section"><h3>' + escapeHtml(title) + '</h3><ul>' +
+        values.map((value) => '<li>' + escapeHtml(value) + '</li>').join('') +
+        '</ul></section>';
+    }
+
+    function renderPvrgTaskScopeSection(slice) {
+      if (!slice || slice.schema !== 'pvrg.task-scope.slice.v1') {
+        return '<section class="detail-section pvrg-scope-panel" data-testid="pvrg-task-scope-panel">' +
+          '<h3>PVRG область</h3><p class="empty">Нет данных subgraph</p></section>';
+      }
+
+      const nodeRows = (slice.nodes ?? []).map((node) => {
+        if (node.kind === 'work') {
+          return '<li><span class="pvrg-node-kind">work</span> <strong>' + escapeHtml(node.id) + '</strong>' +
+            (node.title ? ' — ' + escapeHtml(node.title) : '') +
+            (node.status ? ' <span class="muted">(' + escapeHtml(node.status) + ')</span>' : '') +
+            '</li>';
+        }
+
+        return '<li><span class="pvrg-node-kind">file</span> <code>' + escapeHtml(node.path || node.id) + '</code></li>';
+      }).join('');
+
+      const edgeRows = (slice.edges ?? []).slice(0, 48).map((edge) =>
+        '<li>' + escapeHtml(edge.from.kind + ':' + edge.from.id) +
+        ' <span class="pvrg-edge-rel">' + escapeHtml(edge.relation) + '</span> → ' +
+        escapeHtml(edge.to.kind + ':' + edge.to.id) + '</li>',
+      ).join('');
+
+      const truncatedNote = slice.truncated
+        ? '<p class="muted">Subgraph обрезан лимитом (' + slice.nodeCount + ' узлов).</p>'
+        : '';
+
+      return '<section class="detail-section pvrg-scope-panel" data-testid="pvrg-task-scope-panel">' +
+        '<h3>PVRG область</h3>' +
+        '<p class="muted">' + slice.nodeCount + ' узлов, ' + slice.edgeCount + ' рёбер</p>' +
+        truncatedNote +
+        '<h4>Узлы</h4><ul class="pvrg-node-list">' + (nodeRows || '<li class="empty">—</li>') + '</ul>' +
+        '<h4>Связи</h4><ul class="pvrg-edge-list">' + (edgeRows || '<li class="empty">—</li>') + '</ul>' +
+        '</section>';
+    }
+
+    async function fetchPvrgTaskScopeSection(workId) {
+      const response = await fetch('/api/pvrg-task-scope?workId=' + encodeURIComponent(workId));
+      const payload = await response.json();
+      if (!response.ok) {
+        throw new Error(payload.message || payload.error || ('HTTP ' + response.status));
+      }
+
+      return renderPvrgTaskScopeSection(payload);
+    }
+
+    function renderLinkageDrilldownSection(payload) {
+      if (!payload || payload.schema !== 'workgraph.work-item-linkage-drilldown.v1') {
+        return '<section class="detail-section linkage-drilldown-panel" data-testid="linkage-drilldown-panel">' +
+          '<h3>Trace связи</h3><p class="empty">Нет linkage refs</p></section>';
+      }
+
+      const refs = payload.refs ?? [];
+      if (refs.length === 0) {
+        return '<section class="detail-section linkage-drilldown-panel" data-testid="linkage-drilldown-panel">' +
+          '<h3>Trace связи</h3><p class="empty">Нет linkage refs для этой задачи</p></section>';
+      }
+
+      const refRows = refs.map((entry) =>
+        '<li><span class="linkage-ref-kind">' + escapeHtml(entry.kind) + '</span>' +
+        '<button type="button" class="linkage-ref-button" data-linkage-kind="' + escapeHtml(entry.kind) + '" data-linkage-ref="' + escapeHtml(entry.ref) + '" data-testid="linkage-ref">' +
+        escapeHtml(entry.label) + '</button>' +
+        (entry.source ? '<span class="muted">' + escapeHtml(entry.source) + '</span>' : '') +
+        '</li>',
+      ).join('');
+
+      const truncatedNote = payload.truncated
+        ? '<p class="muted">Показано ' + payload.refCount + ' refs из ' + payload.linkCount + ' links.</p>'
+        : '';
+
+      return '<section class="detail-section linkage-drilldown-panel" data-testid="linkage-drilldown-panel">' +
+        '<h3>Trace связи</h3>' +
+        '<p class="muted">' + payload.refCount + ' refs, trace.status=' + escapeHtml(payload.envelope?.traceStatus ?? 'pending') + '</p>' +
+        truncatedNote +
+        '<ul class="linkage-ref-list">' + refRows + '</ul>' +
+        '</section>';
+    }
+
+    async function fetchLinkageDrilldownSection(workId) {
+      const response = await fetch('/api/work-item-linkage?workId=' + encodeURIComponent(workId));
+      const payload = await response.json();
+      if (!response.ok) {
+        throw new Error(payload.message || payload.error || ('HTTP ' + response.status));
+      }
+
+      return renderLinkageDrilldownSection(payload);
+    }
+
+    function renderSemanticCore(item) {
+      if (!item.vector) return '';
+
+      return '<section class="semantic-core" aria-label="Семантическое ядро атома">' +
+        '<div class="semantic-line">' + escapeHtml(preview(item.vector)) + '</div>' +
+      '</section>';
+    }
+
+    function renderTags(item) {
+      return [
+        tag('статус', item.status, 'status'),
+        tag('роль', item.ownerRole, 'role'),
+        tag('отдел', item.department, 'department'),
+        tag('приоритет', item.priority, 'priority'),
+        tag('риск', item.risk, 'risk'),
+        tag('трасса', item.traceStatus, 'trace'),
+      ].filter(Boolean);
+    }
+
+    function renderDetailPromoteRow(item) {
+      const actions = [];
+      if (snapshot && isPromotableBacklogItem(snapshot.items, item)) {
+        actions.push(renderClientUiButton({
+          label: 'Сделать доступной агенту',
+          variant: 'soft',
+          size: 'sm',
+          className: 'detail-promote-button',
+          testId: 'detail-promote-ready',
+          attrs: { 'data-promote-task-id': item.id },
+        }));
+      }
+      if (!actions.length) {
+        return '';
+      }
+
+      return '<div class="detail-promote-row">' +
+        actions.join('') +
+        '</div>';
+    }
+
+    function renderIssueFooter(item, { queueKind = null } = {}) {
+      const statusBadge = (item.status || queueKind)
+        ? renderStatusBadge(item.status, queueKind)
+        : '';
+      const leftTags = '<span class="id">' + escapeHtml(item.key || issueKey(item.id)) + '</span>' + statusBadge;
+      const owner = item.ownerRole || item.department || 'WG';
+      return '<div class="issue-footer">' +
+        '<div class="issue-footer-left">' + leftTags + '</div>' +
+        '<div class="issue-footer-right"><span class="owner-avatar" title="' + escapeHtml(owner) + '">' + escapeHtml(ownerInitials(owner)) + '</span></div>' +
+        '</div>';
+    }
+
+    function renderStatusBadge(status, queueKind = null) {
+      if (queueKind === 'planned') {
+        return renderClientUiBadge({
+          label: 'в плане',
+          tone: 'accent',
+          title: 'backlog, зависимости выполнены',
+          testId: 'status-planned',
+        });
+      }
+      if (!status) return '';
+      const normalized = normalizeCssToken(status);
+      return renderClientUiBadge({
+        label: statusLabel(status),
+        tone: statusToBadgeTone(status, queueKind),
+        title: String(status),
+        testId: 'status-' + normalized,
+      });
+    }
+
+    function compactTag(value, classPrefix) {
+      if (!value) return '';
+      const normalized = normalizeCssToken(value);
+      return '<span class="tag tag-compact ' + classPrefix + '-' + normalized + '">' + escapeHtml(value) + '</span>';
+    }
+
+    function tag(label, value, classPrefix) {
+      if (!value) return '';
+      const normalized = normalizeCssToken(value);
+      return '<span class="tag ' + classPrefix + '-' + normalized + '">' + escapeHtml(label + ': ' + value) + '</span>';
+    }
+
+    function normalizeCssToken(value) {
+      return String(value).toLowerCase().replace(/[^a-z0-9_-]/g, '-');
+    }
+
+    function renderList(title, values) {
+      if (!Array.isArray(values) || values.length === 0) return '';
+      return '<details><summary>' + escapeHtml(title) + ' (' + values.length + ')</summary><ul>' +
+        values.map((value) => '<li>' + escapeHtml(value) + '</li>').join('') +
+        '</ul></details>';
+    }
+
+    function matchesQuery(item, query) {
+      if (!query) return true;
+      const haystack = [
+        item.id,
+        item.title,
+        item.status,
+        item.ownerRole,
+        item.department,
+        item.priority,
+        item.risk,
+        item.traceStatus,
+        item.nextAction,
+        item.blocker,
+        ...(item.dependsOn || []),
+        ...(item.evidence || []),
+        ...(item.checks || []),
+        ...(item.targetFiles || []),
+        item.basis,
+        item.vector,
+        item.goal,
+      ].join(' ').toLowerCase();
+      return haystack.includes(query);
+    }
+
+    function preview(value) {
+      const normalized = String(value).replace(/\s+/g, ' ').trim();
+      return normalized.length > 110 ? normalized.slice(0, 107) + '...' : normalized;
+    }
+
+    function issueKey(id) {
+      const normalized = String(id || '').replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-|-$/g, '').toUpperCase();
+      return normalized || 'WG';
+    }
+
+    function ownerInitials(value) {
+      const words = String(value || 'WG').split(/[^a-zA-Zа-яА-Я0-9]+/).filter(Boolean);
+      const initials = words.slice(0, 2).map((word) => word[0]).join('').toUpperCase();
+      return initials || 'WG';
+    }
+
+    function countByStatus(items) {
+      return items.reduce((counts, item) => {
+        counts[item.status] = (counts[item.status] || 0) + 1;
+        return counts;
+      }, {});
+    }
+
+    function countGroupItems(counts, group) {
+      return group.statuses.reduce((sum, status) => sum + (counts[status] || 0), 0);
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+  </script>
+</body>
+</html>`;
+}
+
+export function createBacklogUiServer(options = {}) {
+  const hostState = createWorkGraphHostState(options);
+  const backlogPath = options.backlogPath;
+  const journalPath = options.journalPath ?? 'work/worker-runs.jsonl';
+  const auditPath = options.auditPath ?? 'work/daemon-audit.jsonl';
+  const pathOptions = { backlogPath, journalPath, auditPath };
+  let hostReady = ensureHostStateInitialized(hostState, {
+    hostLabel: options.hostLabel ?? 'Work Graph',
+  });
+
+  return createHttpServer(async (request, response) => {
+    await hostReady;
+    const url = new URL(request.url ?? '/', 'http://localhost');
+    const method = request.method ?? 'GET';
+    const requestCtx = resolveWorkGraphRequestContext(hostState, url, pathOptions);
+    const cwd = requestCtx.repoRoot;
+    const serverOptions = { cwd, backlogPath, journalPath, auditPath };
+
+    if (url.pathname === '/api/prompt-rules-projection' && method === 'GET') {
+      try {
+        const ruleId = url.searchParams.get('ruleId') ?? url.searchParams.get('id') ?? undefined;
+        const projection = await buildPromptRulesProjection({ cwd, ruleId });
+        sendJson(response, 200, projection);
+      } catch (error) {
+        sendJson(response, 500, {
+          error: 'failed_to_build_prompt_rules_projection',
+          message: error instanceof Error ? error.message : String(error),
+        });
+      }
+      return;
+    }
+
+    if (url.pathname === '/api/prompt-rules/source' && method === 'GET') {
+      try {
+        const ruleId = url.searchParams.get('ruleId') ?? url.searchParams.get('id') ?? '';
+        const payload = await executePromptRuleSourceRead({ cwd, ruleId });
+        sendJson(response, 200, payload);
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        const status = message.includes('not found') ? 404 : 500;
+        sendJson(response, status, {
+          error: status === 404 ? 'prompt_rule_not_found' : 'prompt_rule_source_failed',
+          message,
+        });
+      }
+      return;
+    }
+
+    if (url.pathname === '/api/prompt-rules/save' && method === 'POST') {
+      try {
+        const rawBody = await readRequestBody(request);
+        const saveResult = await executePromptRuleSourceSave({ cwd, body: rawBody });
+        sendJson(response, saveResult.ok ? 200 : 422, saveResult);
+      } catch (error) {
+        sendJson(response, 400, {
+          error: 'prompt_rule_save_failed',
+          message: error instanceof Error ? error.message : String(error),
+        });
+      }
+      return;
+    }
+
+    if (url.pathname === '/api/kanban-board-projection' && method === 'GET') {
+      try {
+        const items = await readWorkItemsFromRepo({ cwd, backlogPath });
+        sendJson(response, 200, buildKanbanBoardProjection(items, { includeItems: true }));
+      } catch (error) {
+        sendJson(response, 500, {
+          error: 'kanban_board_projection_failed',
+          message: error instanceof Error ? error.message : String(error),
+        });
+      }
+      return;
+    }
+
+    if (url.pathname === '/api/code-gap-projection' && method === 'GET') {
+      try {
+        const projection = await buildCodeGapOperatorProjection({ cwd });
+        sendJson(response, 200, projection);
+      } catch (error) {
+        sendJson(response, 500, {
+          error: 'failed_to_build_code_gap_projection',
+          message: error instanceof Error ? error.message : String(error),
+        });
+      }
+      return;
+    }
+
+    if (url.pathname === '/api/code-gap-intake/proposal' && method === 'POST') {
+      try {
+        const rawBody = await readRequestBody(request);
+        const proposal = await executeCodeGapDraftProposal({ ...serverOptions, body: rawBody });
+        sendJson(response, proposal.ok ? 200 : 422, proposal);
+      } catch (error) {
+        sendJson(response, 400, {
+          error: 'code_gap_intake_proposal_failed',
+          message: error instanceof Error ? error.message : String(error),
+        });
+      }
+      return;
+    }
+
+    if (url.pathname === '/api/code-gap-intake/apply' && method === 'POST') {
+      try {
+        const rawBody = await readRequestBody(request);
+        const applyResult = await executeCodeGapDraftApply({ ...serverOptions, body: rawBody });
+        sendJson(response, applyResult.ok ? 200 : 422, applyResult);
+      } catch (error) {
+        sendJson(response, 400, {
+          error: 'code_gap_intake_apply_failed',
+          message: error instanceof Error ? error.message : String(error),
+        });
+      }
+      return;
+    }
+
+    if (url.pathname === '/api/semantic-search' && method === 'GET') {
+      try {
+        const query = url.searchParams.get('q') ?? url.searchParams.get('query') ?? '';
+        const limitRaw = url.searchParams.get('limit');
+        const limit = limitRaw ? Number.parseInt(limitRaw, 10) : undefined;
+        const mode = url.searchParams.get('mode')?.trim() || undefined;
+        const snapshot = await readBacklogSnapshot({ cwd, backlogPath });
+        const result = await executeSemanticSearchFromRepo({
+          cwd,
+          query,
+          items: snapshot.items,
+          limit: Number.isInteger(limit) && limit > 0 ? limit : undefined,
+          ...(mode ? { mode } : {}),
+        });
+        sendJson(response, 200, result);
+      } catch (error) {
+        sendJson(response, 500, {
+          error: 'semantic_search_failed',
+          message: error instanceof Error ? error.message : String(error),
+        });
+      }
+      return;
+    }
+
+    if (url.pathname === '/api/epic-scope' && method === 'GET') {
+      try {
+        const epicId = url.searchParams.get('epicId') ?? url.searchParams.get('workId') ?? '';
+        if (!epicId) {
+          sendJson(response, 400, {
+            error: 'epic_id_required',
+            message: 'epicId query parameter is required',
+          });
+          return;
+        }
+
+        const items = await readWorkItemsFromRepo({ cwd, backlogPath });
+        const slice = buildEpicWorkScopeSlice(items, epicId);
+        sendJson(response, 200, slice);
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        const status = message.startsWith('unknown epic id:') || message.startsWith('work item is not an epic:')
+          ? 404
+          : 500;
+        sendJson(response, status, {
+          error: status === 404 ? 'unknown_epic_id' : 'epic_scope_failed',
+          message,
+        });
+      }
+      return;
+    }
+
+    if (url.pathname === '/api/pvrg-task-scope' && method === 'GET') {
+      try {
+        const workId = url.searchParams.get('workId') ?? url.searchParams.get('taskId') ?? '';
+        if (!workId) {
+          sendJson(response, 400, {
+            error: 'work_id_required',
+            message: 'workId query parameter is required',
+          });
+          return;
+        }
+
+        const maxNodesRaw = url.searchParams.get('maxNodes');
+        const maxDepthRaw = url.searchParams.get('maxDepth');
+        const scopeOptions = {};
+        if (maxNodesRaw) {
+          const maxNodes = Number.parseInt(maxNodesRaw, 10);
+          if (Number.isInteger(maxNodes) && maxNodes > 0) {
+            scopeOptions.maxNodes = maxNodes;
+          }
+        }
+        if (maxDepthRaw) {
+          const maxDepth = Number.parseInt(maxDepthRaw, 10);
+          if (Number.isInteger(maxDepth) && maxDepth >= 0) {
+            scopeOptions.maxDepth = maxDepth;
+          }
+        }
+
+        const items = await readWorkItemsFromRepo({ cwd, backlogPath });
+        const slice = buildPvrgTaskScopeSlice(items, workId, scopeOptions);
+        sendJson(response, 200, slice);
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        const status = message.startsWith('unknown task id:') ? 404 : 500;
+        sendJson(response, status, {
+          error: status === 404 ? 'unknown_work_id' : 'pvrg_task_scope_failed',
+          message,
+        });
+      }
+      return;
+    }
+
+    if (url.pathname === '/api/work-item-linkage' && method === 'GET') {
+      try {
+        const workId = url.searchParams.get('workId') ?? url.searchParams.get('taskId') ?? '';
+        if (!workId) {
+          sendJson(response, 400, {
+            error: 'work_id_required',
+            message: 'workId query parameter is required',
+          });
+          return;
+        }
+
+        const items = await readWorkItemsFromRepo({ cwd, backlogPath });
+        const drilldown = buildWorkItemLinkageDrilldown(workId, items);
+        sendJson(response, 200, drilldown);
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        const status = message.startsWith('unknown task id:') ? 404 : 500;
+        sendJson(response, status, {
+          error: status === 404 ? 'unknown_work_id' : 'work_item_linkage_failed',
+          message,
+        });
+      }
+      return;
+    }
+
+    if (url.pathname === '/api/daemon-audit-tail' && method === 'GET') {
+      try {
+        const limitRaw = url.searchParams.get('limit');
+        const limit = limitRaw ? Number.parseInt(limitRaw, 10) : undefined;
+        const tail = await readDaemonAuditTailResponse({
+          cwd,
+          auditPath,
+          ...(Number.isInteger(limit) && limit > 0 ? { limit } : {}),
+        });
+        sendJson(response, 200, tail);
+      } catch (error) {
+        sendJson(response, 500, {
+          error: 'daemon_audit_tail_failed',
+          message: error instanceof Error ? error.message : String(error),
+        });
+      }
+      return;
+    }
+
+    if (url.pathname === '/api/memory-projection' && method === 'GET') {
+      try {
+        const projection = await buildMemoryPanelProjection({ cwd, backlogPath });
+        sendJson(response, 200, projection);
+      } catch (error) {
+        sendJson(response, 500, {
+          error: 'failed_to_build_memory_projection',
+          message: error instanceof Error ? error.message : String(error),
+        });
+      }
+      return;
+    }
+
+    if (url.pathname === '/api/memory-records' && method === 'GET') {
+      try {
+        const workId = url.searchParams.get('workId') ?? url.searchParams.get('work_id') ?? undefined;
+        const limitParam = url.searchParams.get('limit');
+        const limit = limitParam ? Number.parseInt(limitParam, 10) : undefined;
+        const payload = await buildMemoryRecordsApiResponse({
+          cwd,
+          backlogPath,
+          ...(workId ? { workId } : {}),
+          ...(Number.isInteger(limit) && limit > 0 ? { limit } : {}),
+        });
+        sendJson(response, 200, payload);
+      } catch (error) {
+        sendJson(response, 500, {
+          error: 'failed_to_build_memory_records',
+          message: error instanceof Error ? error.message : String(error),
+        });
+      }
+      return;
+    }
+
+    if (url.pathname === '/api/analytics-projection' && method === 'GET') {
+      try {
+        const projection = await buildAnalyticsPanelProjection({ cwd, backlogPath });
+        sendJson(response, 200, projection);
+      } catch (error) {
+        sendJson(response, 500, {
+          error: 'failed_to_build_analytics_projection',
+          message: error instanceof Error ? error.message : String(error),
+        });
+      }
+      return;
+    }
+
+    if (url.pathname === '/api/analytics-records' && method === 'GET') {
+      try {
+        const topic = url.searchParams.get('topic') ?? undefined;
+        const limitParam = url.searchParams.get('limit');
+        const limit = limitParam ? Number.parseInt(limitParam, 10) : undefined;
+        const payload = await buildAnalyticsRecordsApiResponse({
+          cwd,
+          ...(topic ? { topic } : {}),
+          ...(Number.isInteger(limit) && limit > 0 ? { limit } : {}),
+        });
+        sendJson(response, 200, payload);
+      } catch (error) {
+        sendJson(response, 500, {
+          error: 'failed_to_build_analytics_records',
+          message: error instanceof Error ? error.message : String(error),
+        });
+      }
+      return;
+    }
+
+    if (url.pathname === '/api/evidence-timeline' && method === 'GET') {
+      try {
+        const workId = url.searchParams.get('workId') ?? url.searchParams.get('taskId') ?? '';
+        const timeline = await readEvidenceTimelineResponse({
+          cwd,
+          backlogPath,
+          workId,
+          journalPath: serverOptions.journalPath,
+        });
+        sendJson(response, 200, timeline);
+      } catch (error) {
+        sendJson(response, 400, {
+          error: 'failed_to_build_evidence_timeline',
+          message: error instanceof Error ? error.message : String(error),
+        });
+      }
+      return;
+    }
+
+    if (url.pathname === '/api/worker-provider-catalog' && method === 'GET') {
+      sendJson(response, 200, readWorkerProviderCatalogResponse());
+      return;
+    }
+
+    if (url.pathname === '/api/agent-run/journal' && method === 'GET') {
+      try {
+        const journal = await readAgentRunJournalResponse(serverOptions);
+        sendJson(response, 200, journal);
+      } catch (error) {
+        sendJson(response, 500, {
+          error: 'failed_to_read_agent_run_journal',
+          message: error instanceof Error ? error.message : String(error),
+        });
+      }
+      return;
+    }
+
+    if (url.pathname === '/api/work-item/promote-ready' && method === 'POST') {
+      try {
+        const rawBody = await readRequestBody(request);
+        const result = await executePromoteReady({ ...serverOptions, body: rawBody });
+        sendJson(response, result.ok ? 200 : 409, result);
+      } catch (error) {
+        sendJson(response, 400, {
+          error: 'promote_ready_failed',
+          message: error instanceof Error ? error.message : String(error),
+        });
+      }
+      return;
+    }
+
+    if (url.pathname === '/api/atom-inspector/draft' && method === 'GET') {
+      try {
+        const workId = url.searchParams.get('workId') ?? url.searchParams.get('taskId') ?? '';
+        const draftResponse = await readAtomInspectorDraftResponse({
+          ...serverOptions,
+          workId,
+        });
+        sendJson(response, 200, draftResponse);
+      } catch (error) {
+        sendJson(response, 400, {
+          error: 'atom_inspector_draft_failed',
+          message: error instanceof Error ? error.message : String(error),
+        });
+      }
+      return;
+    }
+
+    if (url.pathname === '/api/atom-inspector/proposal' && method === 'POST') {
+      try {
+        const rawBody = await readRequestBody(request);
+        const proposal = await executeAtomInspectorProposal({ ...serverOptions, body: rawBody });
+        sendJson(response, proposal.ok ? 200 : 422, proposal);
+      } catch (error) {
+        sendJson(response, 400, {
+          error: 'atom_inspector_proposal_failed',
+          message: error instanceof Error ? error.message : String(error),
+        });
+      }
+      return;
+    }
+
+    if (url.pathname === '/api/atom-inspector/apply' && method === 'POST') {
+      try {
+        const rawBody = await readRequestBody(request);
+        const applyResult = await executeAtomInspectorApply({ ...serverOptions, body: rawBody });
+        sendJson(response, applyResult.ok ? 200 : 422, applyResult);
+      } catch (error) {
+        sendJson(response, 400, {
+          error: 'atom_inspector_apply_failed',
+          message: error instanceof Error ? error.message : String(error),
+        });
+      }
+      return;
+    }
+
+    if (url.pathname === '/api/intent-composer/proposal' && method === 'POST') {
+      try {
+        const rawBody = await readRequestBody(request);
+        const proposal = await executeIntentComposerProposal({ ...serverOptions, body: rawBody });
+        sendJson(response, proposal.ok ? 200 : 422, proposal);
+      } catch (error) {
+        sendJson(response, 400, {
+          error: 'intent_composer_proposal_failed',
+          message: error instanceof Error ? error.message : String(error),
+        });
+      }
+      return;
+    }
+
+    if (url.pathname === '/api/intent-composer/apply' && method === 'POST') {
+      try {
+        const rawBody = await readRequestBody(request);
+        const applyResult = await executeIntentComposerApply({ ...serverOptions, body: rawBody });
+        sendJson(response, applyResult.ok ? 200 : 422, applyResult);
+      } catch (error) {
+        sendJson(response, 400, {
+          error: 'intent_composer_apply_failed',
+          message: error instanceof Error ? error.message : String(error),
+        });
+      }
+      return;
+    }
+
+    if (url.pathname === '/api/work-pipeline/view' && method === 'GET') {
+      try {
+        const workId = url.searchParams.get('workId') ?? '';
+        const items = await readWorkItemsFromRepo(serverOptions);
+        const item = items.find((entry) => entry.id === workId);
+        if (!item) {
+          sendJson(response, 404, { ok: false, error: 'work_item_not_found', workId });
+          return;
+        }
+        sendJson(response, 200, buildWorkItemPipelineView(item));
+      } catch (error) {
+        sendJson(response, 400, {
+          error: 'work_pipeline_view_failed',
+          message: error instanceof Error ? error.message : String(error),
+        });
+      }
+      return;
+    }
+
+    if (url.pathname === '/api/work-item/ui-refs/upload' && method === 'POST') {
+      try {
+        const rawBody = await readRequestBody(request);
+        const body = rawBody ? JSON.parse(rawBody) : {};
+        const result = await attachUiReference({ ...serverOptions, ...body, workId: body.workId });
+        sendJson(response, result.ok ? 200 : 422, result);
+      } catch (error) {
+        sendJson(response, 400, {
+          error: 'ui_ref_upload_failed',
+          message: error instanceof Error ? error.message : String(error),
+        });
+      }
+      return;
+    }
+
+    if (url.pathname === '/api/agent-run' && method === 'POST') {
+      try {
+        const rawBody = await readRequestBody(request);
+        const result = await executeAgentRun({ ...serverOptions, body: rawBody });
+        sendJson(response, 200, result);
+      } catch (error) {
+        sendJson(response, 400, {
+          error: 'agent_run_failed',
+          message: error instanceof Error ? error.message : String(error),
+        });
+      }
+      return;
+    }
+
+    if (url.pathname === '/api/workspaces' && method === 'GET') {
+      try {
+        sendJson(response, 200, await buildWorkspacesApiResponse(hostState));
+      } catch (error) {
+        sendJson(response, 500, {
+          error: 'failed_to_list_workspaces',
+          message: error instanceof Error ? error.message : String(error),
+        });
+      }
+      return;
+    }
+
+    if (url.pathname === '/api/workspace/switch' && method === 'POST') {
+      try {
+        const rawBody = await readRequestBody(request);
+        const body = rawBody ? JSON.parse(rawBody) : {};
+        const projectId = String(body.projectId ?? body.id ?? '').trim();
+        if (projectId === '') {
+          sendJson(response, 400, {
+            error: 'project_id_required',
+            message: 'projectId is required',
+          });
+          return;
+        }
+        sendJson(response, 200, await switchHostWorkspace(hostState, projectId));
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        const status = message.startsWith('unknown projectId:') ? 404 : 500;
+        sendJson(response, status, {
+          error: status === 404 ? 'workspace_not_found' : 'workspace_switch_failed',
+          message,
+        });
+      }
+      return;
+    }
+
+    if (url.pathname === '/api/workspace/register' && method === 'POST') {
+      try {
+        const rawBody = await readRequestBody(request);
+        const body = rawBody ? JSON.parse(rawBody) : {};
+        const root = String(body.root ?? body.path ?? '').trim();
+        if (root === '') {
+          sendJson(response, 400, {
+            error: 'root_required',
+            message: 'root is required',
+          });
+          return;
+        }
+        sendJson(response, 200, await registerHostWorkspace(hostState, body));
+      } catch (error) {
+        sendJson(response, 500, {
+          error: 'workspace_register_failed',
+          message: error instanceof Error ? error.message : String(error),
+        });
+      }
+      return;
+    }
+
+    if (method !== 'GET') {
+      sendText(response, 405, 'Method Not Allowed');
+      return;
+    }
+
+    if (url.pathname === '/api/work-item/ui-refs') {
+      try {
+        const workId = url.searchParams.get('workId') ?? '';
+        const result = await listUiReferences({ ...serverOptions, workId });
+        sendJson(response, result.ok ? 200 : 422, result);
+      } catch (error) {
+        sendJson(response, 400, {
+          error: 'ui_refs_list_failed',
+          message: error instanceof Error ? error.message : String(error),
+        });
+      }
+      return;
+    }
+
+    if (url.pathname === '/api/work-item/ui-refs/file') {
+      try {
+        const workId = url.searchParams.get('workId') ?? '';
+        const file = url.searchParams.get('file') ?? '';
+        const filePath = resolveUiReferenceFilePath(cwd, workId, file);
+        const buffer = await readFile(filePath);
+        sendBinary(response, 200, buffer, mimeTypeForUiReferenceFileName(file));
+      } catch (error) {
+        sendJson(response, 404, {
+          error: 'ui_ref_file_not_found',
+          message: error instanceof Error ? error.message : String(error),
+        });
+      }
+      return;
+    }
+
+    if (url.pathname === '/api/snapshot') {
+      try {
+        const snapshot = await readBacklogSnapshot({ cwd, backlogPath });
+        sendJson(response, 200, snapshot);
+      } catch (error) {
+        sendJson(response, 500, {
+          error: 'failed_to_read_backlog_snapshot',
+          message: error instanceof Error ? error.message : String(error),
+        });
+      }
+      return;
+    }
+
+    if (url.pathname === '/api/dashboard-snapshot') {
+      try {
+        const dashboardSnapshot = await readDashboardSnapshot({ cwd, backlogPath });
+        sendJson(response, 200, dashboardSnapshot);
+      } catch (error) {
+        sendJson(response, 500, {
+          error: 'failed_to_read_dashboard_snapshot',
+          message: error instanceof Error ? error.message : String(error),
+        });
+      }
+      return;
+    }
+
+    if (url.pathname === '/api/runner-queue-projection') {
+      try {
+        const projection = await readRunnerQueueProjectionFromRepo({ cwd, backlogPath });
+        sendJson(response, 200, projection);
+      } catch (error) {
+        sendJson(response, 500, {
+          error: 'failed_to_read_runner_queue_projection',
+          message: error instanceof Error ? error.message : String(error),
+        });
+      }
+      return;
+    }
+
+    if (url.pathname === '/api/operator-shell-snapshot') {
+      try {
+        const operatorShellSnapshot = await readOperatorShellSnapshot({
+          cwd,
+          backlogPath,
+          cycleId: url.searchParams.get('cycleId') || undefined,
+        });
+        sendJson(response, 200, operatorShellSnapshot);
+      } catch (error) {
+        sendJson(response, 500, {
+          error: 'failed_to_read_operator_shell_snapshot',
+          message: error instanceof Error ? error.message : String(error),
+        });
+      }
+      return;
+    }
+
+    if (url.pathname === '/api/home-snapshot' && method === 'GET') {
+      try {
+        const homeSnapshot = await handleHomeSnapshotRequest({
+          cwd,
+          backlogPath,
+          ownerRole: url.searchParams.get('ownerRole') || undefined,
+          cycleId: url.searchParams.get('cycleId') || undefined,
+        });
+        sendJson(response, 200, homeSnapshot);
+      } catch (error) {
+        sendJson(response, 500, {
+          error: 'failed_to_read_home_snapshot',
+          message: error instanceof Error ? error.message : String(error),
+        });
+      }
+      return;
+    }
+
+    if (url.pathname === '/api/inbox-events' && method === 'GET') {
+      try {
+        const inbox = await handleInboxEventsRequest({
+          cwd,
+          backlogPath,
+          limit: Number(url.searchParams.get('limit')) || 50,
+        });
+        sendJson(response, 200, inbox);
+      } catch (error) {
+        sendJson(response, 500, {
+          error: 'failed_to_read_inbox_events',
+          message: error instanceof Error ? error.message : String(error),
+        });
+      }
+      return;
+    }
+
+    if (url.pathname === '/api/inbox-events/read' && method === 'POST') {
+      try {
+        const rawBody = await readRequestBody(request);
+        const result = await handleInboxEventsReadRequest(rawBody, { cwd, backlogPath });
+        sendJson(response, 200, result);
+      } catch (error) {
+        sendJson(response, 500, {
+          error: 'failed_to_mark_inbox_read',
+          message: error instanceof Error ? error.message : String(error),
+        });
+      }
+      return;
+    }
+
+    if (url.pathname === '/api/intent-roadmap-projection' && method === 'GET') {
+      try {
+        const workItems = await readWorkItemsFromRepo({ cwd, backlogPath });
+        const intentNodes = await readIntentNodesFromRepo({ cwd });
+        const collapsed = url.searchParams.get('collapsed') ?? '';
+        const projection = buildIntentRoadmapProjection(intentNodes, workItems, { cwd, collapsed });
+        sendJson(response, 200, projection);
+      } catch (error) {
+        sendJson(response, 500, {
+          error: 'failed_to_build_intent_roadmap_projection',
+          message: error instanceof Error ? error.message : String(error),
+        });
+      }
+      return;
+    }
+
+    if (url.pathname === '/api/roadmap/epics' && method === 'GET') {
+      try {
+        const workItems = await readWorkItemsFromRepo({ cwd, backlogPath });
+        const collapsed = url.searchParams.get('collapsed') ?? '';
+        const active = url.searchParams.get('active') === '1' || url.searchParams.get('active') === 'true';
+        const withChildren = url.searchParams.get('withChildren') === '1' || url.searchParams.get('withChildren') === 'true';
+        const projection = buildEpicRoadmapProjection(workItems, {
+          cwd,
+          collapsed,
+          active,
+          withChildren,
+        });
+        sendJson(response, 200, projection);
+      } catch (error) {
+        sendJson(response, 500, {
+          error: 'failed_to_build_epic_roadmap_projection',
+          message: error instanceof Error ? error.message : String(error),
+        });
+      }
+      return;
+    }
+
+    if (url.pathname === '/api/architecture-snapshot') {
+      try {
+        const focusBlockId = url.searchParams.get('focusBlockId') || null;
+        const architectureSnapshot = await readArchitectureSnapshot({ cwd, backlogPath, focusBlockId });
+        sendJson(response, 200, architectureSnapshot);
+      } catch (error) {
+        sendJson(response, 500, {
+          error: 'failed_to_read_architecture_snapshot',
+          message: error instanceof Error ? error.message : String(error),
+        });
+      }
+      return;
+    }
+
+    if (url.pathname === '/vendor/mermaid.min.js' && method === 'GET') {
+      try {
+        const source = readFileSync(MERMAID_VENDOR_PATH);
+        response.writeHead(200, {
+          'content-type': 'application/javascript; charset=utf-8',
+          'cache-control': 'public, max-age=3600',
+        });
+        response.end(source);
+      } catch (error) {
+        sendText(response, 500, 'failed_to_load_mermaid_vendor');
+      }
+      return;
+    }
+
+    if (tryServePublicFontsAsset(url, response)) {
+      return;
+    }
+
+    if (url.pathname === '/favicon.ico' && method === 'GET') {
+      response.writeHead(204);
+      response.end();
+      return;
+    }
+
+    if (url.pathname === '/assets/workgraph-logo.svg' && method === 'GET') {
+      try {
+        const source = readFileSync(WORKGRAPH_LOGO_SVG_PATH);
+        response.writeHead(200, {
+          'content-type': 'image/svg+xml; charset=utf-8',
+          'cache-control': 'public, max-age=3600',
+        });
+        response.end(source);
+      } catch (error) {
+        sendText(response, 500, 'failed_to_load_workgraph_logo');
+      }
+      return;
+    }
+
+    if (url.pathname === '/assets/graph-canvas-lit-flow.js' && method === 'GET') {
+      try {
+        const source = readFileSync(GRAPH_CANVAS_LIT_FLOW_JS_PATH);
+        response.writeHead(200, {
+          'content-type': 'application/javascript; charset=utf-8',
+          'cache-control': 'public, max-age=3600',
+        });
+        response.end(source);
+      } catch (error) {
+        sendText(response, 500, 'failed_to_load_graph_canvas_lit_flow_js');
+      }
+      return;
+    }
+
+    if (url.pathname === '/assets/graph-canvas-lit-flow.css' && method === 'GET') {
+      try {
+        const source = readFileSync(GRAPH_CANVAS_LIT_FLOW_CSS_PATH);
+        response.writeHead(200, {
+          'content-type': 'text/css; charset=utf-8',
+          'cache-control': 'public, max-age=3600',
+        });
+        response.end(source);
+      } catch (error) {
+        sendText(response, 500, 'failed_to_load_graph_canvas_lit_flow_css');
+      }
+      return;
+    }
+
+    if (url.pathname === '/assets/design-tokens-gripe-dark-default.css' && method === 'GET') {
+      try {
+        const source = readFileSync(DESIGN_TOKENS_GRIPE_CSS_PATH);
+        response.writeHead(200, {
+          'content-type': 'text/css; charset=utf-8',
+          'cache-control': 'public, max-age=300',
+        });
+        response.end(source);
+      } catch (error) {
+        sendText(response, 500, 'failed_to_load_design_tokens_css');
+      }
+      return;
+    }
+
+    if (url.pathname === '/assets/design-tokens-workgraph-dark.css' && method === 'GET') {
+      try {
+        const source = readFileSync(DESIGN_TOKENS_WG_CSS_PATH);
+        response.writeHead(200, {
+          'content-type': 'text/css; charset=utf-8',
+          'cache-control': 'public, max-age=300',
+        });
+        response.end(source);
+      } catch (error) {
+        sendText(response, 500, 'failed_to_load_design_tokens_css');
+      }
+      return;
+    }
+
+    if (url.pathname === '/dev/ui-kit' && method === 'GET') {
+      sendHtml(response, 200, renderUiKitPageHtml());
+      return;
+    }
+
+    if (url.pathname === '/' || url.pathname === '/index.html') {
+      sendHtml(response, 200, renderBacklogHtml());
+      return;
+    }
+
+    sendText(response, 404, 'Not Found');
+  });
+}
+
+export async function startBacklogUiServer(options = {}) {
+  const host = options.host ?? process.env.WORKGRAPH_BACKLOG_UI_HOST ?? DEFAULT_HOST;
+  const port = Number(options.port ?? process.env.WORKGRAPH_BACKLOG_UI_PORT ?? DEFAULT_PORT);
+  const server = createBacklogUiServer(options);
+
+  await new Promise((resolveListen, rejectListen) => {
+    server.once('error', rejectListen);
+    server.listen(port, host, () => {
+      server.off('error', rejectListen);
+      resolveListen();
+    });
+  });
+
+  return { server, host, port };
+}
+
+function sendJson(response, statusCode, payload) {
+  response.writeHead(statusCode, {
+    'content-type': 'application/json; charset=utf-8',
+    'cache-control': 'no-store',
+  });
+  response.end(`${JSON.stringify(payload, null, 2)}\n`);
+}
+
+function sendHtml(response, statusCode, html) {
+  response.writeHead(statusCode, {
+    'content-type': 'text/html; charset=utf-8',
+    'cache-control': 'no-store',
+  });
+  response.end(html);
+}
+
+function sendText(response, statusCode, text) {
+  response.writeHead(statusCode, {
+    'content-type': 'text/plain; charset=utf-8',
+    'cache-control': 'no-store',
+  });
+  response.end(text);
+}
+
+function sendAsset(response, statusCode, text, contentType) {
+  response.writeHead(statusCode, {
+    'content-type': contentType,
+    'cache-control': 'public, max-age=3600',
+  });
+  response.end(text);
+}
+
+function sendBinary(response, statusCode, buffer, contentType) {
+  response.writeHead(statusCode, {
+    'content-type': contentType,
+    'cache-control': 'public, max-age=3600',
+    'content-length': buffer.length,
+  });
+  response.end(buffer);
+}
+
+async function readRequestBody(request) {
+  const chunks = [];
+
+  for await (const chunk of request) {
+    chunks.push(chunk);
+  }
+
+  if (chunks.length === 0) {
+    return '';
+  }
+
+  return Buffer.concat(chunks).toString('utf8');
+}
+
+if (process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  const { host, port } = await startBacklogUiServer();
+  console.log(`Work Graph backlog UI: http://${host}:${port}/`);
+}

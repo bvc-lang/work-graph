@@ -1,0 +1,58 @@
+#Задача_write_an24_closing_ux_mission_control_p0<[
+Базис:
+  Правило epic_closed_without_closing_analysis: эпик нельзя закрывать без AN.
+  AN-23 закрыл pipeline-canonization тем же шаблоном.
+Вектор:
+  work/analytics/closing-ux-mission-control-p0.md + запись в analytics-records.jsonl (AN-24).
+  Метрики до/после: clicks-to-run, time-to-first-action, % action через cmd+k.
+Цель:
+  Закрытие эпика с зафиксированными outcomes и метриками; основа для P1.
+Проверки:
+  analytics-records.jsonl содержит AN-24 запись
+  эпик ux-mission-control-p0 закрыт через close-script с verified evidence
+Анализ:
+  Целесообразность:
+  Стоит завести «AN-24 closing analysis: UX Mission Control P0 (post-done)» в бэклог — по материалам work/analytics/ux-current-state-and-vector.md.
+  Контекст и границы:
+  work/analytics/closing-ux-mission-control-p0.md + запись в analytics-records.jsonl (AN-24).
+  Зависимости и готовность:
+  depends_on=ux-mission-control-p0, add-home-mission-control-tests; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Закрытие эпика с зафиксированными outcomes и метриками; основа для P1.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма work/analytics/ux-current-state-and-vector.md; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Свидетельства:
+  - work/analytics/closing-epic-ux-mission-control-p0.md
+  - AN-24 in analytics-records.jsonl
+
+Метки:
+  atom.profile: work_item
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/ux-current-state-and-vector.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T12:01:47.125Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T12:01:47.125Z
+  work.decision.verdict: useful
+  work.department: ui-dashboard
+  work.depends_on: ux-mission-control-p0, add-home-mission-control-tests
+  work.id: write-an24-closing-ux-mission-control-p0
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: product_owner
+  work.parent_id: ux-mission-control-p0
+  work.pipeline_stage: closed
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: work/analytics/closing-ux-mission-control-p0.md, work/analytics-records.jsonl
+  work.title: AN-24 closing analysis: UX Mission Control P0 (post-done)
+]>

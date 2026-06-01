@@ -1,0 +1,23 @@
+#Протокол_Runner_Queue_UI_And_CLI_v1<[
+Базис:
+  workgraph.runner.queue.projection.v1 уже строится из backlog snapshot и worker-runs journal; operator shell v2 включает runnerQueue.
+  Operator UI и CLI должны экспортировать ту же projection без второго source of truth.
+Вектор:
+  API GET /api/runner-queue-projection возвращает projection JSON.
+  npm run queue:projection пишет work/runner-queue.projection.json; npm run queue:projection:sqlite опционально sync в work/runner-queue.sqlite.
+  Board view показывает runner-queue-strip (top rows) и dashboard card summary.
+Цель:
+  Dispatch view виден оператору и воспроизводим из CLI/CI artifacts.
+
+Проверки:
+  readRunnerQueueProjectionFromRepo совпадает с operatorShellSnapshot.runnerQueue rows
+  UI strip скрыт вне board view
+  export script exit 0 в deterministic окружении
+
+Метки:
+  atom.profile: architecture_decision
+  protocol.id: runner-queue-ui-cli-v1
+  decision.id: runner-queue-ui-cli-v1
+  work.source: design-runner-queue-ui-and-cli
+  trace.status: verified
+]>

@@ -1,0 +1,60 @@
+#Задача_run_first_non_author_golden_path<[
+Базис:
+  Источник: analytics:product-self-audit-user (AN-7) §9 — критерий завершения epic.
+  Это единственный gate, который доказывает продуктовую ценность.
+Вектор:
+  Pilot выполняет задачу: charter → work item → agent → code/конфигурация → trace → verified.
+  Pilot пишет 5 пунктов фидбека: что понятно, что мешало, что бы оставил, что бы выкинул.
+  Результат → retro analytics record AN-8.
+Цель:
+  Один verified work item, выполненный не-автором, с письменным фидбеком и retro-аналитикой.
+Анализ:
+  Целесообразность:
+  Стоит завести «провести pilot 1С-задачи через golden path и собрать evidence» в бэклог — по материалам AN-7 (analytics:product-self-audit-user).
+  Контекст и границы:
+  Pilot выполняет задачу: charter → work item → agent → code/конфигурация → trace → verified.
+  Зависимости и готовность:
+  depends_on=identify-first-1c-pilot-user, isolate-experimental-non-vertical; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Один verified work item, выполненный не-автором, с письменным фидбеком и retro-аналитикой.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-7 (analytics:product-self-audit-user); исполнять после вердикта «полезно» и готовности зависимостей.
+Проверки:
+  work item pilot-задачи в статусе verified с evidence
+  pilot-фидбек сохранён как work/analytics/pilot-1c-feedback-v1.md
+  AN-8 retro создан с выводами для следующей итерации
+
+Свидетельства:
+  - docs/golden-path-pilot-runbook.md — runbook for external pilot
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-7
+  intake.source_kind: analytics-record
+  intake.source_ref: analytics:product-self-audit-user
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T22:16:35.108Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-30T22:16:35.108Z
+  work.decision.verdict: useful
+  work.department: product
+  work.depends_on: identify-first-1c-pilot-user, isolate-experimental-non-vertical
+  work.id: run-first-non-author-golden-path
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: product_owner
+  work.parent_id: pivot-to-1c-onebase-vertical
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: high
+  work.status: done
+  work.target_files: work/analytics/pilot-1c-feedback-v1.md, work/analytics-records.jsonl
+  work.title: провести pilot 1С-задачи через golden path и собрать evidence
+]>

@@ -1,0 +1,51 @@
+#Задача_design_runner_queue_ui_and_cli<[
+Базис:
+  Runner queue projection v1 построена, но оператору нужен видимый dispatch слой и CLI export для CI/artifacts.
+  Задача «спроектировать runner queue ui and cli» относится к контуру Work Graph rebuild и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: implement-sqlite-runner-queue-projection.
+Вектор:
+  Добавить GET /api/runner-queue-projection, runner-queue-strip на board view, npm run queue:projection (+ optional sqlite sync).
+  readOperatorShellSnapshot передаёт workerRuns в runnerQueue projection.
+Цель:
+  Dispatch view воспроизводим из UI, API и CLI без второго источник истины.
+  Готово, когда выполнены проверки: API и CLI возвращают ту же projection schema.
+Анализ:
+  Целесообразность:
+  Стоит завести «спроектировать runner queue ui and cli» в бэклог.
+  Контекст и границы:
+  Добавить GET /api/runner-queue-projection, runner-queue-strip на board view, npm run queue:projection (+ optional sqlite sync).
+  Зависимости и готовность:
+  depends_on=implement-sqlite-runner-queue-projection; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Dispatch view воспроизводим из UI, API и CLI без второго источник истины.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441096
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:36.170Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:36.179Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: implement-sqlite-runner-queue-projection
+  work.id: design-runner-queue-ui-and-cli
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: frontend_architect
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: protocols/runner-queue-ui-cli-v1.bvc, scripts/export-runner-queue-projection.mjs, src/workGraphBacklogUiServer.mjs, src/workGraphRunnerQueueProjection.mjs, package.json, tests/workGraphBacklogUiServer.test.mjs, work/backlog.bvc
+  work.title: спроектировать runner queue ui and cli
+]>
+

@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "project-passport.v1",
+  "snapshotVersion": 1,
+  "generatedAt": "2026-05-29T12:00:00.000Z",
+  "sourceScenario": "workgraph-gfs-pilot-fixture",
+  "passportLogicalPath": ".iohasc/project-passport.v1.json",
+  "productIdentity": {
+    "name": "workgraph-gfs-pilot",
+    "purpose": "Minimal passport for GFS overlay pilot fallback tests."
+  }
+}

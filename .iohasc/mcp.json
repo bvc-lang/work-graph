@@ -1,0 +1,14 @@
+{
+  "servers": [
+    {
+      "id": "workgraph",
+      "command": "node",
+      "args": ["packages/workgraph-mcp/src/index.mjs"],
+      "cwd": "D:/Work/IDE/work graph",
+      "env": {
+        "WORKGRAPH_ROOT": "D:/Work/IDE/work graph"
+      },
+      "enabled": true
+    }
+  ]
+}

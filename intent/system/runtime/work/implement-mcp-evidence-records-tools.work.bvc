@@ -1,0 +1,61 @@
+#Задача_implement_mcp_evidence_records_tools<[
+Базис:
+  evidence-record-v1 (src/evidenceReadModel.mjs) включается в graph RAG slice как nodes, но отдельного MCP tool нет — Cursor не может опросить структурированный evidence без полного graph RAG.
+  AN-38 §3: третья из трёх дыр Cursor surface (после graph RAG и memory).
+Вектор:
+  server.tool list_evidence_records(filter?) + get_evidence_record(recordId) поверх buildEvidenceReadModelForTask.
+  Resource workgraph://evidence/records.
+  Тесты + README.
+Цель:
+  Cursor получает evidence-record-v1 как первичный канал — отдельно от graph RAG, для целевых вопросов про результаты прогонов и провайдеров.
+Проверки:
+  list_evidence_records возвращает schema evidence-record-list.v1
+  get_evidence_record возвращает evidence-record-v1
+  tests/workgraph-mcp.test.mjs зелёные
+Анализ:
+  Целесообразность:
+  Стоит завести «MCP: list_evidence_records / get_evidence_record + workgraph://evidence/records» в бэклог — по материалам AN-38 (work/analytics/llm-pvrg-richir-memory-slices-usage-audit.md).
+  Контекст и границы:
+  server.tool list_evidence_records(filter?) + get_evidence_record(recordId) поверх buildEvidenceReadModelForTask.
+  Зависимости и готовность:
+  depends_on=epic-cursor-mcp-context-surface-v1, implement-mcp-get-graph-rag-context; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Cursor получает evidence-record-v1 как первичный канал — отдельно от graph RAG, для целевых вопросов про результаты прогонов и провайдеров.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-38 (work/analytics/llm-pvrg-richir-memory-slices-usage-audit.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+
+Свидетельства:
+  npm run test:deterministic — 648/648 green (2026-06-01)
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-38
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/llm-pvrg-richir-memory-slices-usage-audit.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T23:29:42.443Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T23:29:42.443Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: epic-cursor-mcp-context-surface-v1, implement-mcp-get-graph-rag-context
+  work.id: implement-mcp-evidence-records-tools
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: agent_platform_architect
+  work.parent_id: epic-cursor-mcp-context-surface-v1
+  work.pipeline_stage: closed
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: packages/workgraph-mcp/src/index.mjs, packages/workgraph-mcp/src/handlers.mjs, tests/workgraph-mcp.test.mjs, src/evidenceReadModel.mjs, packages/workgraph-mcp/README.md
+  work.title: MCP: list_evidence_records / get_evidence_record + workgraph://evidence/records
+]>

@@ -1,0 +1,56 @@
+#Задача_wg_backlog_ui_button_migration_wave_2<[
+Базис:
+  Client-side render paths: analytics subtabs, workflow pagination, intent composer, code-gap actions.
+  После wave 1 — tabs molecule может заменить board-tab pattern.
+Вектор:
+  Мигрировать dynamic button HTML в renderUiButton helper wrapper.
+  Подготовить hooks для tabs molecule (workflow-subtab, analytics-tab).
+  Grep gate doc в closing: count raw action buttons.
+Цель:
+  Панели workflow/analytics/composer на shared button atom.
+Проверки:
+  intent-composer + workflow-page-btn + code-gap buttons через atoms
+  no visual regression on board/workflow views in e2e smoke
+Анализ:
+  Целесообразность:
+  Стоит завести «WG backlog UI: renderUiButton wave 2 (panels / workflow / composer)» в бэклог — по материалам AN-32 (work/analytics/gripe-ds-adoption-phase2-post-an21.md).
+  Контекст и границы:
+  Мигрировать dynamic button HTML в renderUiButton helper wrapper.
+  Зависимости и готовность:
+  depends_on=epic-gripe-ds-adoption-phase2, wg-backlog-ui-button-migration-wave-1; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Панели workflow/analytics/composer на shared button atom.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-32 (work/analytics/gripe-ds-adoption-phase2-post-an21.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-32
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/gripe-ds-adoption-phase2-post-an21.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-05-31T17:04:02.451Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T17:04:02.451Z
+  work.decision.verdict: useful
+  work.department: ui-dashboard
+  work.depends_on: epic-gripe-ds-adoption-phase2, wg-backlog-ui-button-migration-wave-1
+  work.id: wg-backlog-ui-button-migration-wave-2
+  work.item_kind: subtask
+  work.next_action: closed with evidence
+  work.owner_role: frontend_architect
+  work.parent_id: epic-gripe-ds-adoption-phase2
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: src/workGraphBacklogUiServer.mjs, src/ui/atoms/button.mjs, work/analytics/gripe-ds-adoption-phase2-post-an21.md
+  work.title: WG backlog UI: renderUiButton wave 2 (panels / workflow / composer)
+]>

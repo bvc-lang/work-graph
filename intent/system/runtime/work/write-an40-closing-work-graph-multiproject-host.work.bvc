@@ -1,0 +1,53 @@
+#Задача_write_an40_closing_work_graph_multiproject_host<[
+Базис:
+  Эпик «несколько проектов в одной консоли» завершён.
+  Осталось оформить итог: без этого разбор AN-40 в UI так и будет висеть незакрытым.
+Вектор:
+  Написать итоговый документ work/analytics/closing-epic-work-graph-multiproject-host.md — что сделали, какие файлы, как проверить.
+  Добавить запись в work/analytics-records.jsonl (через seed:analytics-record).
+Цель:
+  Разбор AN-40 закрыт: в журнале аналитики видно, что рекомендация из разбора реализована и чем подтверждена.
+Проверки:
+  Итоговый md опубликован и открывается в панели аналитики
+  Строка добавлена в analytics-records.jsonl
+  В документе перечислены реальные артефакты: ADR, реестр, CLI, переключатель, runbook
+Анализ:
+  Зачем:
+  Closing — не бюрократия, а точка для оператора: «AN-40 отработан, вот доказательства».
+  Когда:
+  После done у эпика и зелёных тестов multiproject host.
+  Риск:
+  Закрыть формально, не дождавшись фактической готовности — сверять с чеклистом эпика.
+Решение:
+  Вердикт:
+  полезно
+  Делать последней задачей эпика, когда остальное уже в done.
+
+Свидетельства:
+  - work/analytics/closing-epic-work-graph-multiproject-host.md
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-40
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-project-deployment-model.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-01T11:18:32.866Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-01T11:18:32.866Z
+  work.decision.verdict: useful
+  work.department: product-architecture
+  work.depends_on: epic-work-graph-multiproject-host, tests-work-graph-multiproject-host
+  work.id: write-an40-closing-work-graph-multiproject-host
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: system_architect
+  work.parent_id: epic-work-graph-multiproject-host
+  work.pipeline_stage: closed
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: work/analytics/closing-epic-work-graph-multiproject-host.md, work/analytics-records.jsonl, work/analytics/work-graph-project-deployment-model.md
+  work.title: Закрыть разбор AN-40 после эпика multiproject host
+]>

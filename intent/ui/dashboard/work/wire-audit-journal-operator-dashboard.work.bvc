@@ -1,0 +1,50 @@
+#Задача_wire_audit_journal_operator_dashboard<[
+Базис:
+  work/daemon-audit.jsonl пишется, но UI не показывает последние события tick.
+  Задача «Фаза 2: журнал daemon в dashboard оператора» относится к контуру Work Graph rebuild и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: phase-2-workgraph-os-daemon.
+Вектор:
+  GET /api/daemon-audit-tail и панель на вкладке «Проверки».
+  Ближайший шаг исполнения: закрыто.
+Цель:
+  Оператор видит scheduler/recovery без ручного чтения JSONL.
+  Готово, когда выполнены проверки: API отдаёт хвост journal с лимитом.
+Анализ:
+  Целесообразность:
+  Стоит завести «Фаза 2: журнал daemon в dashboard оператора» в бэклог.
+  Контекст и границы:
+  GET /api/daemon-audit-tail и панель на вкладке «Проверки».
+  Зависимости и готовность:
+  depends_on=phase-2-workgraph-os-daemon; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Оператор видит scheduler/recovery без ручного чтения JSONL.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:37.771Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:37.780Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: phase-2-workgraph-os-daemon
+  work.id: wire-audit-journal-operator-dashboard
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: frontend_architect
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: medium
+  work.status: done
+  work.target_files: src/workGraphBacklogUiServer.mjs, work/daemon-audit.jsonl
+  work.title: Фаза 2: журнал daemon в dashboard оператора
+]>
+

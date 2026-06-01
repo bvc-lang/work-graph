@@ -1,0 +1,61 @@
+#Задача_add_cursor_ide_workgraph_parity_step<[
+Базис:
+  mcp-editing-policy.bvc покрывает MCP; IDE-агент пишет src/ и seed без claim.
+  AN-25 R2: parity — код только под claimed work.id, evidence при закрытии.
+Вектор:
+  rules/agent-behavior/cursor-ide-workgraph-parity.bvc — prompt_rule в bundle.
+  Перед правкой src/: read atom / get_work_item; после: evidence + status update.
+  Ссылка на protocols/decision-pipeline-canon-v1.bvc и operational bypass.
+Цель:
+  Системный промпт/bundle агента содержит parity IDE↔MCP для backlog и исполнения.
+Проверки:
+  rules/agent-behavior/cursor-ide-workgraph-parity.bvc существует
+  npm run audit:agent-behavior-rules green
+Анализ:
+  Целесообразность:
+  Стоит завести «agent-behavior step: cursor-ide-workgraph-parity» в бэклог — по материалам AN-25 (work/analytics/agent-bypass-work-graph-dual-backlog.md).
+  Контекст и границы:
+  rules/agent-behavior/cursor-ide-workgraph-parity.bvc — prompt_rule в bundle.
+  Зависимости и готовность:
+  depends_on=epic-agent-workgraph-enforcement, add-cursor-rule-single-backlog; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Системный промпт/bundle агента содержит parity IDE↔MCP для backlog и исполнения.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-25 (work/analytics/agent-bypass-work-graph-dual-backlog.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Свидетельства:
+  - rules/agent-behavior/cursor-ide-workgraph-parity.bvc — rule.id cursor-ide-workgraph-parity
+  - src/agentBehaviorRulesBundle.mjs — в WORKER_BEHAVIOR_RULE_IDS
+  - npm run audit:agent-behavior-rules — bundle ok
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-25
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/agent-bypass-work-graph-dual-backlog.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T12:17:11.947Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T12:17:11.947Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: epic-agent-workgraph-enforcement, add-cursor-rule-single-backlog
+  work.id: add-cursor-ide-workgraph-parity-step
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: integration_architect
+  work.parent_id: epic-agent-workgraph-enforcement
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: low
+  work.status: done
+  work.target_files: rules/agent-behavior/cursor-ide-workgraph-parity.bvc, rules/agent-behavior/mcp-editing-policy.bvc, src/agentBehaviorRulesBundle.mjs
+  work.title: agent-behavior step: cursor-ide-workgraph-parity
+]>

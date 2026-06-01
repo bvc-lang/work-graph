@@ -1,0 +1,24 @@
+#Протокол_Schematic_Visualization_View_V1<[
+Базис:
+  design-schematic-visualization-view описывает sidebar view "Схема" отдельно от architecture L1 map и task dependency graph.
+  implement-schematic-visualization-view-mvp реализовал derived schematic.view.v1 в src/schematicView.mjs и UI tab Схема.
+Вектор:
+  Блоки Work Graph OS: Intent Tree, Work Graph, Runner, Evidence, Project Memory, Graph/RAG, Operator UI, OneBase Domain, Storage/Snapshot.
+  Связи typed edges (feeds, uses, validates, maps_to, rebuilds) без work.depends_on.
+  MVP renderer: zero-dependency SVG/HTML in workGraphBacklogUiServer; no manual editor.
+  Click-through: view:board, view:graph for operational surfaces; detail drawer for protocol paths on other blocks.
+Цель:
+  Design artifact aligned with shipped MVP; operator sees system loop without reading all protocols.
+
+Проверки:
+  определены блоки и связи схемы
+  схема отделена от dependency graph задач
+  выбран MVP renderer без библиотек
+  описаны click-through targets
+
+Метки:
+  atom.profile: architecture_decision
+  protocol.id: schematic-visualization-view-v1
+  work.source: design-schematic-visualization-view
+  trace.status: verified
+]>

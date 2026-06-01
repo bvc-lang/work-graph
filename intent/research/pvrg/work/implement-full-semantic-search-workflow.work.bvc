@@ -1,0 +1,49 @@
+#Задача_implement_full_semantic_search_workflow<[
+Базис:
+  Semantic map / search в пересобрать — stub: derived graph + перекрёстная подсветка hints (design-semantic-map-backlog-перекрёстная подсветка done).
+  Полный semantic search workflow из ioHasC (hybrid retrieval, worker scan) не перенесён.
+Вектор:
+  Спроектировать и реализовать operator/agent workflow поверх semantic search: bounded query, result list, trace refs в WorkItem context.
+  Не дублировать полный ioHasC orchestrator; интеграция через worker provider hints или dashboard view.
+Цель:
+  Оператор и agent прогнать получают осмысленный semantic search path, а не только перекрёстная подсветка stub.
+Анализ:
+  Целесообразность:
+  Стоит завести «реализовать полный semantic search workflow» в бэклог.
+  Контекст и границы:
+  Спроектировать и реализовать operator/agent workflow поверх semantic search: bounded query, result list, trace refs в WorkItem context.
+  Зависимости и готовность:
+  depends_on=design-semantic-map-backlog-cross-highlight, implement-pvrg-graph-rag-context-slice; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Оператор и agent прогнать получают осмысленный semantic search path, а не только перекрёстная подсветка stub.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441118
+  migration.strategy: replace
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:36.693Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:36.702Z
+  work.decision.verdict: useful
+  work.department: research-pvrg
+  work.depends_on: design-semantic-map-backlog-cross-highlight, implement-pvrg-graph-rag-context-slice
+  work.id: implement-full-semantic-search-workflow
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: integration_architect
+  work.pipeline_stage: decided
+  work.priority: low
+  work.risk: medium
+  work.status: done
+  work.target_files: protocols/semantic-map-backlog-cross-highlight-v1.bvc, src/semanticSearchWorkflow.mjs, src/operatorShellProjection.mjs, scripts/semantic-search.mjs, tests/semanticSearchWorkflow.test.mjs, docs/plan-iohasc-rebuild-audit-gap-matrix.md, work/backlog.bvc
+  work.title: реализовать полный semantic search workflow
+]>
+

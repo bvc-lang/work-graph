@@ -1,0 +1,59 @@
+#Задача_decide_positioning_from_an7<[
+Базис:
+  Источник: analytics:product-self-audit-user (AN-7) §8 — четыре позиции.
+  Без зафиксированного decision record вернёмся к «всё сразу».
+Вектор:
+  Decision record в intent graph: question «какая позиция продукта?», options A/B/C/D, selected C.
+  Записать risks/assumptions, критерий разворота на A/B/D.
+Цель:
+  Позиция C закреплена в intent graph; видна на дорожной карте намерений.
+Анализ:
+  Целесообразность:
+  Стоит завести «зафиксировать выбор позиции C (1С vertical) как decision record» в бэклог — по материалам AN-7 (analytics:product-self-audit-user).
+  Контекст и границы:
+  Decision record в intent graph: question «какая позиция продукта?», options A/B/C/D, selected C.
+  Зависимости и готовность:
+  depends_on=pivot-to-1c-onebase-vertical; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Позиция C закреплена в intent graph; видна на дорожной карте намерений.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-7 (analytics:product-self-audit-user); исполнять после вердикта «полезно» и готовности зависимостей.
+Проверки:
+  intent question + 4 option nodes + decision node на C существуют
+  AN-7 связан с decision через intakeSourceRef
+
+Свидетельства:
+  - intent/product/positioning/decision-position-c-onebase-vertical.bvc
+  - AN-7 position C recorded
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-7
+  intake.source_kind: analytics-record
+  intake.source_ref: analytics:product-self-audit-user
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T22:16:35.037Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-30T22:16:35.037Z
+  work.decision.verdict: useful
+  work.department: product
+  work.depends_on: pivot-to-1c-onebase-vertical
+  work.id: decide-positioning-from-an7
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: product_owner
+  work.parent_id: pivot-to-1c-onebase-vertical
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: low
+  work.status: done
+  work.target_files: intent/product/positioning/, work/analytics/product-self-audit-user.md
+  work.title: зафиксировать выбор позиции C (1С vertical) как decision record
+]>

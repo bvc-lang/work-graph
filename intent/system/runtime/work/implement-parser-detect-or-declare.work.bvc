@@ -1,0 +1,62 @@
+#Задача_implement_parser_detect_or_declare<[
+Базис:
+  Источник: analytics:bvc-multilingual-keys-design §5 — алгоритм parse_atom с resolved_lang и normalize to EN AST.
+  233 RU work items должны парситься без pragma (auto-detect).
+Вектор:
+  File pragma #!bvc lang=ru; atom header #Name@ru<[…]>; Labels.lang override.
+  Auto-detect по первому BVC-ключу; atom.lang в AST для round-trip.
+  Lint E_BVC_DIALECT_MIX при mixed keys в одном атоме.
+  Загрузка dialect registry из packages/bvc-dialects.
+Цель:
+  Фаза 1 open canon включает multilingual parser, не только dual extension.
+Анализ:
+  Целесообразность:
+  Стоит завести «parser: Detect-or-Declare (pragma, @lang, auto-detect, E_BVC_DIALECT_MIX)» в бэклог — по материалам AN-19 (analytics:bvc-multilingual-keys-design).
+  Контекст и границы:
+  File pragma #!bvc lang=ru; atom header #Name@ru<[…]>; Labels.lang override.
+  Зависимости и готовность:
+  depends_on=bvc-dialect-registry-en-ru, implement-parser-dual-extension-step-bvc; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Фаза 1 open canon включает multilingual parser, не только dual extension.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-19 (analytics:bvc-multilingual-keys-design); исполнять после вердикта «полезно» и готовности зависимостей.
+Проверки:
+  unit tests: EN atom, RU atom, mixed-file auto-detect
+  mixed keys → lint error
+  round-trip сохраняет dialect
+
+Свидетельства:
+  - src/bvcAtomParser.mjs: Detect-or-Declare, E_BVC_DIALECT_MIX, registry load
+  - tests/bvcAtomParser.test.mjs — 5 кейсов pass
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-19
+  intake.source_kind: analytics-record
+  intake.source_ref: analytics:bvc-multilingual-keys-design
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T08:11:06.098Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T08:11:06.098Z
+  work.decision.verdict: useful
+  work.department: architecture
+  work.depends_on: bvc-dialect-registry-en-ru, implement-parser-dual-extension-step-bvc
+  work.id: implement-parser-detect-or-declare
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: frontend_architect
+  work.parent_id: bvc-multilingual-detect-or-declare
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: high
+  work.status: done
+  work.target_files: src/, tests/, packages/bvc-dialects, docs/adr-bvc-multilingual-keys.md
+  work.title: parser: Detect-or-Declare (pragma, @lang, auto-detect, E_BVC_DIALECT_MIX)
+]>

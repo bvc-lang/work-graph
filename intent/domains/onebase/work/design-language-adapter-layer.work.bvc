@@ -1,0 +1,51 @@
+#Задача_design_language_adapter_layer<[
+Базис:
+  Новая сборка должна работать с несколькими языками и доменными форматами, но OneBase является первым реальным golden path.
+  Старый проект накопил несколько парсеров/сканеров/IR-направлений, которые нельзя снова смешать в один монолит.
+Вектор:
+  Описать registry language adapters: id, extensions, parser kind, capabilities, artifact profiles, fallback.
+  Зафиксировать OneBase adapters для YAML metadata и .os posting scripts как первые реализации.
+  Описать, как adapter отдаёт StepAtomDraft, trace refs, target files и verification hints.
+  Оставить generic file/regex fallback только как degraded mode, а не основной путь.
+Цель:
+  Агент получает структурированные доменные факты через adapter layer, не через случайное чтение файлов.
+Анализ:
+  Целесообразность:
+  Стоит завести «спроектировать слой языковых и доменных адаптеров» в бэклог.
+  Контекст и границы:
+  Описать registry language adapters: id, extensions, parser kind, capabilities, artifact profiles, fallback.
+  Зависимости и готовность:
+  depends_on=design-serialization-boundary; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Агент получает структурированные доменные факты через adapter layer, не через случайное чтение файлов.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441012
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:35.999Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:36.008Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: design-serialization-boundary
+  work.id: design-language-adapter-layer
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: language_platform_architect
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: high
+  work.status: done
+  work.target_files: protocols/language-adapter-layer.bvc, work/backlog.bvc
+  work.title: спроектировать слой языковых и доменных адаптеров
+]>
+

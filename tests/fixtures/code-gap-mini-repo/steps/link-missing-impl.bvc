@@ -1,0 +1,17 @@
+#Link_Missing_Impl<[
+Базис:
+  Link step without code implementation for code-gap fixture.
+Вектор:
+  mode: link
+Цель:
+  Expect missing_implementation gap.
+
+Реализация:
+  tur_id: MissingImplFn
+
+Метки:
+  atom.profile: trace
+  compiler.mode: link
+  guid: 550e8400-e29b-41d4-a716-446655440101
+  trace.status: verified
+]>

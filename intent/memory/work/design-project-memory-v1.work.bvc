@@ -1,0 +1,50 @@
+#Задача_design_project_memory_v1<[
+Базис:
+  Project Memory должна быть структурированным контекстом решений, фактов и evidence, а не prompt stuffing.
+  Rebuild должен отделить memory от случайных summaries в чате.
+Вектор:
+  Описать MemoryRecord v1: fact, decision, evidence summary, architecture note, domain artifact, task outcome.
+  Описать writers: Work Graph transitions, verification results, OneBase artifact ingestion, human decisions.
+  Описать readers: agent context slice, dashboard, graph viewer, future RAG.
+Цель:
+  Агент получает устойчивый контекст проекта без чтения всего transcript или repo.
+Анализ:
+  Целесообразность:
+  Стоит завести «спроектировать Project Memory v1» в бэклог.
+  Контекст и границы:
+  Описать MemoryRecord v1: fact, decision, evidence summary, architecture note, domain artifact, task outcome.
+  Зависимости и готовность:
+  depends_on=design-evidence-model-v1; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Агент получает устойчивый контекст проекта без чтения всего transcript или repo.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441022
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:36.093Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:36.103Z
+  work.decision.verdict: useful
+  work.department: knowledge-publishing
+  work.depends_on: design-evidence-model-v1
+  work.id: design-project-memory-v1
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: knowledge_architect
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: high
+  work.status: done
+  work.target_files: protocols/project-memory-v1.bvc, work/backlog.bvc
+  work.title: спроектировать Project Memory v1
+]>
+

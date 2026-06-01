@@ -1,0 +1,50 @@
+#Задача_design_schematic_visualization_view<[
+Базис:
+  В UI уже есть доска, бэклог и derived graph, но пользователю нужна отдельная схематичная визуализация операционной модели проекта.
+  Эта схема не должна быть ручным graph editor и не должна повторять dependency graph задач.
+Вектор:
+  Спроектировать sidebar view "Схема" для архитектурной карты: Intent Tree, Work Graph, Runner, Evidence, Project Memory, Graph/RAG, UI, OneBase domain, snapshots/storage.
+  Описать блоки, стрелки, подписи, click-through в протоколе/task artifacts и текущие ограничения.
+  Использовать решения из runtime-substrate, WorkGraph OS и intent tree layout как источник схемы.
+Цель:
+  Пользователь получает отдельный обзор "как устроена система" без чтения всех protocol-файлов.
+Анализ:
+  Целесообразность:
+  Стоит завести «спроектировать sidebar view Схема» в бэклог.
+  Контекст и границы:
+  Спроектировать sidebar view "Схема" для архитектурной карты: Intent Tree, Work Graph, Runner, Evidence, Project Memory, Graph/RAG, UI, OneBase domain, snapshots/storage.
+  Зависимости и готовность:
+  depends_on=design-architecture-graph-model-v1; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Пользователь получает отдельный обзор "как устроена система" без чтения всех protocol-файлов.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441038
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:36.181Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:36.189Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: design-architecture-graph-model-v1
+  work.id: design-schematic-visualization-view
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: product_designer
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: protocols/schematic-visualization-view-v1.bvc, src/schematicView.mjs, protocols/workgraph-os-integration-model.bvc
+  work.title: спроектировать sidebar view Схема
+]>
+

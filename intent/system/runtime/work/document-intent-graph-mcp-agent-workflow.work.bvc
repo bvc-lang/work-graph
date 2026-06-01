@@ -1,0 +1,50 @@
+#Задача_document_intent_graph_mcp_agent_workflow<[
+Базис:
+  plan-workgraph-llm-usefulness описывает task ops; нет сценария «навигация по intent graph» для Cursor.
+  Задача «Intent graph: документ workflow агента через MCP» относится к контуру платформы агента и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: implement-mcp-get-intent-hierarchy, implement-mcp-get-pvrg-task-scope.
+Вектор:
+  docs/workgraph-intent-graph-mcp.md — типовой flow: hierarchy → scope → linkage → work item.
+  Ближайший шаг исполнения: просмотреть и перевести в ready.
+Цель:
+  Разработчик и агент знают порядок вызовов без чтения исходников.
+  Готово, когда выполнены проверки: Документ описывает 3+ MCP tools intent graph.
+Анализ:
+  Целесообразность:
+  Стоит завести «Intent graph: документ workflow агента через MCP» в бэклог.
+  Контекст и границы:
+  docs/workgraph-intent-graph-mcp.md — типовой flow: hierarchy → scope → linkage → work item.
+  Зависимости и готовность:
+  depends_on=implement-mcp-get-intent-hierarchy, implement-mcp-get-pvrg-task-scope; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Разработчик и агент знают порядок вызовов без чтения исходников.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:36.368Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:36.377Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: implement-mcp-get-intent-hierarchy, implement-mcp-get-pvrg-task-scope
+  work.id: document-intent-graph-mcp-agent-workflow
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: integration_architect
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: medium
+  work.status: done
+  work.target_files: docs/workgraph-intent-graph-mcp.md, packages/workgraph-mcp/README.md, docs/plan-phase-8-plus-continuation.md
+  work.title: Intent graph: документ workflow агента через MCP
+]>
+

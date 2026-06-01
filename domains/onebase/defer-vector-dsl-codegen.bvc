@@ -1,0 +1,24 @@
+#Defer_VectorDSL_OneBase_Codegen<[
+Базис:
+  VectorDSL → OneBase codegen увеличивает scope и риск до стабилизации bridge workflows (artifact mapping, verification, MCP parity, WorkItem template).
+  Phase 5 codegen evidence contract готов для будущего port, но OneBase vertical не должен блокироваться на codegen.
+Вектор:
+  migration.strategy: defer для задач VectorDSL→OneBase codegen в backlog.
+  Return triggers (все должны быть true):
+  - phase-7-onebase-vertical closed с template + MCP parity + ≥1 repeatable golden path
+  - npm run test:optional:onebase stable в CI optional tier
+  - codegen round-trip evidence contract wired для compiler-mode steps
+  - explicit WorkItem approved для codegen pilot (не auto-promotion)
+  Readiness checklist: src/onebaseVectorDslCodegenReadiness.mjs → evaluateOnebaseVectorDslCodegenReadiness(); npm run check:onebase-codegen-readiness.
+  Non-goals сейчас: auto-generate .yaml/.os from Vector DSL, replace hand-edited posting scripts, MCP codegen tools.
+Цель:
+  Product scope: сначала bridge и verification, codegen позже без ambiguity.
+
+Метки:
+  atom.profile: prompt_rule
+  domain.id: onebase
+  defer.id: vector-dsl-onebase-codegen
+  migration.strategy: defer
+  work.source: defer-vector-dsl-to-onebase-codegen
+  trace.status: verified
+]>

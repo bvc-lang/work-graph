@@ -1,0 +1,58 @@
+#Задача_add_home_mission_control_tests<[
+Базис:
+  P0 затрагивает корневой UX; без тестов регрессии неизбежны.
+Вектор:
+  Unit: homeSnapshotProjection, inboxEventStream.
+  E2E smoke: home landing, cmd+k roundtrip, right-dock live log.
+  Lint: npm run lint:backlog после seed без новых errors.
+Цель:
+  Гарантия повторяемости P0 на чистой машине.
+Проверки:
+  npm test зелёный
+  npm run test:e2e — smoke specs зелёные
+Анализ:
+  Целесообразность:
+  Стоит завести «тесты: home snapshot + inbox stream + e2e Home/Cmd+K/dock» в бэклог — по материалам work/analytics/ux-current-state-and-vector.md.
+  Контекст и границы:
+  Unit: homeSnapshotProjection, inboxEventStream.
+  Зависимости и готовность:
+  depends_on=ux-mission-control-p0, implement-home-snapshot-api, implement-inbox-event-stream, implement-cmd-k-palette, implement-right-dock-agent-run-panel; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Гарантия повторяемости P0 на чистой машине.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма work/analytics/ux-current-state-and-vector.md; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Свидетельства:
+  - tests/homeSnapshotProjection.test.mjs
+  - tests/inboxEventStream.test.mjs pass
+
+Метки:
+  atom.profile: work_item
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/ux-current-state-and-vector.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T12:01:47.111Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T12:01:47.111Z
+  work.decision.verdict: useful
+  work.department: ui-dashboard
+  work.depends_on: ux-mission-control-p0, implement-home-snapshot-api, implement-inbox-event-stream, implement-cmd-k-palette, implement-right-dock-agent-run-panel
+  work.id: add-home-mission-control-tests
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: frontend_architect
+  work.parent_id: ux-mission-control-p0
+  work.pipeline_stage: closed
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: tests/homeSnapshotProjection.test.mjs, tests/inboxEventStream.test.mjs, e2e/home-mission-control-smoke.spec.js, e2e/cmd-k-palette-smoke.spec.js, e2e/right-dock-agent-run-smoke.spec.js
+  work.title: тесты: home snapshot + inbox stream + e2e Home/Cmd+K/dock
+]>

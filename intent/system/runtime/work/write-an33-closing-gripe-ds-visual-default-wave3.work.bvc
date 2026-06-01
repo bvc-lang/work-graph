@@ -1,0 +1,53 @@
+#Задача_write_an33_closing_gripe_ds_visual_default_wave3<[
+Базис:
+  Closing loop AN-22; before/after accent screenshot note.
+Вектор:
+  work/analytics/closing-epic-gripe-ds-visual-default-wave3.md + journal.
+Цель:
+  Эпик закрыт с visual acceptance criteria.
+Проверки:
+  analytics-records.jsonl содержит AN-33 closing
+  epic closed с evidence
+Анализ:
+  Целесообразность:
+  Стоит завести «AN-33 closing analysis: epic-gripe-ds-visual-default-wave3» в бэклог — по материалам AN-33 (work/analytics/gripe-ds-visual-default-wave3.md).
+  Контекст и границы:
+  work/analytics/closing-epic-gripe-ds-visual-default-wave3.md + journal.
+  Зависимости и готовность:
+  depends_on=epic-gripe-ds-visual-default-wave3, tests-gripe-visual-default-wave3, wg-ui-wave3-kanban-cards-atoms, wg-ui-wave3-status-badges-atoms, wg-ui-wave3-client-badge-button-helpers; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Эпик закрыт с visual acceptance criteria.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-33 (work/analytics/gripe-ds-visual-default-wave3.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-33
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/gripe-ds-visual-default-wave3.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T17:42:31.321Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T17:42:31.321Z
+  work.decision.verdict: useful
+  work.department: product-integration
+  work.depends_on: epic-gripe-ds-visual-default-wave3, tests-gripe-visual-default-wave3, wg-ui-wave3-kanban-cards-atoms, wg-ui-wave3-status-badges-atoms, wg-ui-wave3-client-badge-button-helpers
+  work.id: write-an33-closing-gripe-ds-visual-default-wave3
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: product_owner
+  work.parent_id: epic-gripe-ds-visual-default-wave3
+  work.pipeline_stage: closed
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: work/analytics/closing-epic-gripe-ds-visual-default-wave3.md, work/analytics-records.jsonl, work/analytics/gripe-ds-visual-default-wave3.md
+  work.title: AN-33 closing analysis: epic-gripe-ds-visual-default-wave3
+]>

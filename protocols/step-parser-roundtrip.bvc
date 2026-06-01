@@ -1,0 +1,102 @@
+#Протокол_Step_Parser_Roundtrip<[
+Базис:
+  Formatter already owns the canonical StepAtomDraft -> .bvc write path.
+  Atom Inspector Form, migrations and imports need the reverse path without making raw .bvc editing the normal authoring mode.
+  Existing Work Graph parsing is work_item-specific and should not be the generic StepAtomDraft import contract.
+Вектор:
+  Parser reads canonical atom blocks #Name<[ ... ]> and returns StepAtomDraft-like import records: draft, warnings and errors.
+  draft contains profile, name, basis, vector, goal, labels and optional checks/evidence.
+  profile is read from labels.atom.profile; missing or unsupported profile is reported through validateStepAtomDraft errors, not silently guessed.
+  Базис, Вектор and Цель become ordered arrays of trimmed single-line strings.
+  Optional Проверки becomes checks; legacy критерии_готовности is accepted as checks with an import warning.
+  Optional Свидетельства becomes evidence as ordered human-readable strings; structured Evidence v1 parsing is later work.
+  Метки is the machine envelope; valid key/value rows are preserved as labels without profile-specific projection.
+  Legacy top-level machine fields such as guid, id, mode, статус, status and trace_status are read only for import and converted to labels with warnings.
+Цель:
+  Formatter, parser, form preview and migration code share one stable StepAtomDraft boundary while keeping .bvc human-readable.
+
+Проверки:
+  parser returns StepAtomDraft-like records with warnings and validation errors
+  format(parse(format(draft))) is stable for canonical formatter output
+  Базис, Вектор, Цель, Метки, optional Проверки and Свидетельства are covered
+  legacy top-level machine fields import as labels with warnings
+  MVP implementation and tests exist in src/stepAtomFormatter.mjs and tests/stepAtomFormatter.test.mjs
+
+Метки:
+  atom.profile: prompt_rule
+  protocol.id: step-parser-roundtrip
+  schema.input: schemas/step-atom-draft.v1.json
+  work.source: design-step-parser-roundtrip
+  trace.status: verified
+]>
+
+#Roundtrip_Invariant<[
+Базис:
+  The formatter is the canonical serializer for new writes.
+Вектор:
+  The required invariant is format(parse(format(draft)).draft) === format(draft) for valid StepAtomDraft input.
+  Parser may normalize imported legacy text into formatter-compatible arrays, labels and section names, but the second format must be stable.
+  The invariant applies to the canonical subset produced by formatStepAtomDraft: Базис, Вектор, Цель, optional Проверки, optional Свидетельства and sorted Метки.
+  Parser diagnostics do not change formatter output unless the caller explicitly edits the returned draft.
+Цель:
+  Atom Inspector can preview an existing atom, reformat it and detect whether a save proposal is a no-op before touching canonical files.
+
+Метки:
+  atom.profile: trace
+  contract.id: step-parser-roundtrip-invariant
+  trace.status: verified
+]>
+
+#Preserve_Vs_Normalize<[
+Базис:
+  Import must preserve meaning while allowing canonical writes to stay deterministic.
+Вектор:
+  Preserve atom name, section item order, label keys and label values, checks order and evidence order.
+  Preserve unknown but syntactically valid labels; profile-specific consumers may warn separately, but the generic parser should not drop them.
+  Normalize indentation, surrounding whitespace, optional bullet markers in list sections and label ordering on write through the formatter.
+  Normalize legacy критерии_готовности into checks and legacy top-level machine fields into labels, with warnings.
+  Do not preserve comments, blank-line layout, duplicate label rows, or legacy top-level machine field placement in the canonical write path.
+  Do not infer missing required semantic fields from atom name except as a future profile-specific migration rule; MVP reports validation errors.
+Цель:
+  Existing .bvc can be imported safely, but formatter-produced output remains the only canonical new-write shape.
+
+Метки:
+  atom.profile: architecture_decision
+  decision.id: step-parser-preserve-normalize
+  trace.status: verified
+]>
+
+#Diagnostics_And_Legacy_Warnings<[
+Базис:
+  LLM and operator tooling need actionable diagnostics rather than hidden repair.
+Вектор:
+  errors are blocking validateStepAtomDraft messages: invalid/missing profile, invalid atom name, empty required BVC arrays, multiline values or invalid label keys.
+  warnings are non-blocking import notes: legacy top-level machine fields, legacy criteria section, ignored malformed label lines and future duplicate semantic aliases.
+  Legacy field conversion is read-only compatibility: guid -> labels.guid, id -> labels.atom.id, mode -> labels.atom.mode, статус/status -> labels.work.status and trace_status -> labels.trace.status.
+  New writes must not emit legacy top-level machine fields; formatter always writes machine data through Метки.
+Цель:
+  Import callers can show warnings in the inspector while still allowing a valid draft to be formatted.
+
+Метки:
+  atom.profile: prompt_rule
+  rule.id: parser-diagnostics-legacy-warnings
+  trace.status: verified
+]>
+
+#MVP_Implementation_Plan<[
+Базис:
+  The useful first slice is small because formatter output has a narrow deterministic grammar.
+Вектор:
+  Implement parseStepAtomDrafts(text) beside formatStepAtomDraft and validateStepAtomDraft.
+  Return an array of import records with draft, warnings and errors so callers can parse multi-atom .bvc files.
+  Keep WorkGraph parseWorkItems as a work_item projection for now; later it can consume parseStepAtomDrafts after behavior parity tests.
+  Cover parser tests for canonical parse, roundtrip stability and legacy field warnings.
+  Later add source ranges, block hashes, duplicate label diagnostics, malformed atom recovery and Atom Inspector proposal integration.
+Цель:
+  MVP unblocks parser roundtrip evidence without expanding into a full .bvc compiler.
+
+Метки:
+  atom.profile: trace
+  contract.id: parser-mvp-implementation-plan
+  trace.status: verified
+]>

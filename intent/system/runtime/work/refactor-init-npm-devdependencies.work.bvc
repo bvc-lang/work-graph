@@ -1,0 +1,56 @@
+#Задача_refactor_init_npm_devdependencies<[
+Базис:
+  workGraphProjectInit сейчас пишет engineRoot — это dev-first UX.
+  User-first init должен добавить @work-graph/cli и @work-graph/mcp в package.json.
+Вектор:
+  init . → npm install -D @work-graph/cli @work-graph/mcp (или merge в существующий package.json).
+  .work-graph/config.json schema v2 без engineRoot.
+  .cursor/mcp.json с npx -y @work-graph/mcp.
+  npm scripts workgraph:ui, workgraph:doctor.
+Цель:
+  npx work-graph init . — полный onboarding без clone WG.
+Проверки:
+  Свежий проект после init имеет devDeps и scripts
+  config.json не содержит engineRoot для новых install
+Анализ:
+  Зачем:
+  workGraphProjectInit сейчас пишет engineRoot — это dev-first UX.
+  Контекст: User-first init должен добавить @work-graph/cli и @work-graph/mcp в package.json.
+  Когда:
+  После готовности: epic-work-graph-npm-first-distribution, implement-engine-root-resolver-npm-first.
+  Готово, когда:
+  npx work-graph init . — полный onboarding без clone WG.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: epic-work-graph-npm-first-distribution, implement-engine-root-resolver-npm-first.
+
+Свидетельства:
+  - src/workGraphProjectInit.mjs config v2
+  - devDependencies @work-graph/cli @work-graph/mcp
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-43
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-npm-first-distribution.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-01T16:48:00.443Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-01T16:48:00.443Z
+  work.decision.verdict: useful
+  work.department: engineering
+  work.depends_on: epic-work-graph-npm-first-distribution, implement-engine-root-resolver-npm-first
+  work.id: refactor-init-npm-devdependencies
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: backend_engineer
+  work.parent_id: epic-work-graph-npm-first-distribution
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: src/workGraphProjectInit.mjs, packages/work-graph-cli/
+  work.title: init: devDependencies @work-graph/*, config v2 без engineRoot
+]>

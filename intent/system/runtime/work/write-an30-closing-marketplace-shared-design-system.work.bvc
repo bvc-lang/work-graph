@@ -1,0 +1,58 @@
+#Задача_write_an30_closing_marketplace_shared_design_system<[
+Базис:
+  Closing loop AN-22: эпик closed → closing-AN с feeds_epics.
+  AN-21 §8 metrics — baseline vs achieved.
+Вектор:
+  work/analytics/closing-epic-marketplace-shared-design-system.md + journal AN-30.
+  Outcomes: tokens unified, WG atomified, marketplace backlog in WG.
+Цель:
+  Эпик закрыт с метриками и уроками DS integration.
+Проверки:
+  analytics-records.jsonl содержит AN-30
+  epic-marketplace-shared-design-system closed с evidence
+Анализ:
+  Целесообразность:
+  Стоит завести «AN-30 closing analysis: epic-marketplace-shared-design-system» в бэклог — по материалам AN-21 (work/analytics/marketplace-integration-and-shared-design-system.md).
+  Контекст и границы:
+  work/analytics/closing-epic-marketplace-shared-design-system.md + journal AN-30.
+  Зависимости и готовность:
+  depends_on=epic-marketplace-shared-design-system, extract-iohasc-design-tokens-package, marketplace-adopt-generated-brand-tokens, workgraph-dual-layer-semantic-tokens, atomic-spec-five-base-atoms, intent-marketplace-backlog-bootstrap; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Эпик закрыт с метриками и уроками DS integration.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-21 (work/analytics/marketplace-integration-and-shared-design-system.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-21
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/marketplace-integration-and-shared-design-system.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-05-31T15:34:00.510Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T15:34:00.510Z
+  work.decision.verdict: useful
+  work.department: product-integration
+  work.depends_on: epic-marketplace-shared-design-system, extract-iohasc-design-tokens-package, marketplace-adopt-generated-brand-tokens, workgraph-dual-layer-semantic-tokens, atomic-spec-five-base-atoms, intent-marketplace-backlog-bootstrap
+  work.id: write-an30-closing-marketplace-shared-design-system
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: product_owner
+  work.parent_id: epic-marketplace-shared-design-system
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: work/analytics/closing-epic-marketplace-shared-design-system.md, work/analytics-records.jsonl
+  work.title: AN-30 closing analysis: epic-marketplace-shared-design-system
+
+Свидетельства:
+  - work/analytics/closing-epic-marketplace-shared-design-system.md + AN-30 in analytics-records.jsonl
+]>

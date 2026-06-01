@@ -1,0 +1,51 @@
+#Задача_design_structured_evidence_read_model<[
+Базис:
+  Текущий evidence в основном строковый; dashboard и memory нужен structured read model.
+  Задача «спроектировать structured evidence read model» относится к контуру Work Graph rebuild и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: phase-6-project-memory-evidence.
+Вектор:
+  Определить Evidence v1 JSON projection поверх command/test/file/decision evidence.
+  Ближайший шаг исполнения: описать reusable OneBase WorkItem template.
+Цель:
+  Verification и memory могут потреблять evidence без parsing prose.
+  Готово, когда выполнены проверки: поля evidence projection определены.
+Анализ:
+  Целесообразность:
+  Стоит завести «спроектировать structured evidence read model» в бэклог.
+  Контекст и границы:
+  Определить Evidence v1 JSON projection поверх command/test/file/decision evidence.
+  Зависимости и готовность:
+  depends_on=phase-6-project-memory-evidence; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Verification и memory могут потреблять evidence без parsing prose.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441076
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:36.245Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:36.252Z
+  work.decision.verdict: useful
+  work.department: qa
+  work.depends_on: phase-6-project-memory-evidence
+  work.id: design-structured-evidence-read-model
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: qa_architect
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: src/evidenceReadModel.mjs, tests/memoryRecordWriter.test.mjs, protocols/evidence-model-v1.bvc, work/backlog.bvc
+  work.title: спроектировать structured evidence read model
+]>
+

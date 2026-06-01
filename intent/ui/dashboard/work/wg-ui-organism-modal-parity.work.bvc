@@ -1,0 +1,56 @@
+#Задача_wg_ui_organism_modal_parity<[
+Базис:
+  src/ui/atoms/modal.mjs — minimal shell; Gripe uses Alpine teleport + body scroll lock.
+  WG: vanilla confirm/dialog without Alpine dependency in backlog server.
+Вектор:
+  Move to src/ui/organisms/modal.mjs; re-export from atoms for compat.
+  Props parity: title, showCloseButton, backdrop, data-testid.
+  ui-kit modal demo + test.
+Цель:
+  Organism modal usable for future confirm flows in WG UI.
+Проверки:
+  renderUiModal from organisms/modal.mjs on ui-kit
+  atoms/modal re-exports or deprecated with comment
+Анализ:
+  Целесообразность:
+  Стоит завести «WG src/ui/organisms/modal.mjs — Gripe organism shell (vanilla)» в бэклог — по материалам AN-32 (work/analytics/gripe-ds-adoption-phase2-post-an21.md).
+  Контекст и границы:
+  Move to src/ui/organisms/modal.mjs; re-export from atoms for compat.
+  Зависимости и готовность:
+  depends_on=epic-gripe-ds-adoption-phase2, atomic-spec-organism-modal-gripe-parity; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Organism modal usable for future confirm flows in WG UI.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-32 (work/analytics/gripe-ds-adoption-phase2-post-an21.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-32
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/gripe-ds-adoption-phase2-post-an21.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-05-31T17:04:02.510Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T17:04:02.510Z
+  work.decision.verdict: useful
+  work.department: ui-dashboard
+  work.depends_on: epic-gripe-ds-adoption-phase2, atomic-spec-organism-modal-gripe-parity
+  work.id: wg-ui-organism-modal-parity
+  work.item_kind: subtask
+  work.next_action: closed with evidence
+  work.owner_role: frontend_architect
+  work.parent_id: epic-gripe-ds-adoption-phase2
+  work.pipeline_stage: closed
+  work.priority: medium
+  work.risk: medium
+  work.status: done
+  work.target_files: src/ui/organisms/modal.mjs, src/ui/atoms/modal.mjs, src/ui/pages/uiKitPage.mjs, work/analytics/gripe-ds-adoption-phase2-post-an21.md
+  work.title: WG src/ui/organisms/modal.mjs — Gripe organism shell (vanilla)
+]>

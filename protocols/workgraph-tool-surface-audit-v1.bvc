@@ -1,0 +1,22 @@
+#Протокол_WorkGraph_Tool_Surface_Audit_V1<[
+Базис:
+  ioHasC agent toolSchemas.js содержит 60+ инструментов (filesystem, semantic search, PVRG, codegen, OneBase, Work Graph bridge).
+  Work Graph rebuild live-loop опирается на workGraphRuntime, agentWorkerLocalRunner и verificationLoop — нужен явный audit keep/replace/defer.
+Вектор:
+  Audit categories:
+  keep — уже реализовано в work graph runtime/live-loop без LLM transport.
+  replace — ioHasC tool заменяется work graph функцией или bounded CLI gate.
+  defer — не входит в MVP live-loop; перенос после phase 9/10 или optional tier.
+  Live-loop required: claimNext, buildSnapshot, recordEvidence, transitionStatus, buildWorkerInputFromTask, runLocalWorker/runAgentWorkerLiveLoop, buildVerificationSummary.
+  Policy: file write/network/shell off by default; verification через allowlist matrix only.
+Цель:
+  Agent platform знает минимальный tool surface до port IDE monolith tools.
+
+Метки:
+  atom.profile: prompt_rule
+  protocol.id: workgraph-tool-surface-audit-v1
+  work.source: audit-workgraph-tool-surface
+  migration.source_repo: ../project
+  migration.source_paths: src/agent/toolSchemas.js, protocols/agent-state-machine-v1.bvc
+  trace.status: verified
+]>

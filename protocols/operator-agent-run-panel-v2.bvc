@@ -1,0 +1,26 @@
+#!bvc lang=ru
+#Протокол_Operator_Agent_Run_Panel_v2<[
+Базис:
+  operator-agent-run-panel-v1 описывает MVP Agent Run в operator dashboard; AN-20 B2 — panel невидим без persistent dock.
+  ux-mission-control-p0 добавляет right dock (Cursor-style) с live log, retry/cancel и diff binding.
+Вектор:
+  Dock-mode: persistent right panel (#agent-run-dock), width 320–640px resizable, collapse в иконку.
+  Bind к GET /api/agent-run/journal (poll 5s) и POST /api/agent-run для launch.
+  Footer actions: retry (same taskId), cancel (best-effort), open task (detail drawer), scroll-to-bottom toggle.
+  Header: workId, provider, status, step k/n из workerRunSummary.
+  Diff/evidence preview: ссылка на evidence timeline для taskId (не inline Monaco diff в P0).
+Цель:
+  Agent Run виден постоянно на mission-control Home; оператор не ищет run в verification tab.
+
+Проверки:
+  #agent-run-dock data-testid present when mission control enabled
+  journal poll interval 5000ms when dock open
+  POST /api/agent-run contract unchanged from v1
+
+Метки:
+  atom.profile: protocol
+  protocol.id: operator-agent-run-panel-v2
+  protocol.extends: operator-agent-run-panel-v1
+  work.source: update-protocols-operator-agent-run-panel-v2
+  trace.status: verified
+]>

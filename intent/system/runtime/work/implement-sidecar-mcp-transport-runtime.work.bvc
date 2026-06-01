@@ -1,0 +1,54 @@
+#Задача_implement_sidecar_mcp_transport_runtime<[
+Базис:
+  design-sidecar-mcp-execution-boundary закрыт: protocols/sidecar-mcp-execution-boundary-v1.bvc и buildToolTransportBoundary() в audit.
+  Runtime transport (stdio MCP, sidecar HTTP) не реализован — tools остаются built-in/local only.
+Вектор:
+  Реализовать минимальный transport runtime: capability request → policy gate → sidecar/MCP invoke → redacted evidence.
+  Сохранить Work Graph как источник истины; без обхода policy и без второго бэклог writer.
+Цель:
+  Domain tools и MCP servers доступны agent worker через designed boundary, а не только как протокол doc.
+Анализ:
+  Целесообразность:
+  Стоит брать в работу: закрывает разрыв между протоколом `sidecar/MCP boundary` и invoke path для agent worker. Без transport runtime domain tools остаются «на бумаге».
+  Контекст и scope:
+  Минимальный orchestration: `capability → policy gate → lane (builtin/sidecar/mcp) → invoke → redacted evidence`. Не production MCP stdio client, не live HTTP sidecar, не полный worker loop.
+  Зависимости и готовность:
+  `design-sidecar-mcp-execution-boundary` и `implement-onebase-tool-execution-path` закрыты — можно стартовать без новых blockers.
+  Риски и альтернативы:
+  - risk high: scope creep в live transports и обход policy gate.
+  - defer: если приоритет только на UI backlog, не на agent-platform.
+  - harmful: если дублировать ioHasC sidecar client без Work Graph policy layer.
+  Критерии успеха:
+  `invokeToolCapability` покрыт unit-тестами с mock transport; policy блокирует shell/network без allow; secrets redacted; CI без live sidecar/MCP.
+  Рекомендация для решения:
+  useful — MVP transport layer нужен до подключения live sidecar/MCP в worker.
+Проверки:
+  transport invoke path покрыт unit tests с mock transport
+  policy gate блокирует denied capabilities
+  secrets redacted в evidence/logs
+  mandatory CI без live sidecar/MCP server
+Свидетельства:
+  src/workGraphToolTransportRuntime.mjs — invokeToolCapability(), selectTransportLane(), mock sidecar/MCP adapters, builtin handler registry; policy gate + redactTransportSecrets на evidence.
+  tests/workGraphToolTransportRuntime.test.mjs — invoke path с mock transport без live sidecar/MCP.
+  src/workGraphToolTransportRuntime.mjs + tests/workGraphToolTransportRuntime.test.mjs; policy merge fix in workGraphToolSurfaceAudit.mjs
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441119
+  migration.strategy: port
+  trace.status: verified
+  work.analysis.at: 2026-05-30T11:29:48.004Z
+  work.analysis.source: cursor
+  work.department: agent-platform
+  work.depends_on: design-sidecar-mcp-execution-boundary, implement-onebase-tool-execution-path
+  work.id: implement-sidecar-mcp-transport-runtime
+  work.next_action: Cursor: record_work_item_decision (useful/harmful/defer)
+  work.owner_role: agent_platform_architect
+  work.pipeline_stage: analyzed
+  work.priority: low
+  work.risk: high
+  work.status: done
+  work.target_files: protocols/sidecar-mcp-execution-boundary-v1.bvc, src/workGraphToolSurfaceAudit.mjs, src/workGraphToolTransportRuntime.mjs, tests/workGraphToolTransportRuntime.test.mjs, docs/plan-iohasc-rebuild-audit-gap-matrix.md, work/backlog.bvc
+  work.title: реализовать sidecar/MCP transport runtime
+]>
+

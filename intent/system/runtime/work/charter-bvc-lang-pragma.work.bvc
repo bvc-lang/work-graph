@@ -1,0 +1,58 @@
+#Задача_charter_bvc_lang_pragma<[
+Базис:
+  Источник: analytics:bvc-multilingual-keys-design §7 — charter RU; pragma желателен, auto-detect достаточен.
+  Явность помогает агентам и tooling не гадать dialect.
+Вектор:
+  Первая строка charter/main.bvc: #!bvc lang=ru.
+  Ссылка на ADR multilingual в basis или Метки.
+Цель:
+  Charter — образец RU-файла с file-level pragma.
+Анализ:
+  Целесообразность:
+  Стоит завести «charter/main.bvc: #!bvc lang=ru (явный dialect файла)» в бэклог — по материалам AN-19 (analytics:bvc-multilingual-keys-design).
+  Контекст и границы:
+  Первая строка charter/main.bvc: #!bvc lang=ru.
+  Зависимости и готовность:
+  depends_on=adr-bvc-multilingual-keys; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Charter — образец RU-файла с file-level pragma.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-19 (analytics:bvc-multilingual-keys-design); исполнять после вердикта «полезно» и готовности зависимостей.
+Проверки:
+  charter начинается с #!bvc lang=ru
+  lint:backlog green
+
+Свидетельства:
+  - charter/main.bvc начинается с #!bvc lang=ru
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-19
+  intake.source_kind: analytics-record
+  intake.source_ref: analytics:bvc-multilingual-keys-design
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T08:11:06.124Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T08:11:06.124Z
+  work.decision.verdict: useful
+  work.department: product
+  work.depends_on: adr-bvc-multilingual-keys
+  work.id: charter-bvc-lang-pragma
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: product_owner
+  work.parent_id: bvc-multilingual-detect-or-declare
+  work.pipeline_stage: closed
+  work.priority: low
+  work.risk: low
+  work.status: done
+  work.target_files: charter/main.bvc, docs/adr-bvc-multilingual-keys.md
+  work.title: charter/main.bvc: #!bvc lang=ru (явный dialect файла)
+]>

@@ -1,0 +1,106 @@
+#Протокол_Architecture_Graph_Model_V1<[
+Базис:
+  Текущая вкладка Зависимости задач показывает work.depends_on DAG, но не отвечает на вопрос об архитектуре и проектировании системы.
+  Устав и intent tree уже задают устойчивые слои и домены; derived graph viewer и PVRG slice описывают node/edge types, но без отдельной L1/L2 модели оператор не может drill-down внутрь блока.
+  Architecture graph должен быть derived projection, rebuildable из charter, intent tree, workgraph.snapshot.v1, trace links и optional memory/evidence exports.
+Вектор:
+  Зафиксировать architecture graph model v1 с уровнями L1 system blocks, L2 containers/modules и L3 artifacts/files/symbols.
+  Явно отделить architecture edges (uses, feeds, validates, implements, defines, maps_to) от operational edge depends_on.
+  UX pattern: L1 map -> focus block -> block detail panel with tabs -> optional scoped L2 inner graph; read-only, no manual layout editing.
+Цель:
+  Единый контракт architecture graph отделяет проектирование системы от очереди задач и готов к architecture.snapshot.v1, UI и PVRG slice reuse.
+
+Проверки:
+  описаны L1/L2/L3 уровни
+  L1 blocks зафиксированы из устава и intent tree
+  edge types отделены от work.depends_on
+  описан drill-down pattern без ручного редактора
+
+Метки:
+  atom.profile: plan
+  protocol.id: architecture-graph-model-v1
+  design.input: charter/main.bvc, architecture/main.bvc, intent/index.bvc, workgraph.snapshot.v1, trace-links-v1, pvrg.graph_rag.slice.v1
+  design.output: architecture.snapshot.v1
+  work.source: design-architecture-graph-model-v1
+  trace.status: verified
+]>
+
+#L1_System_Blocks<[
+Базис:
+  L1 blocks отражают charter layers и intent domains, а не текущую форму UI или исполнителя.
+Вектор:
+  step-canon: Step Canon — charter, schemas/step-atom-draft, formatter, llm-step-atom-writer protocol.
+  work-graph: Work Graph — runtime, backlog, lifecycle, claim/transition, intent/system/runtime and intent/system/storage work.
+  project-memory: Project Memory — durable facts, decisions, architecture notes; intent/memory and memory protocols.
+  trace-evidence: Trace/Evidence — trace links v1, evidence model, verification loop, step↔code validators.
+  agent-runtime: Agent Runtime — worker adapter, local runner, state machine, provider-neutral execution loop.
+  domain-onebase: Domain Vertical — OneBase mapping, golden path, posting scenarios, intent/domains/onebase.
+  derived-projections: Derived Projections — UI board, architecture map, task dependency graph, dashboard snapshot, PVRG/graph RAG research.
+Цель:
+  Верхний уровень architecture map показывает 6–8 устойчивых блоков системы без смешения с WorkItem queue semantics.
+
+Метки:
+  atom.profile: architecture_decision
+  decision.id: architecture-l1-blocks-v1
+  protocol.id: architecture-graph-model-v1
+  trace.status: verified
+]>
+
+#L2_Containers_And_L3_Artifacts<[
+Базис:
+  Drill-down внутри блока требует scoped projection, иначе оператор видит весь repo spaghetti graph.
+Вектор:
+  L2 container node: runtime module, protocol bundle, UI surface, adapter slice or intent subtree root; examples: src/workGraphRuntime.mjs, protocols/agent-worker-adapter.bvc, intent/ui/dashboard.
+  L3 artifact/file node: concrete path, symbol, OneBase YAML/.os, test file or memory atom; sourced from target_files, trace.code_refs, adapter projections and filesystem scan heuristics.
+  L2 graph inside a block is capped (~15 visible nodes) and filtered by selected block scope; work.depends_on edges hidden by default unless operator enables task overlay filter.
+  Membership heuristics: work item -> block by id/department/target_files; container -> block by path prefix; cross-block links shown as external dashed edges on L2 focus only.
+Цель:
+  Оператор видит состав блока и локальную схему проектирования без потери readable layout.
+
+Метки:
+  atom.profile: trace
+  contract.id: architecture-l2-l3-model-v1
+  protocol.id: architecture-graph-model-v1
+  trace.status: verified
+]>
+
+#Architecture_Edge_Types<[
+Базис:
+  Architecture edges explain design relations; depends_on remains operational Work Graph semantics only.
+Вектор:
+  feeds: canonical formats/rules supply downstream runtime or projections; example step-canon -> work-graph.
+  uses: runtime consumes another block capability; example work-graph -> agent-runtime.
+  validates: verification/trace checks artifacts or transitions; example trace-evidence -> work-graph.
+  implements: task/container/code realizes a design artifact; scoped to block detail and trace links.
+  defines: protocol/design atom specifies runtime or UI behavior.
+  maps_to: domain adapter maps external artifacts to Work Graph/step atoms; example domain-onebase -> work-graph.
+  relates_file: memory/evidence/trace node links to file path; used on L2/L3, not on default L1 map.
+  Non-architecture edge depends_on: WorkItem queue only; rendered exclusively in Зависимости задач view.
+Цель:
+  Edge labels remain typed, rebuildable and filterable without turning task queue into architecture canon.
+
+Метки:
+  atom.profile: trace
+  contract.id: architecture-edge-types-v1
+  protocol.id: architecture-graph-model-v1
+  trace.status: verified
+]>
+
+#UX_Drill_Down_Pattern<[
+Базис:
+  Operator needs architecture comprehension without manual graph editing or React Flow-like canvas authoring.
+Вектор:
+  Sidebar views: Доска, Бэклог, Архитектура (L1 map), Зависимости задач (work deps DAG), Memory later.
+  L1 map: read-only block cards + inter-block edges + task count badges; click block -> focus + open block detail panel.
+  Block detail panel tabs: Схема (L2 graph or stub), Задачи, Артефакты, Файлы, Memory (stub until Memory v1 export exists).
+  Breadcrumb: Проект -> {block title}; back action restores full L1 map; cross-block link opens neighbor block in focus mode.
+  Renderer MVP: zero-dependency SVG/HTML inside current UI server; later optional Cytoscape.js + Dagre for larger L2 graphs.
+Цель:
+  Architecture comprehension and task operations stay in separate but linked views sharing task detail drawer where appropriate.
+
+Метки:
+  atom.profile: prompt_rule
+  rule.id: architecture-drill-down-ux-v1
+  protocol.id: architecture-graph-model-v1
+  trace.status: verified
+]>

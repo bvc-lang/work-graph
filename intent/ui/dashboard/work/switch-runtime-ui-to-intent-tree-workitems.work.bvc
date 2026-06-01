@@ -1,0 +1,50 @@
+#Задача_switch_runtime_ui_to_intent_tree_workitems<[
+Базис:
+  migrate-backlog-to-intent-tree-files уже разложил 131 WorkItem в intent/**/work/*.work.bvc, но runtime, UI, daemon, agent прогнать persist и lint:backlog по-прежнему читают monolithic work/backlog.bvc как primary source.
+  Ручное редактирование двух канонов (backlog.bvc + intent files) создаёт drift; intent/index.bvc явно ждёт переключения readers на intent tree.
+Вектор:
+  Ввести readWorkItemsFromIntentTree(): glob intent/**/work/*.work.bvc + intent/index.bvc validation → parseWorkItems → buildSnapshot.
+  Переключить workGraphBacklogUiServer, agentRunApi persist, promote-ready, atom-inspector apply, daemon tick и CLI на canonical intent files; writes — patch одного *.work.bvc atom, не rewrite всего monolith.
+  work/backlog.bvc удалить из ручного канона; legacy compatibility остаётся только через explicit backlogPath в тестовых/внешних вызовах.
+Цель:
+  Один канон задач — intent tree files; backlog.bvc становится производной проекцией, snapshot equivalence сохраняется.
+Анализ:
+  Целесообразность:
+  Стоит завести «переключить runtime и UI на intent tree WorkItems» в бэклог.
+  Контекст и границы:
+  Ввести readWorkItemsFromIntentTree(): glob intent/**/work/*.work.bvc + intent/index.bvc validation → parseWorkItems → buildSnapshot.
+  Зависимости и готовность:
+  depends_on=define-backlog-schema-lint, implement-agent-run-backlog-persist, implement-work-item-promote-ready-mvp, migrate-backlog-to-intent-tree-files; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Один канон задач — intent tree files; backlog.bvc становится производной проекцией, snapshot equivalence сохраняется.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441129
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:37.714Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:37.724Z
+  work.decision.verdict: useful
+  work.department: devops-runtime
+  work.depends_on: migrate-backlog-to-intent-tree-files, define-backlog-schema-lint, implement-agent-run-backlog-persist, implement-work-item-promote-ready-mvp
+  work.id: switch-runtime-ui-to-intent-tree-workitems
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: integration_architect
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: high
+  work.status: done
+  work.target_files: src/intentTreeWorkItems.mjs, src/intentTreeMigration.mjs, src/workGraphBacklogUiServer.mjs, src/workGraphBacklogPersist.mjs, src/workGraphPromoteReadyApi.mjs, src/atomInspector.mjs, src/atomInspectorApi.mjs, src/intentComposerApi.mjs, src/agentRunApi.mjs, src/workGraphDaemonTick.mjs, src/workGraphRunnerQueueProjection.mjs, src/backlogSchemaLint.mjs, tests/workGraphRuntime.test.mjs, tests/backlogSchemaLint.test.mjs, tests/atomInspector.test.mjs, tests/workGraphBacklogUiServer.test.mjs, intent/index.bvc
+  work.title: переключить runtime и UI на intent tree WorkItems
+]>
+

@@ -1,0 +1,51 @@
+#Задача_implement_operator_agent_run_panel_mvp<[
+Базис:
+  После design Agent Run panel нужно дать оператору минимальную рабочую поверхность запуска worker-а из UI.
+  Задача «реализовать MVP оператор Agent Run panel» относится к контуру Work Graph rebuild и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: design-operator-agent-run-panel, implement-provider-selection-fallback-runtime.
+Вектор:
+  Добавить в бэклог UI вкладку или секцию "Агент": выбрать task из runner queue/backlog, выбрать provider local/openai, запустить one-shot worker прогнать через API, показать Worker Output и recent worker journal.
+  API должен использовать существующий agentWorkerLiveLoop/runWorkerWithProvider path и не давать клиенту прямого доступа к shell/file writes.
+  Покрыть HTML hooks/API tests без реальной LLM.
+Цель:
+  Оператор может запускать и наблюдать agent worker без CLI, сохраняя Work Graph как источник истины.
+Анализ:
+  Целесообразность:
+  Стоит завести «реализовать MVP оператор Agent Run panel» в бэклог.
+  Контекст и границы:
+  Добавить в бэклог UI вкладку или секцию "Агент": выбрать task из runner queue/backlog, выбрать provider local/openai, запустить one-shot worker прогнать через API, показать Worker Output и recent worker journal.
+  Зависимости и готовность:
+  depends_on=design-operator-agent-run-panel, implement-provider-selection-fallback-runtime; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Оператор может запускать и наблюдать agent worker без CLI, сохраняя Work Graph как источник истины.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441103
+  migration.strategy: replace
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:37.040Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:37.049Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: design-operator-agent-run-panel, implement-provider-selection-fallback-runtime
+  work.id: implement-operator-agent-run-panel-mvp
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: frontend_architect
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: src/agentRunApi.mjs, src/workGraphBacklogUiServer.mjs, tests/agentRunApi.test.mjs, tests/workGraphBacklogUiServer.test.mjs, work/backlog.bvc
+  work.title: реализовать MVP оператор Agent Run panel
+]>
+

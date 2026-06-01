@@ -1,0 +1,57 @@
+#Задача_gripe_dark_default_theme_json_and_css<[
+Базис:
+  marketplace-default: primaryRgb 245 158 11; workgraph-dark: dark surfaces.
+  Hybrid без копирования всего light marketplace UI.
+Вектор:
+  packages/design-tokens/tokens/themes/gripe-dark-default.json
+  build/tokens-to-css.mjs → generated/gripe-dark-default.css
+  npm run build:design-tokens; test asserts amber primary.
+Цель:
+  Один канонический Gripe-dark theme file в monorepo.
+Проверки:
+  gripe-dark-default.json валиден по schema
+  generated CSS содержит --brand-primary-rgb: 245 158 11
+  tests/design-tokens.test.mjs покрывает theme id
+Анализ:
+  Целесообразность:
+  Стоит завести «Theme gripe-dark-default: Gripe brand + WG dark shell (JSON + CSS)» в бэклог — по материалам AN-33 (work/analytics/gripe-ds-visual-default-wave3.md).
+  Контекст и границы:
+  packages/design-tokens/tokens/themes/gripe-dark-default.json
+  Зависимости и готовность:
+  depends_on=epic-gripe-ds-visual-default-wave3; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Один канонический Gripe-dark theme file в monorepo.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-33 (work/analytics/gripe-ds-visual-default-wave3.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-33
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/gripe-ds-visual-default-wave3.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T17:42:31.194Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T17:42:31.194Z
+  work.decision.verdict: useful
+  work.department: ui-dashboard
+  work.depends_on: epic-gripe-ds-visual-default-wave3
+  work.id: gripe-dark-default-theme-json-and-css
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: frontend_architect
+  work.parent_id: epic-gripe-ds-visual-default-wave3
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: low
+  work.status: done
+  work.target_files: packages/design-tokens/tokens/themes/gripe-dark-default.json, packages/design-tokens/generated/gripe-dark-default.css, packages/design-tokens/build/tokens-to-css.mjs, work/analytics/gripe-ds-visual-default-wave3.md
+  work.title: Theme gripe-dark-default: Gripe brand + WG dark shell (JSON + CSS)
+]>

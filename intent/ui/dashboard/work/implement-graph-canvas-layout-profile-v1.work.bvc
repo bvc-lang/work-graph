@@ -1,0 +1,52 @@
+#Задача_implement_graph_canvas_layout_profile_v1<[
+Базис:
+  Источник: analytics:graph-canvas-layout-mess (AN-1), блок C п.8 — auto-layout по умолчанию, manualOverrides для презентации.
+  Требует закрытого design-graph-canvas-layout-profile-v1 и рабочего layout engine (dagre/elk или graphCanvasLayout.mjs из блока B).
+Вектор:
+  Расширить buildArchitectureSnapshot / buildSchematicViewModel: читать layoutProfile из step labels или snapshot extension.
+  Применить layered layout + manualOverrides поверх node placement; убрать дубли POSITIONS где profile задан.
+  Единый graphCanvasLayout.mjs: rank → place → route hooks; Схема и Дорожная карта используют один profile pipeline.
+Цель:
+  UI рендерит graph canvas из snapshot с layoutProfile; override col/row сохраняется в каноне, не в localStorage.
+Анализ:
+  Целесообразность:
+  Стоит завести «реализовать layout profile v1 в snapshot и graph canvas engine» в бэклог — по материалам запись аналитики.
+  Контекст и границы:
+  Расширить buildArchitectureSnapshot / buildSchematicViewModel: читать layoutProfile из step labels или snapshot extension.
+  Зависимости и готовность:
+  depends_on=design-graph-canvas-layout-profile-v1; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  UI рендерит graph canvas из snapshot с layoutProfile; override col/row сохраняется в каноне, не в localStorage.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма запись аналитики; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Свидетельства:
+  - src/graphCanvasLayout.mjs + architecture/schematic integration
+
+Метки:
+  atom.profile: work_item
+  intake.source_kind: analytics-record
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:36.704Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-30T17:22:36.712Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: design-graph-canvas-layout-profile-v1
+  work.id: implement-graph-canvas-layout-profile-v1
+  work.next_action: —
+  work.owner_role: feature_engineer
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: high
+  work.status: done
+  work.target_files: src/graphCanvasLayout.mjs, src/architectureSnapshot.mjs, src/architectureLayout.mjs, src/schematicView.mjs, src/workGraphBacklogUiServer.mjs, tests/graphCanvasLayout.test.mjs, protocols/graph-canvas-layout-profile-v1.bvc
+  work.title: реализовать layout profile v1 в snapshot и graph canvas engine
+]>

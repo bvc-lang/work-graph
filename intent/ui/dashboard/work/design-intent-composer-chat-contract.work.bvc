@@ -1,0 +1,49 @@
+#Задача_design_intent_composer_chat_contract<[
+Базис:
+  Стратегический разбор показал разрыв между пользовательским намерением и Work Graph execution: пользователь должен сначала сформулировать замысел, а не сразу выбирать готовый WorkItem.
+  Свободный agent chat не должен становиться источник истины; результатом разговора должен быть structured черновик, который можно проверить и добавить в бэклог.
+Вектор:
+  Спроектировать раздел «Замысел»: conversational UI для формулирования намерения, но с обязательным output contract IntentDraft/StepAtomDraft.
+  Описать границы: chat transcript ephemeral, canonical output — WorkItem черновик в .bvc/backlog после explicit apply.
+Цель:
+  Пользователь может начать работу естественным языком, а система переводит разговор в проверяемую задачу Work Graph.
+Анализ:
+  Целесообразность:
+  Стоит завести «спроектировать контракт чата «Замысел» для намерений» в бэклог.
+  Контекст и границы:
+  Спроектировать раздел «Замысел»: conversational UI для формулирования намерения, но с обязательным output contract IntentDraft/StepAtomDraft.
+  Зависимости и готовность:
+  depends_on=design-draft-store-backlog-intake, design-step-parser-roundtrip; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Пользователь может начать работу естественным языком, а система переводит разговор в проверяемую задачу Work Graph.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441122
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:35.955Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:35.964Z
+  work.decision.verdict: useful
+  work.department: ui-dashboard
+  work.depends_on: design-draft-store-backlog-intake, design-step-parser-roundtrip
+  work.id: design-intent-composer-chat-contract
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: product_architect
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: protocols/intent-composer-chat-v1.bvc, protocols/workgraph-draft-intake.bvc, src/workGraphBacklogUiServer.mjs, work/backlog.bvc
+  work.title: спроектировать контракт чата «Замысел» для намерений
+]>
+

@@ -1,0 +1,56 @@
+#Задача_split_work_graph_core_commercial_packs_an42<[
+Базис:
+  AN-42: core app/MCP/CLI — Apache-2.0; OneBase/1С vertical pack, eval corpus, enterprise features — commercial.
+  Без границы monetization останется только «всё бесплатно» или «всё закрыто».
+Вектор:
+  Описать packages/commercial/* или отдельный private repo для vertical packs.
+  Eval corpus и customer fixtures — proprietary, не в public tarball.
+  README: open local audit layer; advanced domain packs — separately.
+Цель:
+  Понятно, что скачивает пользователь с GitHub/npm, а что покупает или получает по лицензии.
+Проверки:
+  Документ или ADR-приложение описывает core vs commercial packs
+  Eval corpus не попадает в public release artifacts
+  README формулирует open core без обещания всех vertical features
+Анализ:
+  Зачем:
+  AN-42: core app/MCP/CLI — Apache-2.0; OneBase/1С vertical pack, eval corpus, enterprise features — commercial.
+  Контекст: Без границы monetization останется только «всё бесплатно» или «всё закрыто».
+  Когда:
+  После готовности: epic-work-graph-open-publication, inventory-public-private-packages-an42.
+  Готово, когда:
+  Понятно, что скачивает пользователь с GitHub/npm, а что покупает или получает по лицензии.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: epic-work-graph-open-publication, inventory-public-private-packages-an42.
+
+Свидетельства:
+  - docs/publication-inventory-an42.md public/private/experimental
+  - experimental/README.md boundary
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-42
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/open-publication-technology-holdback-strategy.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-01T14:37:53.840Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-01T14:37:53.840Z
+  work.decision.verdict: useful
+  work.department: product-architecture
+  work.depends_on: epic-work-graph-open-publication, inventory-public-private-packages-an42
+  work.id: split-work-graph-core-commercial-packs-an42
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: system_architect
+  work.parent_id: epic-work-graph-open-publication
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: work/analytics/open-publication-technology-holdback-strategy.md, docs/plan-work-graph-open-publication.md, README.md
+  work.title: Разделить Work Graph core и коммерческие domain packs
+]>

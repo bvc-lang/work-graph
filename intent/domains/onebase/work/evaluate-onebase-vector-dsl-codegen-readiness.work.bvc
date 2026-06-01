@@ -1,0 +1,50 @@
+#Задача_evaluate_onebase_vector_dsl_codegen_readiness<[
+Базис:
+  defer-vector-dsl-codegen.bvc задаёт return triggers; оценка не проводилась.
+  Задача «Фаза 7: оценка готовности codegen VectorDSL→OneBase» относится к контуру Work Graph rebuild и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: phase-7-onebase-vertical.
+Вектор:
+  Чеклист: когда reopen codegen vs оставить defer.
+  Ближайший шаг исполнения: просмотреть и перевести в ready.
+Цель:
+  Явный gate перед port VectorDSL.
+  Готово, когда выполнены проверки: Чеклист с критериями reopen.
+Анализ:
+  Целесообразность:
+  Стоит завести «Фаза 7: оценка готовности codegen VectorDSL→OneBase» в бэклог.
+  Контекст и границы:
+  Чеклист: когда reopen codegen vs оставить defer.
+  Зависимости и готовность:
+  depends_on=phase-7-onebase-vertical; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Явный gate перед port VectorDSL.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  migration.strategy: defer
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:36.416Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:36.430Z
+  work.decision.verdict: useful
+  work.department: domain-onebase
+  work.depends_on: phase-7-onebase-vertical
+  work.id: evaluate-onebase-vector-dsl-codegen-readiness
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: domain_architect
+  work.pipeline_stage: decided
+  work.priority: low
+  work.risk: medium
+  work.status: done
+  work.target_files: domains/onebase/defer-vector-dsl-codegen.bvc, src/onebaseVectorDslCodegenReadiness.mjs, scripts/check-onebase-codegen-readiness.mjs, tests/onebaseVectorDslCodegenReadiness.test.mjs
+  work.title: Фаза 7: оценка готовности codegen VectorDSL→OneBase
+]>
+

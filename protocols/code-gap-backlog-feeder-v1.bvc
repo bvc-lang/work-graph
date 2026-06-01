@@ -1,0 +1,21 @@
+#Протокол_Code_Gap_Backlog_Feeder_V1<[
+Базис:
+  ioHasC code-gap analyzer (Phase 8) выдаёт CodeGapReport с untracked_export, orphaned_tur и missing_implementation entries.
+  Work Graph rebuild нужен controlled feeder: gap report → reviewable WorkItem draft suggestions, не auto-promotion в backlog.
+Вектор:
+  Input: code-gap.report.v1 (compatible with ../project analyzeCodeGaps summary + entries).
+  Output: code-gap.backlog-feed.v1 with suggestions[]:
+  - suggestedWorkId, title, targetFiles, confidence (high|medium|low), gapKind, reason, provenance.source=code-gap-analyzer
+  Promotion flow uses protocols/workgraph-draft-intake.bvc review gates.
+  defer-vector-dsl-to-onebase-codegen остаётся explicit defer; feeder не создаёт codegen tasks автоматически для Vector DSL.
+Цель:
+  Existing code без step coverage становится видимым в Work Graph queue как reviewable drafts.
+
+Метки:
+  atom.profile: prompt_rule
+  protocol.id: code-gap-backlog-feeder-v1
+  work.source: design-code-gap-backlog-feeder
+  migration.source_repo: ../project
+  migration.source_paths: src/scanner/codeGapAnalyzer.ts, scripts/code-gap-analyze.ts
+  trace.status: verified
+]>

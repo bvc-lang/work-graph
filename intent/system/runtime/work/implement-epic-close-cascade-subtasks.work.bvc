@@ -1,0 +1,46 @@
+#Задача_implement_epic_close_cascade_subtasks<[
+Базис:
+  Эпик может быть переведён в done (в т.ч. правкой .work.bvc), а подзадачи с work.parent_id остаются backlog — drift на доске и в lint.
+  Пример: epic-architecture-domains-l1-hierarchy done, 8 subtasks backlog.
+  Нужен канон: закрытие эпика закрывает всех потомков; reconcile для уже рассинхроненных пар.
+Вектор:
+  src/workItemEpicCascade.mjs — transitionWorkItemWithEpicCascade (MCP update/complete).
+  scripts/reconcile-epic-subtask-status.mjs + npm run reconcile:epic-subtasks для drift.
+  lint warning epic_done_open_children в workItemHierarchy.
+Цель:
+  Закрытие эпика через runtime автоматически закрывает подзадачи; drift ловится lint и чинится reconcile.
+Проверки:
+  tests/workItemEpicCascade.test.mjs green
+  npm run reconcile:epic-subtasks закрывает open children у done epics
+  updateWorkItemStatus/completeWorkItem возвращают cascadedChildIds
+Анализ:
+  Целесообразность:
+  Эпик — единица поставки; открытые subtasks при done epic ломают rollup и вводят оператора в заблуждение.
+  Контекст и границы:
+  Только item_kind epic; task/subtask parent gate без изменений; cascade evidence обязателен для done policy.
+Решение:
+  Вердикт: полезно
+  Реализовано: cascade при MCP close + reconcile script + lint warning.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-39
+  migration.strategy: rebuild
+  trace.status: verified
+  work.department: system-runtime
+  work.id: implement-epic-close-cascade-subtasks
+  work.item_kind: task
+  work.next_action: —
+  work.owner_role: integration_architect
+  work.pipeline_stage: closed
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: src/workItemEpicCascade.mjs, scripts/reconcile-epic-subtask-status.mjs, packages/workgraph-mcp/src/handlers.mjs, src/workItemHierarchy.mjs, tests/workItemEpicCascade.test.mjs
+  work.title: Epic done → cascade close всех подзадач (runtime + reconcile)
+
+Свидетельства:
+  - transitionWorkItemWithEpicCascade + reconcile:epic-subtasks
+  - tests/workItemEpicCascade.test.mjs
+  - npm run reconcile:epic-subtasks закрыл drift epic-architecture-domains-l1-hierarchy
+]>

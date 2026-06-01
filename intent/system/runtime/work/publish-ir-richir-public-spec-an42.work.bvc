@@ -1,0 +1,55 @@
+#Задача_publish_ir_richir_public_spec_an42<[
+Базис:
+  IR — машинный формат второго уровня (BVC → IR); AN-42 не позиционирует его как язык для оператора.
+  AN-9: нужны JSON Schema, conformance levels, EN-canon — опубликовать как draft/RFC.
+Вектор:
+  Draft spec ir-flow.v1 + RichIR fields — CC BY 4.0.
+  Reference validator/executor modules — Apache-2.0, отвязать от UI Work Graph где возможно.
+  README: «AI-agent workflow IR with BVC semantics», не universal language.
+Цель:
+  IR/RichIR можно интегрировать в сторонние tools без форка Work Graph UI.
+Проверки:
+  Draft IR spec опубликован с лицензией CC BY 4.0
+  Reference code помечен Apache-2.0
+  В docs явно: IR — машинный exchange format, не readable-формат
+Анализ:
+  Зачем:
+  IR — машинный формат второго уровня (BVC → IR); AN-42 не позиционирует его как язык для оператора.
+  Контекст: AN-9: нужны JSON Schema, conformance levels, EN-canon — опубликовать как draft/RFC.
+  Когда:
+  После готовности: epic-work-graph-open-publication, publish-bvc-open-standard-pack-an42.
+  Готово, когда:
+  IR/RichIR можно интегрировать в сторонние tools без форка Work Graph UI.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: epic-work-graph-open-publication, publish-bvc-open-standard-pack-an42.
+
+Свидетельства:
+  - packages/ir-spec/ draft schema ir.flow.v1
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-42
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/open-publication-technology-holdback-strategy.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-01T14:37:53.812Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-01T14:37:53.812Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: epic-work-graph-open-publication, publish-bvc-open-standard-pack-an42
+  work.id: publish-ir-richir-public-spec-an42
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: integration_architect
+  work.parent_id: epic-work-graph-open-publication
+  work.pipeline_stage: closed
+  work.priority: medium
+  work.risk: medium
+  work.status: done
+  work.target_files: work/analytics/open-publication-technology-holdback-strategy.md, work/analytics/ir-rich-ir-open-canon.md, schemas/
+  work.title: IR/RichIR: публичная draft spec и лицензии reference code
+]>

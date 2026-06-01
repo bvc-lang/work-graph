@@ -1,0 +1,55 @@
+#Задача_atomic_spec_organism_modal_gripe_parity<[
+Базис:
+  AN-21 modal.bvc marked ui.layer=atom but Gripe modal is organism.
+  Props: title, maxWidth, closeOnOverlay, contentPadding, z-index roles.
+Вектор:
+  packages/atomic-spec/organisms/modal.bvc — migrate from atoms/modal.bvc.
+  Deprecate atom modal spec or alias with trace note.
+Цель:
+  Spec layer matches Gripe x-ui.organisms.modal.
+Проверки:
+  organisms/modal.bvc exists with marketplace.blade pointer
+  docs-generator lists organism modal
+Анализ:
+  Целесообразность:
+  Стоит завести «atomic-spec: organism modal BVC (Gripe parity, fix atom mismatch)» в бэклог — по материалам AN-32 (work/analytics/gripe-ds-adoption-phase2-post-an21.md).
+  Контекст и границы:
+  packages/atomic-spec/organisms/modal.bvc — migrate from atoms/modal.bvc.
+  Зависимости и готовность:
+  depends_on=epic-gripe-ds-adoption-phase2, atomic-spec-five-base-atoms; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Spec layer matches Gripe x-ui.organisms.modal.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-32 (work/analytics/gripe-ds-adoption-phase2-post-an21.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-32
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/gripe-ds-adoption-phase2-post-an21.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-05-31T17:04:02.497Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T17:04:02.497Z
+  work.decision.verdict: useful
+  work.department: ui-dashboard
+  work.depends_on: epic-gripe-ds-adoption-phase2, atomic-spec-five-base-atoms
+  work.id: atomic-spec-organism-modal-gripe-parity
+  work.item_kind: subtask
+  work.next_action: closed with evidence
+  work.owner_role: frontend_architect
+  work.parent_id: epic-gripe-ds-adoption-phase2
+  work.pipeline_stage: closed
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: packages/atomic-spec/organisms/modal.bvc, packages/atomic-spec/atoms/modal.bvc, ../../04 Marketplace/resources/views/components/ui/organisms/modal.blade.php, work/analytics/gripe-ds-adoption-phase2-post-an21.md
+  work.title: atomic-spec: organism modal BVC (Gripe parity, fix atom mismatch)
+]>

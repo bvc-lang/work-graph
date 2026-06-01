@@ -1,0 +1,21 @@
+#!bvc lang=ru
+#Atom_text_input<[
+Базис:
+  Marketplace `<x-ui.atoms.text-input>` и search boxes в molecules.
+Вектор:
+  Props: name, type, value, placeholder, disabled, autocomplete.
+  Focus ring через --ui-focus-ring-rgb.
+Цель:
+  Единый input для форм atom inspector и ui-kit.
+
+Проверки:
+  focus outline использует semantic token
+  atom inspector может reuse renderUiTextInput
+
+Метки:
+  atom.profile: ui_component
+  ui.layer: atom
+  ui.id: text-input
+  ui.workgraph.module: src/ui/atoms/input.mjs
+  trace.status: verified
+]>

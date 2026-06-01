@@ -1,0 +1,50 @@
+#Задача_run_mandatory_prompt_eval_fixtures<[
+Базис:
+  Phase 8 завершена на уровне протоколов; mandatory fixtures ещё не прогнаны как release gate.
+  Задача «прогнать mandatory prompt-eval fixtures phase-8» относится к контуру платформы агента и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: phase-8-agent-prompt-eval-tools.
+Вектор:
+  Выполнить mandatory catalog из buildPromptEvalWorkGraphFixtureCatalog без optional live LLM.
+  Ближайший шаг исполнения: просмотреть и перевести в ready.
+Цель:
+  Mandatory prompt-eval fixtures зелёные в ci:mandatory tier.
+  Готово, когда выполнены проверки: mandatory fixtures pass.
+Анализ:
+  Целесообразность:
+  Стоит завести «прогнать mandatory prompt-eval fixtures phase-8» в бэклог.
+  Контекст и границы:
+  Выполнить mandatory catalog из buildPromptEvalWorkGraphFixtureCatalog без optional live LLM.
+  Зависимости и готовность:
+  depends_on=phase-8-agent-prompt-eval-tools; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Mandatory prompt-eval fixtures зелёные в ci:mandatory tier.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:37.681Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:37.689Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: phase-8-agent-prompt-eval-tools
+  work.id: run-mandatory-prompt-eval-fixtures
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: agent_platform_architect
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: protocols/prompt-eval-workgraph-flows-v1.bvc, scripts/run-optional-golden-path-llm-eval.mjs, tests/workGraphToolSurfaceAudit.test.mjs
+  work.title: прогнать mandatory prompt-eval fixtures phase-8
+]>
+

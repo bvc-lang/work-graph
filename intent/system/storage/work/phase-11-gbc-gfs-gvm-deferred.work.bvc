@@ -1,0 +1,51 @@
+#Задача_phase_11_gbc_gfs_gvm_deferred<[
+Базис:
+  GBC/GFS/GVM/Genesis — ценные R&D-слои ioHasC, но пересобрать MVP явно отложил их за пределы acceptance.
+  Задача «Фаза 11: deferred track GBC/GFS/GVM» относится к контуру Work Graph rebuild и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: phase-10-ci-e2e-release-gates.
+Вектор:
+  Вести их как deferred track: intent graph GBC slice, evidence health summary, GFS overlay, optional GVM verify step и cache invalidation policy.
+  Ближайший шаг исполнения: —.
+Цель:
+  Runtime research остаётся видимым, но не блокирует поставку Work Graph OS.
+  Готово, когда выполнены проверки: deferred runtime tasks видимы, но не являются MVP blockers.
+Анализ:
+  Целесообразность:
+  Стоит завести «Фаза 11: deferred track GBC/GFS/GVM» в бэклог.
+  Контекст и границы:
+  Вести их как deferred track: intent graph GBC slice, evidence health summary, GFS overlay, optional GVM verify step и cache invalidation policy.
+  Зависимости и готовность:
+  depends_on=phase-10-ci-e2e-release-gates; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Runtime research остаётся видимым, но не блокирует поставку Work Graph OS.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441061
+  migration.strategy: defer
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:37.437Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:37.445Z
+  work.decision.verdict: useful
+  work.department: devops-runtime
+  work.depends_on: phase-10-ci-e2e-release-gates
+  work.id: phase-11-gbc-gfs-gvm-deferred
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: system_architect
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: high
+  work.status: done
+  work.target_files: protocols/intent-graph-gbc-slice-boundary-v1.bvc, protocols/gfs-overlay-project-passport-v1.bvc, src/intentGraphGbcSliceBoundary.mjs, src/gfsOverlayProjectPassport.mjs, docs/plan-iohasc-full-rebuild-backlog.md, work/backlog.bvc
+  work.title: Фаза 11: deferred track GBC/GFS/GVM
+]>
+

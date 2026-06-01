@@ -1,0 +1,39 @@
+{
+  "schema": "workgraph.agent-scenario-matrix.v1",
+  "description": "Deterministic MCP stdio scenarios for Work Graph agent flows (no Playwright orchestrator port).",
+  "transport": "stdio",
+  "scenarios": [
+    {
+      "id": "W1",
+      "title": "Read current cycle",
+      "tool": "get_current_cycle",
+      "arguments": {},
+      "expectSchema": "workgraph.current-cycle.v1",
+      "expectReadyQueue": ["matrix-ready"]
+    },
+    {
+      "id": "W2",
+      "title": "Claim ready WorkItem",
+      "tool": "claim_work_item",
+      "arguments": { "workId": "matrix-ready", "claimRunId": "matrix-w2" },
+      "expectField": "newStatus",
+      "expectValue": "doing"
+    },
+    {
+      "id": "W3",
+      "title": "Append evidence line",
+      "tool": "add_work_item_evidence",
+      "arguments": { "workId": "matrix-ready", "evidence": "matrix W3 evidence line" },
+      "expectField": "evidenceCount",
+      "expectMin": 1
+    },
+    {
+      "id": "W4",
+      "title": "Semantic search lexical mode",
+      "tool": "semantic_search",
+      "arguments": { "query": "matrix ready", "mode": "lexical-v1", "limit": 5 },
+      "expectSchema": "semantic-search.result.v1",
+      "expectHitWorkId": "matrix-ready"
+    }
+  ]
+}

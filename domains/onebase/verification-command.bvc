@@ -1,0 +1,82 @@
+#Команда_OneBase_Golden_Path_Verification<[
+Базис:
+  OneBase golden path changes real posting behavior, so done requires deterministic evidence, not only a design note.
+  The current environment may not have Go in PATH, therefore tool availability must be checked before interpreting verification failure.
+Вектор:
+  Primary command: go test ./...
+  Working directory: ../onebase
+  Timeout: 120s for local agent execution; if the command exceeds the timeout, record it as timeout evidence with the last available output lines.
+  Preflight command: go version
+  Policy: run go version first. If it exits 0, run go test ./... from ../onebase. If go version is missing or exits non-zero, do not claim OneBase verification passed or failed; record blocked evidence with the preflight command, exit code/output and PATH caveat.
+Цель:
+  Use one stable gate for the OneBase golden path until a narrower business scenario test exists.
+
+Проверки:
+  command validates that OneBase Go packages compile
+  command validates existing parser, metadata loader, runtime, storage and UI tests
+  project.Load parses .yaml and .os files through the DSL parser, so syntax regressions in posting scripts are covered when package tests exercise project loading
+  command does not by itself prove gross-profit-by-warehouse behavior until a targeted fixture/test is added
+
+Метки:
+  atom.profile: trace
+  domain.id: onebase
+  verification.id: onebase-golden-path-command
+  verification.primary_command: go test ./...
+  verification.preflight_command: go version
+  verification.cwd: ../onebase
+  verification.timeout_seconds: 120
+  work.source: onebase-verification-command
+  trace.status: verified
+]>
+
+#Evidence_Format<[
+Базис:
+  Work Graph evidence must be short enough for the backlog while still proving what was checked.
+Вектор:
+  Success evidence format: command, cwd, timeout, exit_code=0, concise summary of package/test result, relevant artifact refs and timestamp.
+  Failure evidence format: command, cwd, timeout, non-zero exit code, failing package or first actionable error, relevant artifact refs and timestamp.
+  Blocked evidence format: preflight command, cwd, exit code/output showing Go is unavailable or unusable, note that primary command was not run, and next environment action.
+  Evidence should be recorded on the WorkItem as a Свидетельства line and trace.status can become verified only after the artifact exists and Work Graph npm test passes.
+Цель:
+  Operators can distinguish code failure from environment blockage.
+
+Метки:
+  atom.profile: trace
+  verification.id: onebase-golden-path-command
+  evidence.kind: command
+  trace.status: verified
+]>
+
+#Validated_Artifacts<[
+Базис:
+  The command is repository-wide, but the golden path needs explicit OneBase artifact coverage.
+Вектор:
+  Validates baseline OneBase module and tests through ../onebase/go.mod.
+  Validates DSL parser behavior through package tests around ../onebase/internal/dsl/parser/parser.go.
+  Validates CLI/runtime compile surface through packages including ../onebase/internal/cli/run.go.
+  Relevant golden path artifacts remain ../onebase/examples/trade/documents/реализация_товаров.yaml, ../onebase/examples/trade/src/реализациятоваров.posting.os, ../onebase/examples/trade/registers/валовая_прибыль.yaml and downstream gross-profit report/widget files.
+Цель:
+  The command is a compile/test gate for the OneBase repo and a syntax/runtime safety gate for the scenario, not yet the final business assertion.
+
+Метки:
+  atom.profile: trace
+  verification.id: onebase-golden-path-command
+  onebase.rule: gross-profit-by-warehouse
+  trace.status: verified
+]>
+
+#Next_Implementation_Task<[
+Базис:
+  go test ./... is the correct MVP gate, but the chosen business rule still needs a focused assertion before implementation can be considered complete.
+Вектор:
+  Add a targeted OneBase test or fixture that posts two РеализацияТоваров documents for the same Номенклатура from different Склад values and asserts ВаловаяПрибыль can be separated by Склад while total Выручка, Себестоимость and gross profit remain unchanged.
+  The implementation task should update the ВаловаяПрибыль register schema, posting script and report/query surface together with that test.
+Цель:
+  Move from repository health verification to the actual gross-profit-by-warehouse golden path.
+
+Метки:
+  atom.profile: work_item
+  work.next_action: onebase-posting-rule-golden-path
+  verification.id: onebase-golden-path-command
+  trace.status: verified
+]>

@@ -1,0 +1,93 @@
+#Протокол_Memory_Contract_V1<[
+Базис:
+  define-memory-contract задаёт границы памяти до полной реализации writers/readers; protocols/project-memory-v1.bvc уже описывает MemoryRecord v1 kinds and lifecycle.
+  Memory must not become prompt stuffing or hidden chat transcript storage.
+Вектор:
+  Разделить storage roles: source_of_truth (.bvc memory atoms + Work Graph), derived_cache (JSON snapshot/export), session_runtime (provider transient context), external_evidence (command logs, test reports, imported artifacts).
+  Описать write events: done/verified task, worker-run evidence, verification result, blocker resolution, explicit human decision, domain adapter import.
+  Описать context budget: memorySlice for agent worker is bounded by record count, char budget and type priority (invariants/decisions > domain facts > open questions).
+Цель:
+  Агент получает полезную память проекта без чтения всего репозитория.
+
+Проверки:
+  есть список memory entity
+  есть write policy
+  есть context budget policy
+
+Метки:
+  atom.profile: architecture_decision
+  protocol.id: memory-contract-v1
+  work.source: define-memory-contract
+  trace.status: verified
+]>
+
+#Storage_Roles<[
+Базис:
+  Смешение canonical state и cache снова приводит к non-rebuildable agent context.
+Вектор:
+  source_of_truth: .bvc Work Graph atoms and Project Memory atoms; human-readable authoring; only policy-gated transitions change task status.
+  derived_cache: workgraph.snapshot.v1, operator-dashboard.snapshot.v1, verification.summary.v1, future graph/RAG JSON; rebuildable from .bvc canon.
+  session_runtime: provider conversation, tool call scratchpad, partial patches; ephemeral; never required to reconstruct done/blocked state.
+  external_evidence: command stdout/stderr summaries, test reports, diff artifacts; referenced by Evidence Record v1 and summarized in memory evidence-summary types.
+Цель:
+  Each layer has one authority and a rebuild path.
+
+Метки:
+  atom.profile: trace
+  contract.id: memory-storage-roles-v1
+  protocol.id: memory-contract-v1
+  trace.status: verified
+]>
+
+#Write_Policy<[
+Базис:
+  Memory writes must trace back to Work Graph events, not model improvisation.
+Вектор:
+  Write on: task transition to done/verified with evidence; successful/failed verification command; worker-run with structured output; human manual-review approval; domain adapter structured import.
+  Do not write on: casual chat, unverified model claims, full file copies, raw provider transcripts.
+  New records default to draft or needs-review unless evidenceIds and sourceWorkItem are present and verification passed.
+  Supersede/retire instead of silent delete when decision or invariant changes.
+Цель:
+  Memory accumulates durable context with provenance.
+
+Метки:
+  atom.profile: prompt_rule
+  rule.id: memory-write-policy-v1
+  protocol.id: memory-contract-v1
+  trace.status: verified
+]>
+
+#Context_Budget_Policy<[
+Базис:
+  Unbounded memory slice defeats the purpose of structured Project Memory.
+Вектор:
+  Default agent memorySlice limits: max 12 records, max 4000 chars total summary text, max 8 relatedFiles refs.
+  Priority order when truncating: invariant, decision, architecture-fact, domain-fact, evidence-summary, risk, open-question, provider-capability, user-preference.
+  Include only records linked to current task id, targetFiles overlap, or explicit operator focus tags.
+  Session_runtime and derived_cache full dumps never injected wholesale into Worker Input v1.
+Цель:
+  Agent context stays bounded and relevant to current WorkItem.
+
+Метки:
+  atom.profile: prompt_rule
+  rule.id: memory-context-budget-v1
+  protocol.id: memory-contract-v1
+  trace.status: verified
+]>
+
+#Memory_Entity_Summary<[
+Базис:
+  define-memory-contract needs a concise entity list aligned with project-memory-v1.
+Вектор:
+  Entities map to MemoryRecord v1 types: decision, invariant, domain-fact, architecture-fact, risk, open-question, evidence-summary, provider-capability, user-preference.
+  Each entity requires id, type, summary, sourceWorkItem, status, confidence, updatedAt; optional evidenceIds, relatedFiles, relatedTasks, BVC links.
+  Writers and readers contracts detailed in protocols/project-memory-v1.bvc; this contract fixes boundaries and budgets only.
+Цель:
+  Single vocabulary for memory tasks, dashboard and agent worker without duplicate models.
+
+Метки:
+  atom.profile: trace
+  contract.id: memory-entity-summary-v1
+  protocol.id: memory-contract-v1
+  trace.status: verified
+]>

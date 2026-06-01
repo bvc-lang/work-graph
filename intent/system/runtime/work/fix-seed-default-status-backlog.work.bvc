@@ -1,0 +1,62 @@
+#Задача_fix_seed_default_status_backlog<[
+Базис:
+  Seed-скрипты ставят status: doing при создании — обход ready→claim (AN-25 §2.3).
+  ux-mission-control-p0 и bvc-tooling-external seed — примеры anti-pattern.
+Вектор:
+  Обновить scripts/seed-*.mjs: default status backlog.
+  Опциональный флаг --activate-ready только после operator review (document in script header).
+  Этот seed (seed-epic-agent-workgraph-enforcement) — этalon с backlog.
+Цель:
+  Новые work items из seed не попадают на доску как doing без явного review.
+Проверки:
+  grep seed scripts: нет status: doing без комментария opt-in
+  npm run seed:epic-agent-workgraph-enforcement создаёт backlog items
+Анализ:
+  Целесообразность:
+  Стоит завести «seed scripts: default work.status backlog (не doing)» в бэклог — по материалам AN-25 (work/analytics/agent-bypass-work-graph-dual-backlog.md).
+  Контекст и границы:
+  Обновить scripts/seed-*.mjs: default status backlog.
+  Зависимости и готовность:
+  depends_on=epic-agent-workgraph-enforcement; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Новые work items из seed не попадают на доску как doing без явного review.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-25 (work/analytics/agent-bypass-work-graph-dual-backlog.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Свидетельства:
+  - scripts/seed-ux-mission-control-p0.mjs — status backlog (10 items)
+  - scripts/seed-bvc-tooling-external.mjs — status backlog (4 items)
+  - scripts/seed-bvc-phase2-new-write.mjs — status backlog (4 items)
+  - grep scripts/seed-*.mjs: нет status doing кроме комментариев
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-25
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/agent-bypass-work-graph-dual-backlog.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T12:17:11.959Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T12:17:11.959Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: epic-agent-workgraph-enforcement
+  work.id: fix-seed-default-status-backlog
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: integration_architect
+  work.parent_id: epic-agent-workgraph-enforcement
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: low
+  work.status: done
+  work.target_files: scripts/seed-epic-agent-workgraph-enforcement.mjs, scripts/seed-ux-mission-control-p0.mjs, scripts/seed-bvc-tooling-external.mjs
+  work.title: seed scripts: default work.status backlog (не doing)
+]>

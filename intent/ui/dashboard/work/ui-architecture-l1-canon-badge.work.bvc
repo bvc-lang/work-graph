@@ -1,0 +1,54 @@
+#Задача_ui_architecture_l1_canon_badge<[
+Базис:
+  AN-35: operator visibility of canon freshness.
+Вектор:
+  Badge in architecture list panel header from snapshot.l1Canon.
+  Tooltip: source path + digest short.
+Цель:
+  Оператор видит версию L1 канона без открытия файла.
+Проверки:
+  badge renders when l1Canon present
+  hidden/degraded when snapshot loading
+Анализ:
+  Целесообразность:
+  Стоит завести «UI: Architecture list header canon version/digest badge» в бэклог — по материалам AN-36 (work/analytics/architecture-main-bvc-canon-hub.md).
+  Контекст и границы:
+  Badge in architecture list panel header from snapshot.l1Canon.
+  Зависимости и готовность:
+  depends_on=epic-architecture-main-bvc-canon, ui-architecture-block-drawer-bvc; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Оператор видит версию L1 канона без открытия файла.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-36 (work/analytics/architecture-main-bvc-canon-hub.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-36
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/architecture-main-bvc-canon-hub.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T21:27:08.573Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T21:27:08.573Z
+  work.decision.verdict: useful
+  work.department: ui-dashboard
+  work.depends_on: epic-architecture-main-bvc-canon, ui-architecture-block-drawer-bvc
+  work.id: ui-architecture-l1-canon-badge
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: frontend_architect
+  work.parent_id: epic-architecture-main-bvc-canon
+  work.pipeline_stage: closed
+  work.priority: low
+  work.risk: low
+  work.status: done
+  work.target_files: src/workGraphBacklogUiServer.mjs, work/analytics/architecture-main-bvc-canon-hub.md
+  work.title: UI: Architecture list header canon version/digest badge
+]>

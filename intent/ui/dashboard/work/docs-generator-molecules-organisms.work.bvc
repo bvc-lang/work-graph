@@ -1,0 +1,55 @@
+#Задача_docs_generator_molecules_organisms<[
+Базис:
+  generateComponentCatalog.mjs scans atoms/ only.
+Вектор:
+  Scan packages/atomic-spec/{molecules,organisms}/.
+  Group sections in docs/ui/components.md by layer.
+  npm run docs:components in CI optional step.
+Цель:
+  Unified catalog mirrors Gripe docs/ui/components.md structure.
+Проверки:
+  docs/ui/components.md lists molecules and organisms
+  tests or snapshot for generator output
+Анализ:
+  Целесообразность:
+  Стоит завести «docs-generator v2: molecules + organisms in components.md» в бэклог — по материалам AN-32 (work/analytics/gripe-ds-adoption-phase2-post-an21.md).
+  Контекст и границы:
+  Scan packages/atomic-spec/{molecules,organisms}/.
+  Зависимости и готовность:
+  depends_on=epic-gripe-ds-adoption-phase2, atomic-spec-molecules-rating-tabs, atomic-spec-organism-modal-gripe-parity; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Unified catalog mirrors Gripe docs/ui/components.md structure.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-32 (work/analytics/gripe-ds-adoption-phase2-post-an21.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-32
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/gripe-ds-adoption-phase2-post-an21.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-05-31T17:04:02.524Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T17:04:02.524Z
+  work.decision.verdict: useful
+  work.department: ui-dashboard
+  work.depends_on: epic-gripe-ds-adoption-phase2, atomic-spec-molecules-rating-tabs, atomic-spec-organism-modal-gripe-parity
+  work.id: docs-generator-molecules-organisms
+  work.item_kind: subtask
+  work.next_action: closed with evidence
+  work.owner_role: frontend_architect
+  work.parent_id: epic-gripe-ds-adoption-phase2
+  work.pipeline_stage: closed
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: packages/docs-generator/generateComponentCatalog.mjs, docs/ui/components.md, work/analytics/gripe-ds-adoption-phase2-post-an21.md
+  work.title: docs-generator v2: molecules + organisms in components.md
+]>

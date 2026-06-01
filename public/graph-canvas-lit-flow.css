@@ -1,0 +1,154 @@
+flow-canvas{--flow-background-color: #fafafa;--flow-grid-color: #e0e0e0;--flow-node-background: #ffffff;--flow-node-border: #dddddd;--flow-node-selected-border: #1a73e8;--flow-edge-color: #b1b1b7;--flow-edge-selected-color: #1a73e8;--flow-handle-color: #555555;--flow-handle-border-color: #ffffff}flow-canvas[theme=dark]{--flow-background-color: #1a1a1a;--flow-grid-color: #333333;--flow-node-background: #2a2a2a;--flow-node-border: #444444;--flow-node-selected-border: #4a9eff;--flow-edge-color: #666666;--flow-edge-selected-color: #4a9eff;--flow-handle-color: #888888;--flow-handle-border-color: #2a2a2a}.flow-dragging{cursor:grabbing!important}.flow-selecting{cursor:crosshair!important}flow-node:focus,flow-edge:focus{outline:2px solid var(--flow-node-selected-border);outline-offset:2px}@keyframes flow-pulse{0%,to{opacity:1}50%{opacity:.5}}.flow-animated{animation:flow-pulse 1.5s ease-in-out infinite}
+
+/* Work Graph overrides for lit-flow chrome inside backlog UI */
+
+.graph-canvas-lit-flow-host {
+  --wg-graph-node-bg: #ffffff;
+  --wg-graph-node-border: #dfe1e6;
+  --wg-graph-node-text: #172b4d;
+  --wg-graph-node-subtext: #5e6c84;
+  --wg-graph-node-hover-border: #c1c7d0;
+  --wg-graph-node-selected-border: #0052cc;
+  --wg-graph-node-rejected-bg: #f4f5f7;
+  --wg-graph-node-selected-bg: linear-gradient(180deg, #deebff 0%, #ffffff 72%);
+  --wg-graph-layer-bg: rgba(9, 30, 66, 0.05);
+  --wg-graph-layer-border: rgba(9, 30, 66, 0.1);
+  --wg-graph-badge-bg: #f4f5f7;
+  --wg-graph-badge-border: #dfe1e6;
+  --wg-graph-badge-done-bg: #e3fcef;
+  --wg-graph-badge-done-border: #abf5d1;
+  --wg-graph-badge-done-text: #006644;
+  --wg-graph-badge-doing-bg: #fff7d6;
+  --wg-graph-badge-doing-border: #f0c36d;
+  --wg-graph-badge-doing-text: #7a4f01;
+  --wg-graph-badge-ready-bg: #deebff;
+  --wg-graph-badge-ready-border: #85b8ff;
+  --wg-graph-badge-ready-text: #0052cc;
+  --wg-graph-badge-blocked-bg: #ffebe6;
+  --wg-graph-badge-blocked-border: #ffbdad;
+  --wg-graph-badge-blocked-text: #bf2600;
+  --wg-graph-tone-question: #0052cc;
+  --wg-graph-tone-analysis: #5b21b6;
+  --wg-graph-tone-decision: #9a6700;
+  --wg-graph-tone-work: #1a7f37;
+  --wg-graph-tone-architecture: #0052cc;
+}
+
+.graph-canvas-lit-flow-host[data-graph-theme='dark'],
+body[data-theme='dark'] .graph-canvas-lit-flow-host {
+  --wg-graph-node-bg: #252526;
+  --wg-graph-node-border: #3c3c3c;
+  --wg-graph-node-text: #e0e0e0;
+  --wg-graph-node-subtext: #9d9d9d;
+  --wg-graph-node-hover-border: #4a4a4a;
+  --wg-graph-node-selected-border: #0066ff;
+  --wg-graph-node-rejected-bg: #1f1f1f;
+  --wg-graph-node-selected-bg: linear-gradient(180deg, #1a2940 0%, #252526 72%);
+  --wg-graph-layer-bg: rgba(255, 255, 255, 0.05);
+  --wg-graph-layer-border: rgba(255, 255, 255, 0.08);
+  --wg-graph-badge-bg: #2d2d30;
+  --wg-graph-badge-border: #3c3c3c;
+  --wg-graph-badge-done-bg: #173b2b;
+  --wg-graph-badge-done-border: #2f6f4f;
+  --wg-graph-badge-done-text: #b5f2cf;
+  --wg-graph-badge-doing-bg: #3d2e12;
+  --wg-graph-badge-doing-border: #7a5a16;
+  --wg-graph-badge-doing-text: #ffd599;
+  --wg-graph-badge-ready-bg: #17324d;
+  --wg-graph-badge-ready-border: #24517a;
+  --wg-graph-badge-ready-text: #cce0ff;
+  --wg-graph-badge-blocked-bg: #4a1f1a;
+  --wg-graph-badge-blocked-border: #8f3328;
+  --wg-graph-badge-blocked-text: #ffb3b3;
+  --wg-graph-tone-question: #4d9fff;
+  --wg-graph-tone-analysis: #a371f7;
+  --wg-graph-tone-decision: #f0ad4e;
+  --wg-graph-tone-work: #2ea043;
+  --wg-graph-tone-architecture: #569cd6;
+}
+
+.graph-canvas-lit-flow-shell flow-canvas[theme='dark'] {
+  --flow-background-color: #1e1e1e;
+  --flow-grid-color: #3c3c3c;
+  --flow-edge-color: #858585;
+  --flow-edge-selected-color: #0066ff;
+  --flow-node-selected-border: #0066ff;
+}
+
+.graph-canvas-lit-flow-shell flow-canvas[theme='light'] {
+  --flow-background-color: #f4f5f7;
+  --flow-grid-color: #dfe1e6;
+  --flow-edge-color: #97a0af;
+  --flow-edge-selected-color: #0052cc;
+  --flow-node-selected-border: #0052cc;
+}
+
+.graph-canvas-lit-flow-host:focus-visible {
+  outline: 2px solid var(--accent, #0066ff);
+  outline-offset: 2px;
+}
+
+.graph-canvas-lit-flow-host .empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--muted, #9d9d9d);
+  font-size: 13px;
+}
+
+.graph-canvas-minimap-host {
+  bottom: 12px;
+  pointer-events: auto;
+  position: absolute;
+  right: 12px;
+  z-index: 4;
+}
+
+.graph-canvas-minimap {
+  background: var(--wg-graph-minimap-bg, #ffffff);
+  border: 1px solid var(--wg-graph-minimap-border, #dfe1e6);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+  height: 108px;
+  opacity: 0.94;
+  overflow: hidden;
+  width: 168px;
+}
+
+.graph-canvas-minimap[data-theme='dark'] {
+  --wg-graph-minimap-bg: #252526;
+  --wg-graph-minimap-border: #3c3c3c;
+  --wg-graph-minimap-node-fill: #3c3c3c;
+  --wg-graph-minimap-node-stroke: #569cd6;
+  --wg-graph-minimap-viewport-stroke: #0066ff;
+  --wg-graph-minimap-viewport-fill: rgba(0, 102, 255, 0.14);
+}
+
+.graph-canvas-minimap[data-theme='light'] {
+  --wg-graph-minimap-bg: #ffffff;
+  --wg-graph-minimap-border: #dfe1e6;
+  --wg-graph-minimap-node-fill: #ebecf0;
+  --wg-graph-minimap-node-stroke: #97a0af;
+  --wg-graph-minimap-viewport-stroke: #0052cc;
+  --wg-graph-minimap-viewport-fill: rgba(0, 82, 204, 0.12);
+}
+
+.graph-canvas-minimap-node {
+  fill: var(--wg-graph-minimap-node-fill, #ebecf0);
+  stroke: var(--wg-graph-minimap-node-stroke, #97a0af);
+  stroke-width: 1;
+}
+
+.graph-canvas-minimap-viewport {
+  fill: var(--wg-graph-minimap-viewport-fill, rgba(0, 82, 204, 0.12));
+  stroke: var(--wg-graph-minimap-viewport-stroke, #0052cc);
+  stroke-width: 1.5;
+}
+
+.graph-canvas-svg-edge-labels .graph-canvas-edge-label {
+  pointer-events: none;
+  position: absolute;
+  white-space: nowrap;
+}

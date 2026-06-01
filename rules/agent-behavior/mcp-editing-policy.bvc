@@ -1,0 +1,59 @@
+#Правило_MCP_Read_Guardrails<[
+Базис:
+  Work Graph MCP agent читает backlog через get_work_item, get_unified_linkage, get_pvrg_task_scope и semantic_search — без Monaco readFile по всему дереву.
+  ioHasC guardrails «fact before claim» переносятся на MCP read surface.
+Вектор:
+  Не утверждай статус WorkItem, наличие evidence или содержимое target_files, пока не вызван соответствующий MCP read tool и ответ процитирован кратко.
+  Для audit/overview — list_work_items + get_work_item по id; не выдумывай work.id и не claim без get_current_cycle / list_work_items.
+  PVRG/ linkage выводы — только из get_pvrg_task_scope / get_unified_linkage JSON, без выдуманных путей из id узла.
+Цель:
+  MCP agent остаётся evidence-bound как orchestrator ioHasC, но без IDE file tree.
+
+Метки:
+  guid: 550e8400-e29b-41d4-a716-446655443201
+  atom.profile: prompt_rule
+  rule.id: mcp-read-guardrails
+  bundle.group: mcp
+  migration.source: ../project/rules/agent-behavior/tool-rules-migrated.step#Надёжное_Рассуждение_Guardrails
+  trace.status: verified
+]>
+
+#Правило_MCP_Loop_Planning<[
+Базис:
+  Повтор одинакового MCP tool call с теми же arguments бесполезен; ioHasC orchestrator возвращает LOOP_HINT.
+  Work Graph eval: agentToolLoopGuard + optional live rubric.
+Вектор:
+  После LOOP_HINT или claim_lease_active — смени стратегию: другой workId, update_work_item_status, add_work_item_evidence или текст оператору.
+  Не повторяй claim_work_item с тем же workId и claimRunId после отказа lease.
+  План multi-step: get_current_cycle → claim → evidence → complete; между шагами не дублируй get_current_cycle без новой фазы.
+Цель:
+  MCP flows не зацикливаются на идентичных вызовах.
+
+Метки:
+  guid: 550e8400-e29b-41d4-a716-446655443202
+  atom.profile: prompt_rule
+  rule.id: mcp-loop-planning
+  bundle.group: mcp
+  migration.source: ../project/rules/agent-behavior/tool-rules-migrated.step#Планирование_И_Инструменты
+  trace.status: verified
+]>
+
+#Правило_MCP_Editing_Policy<[
+Базис:
+  Work Graph MCP мутирует backlog atoms (status, evidence, create_work_item), не Monaco writeFile по src/.
+  Worker live-loop остаётся task-bound с policy allowFileWrite.
+Вектор:
+  Для изменений backlog — только MCP write tools (update_work_item_status, add_work_item_evidence, complete_work_item, create_work_item).
+  Не утверждай «задача закрыта» без successful complete_work_item или verified transition + evidence lines.
+  Если пользователь просит только read/explain — не вызывай write tools; допустимы read/list/search tools.
+Цель:
+  Разделение read vs mutate parity с «режимом разработчика» ioHasC, адаптировано под headless MCP.
+
+Метки:
+  guid: 550e8400-e29b-41d4-a716-446655443203
+  atom.profile: prompt_rule
+  rule.id: mcp-editing-policy
+  bundle.group: mcp
+  migration.source: ../project/rules/agent-behavior/tool-rules-migrated.step#Режим_По_Умолчанию_Разработчик
+  trace.status: verified
+]>

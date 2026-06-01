@@ -1,0 +1,4 @@
+name: Номенклатура
+fields:
+  - { name: Наименование, type: string }
+  - { name: Артикул, type: string }

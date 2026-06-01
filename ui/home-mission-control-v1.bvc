@@ -1,0 +1,72 @@
+#!bvc lang=ru
+#Дизайн_Home_Mission_Control<[
+Базис:
+  AN-20 выявил, что стартовый экран Work Graph — Доска (Kanban), а оператору первым нужен ответ на вопросы: что заблокировано, какая следующая ready-задача, есть ли failed verifications, что было в последних runs.
+  Текущий operator-dashboard-v2.bvc описывает sections, но без HERMES-pattern KPI tiles, Inbox и единого Home-snapshot endpoint.
+  Существующая база: operatorShellProjection.mjs (buildOperatorShellSnapshotV2), /api/operator-shell-snapshot, /api/agent-run/journal, workGraphRuntime.buildOperatorDashboardSnapshot.
+Вектор:
+  Default landing — Home view, рендерится из одного fetch /api/home-snapshot за ≤ 200ms на тестовых данных.
+  Структура: top KPI tiles + Inbox preview + My queue + Active runs (HERMES-pattern mission control).
+  KPI tiles: cycle progress (done/total), ready count, blocked count, verify pass rate, throughput (done/day, 7d window), daemon uptime, agent runs today.
+  Inbox preview: до 5 свежих событий (AN published, WorkItem moved to verify, code-gap detected, daemon recovered, evidence added), полная лента — через GET /api/inbox-events.
+  My queue: top 5 ready items, фильтр по owner_role (если задан в localStorage), иначе по priority и risk.
+  Active runs: claimed/doing/verify items с прогрессом step k/n и link → right dock (T7).
+  Refresh budgets: KPI — 30s polling; Active runs — 5s polling; My queue — 30s polling; Inbox preview — 30s polling.
+Цель:
+  Оператор видит «что делать сейчас» с первого экрана; кликов до My ready next task = 0; запуск worker — 1 клик через Active runs (или через Cmd+K, T6).
+
+Проверки:
+  GET /api/home-snapshot возвращает схему home.snapshot.v1
+  у каждой секции Home есть источник данных и бюджет обновления (refresh budget)
+  KPI-плитки считаются из существующих snapshot без новых runtime-контрактов
+  стартовый экран GET / — Home, не Доска
+
+Метки:
+  atom.profile: plan
+  design.id: home-mission-control-v1
+  design.input: workgraph.snapshot.v1, operator-shell.snapshot.v2, agent-run-journal-v1, inbox.events.v1
+  design.scope: home-mission-control
+  design.next_work: implement-home-snapshot-api, implement-home-page-mount
+  work.source: design-home-mission-control-view
+  trace.status: verified
+]>
+
+#Source_Map_Home_Mission_Control<[
+Базис:
+  Каждая секция Home должна быть derived из существующего snapshot, чтобы не создавать новый источник правды.
+Вектор:
+  cycle progress: from operator-shell.snapshot.v2.cycleSlice (currentCycle, doneCount, totalCount).
+  ready / blocked counts: from workgraph.snapshot.v1.statusCounts (ready, blocked).
+  verify pass rate: from verificationMatrix projection (last N runs, % status=passed).
+  throughput: from workgraph.snapshot.v1.items where status=done, фильтр по closedAt в окне 7d.
+  daemon uptime: from /api/daemon-audit-tail (last started timestamp).
+  agent runs today: from /api/agent-run/journal с фильтром date=today.
+  inbox preview: from inboxEventStream (T4) — agent-run-journal + daemon-audit-tail + analytics-records writes.
+  my queue: from operator-shell.snapshot.v2.dashboard.readyQueue + owner_role фильтр.
+  active runs: from operator-shell.snapshot.v2.runnerQueue (claimed/doing/verify).
+Цель:
+  Home рендерится из одного композита /api/home-snapshot, который агрегирует уже существующие проекции.
+
+Метки:
+  atom.profile: trace
+  contract.id: home-mission-control-source-map
+  trace.status: verified
+]>
+
+#Non_Goals_Home_Mission_Control<[
+Базис:
+  Без явных non-goals Home рискует превратиться в третий dashboard поверх operator-dashboard-v2 и Доски.
+Вектор:
+  Не дублировать функционал Доски — Kanban остаётся отдельной вкладкой.
+  Не вводить новый scheduler — runtime остаётся канон в Work Graph.
+  Не строить websocket-канал в P0 — polling 5–30s достаточно для оператора.
+  Не вводить per-user authn — single-tenant pilot, owner_role фильтр через localStorage.
+  Не делать burndown / insights в P0 — это P2 scope.
+Цель:
+  P0 Home закрывает только B1/B2/B4 (домашний экран, видимость run, inbox); остальное — следующие фазы.
+
+Метки:
+  atom.profile: prompt_rule
+  rule.id: home-mission-control-non-goals
+  trace.status: verified
+]>

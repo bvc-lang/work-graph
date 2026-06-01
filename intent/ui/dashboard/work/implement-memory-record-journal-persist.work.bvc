@@ -1,0 +1,49 @@
+#Задача_implement_memory_record_journal_persist<[
+Базис:
+  implement-memory-record-worker-slice-mvp подаёт memory records в worker input из done WorkItems.
+  appendMemoryRecordJournal() в memoryRecordWriter.mjs — contract заглушка без persist path на disk.
+Вектор:
+  Реализовать optional journal (JSONL или .bvc shard) для active memory records после done/verified transition.
+  Read path для worker slice может мержить journal + derived candidates; rebuildable from Work Graph canon.
+Цель:
+  Project memory накапливается с provenance beyond ephemeral worker slice, без chat transcript storage.
+Анализ:
+  Целесообразность:
+  Стоит завести «реализовать persist journal для MemoryRecord» в бэклог.
+  Контекст и границы:
+  Реализовать optional journal (JSONL или .bvc shard) для active memory records после done/verified transition.
+  Зависимости и готовность:
+  depends_on=define-memory-contract, implement-memory-record-worker-slice-mvp; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Project memory накапливается с provenance beyond ephemeral worker slice, без chat transcript storage.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441121
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:36.971Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:36.979Z
+  work.decision.verdict: useful
+  work.department: memory
+  work.depends_on: implement-memory-record-worker-slice-mvp, define-memory-contract
+  work.id: implement-memory-record-journal-persist
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: integration_architect
+  work.pipeline_stage: decided
+  work.priority: low
+  work.risk: low
+  work.status: done
+  work.target_files: src/memoryRecordWriter.mjs, protocols/memory-contract-v1.bvc, protocols/project-memory-v1.bvc, work/backlog.bvc
+  work.title: реализовать persist journal для MemoryRecord
+]>
+

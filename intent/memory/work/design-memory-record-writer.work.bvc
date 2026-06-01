@@ -1,0 +1,51 @@
+#Задача_design_memory_record_writer<[
+Базис:
+  Project Memory protocols существуют, но нет writer, который превращает done WorkItems в durable memory records.
+  Задача «спроектировать writer MemoryRecord из outcomes WorkItem» относится к контуру графа знаний и retrieval и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: phase-6-project-memory-evidence.
+Вектор:
+  Спроектировать writer input из WorkItem evidence, decisions, target files и verification results.
+  Ближайший шаг исполнения: спроектировать structured evidence read model.
+Цель:
+  Closed tasks становятся reusable memory slices для будущих agent runs.
+  Готово, когда выполнены проверки: mapping done task -> MemoryRecord определён.
+Анализ:
+  Целесообразность:
+  Стоит завести «спроектировать writer MemoryRecord из outcomes WorkItem» в бэклог.
+  Контекст и границы:
+  Спроектировать writer input из WorkItem evidence, decisions, target files и verification results.
+  Зависимости и готовность:
+  depends_on=phase-6-project-memory-evidence; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Closed tasks становятся reusable memory slices для будущих agent runs.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441075
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:36.010Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:36.021Z
+  work.decision.verdict: useful
+  work.department: knowledge-publishing
+  work.depends_on: phase-6-project-memory-evidence
+  work.id: design-memory-record-writer
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: knowledge_architect
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: high
+  work.status: done
+  work.target_files: src/memoryRecordWriter.mjs, tests/memoryRecordWriter.test.mjs, protocols/project-memory-v1.bvc, work/backlog.bvc
+  work.title: спроектировать writer MemoryRecord из outcomes WorkItem
+]>
+

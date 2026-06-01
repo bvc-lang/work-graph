@@ -1,0 +1,51 @@
+#Задача_implement_agent_chat_ui_with_nlux<[
+Базис:
+  Нужно заменить самодельный agent chat во вкладке «Агент» на готовый chat UI слой.
+  Текущий dashboard — vanilla Node HTML server без React/Vite entrypoint, поэтому интеграция должна быть маленькой и локально обслуживаемой.
+Вектор:
+  Добавить NLUX vanilla dependency или локальный frontend island для вкладки «Агент».
+  Подключить chat adapter к существующему flow: сообщение пользователя + выбранный WorkItem/provider → POST /api/agent-run или отдельный /api/agent-chat endpoint.
+  Убрать самописные agent-chat-thread/composer CSS и DOM-логику там, где её заменяет библиотека.
+  Сохранить действия «Отправить агенту» из backlog/card как установку WorkItem context в chat UI.
+Цель:
+  Вкладка «Агент» выглядит и ведёт себя как нормальный AI chat UI, а не как самодельная форма.
+Анализ:
+  Целесообразность:
+  Стоит завести «заменить экран «Агент» на NLUX chat UI» в бэклог.
+  Контекст и границы:
+  Добавить NLUX vanilla dependency или локальный frontend island для вкладки «Агент».
+  Зависимости и готовность:
+  depends_on=design-agent-chat-ui-library-adoption, simplify-agent-run-panel-ux; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Вкладка «Агент» выглядит и ведёт себя как нормальный AI chat UI, а не как самодельная форма.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441132
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:36.473Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:36.485Z
+  work.decision.verdict: useful
+  work.department: ui-dashboard
+  work.depends_on: design-agent-chat-ui-library-adoption, simplify-agent-run-panel-ux
+  work.id: implement-agent-chat-ui-with-nlux
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: frontend_ui_engineer
+  work.pipeline_stage: decided
+  work.priority: critical
+  work.risk: medium
+  work.status: done
+  work.target_files: package.json, src/workGraphBacklogUiServer.mjs, tests/workGraphBacklogUiServer.test.mjs, work/backlog.bvc
+  work.title: заменить экран «Агент» на NLUX chat UI
+]>
+

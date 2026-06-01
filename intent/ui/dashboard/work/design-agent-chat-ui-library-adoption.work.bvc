@@ -1,0 +1,51 @@
+#Задача_design_agent_chat_ui_library_adoption<[
+Базис:
+  Ручная верстка agent chat в dashboard не дала приемлемый UX и привела к итерациям по CSS вместо продуктовой интеграции.
+  Для вкладки «Агент» нужен готовый chat UI слой с нормальным composer/messages layout, а не самописные div/button/textarea патчи.
+  Cursor SDK может быть runtime/engine, но не поставляет готовый UI чата.
+Вектор:
+  Выбрать библиотеку для vanilla dashboard без полного React rewrite: NLUX core как первый кандидат.
+  Зафиксировать границу: библиотека отвечает за chat UI/composer/messages, Work Graph backend отвечает за WorkItem context и agent-run execution.
+  Описать fallback: если NLUX нельзя подключить без Vite/bundler в текущий Node HTML server, выделить отдельный frontend island вместо продолжения ручной верстки.
+Цель:
+  Прекратить ручную отрисовку агентского чата и перейти на поддерживаемый UI-компонентный слой.
+Анализ:
+  Целесообразность:
+  Стоит завести «выбрать готовую библиотеку UI для чата агента» в бэклог.
+  Контекст и границы:
+  Выбрать библиотеку для vanilla dashboard без полного React rewrite: NLUX core как первый кандидат.
+  Зависимости и готовность:
+  depends_on=simplify-agent-run-panel-ux; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Прекратить ручную отрисовку агентского чата и перейти на поддерживаемый UI-компонентный слой.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441131
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:35.796Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:35.803Z
+  work.decision.verdict: useful
+  work.department: ui-dashboard
+  work.depends_on: simplify-agent-run-panel-ux
+  work.id: design-agent-chat-ui-library-adoption
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: product_designer
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: low
+  work.status: done
+  work.target_files: work/backlog.bvc
+  work.title: выбрать готовую библиотеку UI для чата агента
+]>
+

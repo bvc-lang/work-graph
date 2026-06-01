@@ -1,0 +1,50 @@
+#Задача_separate_architecture_and_work_deps_ui<[
+Базис:
+  Текущая вкладка Граф смешивает ожидание architecture map и фактический task dependency DAG, что путает оператора.
+  Backlog UI уже имеет sidebar tabs и detail drawer; достаточно разделить views и labels без тяжёлого UI framework.
+Вектор:
+  Переименовать текущую вкладку Граф в Зависимости задач или оставить Граф только для work deps с явной подписью.
+  Добавить отдельную вкладку Архитектура для L1 map и block focus navigation.
+  Обновить tests/workGraphBacklogUiServer.test.mjs и snapshot labels, чтобы views были явно разделены.
+Цель:
+  UI отражает два разных derived graph: architecture/project design и operational task dependencies.
+Анализ:
+  Целесообразность:
+  Стоит завести «разделить UI views Архитектура и Зависимости задач» в бэклог.
+  Контекст и границы:
+  Переименовать текущую вкладку Граф в Зависимости задач или оставить Граф только для work deps с явной подписью.
+  Зависимости и готовность:
+  depends_on=design-architecture-graph-model-v1, implement-workgraph-backlog-ui-mvp; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  UI отражает два разных derived graph: architecture/project design и operational task dependencies.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441043
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:37.690Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:37.700Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: design-architecture-graph-model-v1, implement-workgraph-backlog-ui-mvp
+  work.id: separate-architecture-and-work-deps-ui
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: feature_engineer
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: low
+  work.status: done
+  work.target_files: src/workGraphBacklogUiServer.mjs, tests/workGraphBacklogUiServer.test.mjs, work/backlog.bvc
+  work.title: разделить UI views Архитектура и Зависимости задач
+]>
+

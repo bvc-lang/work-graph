@@ -1,0 +1,57 @@
+#Задача_architecture_domain_layer_matrix_prototype<[
+Базис:
+  AN-34 §4: heat matrix для coverage gaps (domain × layer).
+  Secondary view — не заменяет list/pipeline.
+Вектор:
+  Prototype tab or sub-mode under Architecture.
+  Cells = count/status rollup from architectureSnapshot.
+  Click cell → filtered list-rows.
+Цель:
+  Быстро увидеть пробелы coverage по domain/layer без full graph.
+Проверки:
+  matrix renders from snapshot fixture
+  cell click filters list view
+  marked prototype in UI (badge or label)
+Анализ:
+  Целесообразность:
+  Стоит завести «Matrix view prototype: domain × layer × status heat» в бэклог — по материалам AN-34 (work/analytics/architecture-visualization-patterns-comparison.md).
+  Контекст и границы:
+  Prototype tab or sub-mode under Architecture.
+  Зависимости и готовность:
+  depends_on=epic-architecture-views-v1, architecture-blocks-list-view-tab; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Быстро увидеть пробелы coverage по domain/layer без full graph.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-34 (work/analytics/architecture-visualization-patterns-comparison.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-34
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/architecture-visualization-patterns-comparison.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T19:21:12.913Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T19:21:12.913Z
+  work.decision.verdict: useful
+  work.department: ui-dashboard
+  work.depends_on: epic-architecture-views-v1, architecture-blocks-list-view-tab
+  work.id: architecture-domain-layer-matrix-prototype
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: frontend_architect
+  work.parent_id: epic-architecture-views-v1
+  work.pipeline_stage: closed
+  work.priority: medium
+  work.risk: medium
+  work.status: done
+  work.target_files: src/workGraphBacklogUiServer.mjs, src/architectureSnapshot.mjs, work/analytics/architecture-visualization-patterns-comparison.md
+  work.title: Matrix view prototype: domain × layer × status heat
+]>

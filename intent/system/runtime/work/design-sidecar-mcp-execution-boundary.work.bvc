@@ -1,0 +1,50 @@
+#Задача_design_sidecar_mcp_execution_boundary<[
+Базис:
+  В ранней стратегии sidecar/MCP идеи были оставлены до tool execution, но отдельная boundary задача не была заведена.
+  Без границы sidecar/MCP легко смешать provider execution, workspace safety и domain tools.
+Вектор:
+  Спроектировать boundary: какие tools идут через built-in runtime, какие через sidecar, какие через MCP server, какие запрещены по умолчанию.
+  Описать permission model: targetFiles allowlist, shell/network flags, secrets redaction, evidence logging, cancellation/timeout.
+  Указать, как provider-neutral worker запрашивает capability, не зная конкретного транспорта.
+Цель:
+  MCP/sidecar становятся транспортами tool execution, а не вторым источником истины и не обходом Work Graph policy.
+Анализ:
+  Целесообразность:
+  Стоит завести «спроектировать boundary sidecar/MCP tool execution» в бэклог.
+  Контекст и границы:
+  Спроектировать boundary: какие tools идут через built-in runtime, какие через sidecar, какие через MCP server, какие запрещены по умолчанию.
+  Зависимости и готовность:
+  depends_on=design-provider-registry-and-capability-selection, reconcile-rebuild-scope-against-original-iohasc-plan; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  MCP/sidecar становятся транспортами tool execution, а не вторым источником истины и не обходом Work Graph policy.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441109
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:36.210Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:36.220Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: reconcile-rebuild-scope-against-original-iohasc-plan, design-provider-registry-and-capability-selection
+  work.id: design-sidecar-mcp-execution-boundary
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: integration_architect
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: high
+  work.status: done
+  work.target_files: protocols/sidecar-mcp-execution-boundary-v1.bvc, src/workGraphToolSurfaceAudit.mjs, tests/workGraphToolSurfaceAudit.test.mjs, work/backlog.bvc
+  work.title: спроектировать boundary sidecar/MCP tool execution
+]>
+

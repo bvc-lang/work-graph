@@ -1,0 +1,50 @@
+#Задача_reconcile_rebuild_scope_against_original_iohasc_plan<[
+Базис:
+  После закрытия фаз 0–11 обнаружена расстыковка: часть WorkItems была закрыта как design/только контракт, хотя разговорная формулировка звучала как полный перенос пользовательского контура ioHasC.
+  Нужно явно отделить реализованный Work Graph пересобрать skeleton от missing replacement slices: agent workbench/запуск оператора UI, provider adapters, prompt-step/low-code/semantic map paths и real provider acceptance.
+Вектор:
+  Составить audit-gap matrix: original ioHasC capability -> выбранная стратегия (port/rebuild/replace/defer) -> фактическое состояние (implemented/только контракт/stub/missing) -> следующий WorkItem.
+  Включить минимум: agent panel replacement, provider-neutral executors, Cursor SDK/Claude providers, provider selection/fallback, prompt-step UI replacement, low-code boundary, semantic map/search workflow, OneBase tool/MCP execution path.
+  Обновить docs/plan-iohasc-full-rebuild-backlog.md и docs/plan-rebuild-post-full-roadmap.md так, чтобы "done" не означало больше, чем реально реализовано.
+Цель:
+  У команды появляется честная карта оставшегося переноса вместо ложного статуса "всё готово".
+Анализ:
+  Целесообразность:
+  Стоит завести «сверить пересобрать scope с исходным планом ioHasC» в бэклог.
+  Контекст и границы:
+  Составить audit-gap matrix: original ioHasC capability -> выбранная стратегия (port/rebuild/replace/defer) -> фактическое состояние (implemented/только контракт/stub/missing) -> следующий WorkItem.
+  Зависимости и готовность:
+  depends_on=design-runner-queue-ui-and-cli; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  У команды появляется честная карта оставшегося переноса вместо ложного статуса "всё готово".; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441097
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:37.650Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:37.658Z
+  work.decision.verdict: useful
+  work.department: product-architecture
+  work.depends_on: design-runner-queue-ui-and-cli
+  work.id: reconcile-rebuild-scope-against-original-iohasc-plan
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: product_architect
+  work.pipeline_stage: decided
+  work.priority: critical
+  work.risk: medium
+  work.status: done
+  work.target_files: docs/plan-iohasc-rebuild-audit-gap-matrix.md, docs/plan-iohasc-full-rebuild-backlog.md, docs/plan-rebuild-post-full-roadmap.md, work/backlog.bvc
+  work.title: сверить пересобрать scope с исходным планом ioHasC
+]>
+

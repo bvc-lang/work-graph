@@ -1,0 +1,40 @@
+#Задача_implement_workgraph_cycle_slice_filter<[
+Базис:
+  Канбан-доска показывает все done/verified задачи в одной колонке «Завершено»; при ~70+ закрытых WorkItems колонка перестаёт быть операционной.
+  В пересобрать уже есть phase epics (phase-0…phase-11) и разделение бэклог vs operational statuses; отдельная Scrum-спринт модель пока избыточна.
+Вектор:
+  Ввести лёгкий cycle/slice filter без второго источник истины:
+  optional label work.cycle (например phase-7 или 2026-05);
+  derived cycle из depends_on → ближайший phase-* epic, если label не задан;
+  UI: фильтр «Текущий цикл» на доске, operational view (ready/in_progress/verify/blocked) по умолчанию;
+  done/verified — в архивной секции или отдельной вкладке с cap/pagination по выбранному cycle.
+  Зафиксировать контракт в protocols/workgraph-board-cycle-slice-v1.bvc; projection в src/workGraphCycleSlice.mjs + правки src/workGraphBacklogUiServer.mjs.
+Цель:
+  Оператор видит актуальный срез работы, а не бесконечную колонку завершённых задач; canonical state остаётся work/backlog.bvc.
+Проверки:
+  work.cycle convention и derive-from-phase-* задокументировано
+  доска по умолчанию показывает operational columns без полного done dump
+  архив/collapse done фильтруется по выбранному cycle
+  тесты покрывают derive cycle и snapshot filter projection
+Свидетельства:
+  protocols/workgraph-board-cycle-slice-v1.bvc и src/workGraphCycleSlice.mjs — deriveWorkCycle, resolveCurrentCycle, filterItemsByCycleSlice.
+  UI: cycle filter select, operational columns + archive cap 12 в src/workGraphBacklogUiServer.mjs.
+  tests/workGraphCycleSlice.test.mjs exit_code=0.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441091
+  migration.strategy: rebuild
+  trace.status: verified
+  work.department: frontend-ui
+  work.depends_on: implement-workgraph-backlog-ui-mvp, design-operator-dashboard-snapshot
+  work.id: implement-workgraph-cycle-slice-filter
+  work.next_action: —
+  work.owner_role: frontend_architect
+  work.priority: high
+  work.risk: low
+  work.status: done
+  work.target_files: protocols/workgraph-board-cycle-slice-v1.bvc, src/workGraphCycleSlice.mjs, src/workGraphBacklogUiServer.mjs, tests/workGraphCycleSlice.test.mjs, work/backlog.bvc
+  work.title: реализовать cycle/slice-фильтр доски Work Graph
+]>
+

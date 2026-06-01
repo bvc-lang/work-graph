@@ -1,0 +1,62 @@
+#Задача_document_operational_bypass_and_epic_policy<[
+Базис:
+  Источник: analytics:pipeline-analysis-to-board (AN-22) §3 «провал 2», §6 T4.
+  Не каждая работа стартует с AN-XX и эпика: operational/рутина/мелкий багфикс должны идти прямо в ready без AN и без parent_id; AN иногда заканчивается правкой charter, а не созданием эпика. Сейчас canon этого не описывает, и есть риск fake-эпиков.
+Вектор:
+  В protocols/decision-pipeline-canon-v1.bvc (из T1) ввести раздел Operational bypass: метка work.intake.bypass=operational освобождает задачу от обязательных intake и analysis блоков, разрешает работу без work.parent_id, делает задачу видимой на доске в отдельной swimlane или фильтре operational.
+  В тот же protocol ввести раздел AN to Charter как валидный финал AN-XX без перехода в work item; ввести шаблон записи AN с полем вывод charter и явной ссылкой на изменённый charter файл.
+  В тот же protocol ввести No fake-epic rule: запрет создавать эпик только ради группировки operational задач, плюс checklist для оператора с тремя проверками когда нужен эпик.
+  В docs/decision-pipeline-canon.md добавить решающую таблицу когда нужен эпик когда operational когда charter с живыми примерами на одну задачу каждого типа.
+Цель:
+  Operational работы имеют легитимный путь мимо эпика; fake-эпики не появляются; charter-вывод AN зафиксирован как первоклассный финал.
+Анализ:
+  Целесообразность:
+  Без явного bypass operational работы либо ломают lint (T3), либо порождают мусор-эпики; в обоих случаях canon теряет авторитет.
+  Контекст и границы:
+  Только документация и шаблоны — без runtime-изменений. T3 уже учитывает bypass в lint.
+  Зависимости и готовность:
+  Зависит от T1 (внутри protocol); может писаться параллельно с T1 как PR в одну ветку.
+  Риски и альтернативы:
+  Риск, что метка bypass=operational будет ставиться на всё подряд. Закрывается: обязательное поле operational.reason при bypass + периодический аудит (≥1 раз в спринт).
+  Критерии успеха:
+  protocols/decision-pipeline-canon-v1.bvc имеет раздел «Operational bypass» и «AN → Charter»; docs/decision-pipeline-canon.md содержит решающую таблицу и пример operational задачи и charter-вывода.
+  Рекомендация для решения:
+  Полезно — закрывает «провал 2» AN-22.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-22; пишется параллельно с T1.
+Проверки:
+  protocols/decision-pipeline-canon-v1.bvc содержит «Operational bypass» и «AN → Charter»
+  docs/decision-pipeline-canon.md содержит таблицу «эпик / operational / charter» с примерами
+  Один пример operational задачи и один пример AN→charter-вывода добавлены как живые ссылки
+
+Свидетельства:
+  - protocols/decision-pipeline-canon-v1.bvc: разделы operational bypass, AN→Charter, no fake-epic
+  - docs/decision-pipeline-canon.md: таблица классов работ + примеры operational и charter-вывода
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-22
+  intake.source_kind: analytics-record
+  intake.source_ref: analytics:pipeline-analysis-to-board
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-31T09:59:00.000Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-05-31T09:59:00.000Z
+  work.decision.verdict: useful
+  work.department: product-process
+  work.depends_on: document-decision-pipeline-canon
+  work.id: document-operational-bypass-and-epic-policy
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: product_owner
+  work.parent_id: epic-decision-pipeline-canonization
+  work.pipeline_stage: closed
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: protocols/decision-pipeline-canon-v1.bvc, docs/decision-pipeline-canon.md, work/analytics/pipeline-analysis-to-board.md
+  work.title: operational bypass и AN→charter policy в canon
+]>

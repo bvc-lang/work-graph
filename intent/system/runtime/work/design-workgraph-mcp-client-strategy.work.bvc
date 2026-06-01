@@ -1,0 +1,52 @@
+#Задача_design_workgraph_mcp_client_strategy<[
+Базис:
+  Попытка сделать вкладку «Агент» полноценным Cursor-like chat/workbench через NLUX показала неверную границу продукта: библиотека чата не заменяет агентный UI с tool cards, approvals, file blocks и diff workflow.
+  Пользователь хочет оставаться в привычном агентном клиенте вроде Cursor или Claude, а WorkGraph использовать как операционную модель задач.
+  В проекте уже есть MCP-контур: .iohasc/mcp.json, sidecar синхронизировать и пример packages/onebase-mcp.
+Вектор:
+  Зафиксировать стратегию: ioHasC/WorkGraph предоставляет MCP tools/resources/prompts, а Cursor/Claude остаются основным агентным UI.
+  Описать границу: WorkGraph UI остаётся dashboard/backlog/инспектором, но не конкурирует с Cursor/Claude agent workbench.
+  Определить portability rule: WorkGraph MCP server не должен зависеть от Cursor API и должен работать в Claude Desktop/Claude Code через стандартный MCP config.
+  Составить минимальный список tools/resources/prompts для MVP и безопасность write/status операций.
+Цель:
+  Принять архитектурное решение о WorkGraph MCP-first integration вместо продолжения разработки собственного agent chat UI.
+Анализ:
+  Целесообразность:
+  Стоит завести «спроектировать стратегию WorkGraph через MCP-клиенты» в бэклог.
+  Контекст и границы:
+  Зафиксировать стратегию: ioHasC/WorkGraph предоставляет MCP tools/resources/prompts, а Cursor/Claude остаются основным агентным UI.
+  Зависимости и готовность:
+  depends_on=design-sidecar-mcp-execution-boundary, implement-agent-chat-ui-with-nlux; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Принять архитектурное решение о WorkGraph MCP-first integration вместо продолжения разработки собственного agent chat UI.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441133
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:36.312Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:36.320Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: implement-agent-chat-ui-with-nlux, design-sidecar-mcp-execution-boundary
+  work.id: design-workgraph-mcp-client-strategy
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: product_architect
+  work.pipeline_stage: decided
+  work.priority: critical
+  work.risk: medium
+  work.status: done
+  work.target_files: docs/workgraph-mcp-client-strategy.md, packages/workgraph-mcp/src/index.mjs, packages/workgraph-mcp/src/handlers.mjs
+  work.title: спроектировать стратегию WorkGraph через MCP-клиенты
+]>
+

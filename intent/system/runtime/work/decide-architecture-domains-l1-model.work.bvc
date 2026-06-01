@@ -1,0 +1,59 @@
+#Задача_decide_architecture_domains_l1_model<[
+Базис:
+  AN-39 §3: варианты A (hub), B (peers + group), C (UI-only).
+  Charter MVP OneBase не запрещает второй domain на architecture map.
+Вектор:
+  docs/adr-architecture-domains-l1-hierarchy.md: выбор B+, edges, migration notes.
+  Cross-ref AN-35 governance при смене block count.
+Цель:
+  Решение зафиксировано до правки architecture/main.bvc.
+Проверки:
+  ADR опубликован
+  Варианты A/C отклонены с rationale
+  feeds_epics ссылается на epic-architecture-domains-l1-hierarchy
+Анализ:
+  Целесообразность:
+  Стоит завести «ADR: модель доменов L1 (вариант B+ — group + domain-* peers)» в бэклог — по материалам AN-39 (work/analytics/architecture-domains-l1-hierarchy.md).
+  Контекст и границы:
+  docs/adr-architecture-domains-l1-hierarchy.md: выбор B+, edges, migration notes.
+  Зависимости и готовность:
+  depends_on=epic-architecture-domains-l1-hierarchy; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Решение зафиксировано до правки architecture/main.bvc.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана по материалам приёма AN-39 (work/analytics/architecture-domains-l1-hierarchy.md); исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-39
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/architecture-domains-l1-hierarchy.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-01T08:36:55.055Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-01T08:36:55.055Z
+  work.decision.verdict: useful
+  work.department: product-architecture
+  work.depends_on: epic-architecture-domains-l1-hierarchy
+  work.id: decide-architecture-domains-l1-model
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: system_architect
+  work.parent_id: epic-architecture-domains-l1-hierarchy
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: low
+  work.status: done
+  work.target_files: work/analytics/architecture-domains-l1-hierarchy.md, docs/plan-architecture-domains-l1-hierarchy.md, docs/adr-architecture-domains-l1-hierarchy.md, protocols/architecture-graph-model-v1.bvc
+  work.title: ADR: модель доменов L1 (вариант B+ — group + domain-* peers)
+
+Свидетельства:
+  - cascade: reconcile epic epic-architecture-domains-l1-hierarchy already done
+]>

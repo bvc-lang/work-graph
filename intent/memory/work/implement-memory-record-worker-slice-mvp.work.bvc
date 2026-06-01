@@ -1,0 +1,49 @@
+#Задача_implement_memory_record_worker_slice_mvp<[
+Базис:
+  memory-contract-v1 задаёт bounded memorySlice для worker, но buildWorkerInputFromTask передавал только Graph RAG context без отдельного memory-record.worker-slice.v1 entry.
+  Агент не получал явный project memory block с budget policy.
+Вектор:
+  src/memoryWorkerSlice.mjs: selectMemoryRecordsForTask + buildMemoryWorkerSliceForTask + formatMemoryWorkerSliceForPrompt по priority/budget из memory-contract-v1.
+  Подключить в buildWorkerInputFromTask перед Graph RAG; OpenAI prompt formatter включает оба slice types.
+Цель:
+  Worker input содержит bounded project memory для текущей задачи с provenance и truncation flags.
+Анализ:
+  Целесообразность:
+  Стоит завести «реализовать memory-record worker slice MVP» в бэклог.
+  Контекст и границы:
+  src/memoryWorkerSlice.mjs: selectMemoryRecordsForTask + buildMemoryWorkerSliceForTask + formatMemoryWorkerSliceForPrompt по priority/budget из memory-contract-v1.
+  Зависимости и готовность:
+  depends_on=reconcile-audit-gap-matrix-post-provider-rollout; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Worker input содержит bounded project memory для текущей задачи с provenance и truncation flags.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441115
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:36.981Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:36.988Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: reconcile-audit-gap-matrix-post-provider-rollout
+  work.id: implement-memory-record-worker-slice-mvp
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: integration_architect
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: src/memoryWorkerSlice.mjs, src/agentWorkerLocalRunner.mjs, src/agentWorkerOpenAiProvider.mjs, tests/memoryWorkerSlice.test.mjs, tests/graphRagContextSlice.test.mjs, work/backlog.bvc
+  work.title: реализовать memory-record worker slice MVP
+]>
+

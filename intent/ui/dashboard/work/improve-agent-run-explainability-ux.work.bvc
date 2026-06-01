@@ -1,0 +1,50 @@
+#Задача_improve_agent_run_explainability_ux<[
+Базис:
+  Agent Run panel реализован как runtime-панель, но для пользователя он должен объяснять, что агент собирается делать, какой контекст получил и почему предложил transition.
+  Без preflight/preview task-bound агент воспринимается как техническая кнопка, а не как управляемый помощник.
+  После deprecate-nlux-agent-chat-ui встроенный Agent UI убран; MCP-first стратегия переносит explainability в Cursor/Claude + worker evidence API.
+Вектор:
+  Задача superseded: не восстанавливать Agent Run panel в dashboard.
+  Будущий UX explainability — опционально в MCP prompts / worker output summary, не отдельная вкладка «Агент».
+Цель:
+  Не дублировать Cursor-like workbench в WorkGraph UI; сохранить backend agent-run без отменённого NLUX UX scope.
+Анализ:
+  Целесообразность:
+  Стоит завести «улучшить объяснимость Agent Run в UI» в бэклог.
+  Контекст и границы:
+  Задача superseded: не восстанавливать Agent Run panel в dashboard.
+  Зависимости и готовность:
+  depends_on=implement-memory-record-worker-slice-mvp, implement-operator-agent-run-panel-mvp; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Не дублировать Cursor-like workbench в WorkGraph UI; сохранить backend agent-run без отменённого NLUX UX scope.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441127
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:37.271Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:37.281Z
+  work.decision.verdict: useful
+  work.department: ui-dashboard
+  work.depends_on: implement-memory-record-worker-slice-mvp, implement-operator-agent-run-panel-mvp
+  work.id: improve-agent-run-explainability-ux
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: frontend_ui_engineer
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: src/agentRunApi.mjs, src/workGraphBacklogUiServer.mjs, tests/workGraphBacklogUiServer.test.mjs, work/backlog.bvc
+  work.title: улучшить объяснимость Agent Run в UI
+]>
+

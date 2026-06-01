@@ -1,0 +1,50 @@
+#Задача_implement_openai_compatible_worker_provider<[
+Базис:
+  protocols/agent-worker-adapter.bvc требует provider-neutral adapter; local dry-run покрывает CI, но не live LLM quality path.
+  Задача «реализовать OpenAI-compatible worker provider» относится к контуру Work Graph rebuild и должна быть понятна агенту без чтения всего backlog.
+  Предварительно должны быть закрыты зависимости: post-full-roadmap-provider-rollout.
+Вектор:
+  Реализовать OpenAI-compatible HTTP provider: buildWorkerPromptFromInput, runOpenAiCompatibleWorker, parse JSON to Worker Output v1, skip-by-default без IOHASC_E2E_REAL_LLM=1.
+  Ближайший шаг исполнения: —.
+Цель:
+  Опциональный live worker path готов к LM Studio / LiteLLM / Ollama proxy без изменения Work Graph runtime.
+Анализ:
+  Целесообразность:
+  Стоит завести «реализовать OpenAI-compatible worker provider» в бэклог.
+  Контекст и границы:
+  Реализовать OpenAI-compatible HTTP provider: buildWorkerPromptFromInput, runOpenAiCompatibleWorker, parse JSON to Worker Output v1, skip-by-default без IOHASC_E2E_REAL_LLM=1.
+  Зависимости и готовность:
+  depends_on=post-full-roadmap-provider-rollout; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Опциональный live worker path готов к LM Studio / LiteLLM / Ollama proxy без изменения Work Graph runtime.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441092
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:37.031Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:37.038Z
+  work.decision.verdict: useful
+  work.department: devops-runtime
+  work.depends_on: post-full-roadmap-provider-rollout
+  work.id: implement-openai-compatible-worker-provider
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: agent_platform_architect
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: protocols/openai-compatible-worker-provider-v1.bvc, src/agentWorkerOpenAiProvider.mjs, tests/agentWorkerOpenAiProvider.test.mjs, work/backlog.bvc
+  work.title: реализовать OpenAI-compatible worker provider
+]>
+

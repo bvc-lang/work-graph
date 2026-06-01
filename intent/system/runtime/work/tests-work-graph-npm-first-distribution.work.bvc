@@ -1,0 +1,54 @@
+#Задача_tests_work_graph_npm_first_distribution<[
+Базис:
+  Без тестов npm path регрессирует к engineRoot UX.
+Вектор:
+  Unit: resolveEngineRoot priority (env, legacy, node_modules).
+  Integration: init fixture → config v2, package.json devDeps.
+  Optional: smoke с npm pack / verdaccio.
+Цель:
+  CI ловит поломку user-first install.
+Проверки:
+  npm run test:deterministic включает npm-first cases
+  Legacy engineRoot path всё ещё покрыт
+Анализ:
+  Зачем:
+  Без тестов npm path регрессирует к engineRoot UX.
+  Контекст: Unit: resolveEngineRoot priority (env, legacy, node_modules).
+  Когда:
+  После готовности: epic-work-graph-npm-first-distribution, implement-engine-root-resolver-npm-first, refactor-init-npm-devdependencies.
+  Готово, когда:
+  CI ловит поломку user-first install.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: epic-work-graph-npm-first-distribution, implement-engine-root-resolver-npm-first, refactor-init-npm-devdependencies.
+
+Свидетельства:
+  - tests/workGraphEngineRoot.test.mjs
+  - tests/workGraphProjectInit.test.mjs
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-43
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-npm-first-distribution.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-01T16:48:00.517Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-01T16:48:00.517Z
+  work.decision.verdict: useful
+  work.department: engineering
+  work.depends_on: epic-work-graph-npm-first-distribution, implement-engine-root-resolver-npm-first, refactor-init-npm-devdependencies
+  work.id: tests-work-graph-npm-first-distribution
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: qa_engineer
+  work.parent_id: epic-work-graph-npm-first-distribution
+  work.pipeline_stage: closed
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: tests/, scripts/seed-epic-work-graph-npm-first-distribution.mjs
+  work.title: Тесты: npm-first init, resolveEngineRoot, smoke без clone
+]>

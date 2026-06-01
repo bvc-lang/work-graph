@@ -1,0 +1,50 @@
+#Задача_implement_pvrg_graph_rag_context_slice<[
+Базис:
+  В переписке PVRG/Graph RAG был назван частью структурированного контекста проекта, который должен кормить агента связями задач, файлов, evidence и memory.
+  design-pvrg-graph-rag-minimal и pvrg.task-scope.slice.v1 заданы; worker prompt получал только targetFiles без связанного project context.
+Вектор:
+  Graph RAG context slice builder: current WorkItem -> related tasks/files/evidence/memory (+ optional adapter facts, provider runs).
+  Источники: depends_on, target_files, unified linkage, evidence read-model, MemoryRecord candidates, language adapter projections.
+  Slice в Worker Input memorySlice и OpenAI prompt через formatGraphRagContextForPrompt; deterministic ordering и maxNodes cap.
+Цель:
+  Agent worker получает не просто targetFiles, а связанный bounded project context.
+Анализ:
+  Целесообразность:
+  Стоит завести «реализовать PVRG/Graph RAG context slice» в бэклог.
+  Контекст и границы:
+  Graph RAG context slice builder: current WorkItem -> related tasks/files/evidence/memory (+ optional adapter facts, provider runs).
+  Зависимости и готовность:
+  depends_on=design-pvrg-graph-rag-minimal, implement-language-adapter-layer-mvp, reconcile-rebuild-scope-against-original-iohasc-plan; старт после закрытия upstream-зависимостей.
+  Риски и альтернативы:
+  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
+  Критерии успеха:
+  Agent worker получает не просто targetFiles, а связанный bounded project context.; проверки из атома и `target_files`.
+  Рекомендация для решения:
+  Полезно — задача готова к исполнению после разбора материалов приёма.
+Решение:
+  Вердикт:
+  полезно
+  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+
+Метки:
+  atom.profile: work_item
+  guid: 550e8400-e29b-41d4-a716-446655441107
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-05-30T17:22:37.098Z
+  work.analysis.source: backfill
+  work.decision.at: 2026-05-30T17:22:37.107Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: design-pvrg-graph-rag-minimal, implement-language-adapter-layer-mvp, reconcile-rebuild-scope-against-original-iohasc-plan
+  work.id: implement-pvrg-graph-rag-context-slice
+  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.owner_role: retrieval_architect
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: src/graphRagContextSlice.mjs, src/agentWorkerLocalRunner.mjs, src/agentWorkerOpenAiProvider.mjs, src/agentWorkerLiveLoop.mjs, tests/graphRagContextSlice.test.mjs, work/backlog.bvc
+  work.title: реализовать PVRG/Graph RAG context slice
+]>
+
