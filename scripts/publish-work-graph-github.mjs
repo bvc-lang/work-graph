@@ -12,11 +12,12 @@ const version = pkg.version;
 const tag = `v${version}`;
 
 const MONOREPO_REMOTE = process.env.WG_GITHUB_MONOREPO_REMOTE
-  ?? 'https://github.com/work-graph/work-graph.git';
+  ?? 'https://github.com/bvc-lang/work-graph.git';
 const CLI_REMOTE = process.env.WG_GITHUB_CLI_REMOTE
-  ?? 'https://github.com/work-graph/cli.git';
+  ?? 'https://github.com/bvc-lang/work-graph-cli.git';
 const MCP_REMOTE = process.env.WG_GITHUB_MCP_REMOTE
-  ?? 'https://github.com/work-graph/mcp.git';
+  ?? 'https://github.com/bvc-lang/work-graph-mcp.git';
+const gitIdentity = '-c user.name=diflux -c user.email=sergiodiflux@gmail.com';
 
 function run(cmd, options = {}) {
   execSync(cmd, { cwd: options.cwd ?? repoRoot, stdio: 'inherit', shell: true });
@@ -29,7 +30,7 @@ function ensureMonorepoGit() {
   }
   run('git add -A');
   try {
-    run(`git diff --cached --quiet || git commit -m "chore: public Work Graph monorepo ${tag}"`);
+    run(`git diff --cached --quiet || git ${gitIdentity} commit -m "chore: public Work Graph monorepo ${tag}"`);
   } catch {
     // ignore
   }
@@ -60,7 +61,7 @@ function main() {
   run(`node scripts/push-git-bundle.mjs --dir=dist/work-graph-cli-github --remote="${CLI_REMOTE}" --message="release: @work-graph/cli ${tag}" --tag="${tag}"`);
   run(`node scripts/push-git-bundle.mjs --dir=dist/work-graph-mcp-github --remote="${MCP_REMOTE}" --message="release: @work-graph/mcp ${tag}" --tag="${tag}"`);
 
-  console.log(JSON.stringify({ ok: true, tag, github: 'https://github.com/work-graph/work-graph' }, null, 2));
+  console.log(JSON.stringify({ ok: true, tag, github: 'https://github.com/bvc-lang/work-graph' }, null, 2));
 }
 
 main();

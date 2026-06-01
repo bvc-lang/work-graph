@@ -25,7 +25,7 @@ function main() {
 
 npm: [\`@work-graph/mcp\`](https://www.npmjs.com/package/@work-graph/mcp) v${pkg.version}
 
-Monorepo: [work-graph/work-graph](https://github.com/work-graph/work-graph)
+Monorepo: [bvc-lang/work-graph](https://github.com/bvc-lang/work-graph)
 
 \`\`\`bash
 WORKGRAPH_ROOT=/path/to/project npx @work-graph/mcp

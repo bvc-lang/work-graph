@@ -23,6 +23,7 @@ if (!bundleDir || !remote) {
 }
 
 const absDir = join(process.cwd(), bundleDir);
+const gitIdentity = '-c user.name=diflux -c user.email=sergiodiflux@gmail.com';
 
 function run(cmd) {
   execSync(cmd, {
@@ -45,7 +46,7 @@ if (!existsSync(gitDir)) {
 
 run('git add -A');
 try {
-  run(`git diff --cached --quiet || git commit -m "${message.replace(/"/g, '\\"')}"`);
+  run(`git diff --cached --quiet || git ${gitIdentity} commit -m "${message.replace(/"/g, '\\"')}"`);
 } catch {
   // nothing to commit
 }

@@ -27,7 +27,7 @@ function main() {
 
 npm: [\`@work-graph/cli\`](https://www.npmjs.com/package/@work-graph/cli) v${pkg.version}
 
-Monorepo: [work-graph/work-graph](https://github.com/work-graph/work-graph)
+Monorepo: [bvc-lang/work-graph](https://github.com/bvc-lang/work-graph)
 
 ## Install
 

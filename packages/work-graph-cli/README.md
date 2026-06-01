@@ -1,6 +1,6 @@
 # @work-graph/cli
 
-Install [Work Graph](https://github.com/work-graph/work-graph) in any project via npm — no engine clone, no manual `engineRoot`.
+Install [Work Graph](https://github.com/bvc-lang/work-graph) in any project via npm — no engine clone, no manual `engineRoot`.
 
 ## Quick start
 
@@ -37,4 +37,4 @@ git clone …/work-graph && cd work-graph && npm install
 WORKGRAPH_ENGINE_ROOT=. npx work-graph ui /path/to/project
 ```
 
-See [CONTRIBUTING.md](https://github.com/work-graph/work-graph/blob/main/CONTRIBUTING.md) in the Work Graph repository.
+See [CONTRIBUTING.md](https://github.com/bvc-lang/work-graph/blob/main/CONTRIBUTING.md) in the Work Graph repository.
