@@ -18,7 +18,6 @@ import {
 import { buildCodeGapOperatorProjection } from './codeGapOperatorProjection.mjs';
 import { buildEpicWorkScopeSlice } from './epicWorkScope.mjs';
 import { renderUiKitPageHtml } from './ui/pages/uiKitPage.mjs';
-import { handlePublicSiteRequest } from './publicSiteServer.mjs';
 import { UI_BUTTON_CSS } from './ui/atoms/button.mjs';
 import { UI_BADGE_CSS } from './ui/atoms/badge.mjs';
 import { UI_SELECT_CSS } from './ui/atoms/select.mjs';
@@ -9887,10 +9886,6 @@ export function createBacklogUiServer(options = {}) {
     const cwd = requestCtx.repoRoot;
     const serverOptions = { cwd, backlogPath, journalPath, auditPath };
 
-    if (handlePublicSiteRequest(request, response, url)) {
-      return;
-    }
-
     if (url.pathname === '/api/prompt-rules-projection' && method === 'GET') {
       try {
         const ruleId = url.searchParams.get('ruleId') ?? url.searchParams.get('id') ?? undefined;
@@ -10784,7 +10779,7 @@ export function createBacklogUiServer(options = {}) {
       return;
     }
 
-    if (url.pathname === '/app' || url.pathname === '/app/' || url.pathname === '/app/index.html') {
+    if (url.pathname === '/' || url.pathname === '/app' || url.pathname === '/app/' || url.pathname === '/app/index.html') {
       const locale = resolveUiLocale({
         cookieHeader: request.headers.cookie,
         acceptLanguage: request.headers['accept-language'],

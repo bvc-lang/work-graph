@@ -7,6 +7,7 @@ import { describe, it } from 'node:test';
 import { promisify } from 'node:util';
 
 import { createBacklogUiServer } from '../src/workGraphBacklogUiServer.mjs';
+import { createPublicSiteServer } from '../src/publicSiteStandaloneServer.mjs';
 import {
   buildDocsContext,
   buildLlmsTxt,
@@ -59,16 +60,8 @@ describe('publicSiteContent', () => {
 });
 
 describe('public site HTTP routes', () => {
-  it('serves landing, app, llms, markdown, MCP discovery and context endpoints', async () => {
-    const cwd = await mkdtemp(join(tmpdir(), 'wg-public-site-'));
-    await writeFile(join(cwd, 'backlog.bvc'), SAMPLE_BACKLOG, 'utf8');
-    const server = createBacklogUiServer({
-      cwd,
-      backlogPath: 'backlog.bvc',
-      journalPath: 'worker-runs.jsonl',
-      auditPath: 'work/daemon-audit.jsonl',
-      registryPath: join(cwd, 'workspaces.json'),
-    });
+  it('serves landing, assets, llms, markdown, MCP discovery and context endpoints', async () => {
+    const server = createPublicSiteServer();
 
     await new Promise((resolve, reject) => {
       server.once('error', reject);
@@ -130,10 +123,6 @@ describe('public site HTTP routes', () => {
       assert.match(landingHtml, /application\/ld\+json/u);
       assert.doesNotMatch(landingHtml, /href="\/app"/u);
 
-      const app = await fetch(`${baseUrl}/app`);
-      assert.equal(app.status, 200);
-      assert.match(await app.text(), /id="workflow-view"/u);
-
       const llms = await fetch(`${baseUrl}/llms.txt`);
       assert.equal(llms.status, 200);
       assert.match(llms.headers.get('content-type') || '', /text\/plain/u);
@@ -184,6 +173,46 @@ describe('public site HTTP routes', () => {
       const ruMarkdown = await fetch(`${baseUrl}/docs/bvc-spec.md?lang=ru`);
       assert.equal(ruMarkdown.status, 200);
       assert.match(await ruMarkdown.text(), /Спецификация BVC-атома/u);
+
+      const screenshot = await fetch(`${baseUrl}/assets/img/work-graph-kanban-board-light.png`);
+      assert.equal(screenshot.status, 200);
+      assert.match(screenshot.headers.get('content-type') || '', /image\/png/u);
+    } finally {
+      await new Promise((resolve, reject) => server.close((error) => (error ? reject(error) : resolve())));
+    }
+  });
+});
+
+describe('backlog UI HTTP routes', () => {
+  it('keeps the app server separate from the public site', async () => {
+    const cwd = await mkdtemp(join(tmpdir(), 'wg-backlog-ui-'));
+    await writeFile(join(cwd, 'backlog.bvc'), SAMPLE_BACKLOG, 'utf8');
+    const server = createBacklogUiServer({
+      cwd,
+      backlogPath: 'backlog.bvc',
+      journalPath: 'worker-runs.jsonl',
+      auditPath: 'work/daemon-audit.jsonl',
+      registryPath: join(cwd, 'workspaces.json'),
+    });
+
+    await new Promise((resolve, reject) => {
+      server.once('error', reject);
+      server.listen(0, '127.0.0.1', () => {
+        server.off('error', reject);
+        resolve();
+      });
+    });
+
+    try {
+      const baseUrl = `http://127.0.0.1:${server.address().port}`;
+      const root = await fetch(`${baseUrl}/`);
+      assert.equal(root.status, 200);
+      const rootHtml = await root.text();
+      assert.match(rootHtml, /id="workflow-view"/u);
+      assert.doesNotMatch(rootHtml, /Contract platform for AI-driven development/u);
+
+      const llms = await fetch(`${baseUrl}/llms.txt`);
+      assert.equal(llms.status, 404);
     } finally {
       await new Promise((resolve, reject) => server.close((error) => (error ? reject(error) : resolve())));
       await rm(cwd, { recursive: true, force: true });

@@ -5,6 +5,7 @@
   "scripts": {
     "backlog:ui": "node scripts/build-graph-canvas-lit-flow.mjs && node src/workGraphBacklogUiServer.mjs",
     "backlog:ui:restart": "node scripts/restart-backlog-ui.mjs",
+    "public-site:serve": "node src/publicSiteStandaloneServer.mjs",
     "build:graph-canvas-lit-flow": "node scripts/build-graph-canvas-lit-flow.mjs",
     "build:public-site": "node scripts/build-public-site-static.mjs",
     "intent:migrate": "node src/intentTreeMigration.mjs",
