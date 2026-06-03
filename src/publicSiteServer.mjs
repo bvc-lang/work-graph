@@ -88,6 +88,43 @@ function renderNav(locale, theme) {
   </nav>`;
 }
 
+const SCREENSHOTS = [
+  {
+    src: '/assets/img/work-graph-kanban-board-light.png',
+    title: { en: 'Kanban board', ru: 'Доска задач' },
+    body: { en: 'Local backlog columns with BVC work items and agent ownership.', ru: 'Локальная доска с BVC-задачами и владельцами.' },
+  },
+  {
+    src: '/assets/img/work-graph-analytics-list.png',
+    title: { en: 'Analytics list', ru: 'Аналитика' },
+    body: { en: 'Decision and research records connected to implementation work.', ru: 'Решения и исследования, связанные с задачами реализации.' },
+  },
+  {
+    src: '/assets/img/work-graph-task-drawer.png',
+    title: { en: 'Task contract drawer', ru: 'Контракт задачи' },
+    body: { en: 'Basis, Vector, Goal, analysis, decisions and evidence in one drawer.', ru: 'Базис, Вектор, Цель, анализ, решения и evidence в одной панели.' },
+  },
+  {
+    src: '/assets/img/work-graph-verification-matrix.png',
+    title: { en: 'Verification matrix', ru: 'Матрица проверок' },
+    body: { en: 'Deterministic, optional and environment-dependent gates before done.', ru: 'Детерминированные, опциональные и environment-гейты перед done.' },
+  },
+  {
+    src: '/assets/img/work-graph-architecture-drawer.png',
+    title: { en: 'Architecture drawer', ru: 'Архитектура' },
+    body: { en: 'Architecture blocks and derived projections for project navigation.', ru: 'Архитектурные блоки и производные проекции для навигации.' },
+  },
+  {
+    src: '/assets/img/work-graph-kanban-board-dark.png',
+    title: { en: 'Dark mode', ru: 'Тёмная тема' },
+    body: { en: 'The same local board in dark mode.', ru: 'Та же локальная доска в тёмной теме.' },
+  },
+];
+
+function screenshotText(value, locale) {
+  return value[locale] ?? value.en;
+}
+
 function renderSection(section, copy) {
   const items = section.items
     ? `<ol class="flow-list">${section.items.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ol>`
@@ -111,23 +148,29 @@ function renderSection(section, copy) {
 }
 
 function renderHeroVisual(locale) {
-  const labels = locale === 'ru'
-    ? ['Аналитика', 'Готово', 'В работе', 'Проверка']
-    : ['Analytics', 'Ready', 'Doing', 'Verify'];
-  return `<figure class="template-visual" aria-label="Work Graph board preview">
-    <div class="visual-toolbar">
-      <span></span><span></span><span></span>
-      <strong>Work Graph</strong>
-    </div>
-    <div class="visual-board">
-      ${labels.map((label, columnIndex) => `<div class="visual-column">
-        <h3>${escapeHtml(label)}</h3>
-        ${[0, 1, 2].map((cardIndex) => `<div class="visual-card is-${(columnIndex + cardIndex) % 4}">
-          <span></span><p></p><small></small>
-        </div>`).join('')}
-      </div>`).join('')}
-    </div>
+  return `<figure class="template-visual screenshot-hero" aria-label="Work Graph board preview">
+    <img src="/assets/img/work-graph-kanban-board-light.png" alt="${escapeAttr(locale === 'ru' ? 'Доска Work Graph' : 'Work Graph kanban board')}" loading="eager" decoding="async">
+    <figcaption>${escapeHtml(locale === 'ru' ? 'Локальная доска Work Graph: backlog, ready, in progress and done.' : 'Local Work Graph board: backlog, ready, in progress and done.')}</figcaption>
   </figure>`;
+}
+
+function renderScreenshotGallery(locale) {
+  return `<section class="screenshot-gallery" aria-label="${escapeAttr(locale === 'ru' ? 'Скриншоты Work Graph' : 'Work Graph screenshots')}">
+    <div class="wide-heading">
+      <p class="eyebrow">${escapeHtml(locale === 'ru' ? 'Интерфейс' : 'Interface')}</p>
+      <h2>${escapeHtml(locale === 'ru' ? 'Как выглядит Work Graph' : 'What Work Graph looks like')}</h2>
+      <p>${escapeHtml(locale === 'ru' ? 'Реальные экраны локального UI: доска, аналитика, контракты задач, проверки и архитектура.' : 'Real local UI screens: board, analytics, task contracts, verification and architecture.')}</p>
+    </div>
+    <div class="screenshot-grid">
+      ${SCREENSHOTS.map((shot) => `<figure class="screenshot-card">
+        <img src="${escapeAttr(shot.src)}" alt="${escapeAttr(screenshotText(shot.title, locale))}" loading="lazy" decoding="async">
+        <figcaption>
+          <strong>${escapeHtml(screenshotText(shot.title, locale))}</strong>
+          <span>${escapeHtml(screenshotText(shot.body, locale))}</span>
+        </figcaption>
+      </figure>`).join('')}
+    </div>
+  </section>`;
 }
 
 function renderTemplateAside(copy, locale, theme) {
@@ -549,6 +592,8 @@ export function renderPublicSiteHtml(page, options = {}) {
     .hero p { color: var(--muted); font-size: 1.125rem; line-height: 1.7; max-width: 820px; }
     .cta-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
     .template-visual { background: var(--card); border: 1px solid var(--border); border-radius: 4px; box-shadow: var(--shadow-raised); margin: 0 auto 56px; max-width: 1040px; overflow: hidden; }
+    .screenshot-hero img { display: block; height: auto; width: 100%; }
+    .screenshot-hero figcaption { border-top: 1px solid var(--border); color: var(--muted); font-size: 13px; padding: 12px 16px; }
     .visual-toolbar { align-items: center; background: #fafbfc; border-bottom: 1px solid var(--border); display: flex; gap: 8px; padding: 12px 14px; }
     .visual-toolbar span { background: var(--border); border-radius: 999px; height: 8px; width: 8px; }
     .visual-board { background: #f4f5f7; display: grid; gap: 12px; grid-template-columns: repeat(4, 1fr); min-height: 310px; padding: 18px; }
@@ -587,6 +632,12 @@ export function renderPublicSiteHtml(page, options = {}) {
     .proof-stats strong { color: var(--accent); display: block; font-size: clamp(1.8rem, 4vw, 3rem); letter-spacing: -.04em; line-height: 1; }
     .proof-stats span { color: var(--muted); display: block; font-size: 13px; margin-top: 8px; }
     .graph-trinity, .pillar-section, .install-section, .code-showcase, .audience-section, .comparison-strip, .roadmap-faq { margin: 58px auto 0; max-width: 1200px; }
+    .screenshot-gallery { margin: 58px auto 0; max-width: 1200px; }
+    .screenshot-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 18px; }
+    .screenshot-card { background: var(--card); border: 1px solid var(--border); border-radius: 4px; box-shadow: var(--shadow); margin: 0; overflow: hidden; }
+    .screenshot-card img { display: block; height: auto; width: 100%; }
+    .screenshot-card figcaption { border-top: 1px solid var(--border); display: grid; gap: 4px; padding: 14px; }
+    .screenshot-card figcaption span { color: var(--muted); font-size: 13px; }
     .wide-heading { max-width: 900px; }
     .graph-flow { display: grid; gap: 18px; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 20px; }
     .graph-flow article { background: var(--card); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow); padding: 22px; position: relative; }
@@ -655,7 +706,7 @@ export function renderPublicSiteHtml(page, options = {}) {
       .visual-board { grid-template-columns: repeat(2, 1fr); }
       .content-layout { grid-template-columns: 1fr; }
       .template-aside { position: static; }
-      .proof-stats, .graph-flow, .pillar-grid, .install-section, .code-showcase, .audience-section > div, .comparison-strip > div, .roadmap-faq, .related-grid, .footer-columns { grid-template-columns: 1fr; }
+      .proof-stats, .graph-flow, .pillar-grid, .install-section, .code-showcase, .audience-section > div, .comparison-strip > div, .roadmap-faq, .related-grid, .footer-columns, .screenshot-grid { grid-template-columns: 1fr; }
       .graph-flow article + article::before { content: none; }
       table { display: block; overflow-x: auto; white-space: nowrap; }
     }
@@ -686,7 +737,7 @@ export function renderPublicSiteHtml(page, options = {}) {
           ${renderSteps(copy, locale)}
         </div>
       </div>
-      ${page.kind === 'home' ? renderHomeExpansion(locale) : ''}`}
+      ${page.kind === 'home' ? `${renderScreenshotGallery(locale)}${renderHomeExpansion(locale)}` : ''}`}
     </article>
     ${renderRelatedTemplates(locale, theme)}
     ${renderBottomCta(copy, locale, theme)}

@@ -29,6 +29,18 @@ The CLI writes the project config, npm scripts, Cursor MCP configuration, and a 
 
 Detailed install guide: [docs/getting-started.md](docs/getting-started.md).
 
+## Screenshots
+
+![Work Graph kanban board](public/assets/img/work-graph-kanban-board-light.png)
+
+| Analytics | Task contract drawer |
+|---|---|
+| ![Analytics list](public/assets/img/work-graph-analytics-list.png) | ![Task contract drawer](public/assets/img/work-graph-task-drawer.png) |
+
+| Verification | Architecture drawer |
+|---|---|
+| ![Verification matrix](public/assets/img/work-graph-verification-matrix.png) | ![Architecture drawer](public/assets/img/work-graph-architecture-drawer.png) |
+
 ## Why Work Graph
 
 AI coding agents are powerful, but their work often disappears into chat history. Work Graph keeps the work itself in the repository:

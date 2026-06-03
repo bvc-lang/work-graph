@@ -2,7 +2,7 @@
 /**
  * Build Work Graph public site as static files for ordinary hosting (no DB).
  */
-import { copyFile, mkdir, rm, writeFile } from 'node:fs/promises';
+import { copyFile, mkdir, readdir, rm, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 
 import {
@@ -34,6 +34,15 @@ async function copyStaticAsset(sourceRelativePath, outputRelativePath) {
   await copyFile(join(process.cwd(), sourceRelativePath), outputPath);
 }
 
+async function copyStaticAssetDir(sourceRelativePath, outputRelativePath) {
+  const sourceDir = join(process.cwd(), sourceRelativePath);
+  const entries = await readdir(sourceDir, { withFileTypes: true });
+  for (const entry of entries) {
+    if (!entry.isFile()) continue;
+    await copyStaticAsset(join(sourceRelativePath, entry.name), join(outputRelativePath, entry.name));
+  }
+}
+
 function htmlOutputPath(route) {
   if (route === '/') return 'index.html';
   return `${route.replace(/^\/+/u, '')}/index.html`;
@@ -58,6 +67,7 @@ async function main() {
 
   await writeStatic('llms.txt', buildLlmsTxt());
   await copyStaticAsset('public/assets/favicon.svg', 'assets/favicon.svg');
+  await copyStaticAssetDir('public/assets/img', 'assets/img');
   await writeStatic('faq.json', `${JSON.stringify(buildFaqJsonLd('ru'), null, 2)}\n`);
   await writeStatic('en/faq.json', `${JSON.stringify(buildFaqJsonLd('en'), null, 2)}\n`);
   await writeStatic('.well-known/mcp.json', `${JSON.stringify(buildMcpDiscovery(), null, 2)}\n`);

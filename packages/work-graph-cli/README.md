@@ -22,6 +22,18 @@ npm run workgraph:ui
 
 → http://127.0.0.1:4177/
 
+## Screenshots
+
+![Work Graph kanban board](https://raw.githubusercontent.com/bvc-lang/work-graph/main/public/assets/img/work-graph-kanban-board-light.png)
+
+| Analytics | Task contract drawer |
+|---|---|
+| ![Analytics list](https://raw.githubusercontent.com/bvc-lang/work-graph/main/public/assets/img/work-graph-analytics-list.png) | ![Task contract drawer](https://raw.githubusercontent.com/bvc-lang/work-graph/main/public/assets/img/work-graph-task-drawer.png) |
+
+| Verification | Architecture drawer |
+|---|---|
+| ![Verification matrix](https://raw.githubusercontent.com/bvc-lang/work-graph/main/public/assets/img/work-graph-verification-matrix.png) | ![Architecture drawer](https://raw.githubusercontent.com/bvc-lang/work-graph/main/public/assets/img/work-graph-architecture-drawer.png) |
+
 ## What `init` Creates
 
 `work-graph init` is intentionally project-first. It updates the target repository rather than asking you to clone Work Graph itself.

@@ -140,6 +140,13 @@ function tryServePublicAvatarsAsset(url, response) {
   return tryServePublicAssetDir(url, response, join(PUBLIC_ROOT, 'assets', 'avatars'), '/assets/avatars/');
 }
 
+function tryServePublicImagesAsset(url, response) {
+  if (!url.pathname.startsWith('/assets/img/')) {
+    return false;
+  }
+  return tryServePublicAssetDir(url, response, join(PUBLIC_ROOT, 'assets', 'img'), '/assets/img/');
+}
+
 function tryServePublicAssetDir(url, response, rootDir, urlPrefix) {
   const relativePath = decodeURIComponent(url.pathname.slice(urlPrefix.length));
   if (!relativePath || relativePath.includes('..')) {
@@ -155,7 +162,9 @@ function tryServePublicAssetDir(url, response, rootDir, urlPrefix) {
     const source = readFileSync(filePath);
     const contentType = filePath.endsWith('.svg')
       ? 'image/svg+xml; charset=utf-8'
-      : 'application/octet-stream';
+      : filePath.endsWith('.png')
+        ? 'image/png'
+        : 'application/octet-stream';
     response.writeHead(200, {
       'content-type': contentType,
       'cache-control': 'public, max-age=3600',
@@ -10688,6 +10697,9 @@ export function createBacklogUiServer(options = {}) {
       return;
     }
     if (tryServePublicAvatarsAsset(url, response)) {
+      return;
+    }
+    if (tryServePublicImagesAsset(url, response)) {
       return;
     }
 

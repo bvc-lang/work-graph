@@ -115,6 +115,9 @@ describe('public site HTTP routes', () => {
       assert.match(landingHtml, /wg-badge/u);
       assert.match(landingHtml, /site-icon/u);
       assert.match(landingHtml, /template-visual/u);
+      assert.match(landingHtml, /screenshot-gallery/u);
+      assert.match(landingHtml, /work-graph-kanban-board-light\.png/u);
+      assert.match(landingHtml, /work-graph-verification-matrix\.png/u);
       assert.match(landingHtml, /template-aside/u);
       assert.match(landingHtml, /related-templates/u);
       assert.match(landingHtml, /bottom-cta/u);
@@ -206,6 +209,8 @@ describe('public site static export', () => {
     assert.match(await readFile(join(root, 'en', 'index.html'), 'utf8'), /Contract platform/u);
     await access(join(root, 'llms.txt'));
     await access(join(root, 'assets', 'favicon.svg'));
+    await access(join(root, 'assets', 'img', 'work-graph-kanban-board-light.png'));
+    await access(join(root, 'assets', 'img', 'work-graph-verification-matrix.png'));
     await access(join(root, 'faq', 'index.html'));
     const faqJson = JSON.parse(await readFile(join(root, 'faq.json'), 'utf8'));
     assert.equal(faqJson['@type'], 'FAQPage');
