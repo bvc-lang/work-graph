@@ -88,4 +88,15 @@ describe('buildVerificationSummary', () => {
     assert.equal(summary.codegenGate.failedCount, 0);
     assert.equal(summary.codegenGate.items[0].workId, 'port-compiler-round-trip-cli-from-iohasc');
   });
+
+  it('includes contract summaries and contract health for gate tasks', () => {
+    const items = parseWorkItems(SAMPLE_BACKLOG);
+    const snapshot = buildSnapshot(items);
+    const summary = buildVerificationSummary(snapshot, { items });
+
+    assert.ok(Array.isArray(summary.contractSummaries));
+    assert.ok(summary.contractSummaries.some((entry) => entry.workId === 'implement-step-atom-formatter'));
+    assert.equal(summary.contractHealth.schema, 'contract-health.v1');
+    assert.ok(summary.contractHealth.gateTaskCount >= 1);
+  });
 });

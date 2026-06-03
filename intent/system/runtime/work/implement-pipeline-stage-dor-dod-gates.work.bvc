@@ -4,11 +4,19 @@
   inferPipelineStage в src/workItemDecisionPipeline.mjs выводит стадию из меток, но не проверяет, что переходы выполнены корректно (DoR/DoD). Сегодня жёсткие гейты есть только для claim/promote в src/workItemExecutionGate.mjs; всё остальное держится на дисциплине оператора.
 Вектор:
   Расширить src/backlogSchemaLint.mjs error-правилами на жёсткие переходы пайплайна: analyzed без блока Анализ, decided без work.decision.verdict, ready без owner_role или с открытыми depends_on, closed без evidence или без trace.status=verified для target_files.
-  Расширить src/backlogSchemaLint.mjs warning-правилами на мягкие нарушения: closed эпик без closing-analysis, задача с work.parent_id вне эпика, intake без intake.analytics_key и без work.intake.bypass=operational.
+  Расширить src/backlogSchemaLint.mjs warning-правилами на мягкие нарушения: closed эпик без closing-analysis, задача с work.parent_id вне эпика, приём без приём.analytics_key и без work.intake.bypass=operational.
   Реализовать operational bypass: задачи с work.intake.bypass=operational освобождаются от части errors (intake блок необязателен, analysis блок опционален), но остаются проверки status и evidence.
   Покрыть каждое правило в tests/backlogSchemaLintPipelineGates.test.mjs с положительными и отрицательными фикстурами в tests/fixtures/pipeline-gates/.
 Цель:
   Переходы пайплайна проверяемы; формальность исключена без блокировки operational потока.
+Проверки:
+  tests/backlogSchemaLintPipelineGates.test.mjs покрывает каждое error и warning правило
+  npm run lint:backlog проходит на основном дереве (legacy задачи через warning)
+  Фикстуры покрывают operational bypass
+Свидетельства:
+  src/pipelineStageLint.mjs lintPipelineStageIssues подключён в backlogSchemaLint
+  tests/pipelineStageLint.test.mjs: 5/5 pass
+  npm run lint:backlog: ok (0 errors, pipeline warnings на legacy)
 Анализ:
   Целесообразность:
   Без gates DoR/DoD canon из T1 становится декларацией; lint превращает canon в проверяемый контракт.
@@ -26,15 +34,6 @@
   Вердикт:
   полезно
   Создана по материалам приёма AN-22; стартует после T1 и T4.
-Проверки:
-  tests/backlogSchemaLintPipelineGates.test.mjs покрывает каждое error и warning правило
-  npm run lint:backlog проходит на основном дереве (legacy задачи через warning)
-  Фикстуры покрывают operational bypass
-
-Свидетельства:
-  - src/pipelineStageLint.mjs lintPipelineStageIssues подключён в backlogSchemaLint
-  - tests/pipelineStageLint.test.mjs: 5/5 pass
-  - npm run lint:backlog: ok (0 errors, pipeline warnings на legacy)
 
 Метки:
   atom.profile: work_item
@@ -59,5 +58,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/pipelineStageLint.mjs, src/backlogSchemaLint.mjs, tests/pipelineStageLint.test.mjs, docs/decision-pipeline-canon.md
-  work.title: DoR/DoD-гейты пайплайна в backlogSchemaLint
+  work.title: Переходы пайплайна проверяемы; формальность исключена без блокировки operational потока.
 ]>
+

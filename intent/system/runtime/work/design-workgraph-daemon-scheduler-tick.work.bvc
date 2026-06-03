@@ -1,7 +1,7 @@
 #Задача_design_workgraph_daemon_scheduler_tick<[
 Базис:
   WorkGraph OS нужен scheduler-owned tick вместо chat-owned execution.
-  Задача «спроектировать scheduler tick для WorkGraph OS daemon» относится к контуру платформы агента и должна быть понятна агенту без чтения всего backlog.
+  Задача «спроектировать scheduler tick для WorkGraph OS daemon» относится к контуру платформы агента и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: phase-2-workgraph-os-daemon.
 Вектор:
   Спроектировать контракт daemon tick: load snapshot, choose eligible task, прогнать once, record audit, без скрытого provider state.
@@ -9,23 +9,6 @@
 Цель:
   Фаза 2 получает конкретную первую design-задачу после live-loop.
   Готово, когда выполнены проверки: input/output tick и audit events определены.
-Анализ:
-  Целесообразность:
-  Стоит завести «спроектировать scheduler tick для WorkGraph OS daemon» в бэклог.
-  Контекст и границы:
-  Спроектировать контракт daemon tick: load snapshot, choose eligible task, прогнать once, record audit, без скрытого provider state.
-  Зависимости и готовность:
-  depends_on=phase-2-workgraph-os-daemon; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Фаза 2 получает конкретную первую design-задачу после live-loop.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -46,6 +29,6 @@
   work.risk: high
   work.status: done
   work.target_files: protocols/workgraph-daemon-scheduler-tick.bvc, src/workGraphDaemonTick.mjs, tests/workGraphDaemonTick.test.mjs, package.json, work/backlog.bvc
-  work.title: спроектировать scheduler tick для WorkGraph OS daemon
+  work.title: Фаза 2 получает конкретную первую design-задачу после live-loop.
 ]>
 

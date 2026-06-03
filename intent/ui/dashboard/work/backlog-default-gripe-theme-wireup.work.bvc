@@ -8,28 +8,11 @@
   applyTheme: brand fixed; toggle только light/dark luminance if kept.
   data-iohasc-theme=gripe-dark-default on html.
 Цель:
-  Открытие backlog сразу показывает Gripe amber accent.
+  Открытие бэклог сразу показывает Gripe amber accent.
 Проверки:
   GET /assets/design-tokens-gripe-dark-default.css 200
   renderBacklogHtml ссылается на gripe-dark-default
   workGraphBacklogUiServer.test.mjs обновлён
-Анализ:
-  Целесообразность:
-  Стоит завести «Backlog UI: Gripe theme as default (CSS link + accent bridge)» в бэклог — по материалам AN-33 (work/analytics/gripe-ds-visual-default-wave3.md).
-  Контекст и границы:
-  workGraphBacklogUiServer: link gripe-dark-default.css; serve /assets/ route.
-  Зависимости и готовность:
-  depends_on=epic-gripe-ds-visual-default-wave3, gripe-dark-default-theme-json-and-css; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Открытие backlog сразу показывает Gripe amber accent.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-33 (work/analytics/gripe-ds-visual-default-wave3.md); исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -54,5 +37,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/workGraphBacklogUiServer.mjs, src/ui/pages/uiKitPage.mjs, work/analytics/gripe-ds-visual-default-wave3.md
-  work.title: Backlog UI: Gripe theme as default (CSS link + accent bridge)
+  work.title: Backlog UI: тема Gripe по умолчанию (CSS link + accent bridge)
 ]>
+

@@ -3,7 +3,7 @@
   Regression guard for AN-36 epic delivery.
 Вектор:
   tests/architectureL1Canon.test.mjs
-  extend architectureSnapshot + workGraphBacklogUiServer tests
+  расширить architectureSnapshot + workGraphBacklogUiServer tests
 Цель:
   CI ловит откат к inline JS L1 или missing BVC in drawer.
 Проверки:
@@ -50,5 +50,6 @@
   work.risk: low
   work.status: done
   work.target_files: tests/architectureL1Canon.test.mjs, tests/architectureSnapshot.test.mjs, tests/workGraphBacklogUiServer.test.mjs, work/analytics/architecture-main-bvc-canon-hub.md, docs/plan-architecture-main-bvc-canon.md
-  work.title: Tests: architecture main.bvc canon loader + snapshot BVC + UI hooks
+  work.title: тесты архитектуры main BVC канон
 ]>
+

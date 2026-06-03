@@ -13,7 +13,7 @@
   no visual regression on board/workflow views in e2e smoke
 Анализ:
   Целесообразность:
-  Стоит завести «WG backlog UI: renderUiButton wave 2 (panels / workflow / composer)» в бэклог — по материалам AN-32 (work/analytics/gripe-ds-adoption-phase2-post-an21.md).
+  Стоит завести «WG бэклог UI: renderUiButton wave 2 (panels / workflow / composer)» в бэклог — по материалам AN-32 (work/analytics/gripe-ds-adoption-phase2-post-an21.md).
   Контекст и границы:
   Мигрировать dynamic button HTML в renderUiButton helper wrapper.
   Зависимости и готовность:
@@ -52,5 +52,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/workGraphBacklogUiServer.mjs, src/ui/atoms/button.mjs, work/analytics/gripe-ds-adoption-phase2-post-an21.md
-  work.title: WG backlog UI: renderUiButton wave 2 (panels / workflow / composer)
+  work.title: wg бэклог UI button миграция волна 2
 ]>
+

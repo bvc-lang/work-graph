@@ -1,30 +1,13 @@
 #Задача_implement_code_gap_operator_projection_mvp<[
 Базис:
   codeGapBacklogFeeder.mjs мапит code-gap.report.v1 в reviewable drafts, но оператор не видел suggestions в dashboard без оператор projection API.
-  Задача «реализовать code-gap оператор projection MVP» относится к контуру платформы агента и должна быть понятна агенту без чтения всего backlog.
+  Задача «реализовать code-gap оператор projection MVP» относится к контуру платформы агента и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: design-code-gap-backlog-feeder, implement-memory-record-worker-slice-mvp.
 Вектор:
   src/codeGapOperatorProjection.mjs + fixture tests/fixtures/code-gap-report.v1.json.
   GET /api/code-gap-projection и секция Code-gap в вкладке «Проверки» (lazy load, read-only, reviewRequired).
 Цель:
   Operator workflow видит code-gap suggestions и promotion протокол без прямой записи в бэклог.
-Анализ:
-  Целесообразность:
-  Стоит завести «реализовать code-gap оператор projection MVP» в бэклог.
-  Контекст и границы:
-  src/codeGapOperatorProjection.mjs + fixture tests/fixtures/code-gap-report.v1.json.
-  Зависимости и готовность:
-  depends_on=design-code-gap-backlog-feeder, implement-memory-record-worker-slice-mvp; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Operator workflow видит code-gap suggestions и promotion протокол без прямой записи в бэклог.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -45,6 +28,6 @@
   work.risk: low
   work.status: done
   work.target_files: src/codeGapOperatorProjection.mjs, src/workGraphBacklogUiServer.mjs, tests/fixtures/code-gap-report.v1.json, tests/codeGapOperatorProjection.test.mjs, tests/workGraphBacklogUiServer.test.mjs, work/backlog.bvc
-  work.title: реализовать code-gap оператор projection MVP
+  work.title: реализовать кода gap оператора projection MVP
 ]>
 

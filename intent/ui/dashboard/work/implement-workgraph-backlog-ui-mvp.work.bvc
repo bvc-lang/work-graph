@@ -44,6 +44,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/workGraphBacklogUiServer.mjs, tests/workGraphBacklogUiServer.test.mjs, package.json, work/backlog.bvc
-  work.title: реализовать MVP UI доски backlog/status
+  work.title: Запустить локальный backlog/status board и увидеть текущее состояние задач Work Graph.
 ]>
 

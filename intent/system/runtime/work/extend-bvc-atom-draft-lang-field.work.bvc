@@ -1,35 +1,17 @@
 #Задача_extend_bvc_atom_draft_lang_field<[
 Базис:
-  Источник: analytics:bvc-multilingual-keys-design §7 — draft JSON должен нести lang для LLM formatter.
+  Источник: analytics:bvc-multilingual-keys-design §7 — черновик JSON должен нести lang для LLM formatter.
 Вектор:
   Добавить lang: enum [en, ru], default en в step-atom-draft.v1.json.
   Alias bvc-atom-draft.v1.json в docs при необходимости.
-  Обновить validation tests для draft.
+  Обновить validation tests для черновик.
 Цель:
-  LLM draft → formatter знает целевой dialect без guess.
-Анализ:
-  Целесообразность:
-  Стоит завести «schemas/step-atom-draft: поле lang (registered dialects)» в бэклог — по материалам AN-19 (analytics:bvc-multilingual-keys-design).
-  Контекст и границы:
-  Добавить lang: enum [en, ru], default en в step-atom-draft.v1.json.
-  Зависимости и готовность:
-  depends_on=adr-bvc-multilingual-keys; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  LLM draft → formatter знает целевой dialect без guess.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-19 (analytics:bvc-multilingual-keys-design); исполнять после вердикта «полезно» и готовности зависимостей.
+  LLM черновик → formatter знает целевой dialect без guess.
 Проверки:
   schema принимает lang: ru
   default en при отсутствии поля
-
 Свидетельства:
-  - schemas/step-atom-draft.v1.json: lang enum en|ru, default en
+  schemas/step-atom-draft.v1.json: lang enum en|ru, default en
 
 Метки:
   atom.profile: work_item
@@ -54,5 +36,6 @@
   work.risk: low
   work.status: done
   work.target_files: schemas/step-atom-draft.v1.json, docs/adr-bvc-multilingual-keys.md
-  work.title: schemas/step-atom-draft: поле lang (registered dialects)
+  work.title: расширить BVC atom черновик lang field
 ]>
+

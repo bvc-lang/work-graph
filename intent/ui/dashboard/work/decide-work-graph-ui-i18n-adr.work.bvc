@@ -1,0 +1,41 @@
+#Задача_decide_work_graph_ui_i18n_adr<[
+Базис:
+  AN-55 §5: default locale policy (Accept-Language + fallback en + cookie wg_locale).
+  Separate UI catalog from packages/bvc-dialects; no auto-translate work item prose.
+Вектор:
+  docs/adr-work-graph-ui-i18n-v1.md — locale chain, catalog format, anti-goals.
+  Link from plan-work-graph-ui-i18n-v1.md and AN-55 analysis.
+Цель:
+  Команда не смешивает UI-строки с bvc-dialects JSON.
+Проверки:
+  ADR published
+  Linked from plan and AN-55
+Свидетельства:
+  npm run test:deterministic — 731 tests; kanban/workflow i18n, ADR, /api/backlog-revision, live poll on board/workflow
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-55
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-ui-i18n-best-practices.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-02T16:36:21.382Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-02T16:36:21.382Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: epic-work-graph-ui-i18n-v1
+  work.id: decide-work-graph-ui-i18n-adr
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.parent_id: epic-work-graph-ui-i18n-v1
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: low
+  work.status: done
+  work.target_files: work/analytics/work-graph-ui-i18n-best-practices.md, docs/plan-work-graph-ui-i18n-v1.md, docs/adr-work-graph-ui-i18n-v1.md
+  work.title: ADR: Work Graph UI i18n — политика locale и граница BVC
+]>
+

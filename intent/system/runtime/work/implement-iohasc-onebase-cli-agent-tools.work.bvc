@@ -1,7 +1,7 @@
 #Задача_implement_iohasc_onebase_cli_agent_tools<[
 Базис:
   MCP onebase-mcp уже имеет check_config/describe_config; built-in agent tools в ioHasC пока только scan и REST.
-  Задача «добавить built-in tools onebaseCheck и onebaseDescribe» относится к контуру платформы агента и должна быть понятна агенту без чтения всего backlog.
+  Задача «добавить built-in tools onebaseCheck и onebaseDescribe» относится к контуру платформы агента и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: implement-onebase-check-verification-gate.
 Вектор:
   Skill-gated wrappers над onebaseCliRunner: onebaseCheckConfig, onebaseDescribeConfig.
@@ -45,6 +45,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/agent/onebaseAgentTools.ts, src/agent/tools.js, src/agent/toolSchemas.js, src/agent/onebaseConfigSkill.js, skills/onebase-config/SKILL.md
-  work.title: добавить built-in tools onebaseCheck и onebaseDescribe
+  work.title: реализовать iohasc OneBase CLI агента tools
 ]>
 

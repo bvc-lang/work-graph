@@ -1,0 +1,45 @@
+#Задача_epic_work_graph_ui_classifier_badges_v1<[
+Базис:
+  На Kanban-карточках бейдж показывает статус (ready/doing), хотя статус уже виден по колонке.
+  Оператор просит Jira-style lozenge с блоком архитектуры или типом задачи (UI, WORK GRAPH, MEMORY).
+Вектор:
+  P0: workItemBlockClassifier.mjs — classifyWorkItemBlock из architecture snapshot.
+  P0: workItemClassifierBadge.mjs — resolve + renderWorkItemClassifierBadge.
+  P0: renderIssueFooter surface=board → classifier badge; workflow list → status badge.
+  P1: labels architecture.block_id override для явной классификации.
+Цель:
+  На доске бейдж = блок архитектуры или department/kind; статус остаётся только в workflow list.
+Проверки:
+  tests/workItemClassifierBadge.test.mjs green
+  board cards contain data-testid="classifier-*" not status badge
+  workflow backlog list still shows status badge
+Анализ:
+  Reuse classifyWorkItemBlock from architectureSnapshot; Jira lozenge tones from badge.mjs.
+Решение:
+  Вердикт: полезно
+  Board-only switch via surface=board in renderTaskAtom.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-61
+  intake.source_kind: operator-request
+  intake.source_ref: src/ui/workItemClassifierBadge.mjs
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-02T21:40:16.490Z
+  work.analysis.source: operator-request
+  work.decision.at: 2026-06-02T21:40:16.490Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: epic-work-graph-ui-avatars-v1
+  work.id: epic-work-graph-ui-classifier-badges-v1
+  work.item_kind: epic
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: low
+  work.status: backlog
+  work.target_files: src/workItemBlockClassifier.mjs, src/ui/workItemClassifierBadge.mjs, src/workGraphBacklogUiServer.mjs, tests/workItemClassifierBadge.test.mjs, tests/workGraphBacklogUiServer.test.mjs
+  work.title: UI Classifier badges v1: блок архитектуры на карточках доски вместо статуса
+]>

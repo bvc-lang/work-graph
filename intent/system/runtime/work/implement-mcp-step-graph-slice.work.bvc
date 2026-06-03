@@ -1,7 +1,7 @@
 #Задача_implement_mcp_step_graph_slice<[
 Базис:
   ioHasC Semantic Map — React Flow UI; польза для агента — subgraph .bvc refs/imports. UI не нужен.
-  Задача «Headless: MCP step-graph slice из .bvc (без UI)» относится к контуру графа знаний и retrieval и должна быть понятна агенту без чтения всего backlog.
+  Задача «Headless: MCP step-graph slice из .bvc (без UI)» относится к контуру графа знаний и retrieval и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: implement-mcp-get-unified-linkage.
 Вектор:
   src/stepGraphSlice.mjs: scan *.bvc, рёбра #ref; MCP get_step_graph_slice + get_step_graph_projection.
@@ -45,5 +45,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/stepGraphSlice.mjs, packages/workgraph-mcp/src/handlers.mjs, packages/workgraph-mcp/src/index.mjs, tests/stepGraphSlice.test.mjs
-  work.title: Headless: MCP step-graph slice из .bvc (без UI)
+  work.title: реализовать MCP step графа slice
 ]>
+

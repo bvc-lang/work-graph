@@ -7,10 +7,12 @@
   Marketplace: refactor MarketplaceThemeResolver → IohascThemeResolver.
   WG: data-iohasc-theme на html.
 Цель:
-  Runtime theme switch без Tailwind rebuild в обоих продуктах.
+  Runtime theme switch без Tailwind пересобрать в обоих продуктах.
 Проверки:
   applyTheme unit tests
   marketplace-psychology theme still works
+Свидетельства:
+  packages/design-tokens/build/applyTheme.mjs + applyTheme API; tests/design-tokens.test.mjs
 Анализ:
   Целесообразность:
   Стоит завести «IohascThemeResolver: shared runtime theming API (P2)» в бэклог — по материалам AN-21 (work/analytics/marketplace-integration-and-shared-design-system.md).
@@ -21,7 +23,7 @@
   Риски и альтернативы:
   Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
   Критерии успеха:
-  Runtime theme switch без Tailwind rebuild в обоих продуктах.; проверки из атома и `target_files`.
+  Runtime theme switch без Tailwind пересобрать в обоих продуктах.; проверки из атома и `target_files`.
   Рекомендация для решения:
   Полезно — задача готова к исполнению после разбора материалов приёма.
 Решение:
@@ -52,8 +54,6 @@
   work.risk: medium
   work.status: done
   work.target_files: packages/design-tokens/build/applyTheme.mjs, ../../04 Marketplace/app/Services/MarketplaceThemeResolver.php, work/analytics/marketplace-integration-and-shared-design-system.md
-  work.title: IohascThemeResolver: shared runtime theming API (P2)
-
-Свидетельства:
-  - packages/design-tokens/build/applyTheme.mjs + applyTheme API; tests/design-tokens.test.mjs
+  work.title: Runtime theme switch без Tailwind пересобрать в обоих продуктах.
 ]>
+

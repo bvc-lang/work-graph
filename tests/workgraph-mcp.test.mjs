@@ -14,6 +14,7 @@ import {
   completeWorkItem,
   createWorkItem,
   getArchitectureSnapshot,
+  getAnalyticsLineage,
   getBacklogSnapshot,
   getCurrentCycle,
   getEvidenceRecord,
@@ -319,6 +320,13 @@ describe('workgraph MCP handlers', () => {
     assert.match(analyze.messages[0].content.text, /Целесообразность:/u);
     assert.match(analyze.messages[0].content.text, /NOT a post-factum/u);
     assert.match(analyze.messages[0].content.text, /present\/decision/u);
+  });
+
+  it('get_analytics_lineage resolves AN-50.1 parent from repo journal', async () => {
+    const repoRoot = join(import.meta.dirname, '..');
+    const result = await getAnalyticsLineage({ recordKey: 'AN-50.1' }, { root: repoRoot });
+    assert.equal(result.schema, 'analytics-lineage.projection.v1');
+    assert.equal(result.parent?.key, 'AN-50');
   });
 });
 

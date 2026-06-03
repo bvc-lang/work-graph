@@ -1,6 +1,8 @@
 import { appendFile, mkdir, readFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 
+import { normalizeAnalyticsLineage, validateAnalyticsLineage } from './analyticsLineageProjection.mjs';
+
 const compareText = (left, right) => String(left).localeCompare(String(right), 'en', { sensitivity: 'variant' });
 
 export const ANALYTICS_RECORD_SCHEMA = 'analytics-record.v1';
@@ -34,6 +36,11 @@ export function buildAnalyticsRecord(input, options = {}) {
 
   const slug = input.slug ?? title;
   const createdAt = input.createdAt ?? options.appendedAt ?? new Date().toISOString();
+  const lineage = normalizeAnalyticsLineage(input.lineage);
+  const lineageErrors = validateAnalyticsLineage(input.lineage);
+  if (lineageErrors.length > 0) {
+    throw new TypeError(lineageErrors.join('; '));
+  }
 
   return {
     schema: ANALYTICS_RECORD_SCHEMA,
@@ -50,6 +57,7 @@ export function buildAnalyticsRecord(input, options = {}) {
     updatedAt: input.updatedAt ?? createdAt,
     author: input.author ?? 'operator',
     ...(String(input.key ?? '').trim() !== '' ? { key: String(input.key).trim() } : {}),
+    ...(lineage ? { lineage } : {}),
   };
 }
 

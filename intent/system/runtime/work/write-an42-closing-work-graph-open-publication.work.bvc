@@ -11,6 +11,8 @@
   Итоговый md опубликован
   Строка добавлена в analytics-records.jsonl
   Перечислены ADR, BVC/IR/PVRG specs, inventory, legal docs, CI guard
+Свидетельства:
+  work/analytics/closing-epic-work-graph-open-publication.md
 Анализ:
   Зачем:
   Точка для оператора: «AN-42 отработан, вот доказательства».
@@ -20,9 +22,6 @@
   Вердикт:
   полезно
   Последняя задача эпика.
-
-Свидетельства:
-  - work/analytics/closing-epic-work-graph-open-publication.md
 
 Метки:
   atom.profile: work_item
@@ -47,5 +46,6 @@
   work.risk: low
   work.status: done
   work.target_files: work/analytics/closing-epic-work-graph-open-publication.md, work/analytics-records.jsonl, work/analytics/open-publication-technology-holdback-strategy.md
-  work.title: Закрыть разбор AN-42 после эпика open publication
+  work.title: Разбор AN-42 закрыт: видно, что стратегия публикации реализована и чем подтверждена.
 ]>
+

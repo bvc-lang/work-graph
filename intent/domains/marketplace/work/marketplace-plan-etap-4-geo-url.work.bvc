@@ -7,6 +7,8 @@
   Marketplace plan: этап 4 — geo URL
 Проверки:
   plan markdown linked in target_files
+Свидетельства:
+  Migrated from docs/plans/этап-4-гео-url.md to intent/domains/marketplace/work item
 Анализ:
   Целесообразность:
   Стоит завести «Marketplace plan: этап 4 — geo URL» в бэклог — по материалам AN-21 (work/analytics/marketplace-integration-and-shared-design-system.md).
@@ -48,8 +50,6 @@
   work.risk: low
   work.status: done
   work.target_files: ../../04 Marketplace/docs/plans/этап-4-гео-url.md
-  work.title: Marketplace plan: этап 4 — geo URL
-
-Свидетельства:
-  - Migrated from docs/plans/этап-4-гео-url.md to intent/domains/marketplace/work item
+  work.title: План Marketplace: этап 4 — geo URL
 ]>
+

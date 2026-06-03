@@ -12,6 +12,8 @@
   Draft IR spec опубликован с лицензией CC BY 4.0
   Reference code помечен Apache-2.0
   В docs явно: IR — машинный exchange format, не readable-формат
+Свидетельства:
+  packages/ir-spec/ draft schema ir.flow.v1
 Анализ:
   Зачем:
   IR — машинный формат второго уровня (BVC → IR); AN-42 не позиционирует его как язык для оператора.
@@ -24,9 +26,6 @@
   Вердикт:
   полезно
   Брать в работу после закрытия зависимостей: epic-work-graph-open-publication, publish-bvc-open-standard-pack-an42.
-
-Свидетельства:
-  - packages/ir-spec/ draft schema ir.flow.v1
 
 Метки:
   atom.profile: work_item
@@ -51,5 +50,6 @@
   work.risk: medium
   work.status: done
   work.target_files: work/analytics/open-publication-technology-holdback-strategy.md, work/analytics/ir-rich-ir-open-canon.md, schemas/
-  work.title: IR/RichIR: публичная draft spec и лицензии reference code
+  work.title: IR/RichIR можно интегрировать в сторонние tools без форка Work Graph UI.
 ]>
+

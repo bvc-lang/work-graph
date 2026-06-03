@@ -6,6 +6,7 @@ import { readWorkItemsFromRepo } from './intentTreeWorkItems.mjs';
 import { parseWorkItems } from './workGraphRuntime.mjs';
 import { evaluateWorkItemBvcQuality } from './workItemBvcQuality.mjs';
 import { evaluateWorkItemProseLint } from './workItemProseLint.mjs';
+import { validateStructuredEvidenceShape } from './structuredEvidenceV1.mjs';
 
 export const ALLOWED_MIGRATION_STRATEGIES = new Set(['port', 'rebuild', 'replace', 'defer']);
 
@@ -14,6 +15,41 @@ const DONE_STATUSES = new Set(['done', 'verified']);
 const ACTIVE_STATUSES = new Set(['backlog', 'ready', 'claimed', 'doing', 'in_progress', 'verify']);
 
 const compareText = (left, right) => String(left).localeCompare(String(right), 'en', { sensitivity: 'variant' });
+
+function lintStructuredEvidenceLines(item) {
+  const issues = [];
+
+  for (const [index, line] of (item.evidence ?? []).entries()) {
+    const trimmed = String(line).trim();
+    if (!trimmed.startsWith('{')) {
+      continue;
+    }
+
+    let parsed;
+    try {
+      parsed = JSON.parse(trimmed);
+    } catch {
+      issues.push({
+        severity: 'warning',
+        code: 'invalid_structured_evidence_json',
+        message: `WorkItem ${item.id} evidence[${index}] looks like JSON but failed to parse`,
+        workId: item.id,
+      });
+      continue;
+    }
+
+    for (const violation of validateStructuredEvidenceShape(parsed)) {
+      issues.push({
+        severity: 'warning',
+        code: violation.code,
+        message: `WorkItem ${item.id} evidence[${index}]: ${violation.message}`,
+        workId: item.id,
+      });
+    }
+  }
+
+  return issues;
+}
 
 /**
  * @param {Array<{ id: string, status: string, dependsOn?: string[], evidence?: string[], nextAction?: string, basis?: string, vector?: string, goal?: string }>} items
@@ -127,6 +163,10 @@ export function lintBacklogItems(items, options = {}) {
 
     for (const proseIssue of evaluateWorkItemProseLint(item)) {
       issues.push(proseIssue);
+    }
+
+    for (const structuredIssue of lintStructuredEvidenceLines(item)) {
+      issues.push(structuredIssue);
     }
   }
 

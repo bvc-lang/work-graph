@@ -1,6 +1,6 @@
 #Задача_epic_gripe_ds_adoption_phase2<[
 Базис:
-  AN-32: после AN-21/AN-30 out-of-scope — inline backlog UI, molecules, full OData import.
+  AN-32: после AN-21/AN-30 out-of-scope — inline бэклог UI, molecules, full OData import.
   Дизайн-система — Gripe Marketplace (Blade x-ui, brand-tokens); OneBase — 1С runtime bridge, не DS.
   Stub OneBaseCatalogTreeImporter (AN-21) — dry-run only; нужен production upsert.
 Вектор:
@@ -14,23 +14,6 @@
   molecules rating/tabs + organism modal в ui-kit
   catalog:import-onebase с dry-run и live на fixture
   AN-32 closing опубликован
-Анализ:
-  Целесообразность:
-  Стоит завести «Gripe DS phase 2: WG UI migration + molecules + OneBase OData catalog» в бэклог — по материалам AN-32 (work/analytics/gripe-ds-adoption-phase2-post-an21.md).
-  Контекст и границы:
-  Track A: renderUiButton migration в workGraphBacklogUiServer.mjs (2 волны).
-  Зависимости и готовность:
-  depends_on=epic-marketplace-shared-design-system; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Production WG UI использует Gripe DS atoms/molecules; catalog import без dry-run stub.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-32 (work/analytics/gripe-ds-adoption-phase2-post-an21.md); исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -54,5 +37,6 @@
   work.risk: medium
   work.status: done
   work.target_files: work/analytics/gripe-ds-adoption-phase2-post-an21.md, docs/plan-gripe-ds-adoption-phase2.md, src/workGraphBacklogUiServer.mjs, packages/atomic-spec/, src/ui/molecules/, src/ui/organisms/, ../../04 Marketplace/app/Catalog/OneBaseCatalogTreeImporter.php
-  work.title: Gripe DS phase 2: WG UI migration + molecules + OneBase OData catalog
+  work.title: Gripe DS фаза 2: миграция UI WG + molecules + OneBase OData
 ]>
+

@@ -1,50 +1,27 @@
 #Задача_wire_pvrg_task_scope_dashboard_panel<[
 Базис:
   pvrgTaskScope.mjs есть; UI оператора показывает только заглушку architecture.
-  Задача «Фаза 4: панель области PVRG в dashboard» относится к контуру графа знаний и retrieval и должна быть понятна агенту без чтения всего backlog.
-  Предварительно должны быть закрыты зависимости: phase-4-trace-pvrg-semantic-map.
 Вектор:
   Detail drawer: ограниченный subgraph выбранного WorkItem.
-  Ближайший шаг исполнения: закрыто.
 Цель:
   Оператор видит PVRG-контекст как getPvrgSubgraph в ioHasC.
-  Готово, когда выполнены проверки: UI показывает subgraph для выбранной задачи.
-Анализ:
-  Целесообразность:
-  Стоит завести «Фаза 4: панель области PVRG в dashboard» в бэклог.
-  Контекст и границы:
-  Detail drawer: ограниченный subgraph выбранного WorkItem.
-  Зависимости и готовность:
-  depends_on=phase-4-trace-pvrg-semantic-map; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Оператор видит PVRG-контекст как getPvrgSubgraph в ioHasC.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+Проверки:
+  UI показывает subgraph для выбранной задачи
+  Тест API или projection
 
 Метки:
   atom.profile: work_item
   migration.strategy: port
   trace.status: verified
-  work.analysis.at: 2026-05-30T17:22:37.890Z
-  work.analysis.source: backfill
-  work.decision.at: 2026-05-30T17:22:37.899Z
-  work.decision.verdict: useful
   work.department: knowledge-publishing
   work.depends_on: phase-4-trace-pvrg-semantic-map
   work.id: wire-pvrg-task-scope-dashboard-panel
-  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.next_action: просмотреть и перевести в ready
   work.owner_role: retrieval_architect
-  work.pipeline_stage: decided
   work.priority: high
   work.risk: medium
   work.status: done
   work.target_files: src/pvrgTaskScope.mjs, src/workGraphBacklogUiServer.mjs, tests/pvrgTaskScope.test.mjs
-  work.title: Фаза 4: панель области PVRG в dashboard
+  work.title: подключить PVRG задачи scope dashboard панель
 ]>
 

@@ -10,7 +10,7 @@
   epic closed с evidence
 Анализ:
   Целесообразность:
-  Стоит завести «AN-33 closing analysis: epic-gripe-ds-visual-default-wave3» в бэклог — по материалам AN-33 (work/analytics/gripe-ds-visual-default-wave3.md).
+  Стоит завести «AN-33 итоговый разбор: epic-gripe-ds-visual-default-wave3» в бэклог — по материалам AN-33 (work/analytics/gripe-ds-visual-default-wave3.md).
   Контекст и границы:
   work/analytics/closing-epic-gripe-ds-visual-default-wave3.md + journal.
   Зависимости и готовность:
@@ -49,5 +49,6 @@
   work.risk: low
   work.status: done
   work.target_files: work/analytics/closing-epic-gripe-ds-visual-default-wave3.md, work/analytics-records.jsonl, work/analytics/gripe-ds-visual-default-wave3.md
-  work.title: AN-33 closing analysis: epic-gripe-ds-visual-default-wave3
+  work.title: закрытие: an33 закрытие Gripe ds visual default wave3
 ]>
+

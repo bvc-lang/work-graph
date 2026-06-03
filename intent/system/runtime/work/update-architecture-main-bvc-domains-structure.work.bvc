@@ -12,6 +12,8 @@
   domain-marketplace block в main.bvc
   architecture:l1-check green после правки
   L2 pipeline labels для marketplace-domain
+Свидетельства:
+  cascade: reconcile epic epic-architecture-domains-l1-hierarchy already done
 Анализ:
   Целесообразность:
   Стоит завести «architecture/main.bvc: group domains + block domain-marketplace + L2» в бэклог — по материалам AN-39 (work/analytics/architecture-domains-l1-hierarchy.md).
@@ -53,8 +55,6 @@
   work.risk: medium
   work.status: done
   work.target_files: architecture/main.bvc, src/architectureL1Canon.mjs, work/analytics/architecture-domains-l1-hierarchy.md
-  work.title: architecture/main.bvc: group domains + block domain-marketplace + L2
-
-Свидетельства:
-  - cascade: reconcile epic epic-architecture-domains-l1-hierarchy already done
+  work.title: Canon отражает оба прикладных домена на L1.
 ]>
+

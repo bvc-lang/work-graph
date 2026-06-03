@@ -1,50 +1,27 @@
 #Задача_document_worker_orchestrator_boundary<[
 Базис:
   Полный orchestrator остаётся в ../project; worker — однораундовый адаптер, не замена чата.
-  Задача «Фаза 1: ADR — граница worker и orchestrator ioHasC» относится к контуру платформы агента и должна быть понятна агенту без чтения всего backlog.
-  Предварительно должны быть закрыты зависимости: phase-1-agent-worker-live-loop.
 Вектор:
   Зафиксировать контракт входа/выхода и список того, что не переносится один в один.
-  Ближайший шаг исполнения: закрыто.
 Цель:
   Ясно, где backend задач Work Graph, а где agent runtime ioHasC.
-  Готово, когда выполнены проверки: ADR перечисляет зоны ответственности worker и orchestrator.
-Анализ:
-  Целесообразность:
-  Стоит завести «Фаза 1: ADR — граница worker и orchestrator ioHasC» в бэклог.
-  Контекст и границы:
-  Зафиксировать контракт входа/выхода и список того, что не переносится один в один.
-  Зависимости и готовность:
-  depends_on=phase-1-agent-worker-live-loop; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Ясно, где backend задач Work Graph, а где agent runtime ioHasC.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+Проверки:
+  ADR перечисляет зоны ответственности worker и orchestrator
+  Есть ссылка из plan-workgraph-llm-usefulness.md
 
 Метки:
   atom.profile: work_item
   migration.strategy: rebuild
   trace.status: verified
-  work.analysis.at: 2026-05-30T17:22:36.390Z
-  work.analysis.source: backfill
-  work.decision.at: 2026-05-30T17:22:36.400Z
-  work.decision.verdict: useful
   work.department: agent-platform
   work.depends_on: phase-1-agent-worker-live-loop
   work.id: document-worker-orchestrator-boundary
-  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.next_action: просмотреть и перевести в ready
   work.owner_role: agent_platform_architect
-  work.pipeline_stage: decided
   work.priority: high
   work.risk: medium
   work.status: done
   work.target_files: docs/adr-workgraph-worker-orchestrator-boundary.md, src/agentWorkerLiveLoop.mjs
-  work.title: Фаза 1: ADR — граница worker и orchestrator ioHasC
+  work.title: документировать worker orchestrator граница
 ]>
 

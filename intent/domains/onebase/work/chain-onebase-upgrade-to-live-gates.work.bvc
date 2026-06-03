@@ -1,7 +1,7 @@
 #Задача_chain_onebase_upgrade_to_live_gates<[
 Базис:
   wire-onebase-live-check-gates ready, но зависит только от синхронизировать evidence; без обновить CLI gate останется skip.
-  Задача «связать wire-onebase-live-check-gates с обновить CLI» относится к контуру Work Graph rebuild и должна быть понятна агенту без чтения всего backlog.
+  Задача «связать wire-onebase-live-check-gates с обновить CLI» относится к контуру Work Graph пересобрать и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: upgrade-onebase-cli-v047, wire-onebase-live-check-gates.
 Вектор:
   Meta: после upgrade-onebase-cli-v047 выполнить wire-onebase-live-check-gates; обновить depends_on в intent atom.
@@ -9,23 +9,6 @@
 Цель:
   Явная цепочка обновить CLI → live check gates → evidence done.
   Готово, когда выполнены проверки: depends_on включает upgrade-onebase-cli-v047.
-Анализ:
-  Целесообразность:
-  Стоит завести «связать wire-onebase-live-check-gates с обновить CLI» в бэклог.
-  Контекст и границы:
-  Meta: после upgrade-onebase-cli-v047 выполнить wire-onebase-live-check-gates; обновить depends_on в intent atom.
-  Зависимости и готовность:
-  depends_on=upgrade-onebase-cli-v047, wire-onebase-live-check-gates; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Явная цепочка обновить CLI → live check gates → evidence done.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -45,6 +28,6 @@
   work.risk: medium
   work.status: done
   work.target_files: intent/domains/onebase/work/wire-onebase-live-check-gates.work.bvc, scripts/run-onebase-config-check.mjs
-  work.title: связать wire-onebase-live-check-gates с обновить CLI
+  work.title: Явная цепочка обновить CLI → live check gates → evidence done.
 ]>
 

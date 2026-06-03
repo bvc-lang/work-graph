@@ -8,23 +8,6 @@
   Зафиксировать, как сохранять смысл из чата без dumping transcript в память проекта.
 Цель:
   Определить memory extraction loop для Work Graph, который превращает результаты работы в Project Memory v1 records с evidence links.
-Анализ:
-  Целесообразность:
-  Стоит завести «разобрать Claude Note как reference memory extractor» в бэклог.
-  Контекст и границы:
-  Сопоставить KnowledgePack entities: concepts, decisions, open questions, howtos и task outcomes с MemoryRecord v1.
-  Зависимости и готовность:
-  depends_on=design-evidence-model-v1, design-project-memory-v1; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Определить memory extraction loop для Work Graph, который превращает результаты работы в Project Memory v1 records с evidence links.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -45,6 +28,6 @@
   work.risk: medium
   work.status: done
   work.target_files: protocols/claude-note-memory-patterns.bvc, protocols/project-memory-v1.bvc, protocols/evidence-model-v1.bvc, work/backlog.bvc
-  work.title: разобрать Claude Note как reference memory extractor
+  work.title: Memory extraction loop: для Work Graph, который превращает результаты работы в Project Memory v1 records с…
 ]>
 

@@ -1,0 +1,55 @@
+#Задача_document_cursor_user_rule_wg_template<[
+Базис:
+  AN-57 D5: оператор часто открывает ioHasC project — WG .mdc не загружаются.
+  User rule глобально дублирует 5 строк single-backlog + русский BVC как страховка.
+Вектор:
+  docs/cursor-user-rule-wg-backlog.template.md — текст для Cursor Settings → Rules.
+  Ссылка из session primer runbook; не дублировать полный work-items-russian — только essentials.
+Цель:
+  При multi-repo setup оператор может включить user rule и снизить drift без смены workspace root.
+Проверки:
+  docs/cursor-user-rule-wg-backlog.template.md существует
+  session primer runbook ссылается на шаблон
+Анализ:
+  Зачем:
+  AN-57 D5: оператор часто открывает ioHasC project — WG .mdc не загружаются.
+  Контекст: User rule глобально дублирует 5 строк single-backlog + русский BVC как страховка.
+  Когда:
+  После готовности: epic-agent-session-warmup-v1, sync-cursor-wg-rules-to-repo.
+  Готово, когда:
+  При multi-repo setup оператор может включить user rule и снизить drift без смены workspace root.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: epic-agent-session-warmup-v1, sync-cursor-wg-rules-to-repo.
+
+Свидетельства:
+  docs/cursor-user-rule-wg-backlog.template.md
+  docs/workgraph-session-primer-runbook.md — ссылка на шаблон
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-57
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/agent-session-warmup-vs-enforcement.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-02T17:42:39.514Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-02T17:42:39.514Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: epic-agent-session-warmup-v1, sync-cursor-wg-rules-to-repo
+  work.id: document-cursor-user-rule-wg-template
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: product_owner
+  work.parent_id: epic-agent-session-warmup-v1
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: docs/cursor-user-rule-wg-backlog.template.md, docs/workgraph-session-primer-runbook.md, work/analytics/agent-session-warmup-vs-enforcement.md
+  work.title: Шаблон user rule Cursor для multi-repo WG
+]>
+

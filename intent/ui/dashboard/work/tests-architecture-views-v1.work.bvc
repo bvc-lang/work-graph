@@ -3,7 +3,7 @@
   Regression guard для multi-view UX из AN-34.
 Вектор:
   workGraphBacklogUiServer.test.mjs: list tab, tree mode, pipeline default.
-  Optional layout bounds check from AN-1 recommendations.
+  Опционально layout bounds check from AN-1 recommendations.
 Цель:
   CI ловит откат к canvas-only или broken pipeline default.
 Проверки:
@@ -50,5 +50,6 @@
   work.risk: low
   work.status: done
   work.target_files: tests/workGraphBacklogUiServer.test.mjs, work/analytics/architecture-visualization-patterns-comparison.md, docs/plan-architecture-views-v1.md
-  work.title: Tests: architecture views v1 (list, tree, pipeline layout gate)
+  work.title: тесты архитектуры представления v1
 ]>
+

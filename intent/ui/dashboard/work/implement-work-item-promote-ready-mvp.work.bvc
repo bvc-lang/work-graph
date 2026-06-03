@@ -15,7 +15,7 @@
   Контекст и границы:
   Server-side promote: POST API переводит один WorkItem `backlog` → `ready` с проверкой depends_on (как claimNext), патчит work.status в work/backlog.bvc через workGraphBacklogPersist.
   Зависимости и готовность:
-  depends_on=implement-agent-run-backlog-persist, implement-pvrg-graph-rag-context-slice, implement-workgraph-backlog-ui-mvp; старт после закрытия upstream-зависимостей.
+  depends_on=implement-agent-run-backlog-persist, реализовать PVRG Graph RAG context slice, implement-workgraph-backlog-ui-mvp; старт после закрытия upstream-зависимостей.
   Риски и альтернативы:
   Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
   Критерии успеха:
@@ -47,6 +47,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/workGraphPromoteReadyApi.mjs, src/workGraphBacklogPersist.mjs, src/workGraphBacklogUiServer.mjs, src/workGraphRuntime.mjs, tests/workGraphPromoteReadyApi.test.mjs, tests/workGraphBacklogUiServer.test.mjs, work/backlog.bvc, intent/index.bvc
-  work.title: реализовать work item promote-ready mvp
+  work.title: Pipeline исполнения на доске и явно переводит задачу в ready с записью в canonical бэклог и intent graph.
 ]>
 

@@ -10,32 +10,14 @@
   Conformance: EN/RU вход → один AST; round-trip preserve dialect.
 Цель:
   Мультиязычность BVC зафиксирована в ADR и исполняема: один dialect на атом, E_BVC_DIALECT_MIX при смешении.
-Анализ:
-  Целесообразность:
-  Стоит завести «BVC multilingual: Detect-or-Declare + dialect registry (AN-19)» в бэклог — по материалам AN-19 (analytics:bvc-multilingual-keys-design).
-  Контекст и границы:
-  Принять ADR docs/adr-bvc-multilingual-keys.md.
-  Зависимости и готовность:
-  depends_on=bvc-open-canon-naming; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Мультиязычность BVC зафиксирована в ADR и исполняема: один dialect на атом, E_BVC_DIALECT_MIX при смешении.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-19 (analytics:bvc-multilingual-keys-design); исполнять после вердикта «полезно» и готовности зависимостей.
 Проверки:
   docs/adr-bvc-multilingual-keys.md принят
   packages/bvc-dialects/en.json и ru.json существуют
   parser резолвит lang (pragma / @lang / Labels.lang / auto-detect)
   conformance EN+RU green
-
 Свидетельства:
-  - 9/9 подзадач closed; ADR + registry + parser + conformance green
-  - node --test tests/bvcAtomParser.test.mjs tests/bvcConformance.test.mjs
+  9/9 подзадач closed; ADR + registry + parser + conformance green
+  node --test tests/bvcAtomParser.test.mjs tests/bvcConformance.test.mjs
 
 Метки:
   atom.profile: work_item
@@ -59,5 +41,6 @@
   work.risk: medium
   work.status: done
   work.target_files: docs/adr-bvc-multilingual-keys.md, work/analytics/bvc-multilingual-keys-design.md, work/analytics/step-as-open-canon-standard.md, schemas/step-atom-draft.v1.json, protocols/llm-step-atom-writer.bvc, packages/bvc-dialects
-  work.title: BVC multilingual: Detect-or-Declare + dialect registry (AN-19)
+  work.title: BVC: мультиязычность Detect-or-Declare + dialect (AN-19)
 ]>
+

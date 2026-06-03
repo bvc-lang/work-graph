@@ -1,0 +1,51 @@
+#Задача_implement_repo_file_preview_api<[
+Базис:
+  Нет HTTP endpoint для read-only preview файла workspace.
+Вектор:
+  src/repoFilePreviewApi.mjs — normalize path, read utf8, truncate, detect language.
+  Wire in workGraphBacklogUiServer.mjs before GET-only guard.
+  tests/repoFilePreviewApi.test.mjs
+Цель:
+  UI fetch preview без worker allowlist; traversal blocked.
+Проверки:
+  200 for existing file
+  403/404 for .. traversal
+  truncated flag when > max bytes
+Анализ:
+  Зачем:
+  Нет HTTP endpoint для read-only preview файла workspace.
+  Контекст: src/repoFilePreviewApi.mjs — normalize path, read utf8, truncate, detect language.
+  Когда:
+  После готовности: epic-drawer-repo-file-preview-v1, decide-drawer-repo-file-frame-adr.
+  Готово, когда:
+  UI fetch preview без worker allowlist; traversal blocked.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: epic-drawer-repo-file-preview-v1, decide-drawer-repo-file-frame-adr.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-59
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/drawer-repo-file-preview.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-02T19:57:33.381Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-02T19:57:33.381Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: epic-drawer-repo-file-preview-v1, decide-drawer-repo-file-frame-adr
+  work.id: implement-repo-file-preview-api
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.parent_id: epic-drawer-repo-file-preview-v1
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: backlog
+  work.target_files: src/repoFilePreviewApi.mjs, src/workGraphBacklogUiServer.mjs, tests/repoFilePreviewApi.test.mjs
+  work.title: API: GET /api/repo-file/preview — bounded read для UI
+]>

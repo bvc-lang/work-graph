@@ -8,23 +8,6 @@
   Показать cross-block links and breadcrumb back to L1 map.
 Цель:
   Оператор видит содержимое выбранного architecture block без чтения всего repo вручную.
-Анализ:
-  Целесообразность:
-  Стоит завести «реализовать MVP block detail panel для architecture view» в бэклог.
-  Контекст и границы:
-  Реализовать block detail drawer/panel с вкладками Схема-stub, Задачи, Артефакты, Файлы, Memory-stub.
-  Зависимости и готовность:
-  depends_on=design-architecture-block-detail-panel, implement-architecture-map-l1-mvp; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Оператор видит содержимое выбранного architecture block без чтения всего repo вручную.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -45,6 +28,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/workGraphBacklogUiServer.mjs, src/architectureSnapshot.mjs, tests/workGraphBacklogUiServer.test.mjs, work/backlog.bvc
-  work.title: реализовать MVP block detail panel для architecture view
+  work.title: Содержимое выбранного architecture block без чтения всего repo вручную.
 ]>
 

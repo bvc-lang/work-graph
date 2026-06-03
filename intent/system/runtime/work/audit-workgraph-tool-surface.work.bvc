@@ -1,7 +1,7 @@
 #Задача_audit_workgraph_tool_surface<[
 Базис:
   Старый ioHasC agent имеет много tools; пересобрать нужен минимальный Work Graph tool surface для live-loop и будущего LLM execution.
-  Задача «провести audit Work Graph tool surface» относится к контуру платформы агента и должна быть понятна агенту без чтения всего backlog.
+  Задача «провести audit Work Graph tool surface» относится к контуру платформы агента и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: phase-8-agent-prompt-eval-tools.
 Вектор:
   Провести audit tool surface: snapshot, claim, record evidence, предложение transition, graph context и verification.
@@ -9,23 +9,6 @@
 Цель:
   Agent tools становятся маленькими, policy-gated и testable.
   Готово, когда выполнены проверки: tool list разнесён по категориям keep/replace/defer.
-Анализ:
-  Целесообразность:
-  Стоит завести «провести audit Work Graph tool surface» в бэклог.
-  Контекст и границы:
-  Провести audit tool surface: snapshot, claim, record evidence, предложение transition, graph context и verification.
-  Зависимости и готовность:
-  depends_on=phase-8-agent-prompt-eval-tools; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Agent tools становятся маленькими, policy-gated и testable.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -46,6 +29,6 @@
   work.risk: high
   work.status: done
   work.target_files: protocols/workgraph-tool-surface-audit-v1.bvc, src/workGraphToolSurfaceAudit.mjs, tests/workGraphToolSurfaceAudit.test.mjs, work/backlog.bvc
-  work.title: провести audit Work Graph tool surface
+  work.title: Аудит поверхности инструментов Work Graph
 ]>
 

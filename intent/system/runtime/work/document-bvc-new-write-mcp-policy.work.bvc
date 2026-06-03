@@ -3,33 +3,15 @@
   Агенты и MCP должны явно рекомендовать .bvc для новых protocol/work atoms.
 Вектор:
   protocols/bvc-new-write-policy-v1.bvc — канон политики.
-  packages/workgraph-mcp create_work_item description + default checks.
+  packages/workgraph-mcp create_work_item description + default проверки.
 Цель:
-  MCP и protocol документируют: новые atoms → .bvc; .bvc только legacy read.
+  MCP и протокол документируют: новые atoms → .bvc; .bvc только legacy read.
 Проверки:
   protocols/bvc-new-write-policy-v1.bvc существует
   create_work_item tool description упоминает .work.bvc
-Анализ:
-  Целесообразность:
-  Стоит завести «protocol + MCP hints для .bvc new-write» в бэклог — по материалам plan: docs/plan-step-to-bvc-migration.md.
-  Контекст и границы:
-  protocols/bvc-new-write-policy-v1.bvc — канон политики.
-  Зависимости и готовность:
-  depends_on=bvc-phase2-new-write, implement-new-write-work-item-bvc; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  MCP и protocol документируют: новые atoms → .bvc; .bvc только legacy read.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма plan: docs/plan-step-to-bvc-migration.md; исполнять после вердикта «полезно» и готовности зависимостей.
-
 Свидетельства:
-  - protocols/bvc-new-write-policy-v1.bvc
-  - workgraph-mcp create_work_item description + default checks
+  protocols/bvc-new-write-policy-v1.bvc
+  workgraph-mcp create_work_item description + default checks
 
 Метки:
   atom.profile: work_item
@@ -53,5 +35,6 @@
   work.risk: low
   work.status: done
   work.target_files: protocols/bvc-new-write-policy-v1.bvc, packages/workgraph-mcp/src/index.mjs
-  work.title: protocol + MCP hints для .bvc new-write
+  work.title: MCP: и протокол документируют: новые atoms → .bvc; .bvc только legacy read.
 ]>
+

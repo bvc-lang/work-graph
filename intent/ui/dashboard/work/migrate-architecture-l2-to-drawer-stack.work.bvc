@@ -1,0 +1,54 @@
+#Задача_migrate_architecture_l2_to_drawer_stack<[
+Базис:
+  openL2NodeDetails uses #detail-sub-drawer — second parallel stack.
+Вектор:
+  architecture-l2 frame type; openL2NodeDetails → stack.push.
+  Block drawer stays frame[0]; L2 is frame[1+].
+  Deprecate detail-sub-drawer when no callers remain.
+Цель:
+  Architecture uses unified stack; L2 DOM опционально wrapper only.
+Проверки:
+  block → L2 node → back → block
+  L2 related tasks push task frame
+Анализ:
+  Зачем:
+  openL2NodeDetails uses #detail-sub-drawer — second parallel stack.
+  Контекст: architecture-l2 frame type; openL2NodeDetails → stack.push.
+  Когда:
+  После готовности: implement-detail-drawer-stack-core.
+  Готово, когда:
+  Architecture uses unified stack; L2 DOM опционально wrapper only.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: implement-detail-drawer-stack-core.
+
+Свидетельства:
+  - openL2NodeDetails pushes architecture-block + architecture-l2 frames
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-54
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/detail-drawer-stack-modal-queue.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-02T15:55:13.578Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-02T15:55:13.578Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: implement-detail-drawer-stack-core
+  work.id: migrate-architecture-l2-to-drawer-stack
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: feature_engineer
+  work.parent_id: epic-detail-drawer-stack-v1
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: medium
+  work.status: done
+  work.target_files: src/workGraphBacklogUiServer.mjs, tests/workGraphBacklogUiServer.test.mjs
+  work.title: Мигрировать drill-down Architecture L2 на drawer stack
+]>
+

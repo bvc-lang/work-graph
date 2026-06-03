@@ -8,23 +8,6 @@
   Указать MVP: request local/openai run; later: cursor-sdk/claude providers, cost/status badges, retry/fallback view.
 Цель:
   Пользователь получает замену старого agent panel, соответствующую новой архитектуре Work Graph executor.
-Анализ:
-  Целесообразность:
-  Стоит завести «спроектировать оператор Agent Run panel» в бэклог.
-  Контекст и границы:
-  Спроектировать Agent Run panel в dashboard оператора: task selector, provider selector, policy preset, прогнать button, stop/cancel, прогнать log, Worker Output preview, evidence/запрос transition review.
-  Зависимости и готовность:
-  depends_on=design-provider-registry-and-capability-selection; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Пользователь получает замену старого agent panel, соответствующую новой архитектуре Work Graph executor.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -45,6 +28,6 @@
   work.risk: medium
   work.status: done
   work.target_files: protocols/operator-agent-run-panel-v1.bvc, ui/operator-dashboard-v2.bvc, src/workGraphBacklogUiServer.mjs, work/backlog.bvc
-  work.title: спроектировать оператор Agent Run panel
+  work.title: Пользователь получает замену старого agent panel, соответствующую новой архитектуре Work Graph executor.
 ]>
 

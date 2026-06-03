@@ -1,49 +1,27 @@
 #Задача_optional_gvm_verify_worker_gate<[
 Базис:
-  GVM verify deferred; optional worker gate отсутствует.
-  Задача «Фаза 11: optional GVM verify gate для worker» относится к контуру Work Graph rebuild и должна быть понятна агенту без чтения всего backlog.
-  Предварительно должны быть закрыты зависимости: phase-11-gbc-gfs-gvm-deferred.
+  GVM verify deferred; опционально worker gate отсутствует.
 Вектор:
-  IOHASC_GVM_VERIFY=1 preflight stub + skip when wasm missing.
-  Ближайший шаг исполнения: просмотреть и перевести в ready.
+  IOHASC_GVM_VERIFY=1 preflight заглушка + skip когда wasm missing.
 Цель:
-  GVM track в release matrix optional tier.
-  Готово, когда выполнены проверки: releaseGateMatrix entry optional-gvm.
-Анализ:
-  Целесообразность:
-  Стоит завести «Фаза 11: optional GVM verify gate для worker» в бэклог.
-  Контекст и границы:
-  IOHASC_GVM_VERIFY=1 preflight stub + skip when wasm missing.
-  Зависимости и готовность:
-  depends_on=phase-11-gbc-gfs-gvm-deferred; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  GVM track в release matrix optional tier.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+  GVM track в release matrix опционально tier.
+Проверки:
+  releaseGateMatrix entry optional-gvm
+  Stub skip описан
 
 Метки:
   atom.profile: work_item
   migration.strategy: defer
   trace.status: verified
-  work.analysis.at: 2026-05-30T17:22:37.356Z
-  work.analysis.source: backfill
-  work.decision.at: 2026-05-30T17:22:37.366Z
-  work.decision.verdict: useful
   work.department: devops-runtime
   work.depends_on: phase-11-gbc-gfs-gvm-deferred
   work.id: optional-gvm-verify-worker-gate
-  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.next_action: просмотреть и перевести в ready
   work.owner_role: system_architect
-  work.pipeline_stage: decided
   work.priority: low
   work.risk: medium
   work.status: done
   work.target_files: docs/plan-iohasc-full-rebuild-backlog.md, src/releaseGateMatrix.mjs
-  work.title: Фаза 11: optional GVM verify gate для worker
+  work.title: Фаза 11: опционально GVM verify gate для worker
 ]>
+

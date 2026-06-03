@@ -8,23 +8,6 @@
   Завести follow-up implementation tasks по результатам scope.
 Цель:
   Prompt-step и low-code не теряются как "старый сложный UI", а получают осознанный replacement path.
-Анализ:
-  Целесообразность:
-  Стоит завести «определить replacement scope для prompt-step и low-code» в бэклог.
-  Контекст и границы:
-  Составить boundary: prompt-as-step для agent behavior, prompt eval fixtures, low-code template/scaffold path, architecture guard, какие части остаются deferred.
-  Зависимости и готовность:
-  depends_on=reconcile-rebuild-scope-against-original-iohasc-plan; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Prompt-step и low-code не теряются как "старый сложный UI", а получают осознанный replacement path.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -45,6 +28,6 @@
   work.risk: medium
   work.status: done
   work.target_files: protocols/prompt-step-lowcode-replacement-scope-v1.bvc, docs/plan-iohasc-full-rebuild-backlog.md, docs/plan-iohasc-rebuild-audit-gap-matrix.md, work/backlog.bvc
-  work.title: определить replacement scope для prompt-step и low-code
+  work.title: Prompt-step и low-code не теряются как "старый сложный UI", а получают осознанный replacement path.
 ]>
 

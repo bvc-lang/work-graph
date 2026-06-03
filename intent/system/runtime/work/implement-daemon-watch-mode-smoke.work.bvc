@@ -1,49 +1,27 @@
 #Задача_implement_daemon_watch_mode_smoke<[
 Базис:
   Одиночный tick (daemon:once) покрыт тестами; непрерывный watch без regression gate.
-  Задача «Фаза 2: smoke-тест daemon в режиме watch» относится к контуру платформы агента и должна быть понятна агенту без чтения всего backlog.
-  Предварительно должны быть закрыты зависимости: phase-2-workgraph-os-daemon.
 Вектор:
   npm run daemon:watch — короткий smoke с таймаутом, фикстурой и проверкой work/daemon-audit.jsonl.
-  Ближайший шаг исполнения: просмотреть и перевести в ready.
 Цель:
   Режим watch не ломается между релизами.
-  Готово, когда выполнены проверки: Smoke проходит в npm run test:deterministic.
-Анализ:
-  Целесообразность:
-  Стоит завести «Фаза 2: smoke-тест daemon в режиме watch» в бэклог.
-  Контекст и границы:
-  npm run daemon:watch — короткий smoke с таймаутом, фикстурой и проверкой work/daemon-audit.jsonl.
-  Зависимости и готовность:
-  depends_on=phase-2-workgraph-os-daemon; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Режим watch не ломается между релизами.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+Проверки:
+  Smoke проходит в npm run test:deterministic
+  Скрипт описан в package.json
 
 Метки:
   atom.profile: work_item
   migration.strategy: rebuild
   trace.status: verified
-  work.analysis.at: 2026-05-30T17:22:36.639Z
-  work.analysis.source: backfill
-  work.decision.at: 2026-05-30T17:22:36.648Z
-  work.decision.verdict: useful
   work.department: agent-platform
   work.depends_on: phase-2-workgraph-os-daemon
   work.id: implement-daemon-watch-mode-smoke
-  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.next_action: просмотреть и перевести в ready
   work.owner_role: system_architect
-  work.pipeline_stage: decided
   work.priority: medium
   work.risk: medium
   work.status: done
-  work.target_files: src/workGraphDaemonWatch.mjs, tests/workGraphDaemonWatch.test.mjs, package.json
-  work.title: Фаза 2: smoke-тест daemon в режиме watch
+  work.target_files: src/workGraphDaemonTick.mjs, tests/workGraphDaemonIntegration.test.mjs, package.json
+  work.title: Режим watch не ломается между релизами.
 ]>
+

@@ -1,7 +1,7 @@
 #Задача_implement_work_graph_cli_multiproject<[
 Базис:
   Оператор не должен вручную копировать intent/, charter/ и править конфиги — подключение нового репо должно укладываться в пару команд.
-  AN-40: init в целевом проекте, register в реестр, ui поднимает backlog server.
+  AN-40: init в целевом проекте, register в реестр, ui поднимает бэклог server.
 Вектор:
   Пакет packages/work-graph-cli: команды init (каркас + .work-graph/config.json), register (запись в реестр), ui (запуск сервера).
   Где уместно — переиспользовать существующие seed/lint скрипты.
@@ -11,6 +11,9 @@
   init создаёт intent/, charter/, architecture/main.bvc, .work-graph/config.json
   register добавляет текущий каталог в workspaces.json
   npm test в packages/work-graph-cli проходит
+Свидетельства:
+  packages/work-graph-cli/bin/work-graph.mjs
+  tests/workGraphProjectInit.test.mjs
 Анализ:
   Зачем:
   Runbook и переключатель опираются на CLI — без него onboarding остаётся ручным.
@@ -19,10 +22,6 @@
 Решение:
   Вердикт:
   полезно
-
-Свидетельства:
-  - packages/work-graph-cli/bin/work-graph.mjs
-  - tests/workGraphProjectInit.test.mjs
 
 Метки:
   atom.profile: work_item
@@ -47,5 +46,6 @@
   work.risk: medium
   work.status: done
   work.target_files: packages/work-graph-cli/, src/workspaceRegistry.mjs, docs/plan-work-graph-multiproject-host.md
-  work.title: CLI Work Graph: init, register, ui
+  work.title: Новый проект подключается командами init и register без чтения внутренней документации WG.
 ]>
+

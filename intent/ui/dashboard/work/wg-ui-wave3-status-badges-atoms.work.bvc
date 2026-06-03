@@ -4,7 +4,7 @@
   Gripe DS: x-ui.atoms.badge patterns.
 Вектор:
   Map work.status → badge tone (ready=accent, done=ok, blocked=danger, …).
-  UI_BADGE_CSS в backlog head.
+  UI_BADGE_CSS в бэклог head.
   badgeClient.mjs для inline script renderStatusBadge replacement.
 Цель:
   Все status pills в списках/kanban/detail на wg-badge.
@@ -52,5 +52,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/workGraphBacklogUiServer.mjs, src/ui/atoms/badge.mjs, work/analytics/gripe-ds-visual-default-wave3.md
-  work.title: Wave 3: status badges → renderUiBadge (server + client)
+  work.title: Все status pills в списках/kanban/detail на wg-badge.
 ]>
+

@@ -4,7 +4,7 @@
   AN-42 требует явных границ: packages/public, packages/private, fixtures/public vs private.
 Вектор:
   Составить реестр каталогов с метками public | private | experimental.
-  Пометить eval corpus, customer fixtures, operator playbooks как private.
+  Пометить eval corpus, customer fixtures, оператор playbooks как private.
   Документ в docs/publication-inventory-an42.md или раздел в ADR.
 Цель:
   Любой maintainer видит, что можно публиковать в npm/tarball, а что нет.
@@ -12,6 +12,8 @@
   Реестр public/private/experimental опубликован
   Eval и customer fixtures помечены private
   experimental/* не обещается как продукт в README
+Свидетельства:
+  docs/publication-inventory-an42.md
 Анализ:
   Зачем:
   Сейчас один репозиторий смешивает core, R&D (GVM/Genesis), eval fixtures и vertical packs — при публикации это утечка и путаница.
@@ -24,9 +26,6 @@
   Вердикт:
   полезно
   Брать в работу после закрытия зависимостей: epic-work-graph-open-publication, decide-work-graph-open-publication-adr.
-
-Свидетельства:
-  - docs/publication-inventory-an42.md
 
 Метки:
   atom.profile: work_item
@@ -51,5 +50,6 @@
   work.risk: medium
   work.status: done
   work.target_files: work/analytics/open-publication-technology-holdback-strategy.md, docs/plan-work-graph-open-publication.md, docs/publication-inventory-an42.md
-  work.title: Инвентаризация: public, private и experimental пакеты
+  work.title: Любой maintainer видит, что можно публиковать в npm/tarball, а что нет.
 ]>
+

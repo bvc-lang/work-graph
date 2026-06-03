@@ -1,7 +1,7 @@
 #Задача_phase_3_step_canon_intent_graph<[
 Базис:
   `.bvc` canon — уникальный слой ioHasC, а intent tree в пересобрать уже начал заменять монолитный бэклог.
-  Задача «Фаза 3: Step canon и intent graph» относится к контуру платформы агента и должна быть понятна агенту без чтения всего backlog.
+  Задача «Фаза 3: Step canon и intent graph» относится к контуру платформы агента и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: phase-2-workgraph-os-daemon.
 Вектор:
   Спроектировать перенос Step/HasC canon, intent hierarchy, связей WorkItem с intent, charter gates и выравнивание catalog/passport.
@@ -46,6 +46,6 @@
   work.risk: high
   work.status: done
   work.target_files: protocols/intent-hierarchy-pilot.bvc, protocols/catalog-passport-intent-alignment.bvc, src/intentHierarchy.mjs, src/intentTreeMigration.mjs, tests/intentHierarchy.test.mjs, intent/index.bvc, work/backlog.bvc
-  work.title: Фаза 3: Step canon и intent graph
+  work.title: Смысловые артефакты ioHasC получают устойчивый canonical layout в rebuild.
 ]>
 

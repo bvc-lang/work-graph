@@ -1,6 +1,14 @@
+import { escapeHtml } from './htmlEscape.mjs';
 import { renderUiButton } from './atoms/button.mjs';
 import { renderUiSelect } from './atoms/select.mjs';
+import { renderNavViewIcon, renderThemeIcon } from './iconAssets.mjs';
 import { renderUiTabsGroup } from './molecules/tabs.mjs';
+
+function renderNavTabLabelHtml(view, label) {
+  const icon = renderNavViewIcon(view);
+  if (!icon) return escapeHtml(label);
+  return `${icon}<span class="nav-tab-label">${escapeHtml(label)}</span>`;
+}
 
 /**
  * Sidebar nav tab (Gripe DS unstyled shell — keeps .nav-tab CSS).
@@ -10,7 +18,8 @@ export function renderNavTab({ view, label, selected = false, disabled = false }
   return renderUiButton({
     unstyled: true,
     className: 'nav-tab',
-    label,
+    labelHtml: renderNavTabLabelHtml(view, label),
+    ariaLabel: label,
     disabled,
     attrs: {
       'data-view': view,
@@ -19,14 +28,57 @@ export function renderNavTab({ view, label, selected = false, disabled = false }
   });
 }
 
-export function renderThemeToggleButton() {
+export function renderSettingsNavTab({ label = 'Настройки', selected = false }) {
+  return renderUiButton({
+    unstyled: true,
+    className: 'nav-tab nav-tab-settings',
+    labelHtml: renderNavTabLabelHtml('settings', label),
+    ariaLabel: label,
+    testId: 'sidebar-settings-nav',
+    attrs: {
+      'data-view': 'settings',
+      'aria-selected': selected ? 'true' : 'false',
+    },
+  });
+}
+
+export function renderHeaderThemeToggleButton({ ariaLabel = 'Переключить тему' } = {}) {
   return renderUiButton({
     unstyled: true,
     id: 'theme-toggle',
-    className: 'theme-toggle',
-    label: 'Тёмная тема',
-    attrs: { 'aria-pressed': 'false' },
+    className: 'header-theme-toggle',
+    ariaLabel,
+    ariaPressed: false,
+    testId: 'header-theme-toggle',
+    labelHtml: `<span class="header-theme-toggle-inner">${renderThemeIcon('moon')}</span>`,
   });
+}
+
+/** @deprecated footer full-width button — use renderHeaderThemeToggleButton */
+export function renderThemeToggleButton() {
+  return renderHeaderThemeToggleButton();
+}
+
+/**
+ * @param {{ locale: string, t: (key: string) => string }} props
+ */
+export function renderSettingsLocaleOptions({ locale, t }) {
+  const options = [
+    { id: 'ru', label: t('settings.language.ru') },
+    { id: 'en', label: t('settings.language.en') },
+  ];
+  return options.map(({ id, label }) => renderUiButton({
+    variant: 'secondary',
+    size: 'sm',
+    id: `settings-locale-${id}`,
+    className: locale === id ? 'is-active' : '',
+    label,
+    testId: id === 'ru' ? 'settings-locale-ru' : undefined,
+    attrs: {
+      'data-settings-locale': id,
+      'aria-pressed': locale === id ? 'true' : 'false',
+    },
+  })).join('\n                ');
 }
 
 export function renderDetailCloseButton() {
@@ -175,7 +227,7 @@ export function renderAnalyticsSubtabsShell() {
   });
 }
 
-export function renderWorkflowSubtabsShell() {
+export function renderWorkflowSubtabsShell(labels = {}) {
   return renderUiTabsGroup({
     className: 'workflow-subtabs',
     testId: 'workflow-subtabs',
@@ -183,7 +235,7 @@ export function renderWorkflowSubtabsShell() {
     tabs: [
       {
         id: 'backlog',
-        label: 'Бэклог',
+        label: labels.backlog ?? 'Бэклог',
         selected: true,
         count: 0,
         elementId: 'workflow-tab-backlog',
@@ -192,7 +244,7 @@ export function renderWorkflowSubtabsShell() {
       },
       {
         id: 'archive',
-        label: 'Архив',
+        label: labels.archive ?? 'Архив',
         count: 0,
         elementId: 'workflow-tab-archive',
         dataAttrKey: 'data-workflow-tab',

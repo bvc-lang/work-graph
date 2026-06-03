@@ -1,13 +1,20 @@
 #Задача_implement_lit_flow_package_and_build<[
 Базис:
   Источник: analytics:graph-visualization-engine (AN-4).
-  Зависимости: lit, @xyflow/system, lit-flow (или @ghchinoy/litflow); сборка client chunk для backlog UI.
+  Зависимости: lit, @xyflow/system, lit-flow (или @ghchinoy/litflow); сборка client chunk для бэклог UI.
 Вектор:
   npm deps + vite/esbuild entry src/graphCanvasLitFlow/mountGraphCanvasLitFlow.ts.
   Экспорт window.__WORKGRAPH_MOUNT_GRAPH_CANVAS__ для workGraphBacklogUiServer.
   Dev/prod bundle size gate; без Vue/React в основном SSR shell.
 Цель:
-  Client island собирается и монтируется на пустой host div в backlog UI.
+  Client island собирается и монтируется на пустой host div в бэклог UI.
+Проверки:
+  npm run build (или backlog:ui client step) включает lit-flow chunk
+  smoke: mount на fixture projection без ошибок в console
+Свидетельства:
+  protocols/graph-canvas-lit-flow-v1.bvc + schemas/graph-canvas-lit-flow-projection.v1.json
+  public/graph-canvas-lit-flow.js (lit-flow client island)
+  src/graphCanvasLitFlow/* + tests/graphCanvasLitFlow.test.mjs
 Анализ:
   Целесообразность:
   Стоит завести «подключить lit-flow и client bundle для graph canvas» в бэклог — по материалам AN-4 (analytics:graph-visualization-engine).
@@ -18,21 +25,13 @@
   Риски и альтернативы:
   Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
   Критерии успеха:
-  Client island собирается и монтируется на пустой host div в backlog UI.; проверки из атома и `target_files`.
+  Client island собирается и монтируется на пустой host div в бэклог UI.; проверки из атома и `target_files`.
   Рекомендация для решения:
   Полезно — задача готова к исполнению после разбора материалов приёма.
 Решение:
   Вердикт:
   полезно
   Создана по материалам приёма AN-4 (analytics:graph-visualization-engine); исполнять после вердикта «полезно» и готовности зависимостей.
-Проверки:
-  npm run build (или backlog:ui client step) включает lit-flow chunk
-  smoke: mount на fixture projection без ошибок в console
-
-Свидетельства:
-  - protocols/graph-canvas-lit-flow-v1.bvc + schemas/graph-canvas-lit-flow-projection.v1.json
-  - public/graph-canvas-lit-flow.js (lit-flow client island)
-  - src/graphCanvasLitFlow/* + tests/graphCanvasLitFlow.test.mjs
 
 Метки:
   atom.profile: work_item
@@ -57,5 +56,6 @@
   work.risk: medium
   work.status: done
   work.target_files: package.json, package-lock.json, src/graphCanvasLitFlow/mountGraphCanvasLitFlow.ts, vite.config.graph-canvas.mjs
-  work.title: подключить lit-flow и client bundle для graph canvas
+  work.title: Client island собирается и монтируется на пустой host div в бэклог UI.
 ]>
+

@@ -1,12 +1,12 @@
 #Задача_optional_live_llm_eval<[
 Базис:
-  OpenAI-compatible provider и scripts/run-eval-live-llm.mjs задокументированы, но optional прогон на живом endpoint не зафиксирован как отдельный WorkItem в бэклог.
+  OpenAI-compatible provider и scripts/run-eval-live-llm.mjs задокументированы, но опционально прогон на живом endpoint не зафиксирован как отдельный WorkItem в бэклог.
   reconcile-audit-gap-matrix-post-provider-rollout указывает опциональная live LLM eval как следующий шаг.
 Вектор:
   Прогнать npm run eval:live-llm на локальной LLM (LM Studio / Ollama / прокси) с IOHASC_E2E_REAL_LLM=1.
   Записать evidence: endpoint, model id, pass/fail, без включения в mandatory CI.
 Цель:
-  Зафиксировать optional quality gate связки «Work Graph worker + live LLM» вне deterministic suite.
+  Зафиксировать опционально quality gate связки «Work Graph worker + live LLM» вне deterministic suite.
 Анализ:
   Целесообразность:
   Стоит завести «опционально: live llm eval» в бэклог.
@@ -17,7 +17,7 @@
   Риски и альтернативы:
   Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
   Критерии успеха:
-  Зафиксировать optional quality gate связки «Work Graph worker + live LLM» вне deterministic suite.; проверки из атома и `target_files`.
+  Зафиксировать опционально quality gate связки «Work Graph worker + live LLM» вне deterministic suite.; проверки из атома и `target_files`.
   Рекомендация для решения:
   Полезно — задача готова к исполнению после разбора материалов приёма.
 Решение:
@@ -44,6 +44,6 @@
   work.risk: low
   work.status: done
   work.target_files: scripts/run-eval-live-llm.mjs, package.json, docs/optional-live-llm-eval.md, docs/plan-iohasc-rebuild-audit-gap-matrix.md, work/backlog.bvc
-  work.title: опционально: live llm eval
+  work.title: Опциональная live LLM eval
 ]>
 

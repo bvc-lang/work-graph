@@ -10,8 +10,11 @@
   Экосистема может заявлять совместимость по правилам, а не произвольно.
 Проверки:
   PUBLIC_API.md опубликован
-  Trademark / conformance policy draft в docs/
+  Trademark / conformance policy черновик в docs/
   Описан процесс «BVC-compatible» через conformance suite
+Свидетельства:
+  docs/trademark-conformance-policy.md
+  PUBLIC_API.md
 Анализ:
   Зачем:
   AN-42: рост через brand + conformance, не через секретность; trademark защищает имя, не идею.
@@ -24,10 +27,6 @@
   Вердикт:
   полезно
   Брать в работу после закрытия зависимостей: epic-work-graph-open-publication, publish-bvc-open-standard-pack-an42.
-
-Свидетельства:
-  - docs/trademark-conformance-policy.md
-  - PUBLIC_API.md
 
 Метки:
   atom.profile: work_item
@@ -52,5 +51,6 @@
   work.risk: low
   work.status: done
   work.target_files: work/analytics/open-publication-technology-holdback-strategy.md, PUBLIC_API.md, docs/trademark-conformance-policy.md
-  work.title: Trademark и conformance: BVC-compatible, Work Graph brand
+  work.title: Экосистема может заявлять совместимость по правилам, а не произвольно.
 ]>
+

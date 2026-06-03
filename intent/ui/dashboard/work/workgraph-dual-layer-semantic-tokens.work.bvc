@@ -10,7 +10,9 @@
   WG UI использует те же semantic roles, что Marketplace.
 Проверки:
   style.css содержит --ui-accent-rgb и --ui-surface-*
-  UI backlog server рендерит без регрессий
+  UI бэклог server рендерит без регрессий
+Свидетельства:
+  workgraph-dark theme + semantic --ui-* bridge in body[data-theme=dark]; /assets/design-tokens-workgraph-dark.css
 Анализ:
   Целесообразность:
   Стоит завести «Work Graph: двухслойные токены --brand-* + --ui-*» в бэклог — по материалам AN-21 (work/analytics/marketplace-integration-and-shared-design-system.md).
@@ -53,7 +55,5 @@
   work.status: done
   work.target_files: src/style.css, src/workGraphBacklogUiServer.mjs, work/analytics/marketplace-integration-and-shared-design-system.md
   work.title: Work Graph: двухслойные токены --brand-* + --ui-*
-
-Свидетельства:
-  - workgraph-dark theme + semantic --ui-* bridge in body[data-theme=dark]; /assets/design-tokens-workgraph-dark.css
 ]>
+

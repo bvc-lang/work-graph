@@ -7,23 +7,6 @@
   Описать границы: chat transcript ephemeral, canonical output — WorkItem черновик в .bvc/backlog после explicit apply.
 Цель:
   Пользователь может начать работу естественным языком, а система переводит разговор в проверяемую задачу Work Graph.
-Анализ:
-  Целесообразность:
-  Стоит завести «спроектировать контракт чата «Замысел» для намерений» в бэклог.
-  Контекст и границы:
-  Спроектировать раздел «Замысел»: conversational UI для формулирования намерения, но с обязательным output contract IntentDraft/StepAtomDraft.
-  Зависимости и готовность:
-  depends_on=design-draft-store-backlog-intake, design-step-parser-roundtrip; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Пользователь может начать работу естественным языком, а система переводит разговор в проверяемую задачу Work Graph.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -44,6 +27,6 @@
   work.risk: medium
   work.status: done
   work.target_files: protocols/intent-composer-chat-v1.bvc, protocols/workgraph-draft-intake.bvc, src/workGraphBacklogUiServer.mjs, work/backlog.bvc
-  work.title: спроектировать контракт чата «Замысел» для намерений
+  work.title: Начать работу естественным языком, а система переводит разговор в проверяемую задачу Work Graph.
 ]>
 

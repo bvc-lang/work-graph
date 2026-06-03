@@ -10,6 +10,14 @@
   Метрика успеха: один не-автор → одна реальная 1С-задача → verified с evidence.
 Цель:
   Продукт получает явного пользователя и измеримую ценность; charter и README соответствуют факту.
+Проверки:
+  charter/main.bvc описывает 1С/OneBase vertical как primary scope
+  README.md имеет «Getting Started» для 1С-разработчика, не для автора
+  experimental/ содержит всё, что не входит в vertical (Genesis, GVM, multi-domain ambitions)
+  один не-автор завершил golden path с verified evidence
+Свидетельства:
+  Position C canon in charter + README + decision record
+  pilot docs ready for external eval
 Анализ:
   Целесообразность:
   Стоит завести «pivot продукта в 1С/OneBase vertical (позиция C из AN-7)» в бэклог — по материалам AN-7 (analytics:product-self-audit-user).
@@ -27,15 +35,6 @@
   Вердикт:
   полезно
   Создана по материалам приёма AN-7 (analytics:product-self-audit-user); исполнять после вердикта «полезно» и готовности зависимостей.
-Проверки:
-  charter/main.bvc описывает 1С/OneBase vertical как primary scope
-  README.md имеет «Getting Started» для 1С-разработчика, не для автора
-  experimental/ содержит всё, что не входит в vertical (Genesis, GVM, multi-domain ambitions)
-  один не-автор завершил golden path с verified evidence
-
-Свидетельства:
-  - Position C canon in charter + README + decision record
-  - pilot docs ready for external eval
 
 Метки:
   atom.profile: work_item
@@ -58,5 +57,6 @@
   work.risk: high
   work.status: done
   work.target_files: charter/main.bvc, README.md, experimental/, work/analytics/product-self-audit-user.md, work/analytics/product-self-audit-tech.md
-  work.title: pivot продукта в 1С/OneBase vertical (позиция C из AN-7)
+  work.title: Пивот в vertical 1С/OneBase (позиция C, AN-7)
 ]>
+

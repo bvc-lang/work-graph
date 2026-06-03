@@ -1,7 +1,7 @@
 #Задача_wire_onebase_cli_tools_parity<[
 Базис:
   В ioHasC project добавлен onebase CLI bridge (describe/check/ai-guide); Work Graph parity matrix ещё описывает только list_metadata scan.
-  Задача «синхронизировать parity matrix с OneBase CLI tools» относится к контуру Work Graph rebuild и должна быть понятна агенту без чтения всего backlog.
+  Задача «синхронизировать parity matrix с OneBase CLI tools» относится к контуру Work Graph пересобрать и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: port-onebase-mcp-parity.
 Вектор:
   Обновить onebase.access parity rows для describe_config, check_config, ai_guide; зафиксировать workflow describe→edit→check.
@@ -45,6 +45,6 @@
   work.risk: medium
   work.status: done
   work.target_files: protocols/onebase-mcp-parity-v1.bvc, src/onebaseWorkItemTemplate.mjs, tests/onebaseWorkItemTemplate.test.mjs, ../project/docs/plan-onebase-cli-mcp-bridge.md
-  work.title: синхронизировать parity matrix с OneBase CLI tools
+  work.title: Work Graph и ioHasC MCP описывают один и тот же OneBase AI toolchain.
 ]>
 

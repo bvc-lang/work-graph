@@ -1,0 +1,53 @@
+#Задача_migrate_analytics_lineage_seed_examples<[
+Базис:
+  AN-50.1 уже ссылается на AN-50 в markdown; нужен canonical journal lineage block.
+Вектор:
+  Append journal entry or migration script setting lineage on analytics:work-graph-bvc-contract-verification.
+  parentKey: AN-50, relation: deepens.
+  Документировать in AN-51 closing as reference fixture.
+Цель:
+  Reference pair AN-50/AN-50.1 machine-readable для тестов и demo.
+Проверки:
+  Journal has lineage on AN-50.1 record
+  Projection resolves parent/child
+Свидетельства:
+  AN-50.1 lineage.parentKey AN-50 in work/analytics-records.jsonl
+Анализ:
+  Зачем:
+  AN-50.1 уже ссылается на AN-50 в markdown; нужен canonical journal lineage block.
+  Контекст: Append journal entry or migration script setting lineage on analytics:work-graph-bvc-contract-verification.
+  Когда:
+  После готовности: extend-analytics-record-schema-lineage-v1.
+  Готово, когда:
+  Reference pair AN-50/AN-50.1 machine-readable для тестов и demo.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: extend-analytics-record-schema-lineage-v1.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-51
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/analytics-record-lineage-flat-list-graph-storage.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-02T15:02:00.040Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-02T15:02:00.040Z
+  work.decision.verdict: useful
+  work.department: system-runtime
+  work.depends_on: extend-analytics-record-schema-lineage-v1
+  work.id: migrate-analytics-lineage-seed-examples
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: feature_engineer
+  work.parent_id: epic-analytics-record-lineage-v1
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: work/analytics-records.jsonl, work/analytics/work-graph-bvc-contract-verification.md, work/analytics/analytics-record-lineage-flat-list-graph-storage.md
+  work.title: мигрировать: аналитики lineage seed примеры
+]>
+

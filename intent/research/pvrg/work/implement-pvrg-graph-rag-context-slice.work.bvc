@@ -3,7 +3,7 @@
   В переписке PVRG/Graph RAG был назван частью структурированного контекста проекта, который должен кормить агента связями задач, файлов, evidence и memory.
   design-pvrg-graph-rag-minimal и pvrg.task-scope.slice.v1 заданы; worker prompt получал только targetFiles без связанного project context.
 Вектор:
-  Graph RAG context slice builder: current WorkItem -> related tasks/files/evidence/memory (+ optional adapter facts, provider runs).
+  Graph RAG context slice builder: current WorkItem -> related tasks/files/evidence/memory (+ опционально adapter facts, provider runs).
   Источники: depends_on, target_files, unified linkage, evidence read-model, MemoryRecord candidates, language adapter projections.
   Slice в Worker Input memorySlice и OpenAI prompt через formatGraphRagContextForPrompt; deterministic ordering и maxNodes cap.
 Цель:
@@ -12,7 +12,7 @@
   Целесообразность:
   Стоит завести «реализовать PVRG/Graph RAG context slice» в бэклог.
   Контекст и границы:
-  Graph RAG context slice builder: current WorkItem -> related tasks/files/evidence/memory (+ optional adapter facts, provider runs).
+  Graph RAG context slice builder: current WorkItem -> related tasks/files/evidence/memory (+ опционально adapter facts, provider runs).
   Зависимости и готовность:
   depends_on=design-pvrg-graph-rag-minimal, implement-language-adapter-layer-mvp, reconcile-rebuild-scope-against-original-iohasc-plan; старт после закрытия upstream-зависимостей.
   Риски и альтернативы:
@@ -45,6 +45,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/graphRagContextSlice.mjs, src/agentWorkerLocalRunner.mjs, src/agentWorkerOpenAiProvider.mjs, src/agentWorkerLiveLoop.mjs, tests/graphRagContextSlice.test.mjs, work/backlog.bvc
-  work.title: реализовать PVRG/Graph RAG context slice
+  work.title: реализовать PVRG графа RAG контекст slice
 ]>
 

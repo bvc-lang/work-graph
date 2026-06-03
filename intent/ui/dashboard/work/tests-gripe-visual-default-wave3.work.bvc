@@ -49,5 +49,6 @@
   work.risk: low
   work.status: done
   work.target_files: tests/design-tokens.test.mjs, tests/workGraphBacklogUiServer.test.mjs, work/analytics/gripe-ds-visual-default-wave3.md
-  work.title: Tests: Gripe default theme + wave 3 regression
+  work.title: CI ловит откат на workgraph-blue-only default.
 ]>
+

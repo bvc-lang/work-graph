@@ -7,28 +7,11 @@
   Or workgraph CLI equivalent if iohasc bridge deferred.
   Golden file test on fixture snapshot.
 Цель:
-  Architecture diagram exportable for markdown docs without screenshot.
+  Диаграмму architecture можно экспортировать в markdown без скриншота.
 Проверки:
   CLI emits valid mermaid flowchart/graph from fixture
-  documented in plan + ADR Export profile
+  задокументировано in plan + ADR Экспорт profile
   test asserts stable output hash or snapshot
-Анализ:
-  Целесообразность:
-  Стоит завести «CLI: architecture-export --format mermaid from snapshot» в бэклог — по материалам AN-34 (work/analytics/architecture-visualization-patterns-comparison.md).
-  Контекст и границы:
-  npm run iohasc -- architecture-export --format mermaid --out path
-  Зависимости и готовность:
-  depends_on=epic-architecture-views-v1, adr-architecture-views-v1-profiles; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Architecture diagram exportable for markdown docs without screenshot.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-34 (work/analytics/architecture-visualization-patterns-comparison.md); исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -53,5 +36,6 @@
   work.risk: low
   work.status: done
   work.target_files: scripts/architecture-export.mjs, src/architectureSnapshot.mjs, docs/adr-architecture-views-v1.md, work/analytics/architecture-visualization-patterns-comparison.md
-  work.title: CLI: architecture-export --format mermaid from snapshot
+  work.title: CLI: экспорт architecture snapshot в формат mermaid
 ]>
+

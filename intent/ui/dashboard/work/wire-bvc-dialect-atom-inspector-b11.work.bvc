@@ -1,0 +1,55 @@
+#Задача_wire_bvc_dialect_atom_inspector_b11<[
+Базис:
+  AN-20 B11: show atom lang badge; section titles from bvcDialectRegistry — not ui.json.
+  Warn on mixed EN/RU keys in same atom.
+Вектор:
+  Inspector reads atom Labels.lang / detect; map section keys via bvcDialectRegistry.
+  UI chrome for inspector frame still uses t(); section titles use registry.
+  Suggest canonical EN keys in editor hints (scope per B11).
+Цель:
+  Inspector учитывает BVC dialect без дублирования dialect JSON в UI catalog.
+Проверки:
+  RU atom показывает Базис, не Basis, при lang=ru
+  Mixed-key warning visible
+Анализ:
+  Зачем:
+  AN-20 B11: show atom lang badge; section titles from bvcDialectRegistry — not ui.json.
+  Контекст: Warn on mixed EN/RU keys in same atom.
+  Когда:
+  После готовности: implement-ui-message-catalog-v1.
+  Готово, когда:
+  Inspector учитывает BVC dialect без дублирования dialect JSON в UI catalog.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: implement-ui-message-catalog-v1.
+
+Свидетельства:
+  - renderAtomInspectorForm uses BVC_DIALECT_SECTION_TITLES + lang badge + warnings
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-55
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-ui-i18n-best-practices.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-02T16:36:21.454Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-02T16:36:21.454Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: implement-ui-message-catalog-v1
+  work.id: wire-bvc-dialect-atom-inspector-b11
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: feature_engineer
+  work.parent_id: epic-work-graph-ui-i18n-v1
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: src/bvcDialectRegistry.mjs, src/workGraphBacklogUiServer.mjs, work/analytics/ux-current-state-and-vector.md
+  work.title: Atom inspector: заголовки секций с учётом dialect (AN-20 B11)
+]>
+

@@ -8,6 +8,13 @@
   npm publish --access public @bvc/spec@0.0.0.
 Цель:
   npmjs.com/package/@bvc/spec существует; scope @bvc зарезервирован.
+Проверки:
+  npm view @bvc/spec version returns 0.0.0
+  README ссылается на ADR и migration plan
+Свидетельства:
+  npm publish @bvc-lang/spec@0.0.0 --access public (2026-05-31, org bvc-lang)
+  https://www.npmjs.com/package/@bvc-lang/spec (повторный publish: version already exists)
+  tests/bvcSpecPackage.test.mjs — 4 кейса pass
 Анализ:
   Целесообразность:
   Стоит завести «опубликовать @bvc/spec@0.0.0 (placeholder npm scope)» в бэклог — по материалам AN-18 (analytics:bvc-naming-branding-review).
@@ -25,14 +32,6 @@
   Вердикт:
   полезно
   Создана по материалам приёма AN-18 (analytics:bvc-naming-branding-review); исполнять после вердикта «полезно» и готовности зависимостей.
-Проверки:
-  npm view @bvc/spec version returns 0.0.0
-  README ссылается на ADR и migration plan
-
-Свидетельства:
-  - npm publish @bvc-lang/spec@0.0.0 --access public (2026-05-31, org bvc-lang)
-  - https://www.npmjs.com/package/@bvc-lang/spec (повторный publish: version already exists)
-  - tests/bvcSpecPackage.test.mjs — 4 кейса pass
 
 Метки:
   atom.profile: work_item
@@ -57,5 +56,6 @@
   work.risk: low
   work.status: done
   work.target_files: packages/bvc-spec/package.json, docs/adr-bvc-format-naming.md
-  work.title: опубликовать @bvc/spec@0.0.0 (placeholder npm scope)
+  work.title: Npmjs.com/package/@bvc/spec существует; scope @bvc зарезервирован.
 ]>
+

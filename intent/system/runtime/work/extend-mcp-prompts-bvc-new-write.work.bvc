@@ -9,27 +9,9 @@
 Проверки:
   TOOL_RULES содержит new-write .bvc
   create_work_item prompt шаг про .work.bvc
-Анализ:
-  Целесообразность:
-  Стоит завести «MCP prompts: рекомендация .bvc для новых atoms» в бэклог — по материалам plan: docs/plan-step-to-bvc-migration.md.
-  Контекст и границы:
-  packages/workgraph-mcp/src/prompts.mjs — TOOL_RULES + create_work_item workflow.
-  Зависимости и готовность:
-  depends_on=bvc-tooling-external; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Агенты через MCP prompts создают *.work.bvc, не *.work.bvc.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма plan: docs/plan-step-to-bvc-migration.md; исполнять после вердикта «полезно» и готовности зависимостей.
-
 Свидетельства:
-  - packages/workgraph-mcp/src/prompts.mjs — TOOL_RULES + create_work_item .work.bvc
-  - protocols/bvc-new-write-policy-v1.bvc cross-referenced
+  packages/workgraph-mcp/src/prompts.mjs — TOOL_RULES + create_work_item .work.bvc
+  protocols/bvc-new-write-policy-v1.bvc cross-referenced
 
 Метки:
   atom.profile: work_item
@@ -55,3 +37,4 @@
   work.target_files: packages/workgraph-mcp/src/prompts.mjs, protocols/bvc-new-write-policy-v1.bvc
   work.title: MCP prompts: рекомендация .bvc для новых atoms
 ]>
+

@@ -1,0 +1,53 @@
+#Задача_reconcile_detail_drawer_on_remote_patch<[
+Базис:
+  Drawer открыт, агент переводит задачу в verify — устаревший status в заголовке.
+Вектор:
+  If detailContext.workId in delta: обновить badges/buttons without closing drawer.
+  Опциональный banner «Обновлено агентом»; не перезаписывать несохранённые поля редактора.
+  Compatible with AN-54 drawer stack (top frame workId).
+Цель:
+  Открытый drawer задачи остаётся актуальным при внешнем изменении бэклога.
+Проверки:
+  Remote status change updates drawer badge
+  Drawer stays open
+Свидетельства:
+  reconcileDetailDrawerOnRemotePatch refreshes open L1/L2 task drawer + banner; 742 tests green
+Анализ:
+  Зачем:
+  Drawer открыт, агент переводит задачу в verify — устаревший status в заголовке.
+  Контекст: If detailContext.workId in delta: обновить badges/buttons without closing drawer.
+  Когда:
+  После готовности: implement-ui-live-sync-coordinator.
+  Готово, когда:
+  Открытый drawer задачи остаётся актуальным при внешнем изменении бэклога.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: implement-ui-live-sync-coordinator.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-56
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-ui-realtime-updates-best-practices.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-02T16:41:23.644Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-02T16:41:23.644Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: implement-ui-live-sync-coordinator
+  work.id: reconcile-detail-drawer-on-remote-patch
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.parent_id: epic-work-graph-ui-realtime-v1
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: medium
+  work.status: done
+  work.target_files: src/workGraphBacklogUiServer.mjs, tests/workGraphBacklogUiServer.test.mjs
+  work.title: Согласовать открытый detail drawer при удалённом изменении
+]>
+

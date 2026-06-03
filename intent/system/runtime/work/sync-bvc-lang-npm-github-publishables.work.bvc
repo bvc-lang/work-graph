@@ -1,12 +1,12 @@
 #Задача_sync_bvc_lang_npm_github_publishables<[
 Базис:
-  npm CDN отстаёт; GitHub PUBLISH.md stub добавлен.
+  npm CDN отстаёт; GitHub PUBLISH.md заглушка добавлен.
   Spec readme Governance без ISO STEP mention.
 Вектор:
   Bump @bvc-lang/spec 0.0.3 if needed; verify cli 0.1.6 readme on npm.
   export + push GitHub mirrors.
 Цель:
-  npmjs.com readme = GitHub для spec/cli.
+  Readme на npmjs.com совпадает с GitHub для spec/cli.
 Проверки:
   npm view @bvc-lang/spec version
   npm view @bvc-lang/cli version
@@ -51,5 +51,6 @@
   work.risk: low
   work.status: done
   work.target_files: packages/bvc-spec/, packages/bvc-cli/, dist/bvc-spec-github/, dist/bvc-cli-github/, docs/plan-bvc-open-format-tail-v1.md
-  work.title: Sync @bvc-lang/spec and cli npm/GitHub publishables
+  work.title: синхронизировать BVC lang npm GitHub publishables
 ]>
+

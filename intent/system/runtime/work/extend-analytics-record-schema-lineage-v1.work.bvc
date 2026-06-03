@@ -1,0 +1,41 @@
+#Задача_extend_analytics_record_schema_lineage_v1<[
+Базис:
+  buildAnalyticsRecord не знает parentKey/relation — lineage только в markdown.
+Вектор:
+  src/analyticsRecordStore.mjs: опционально lineage { parentKey, parentId, relation }.
+  JSON schema or lint note in protocols/ if exists.
+  tests/analyticsRecordStore.test.mjs or analyticsPanelProjection.test.mjs.
+Цель:
+  Journal entries могут хранить machine-readable lineage без ломания старых записей.
+Проверки:
+  Records без lineage — unchanged
+  Record с lineage round-trips через journal read
+Свидетельства:
+  analytics-record.v1 optional lineage block in analyticsRecordStore.mjs
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-51
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/analytics-record-lineage-flat-list-graph-storage.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-02T15:01:59.973Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-02T15:01:59.973Z
+  work.decision.verdict: useful
+  work.department: system-runtime
+  work.depends_on: decide-analytics-lineage-storage-adr
+  work.id: extend-analytics-record-schema-lineage-v1
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: feature_engineer
+  work.parent_id: epic-analytics-record-lineage-v1
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: low
+  work.status: done
+  work.target_files: src/analyticsRecordStore.mjs, tests/analyticsPanelProjection.test.mjs
+  work.title: расширить аналитики записи schema lineage v1
+]>
+

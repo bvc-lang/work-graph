@@ -1,0 +1,14 @@
+---
+description: Single backlog — trackable work only via work.id in intent/**/work
+alwaysApply: true
+---
+
+# Agent Work Graph: единый бэклог
+
+- **Trackable work** (дольше одного tool-round, попадает в репозиторий) — только через `intent/**/work/*.work.bvc` / `*.work.bvc` и `work.id`. Не дублируй в чате.
+- **Запрещено** TodoWrite / чат-чеклисты для эпиков, подзадач, seed-инициатив и прогресса по `work.id`. Прогресс → обновление atom + `Свидетельства:`, не todo в чате.
+- **Разрешено** TodoWrite только для **ephemeral micro-steps** внутри **claimed** `work.id` (например «прочитать 3 файла»), без создания параллельных T1/T2 и без дублирования `work.id`.
+- Новая инициатива из analytics → `create_work_item` / `npm run seed:*` → `work.id`; статус по умолчанию **`backlog`**, не `doing`.
+- **`docs/plan-*.md` todo:** каждая строка `- [ ]` / `- [x]` должна содержать явный `work.id` в backticks (например `` `add-cursor-rule-single-backlog` ``), не абстрактные T1/T2.
+- Вопрос «что дальше?» / «проведи разбор» → `work/analytics/AN-XX.md` (секция **«Кратко»**; текст **по-русски**, без TL;DR, dogfood, source of truth, golden path, use case и прочего англоязычного жаргона в prose) + `npm run seed:analytics-record -- --body work/analytics/<file>.md`; повторная чистка: `node scripts/rusify-analytics-jargon.mjs`; **не seed эпик** без явного «создавай задачи / делай» от оператора.
+- **Seed эпика / create_work_item:** следуй **work-items-russian.mdc** и **work-item-bvc-quality.mdc** — полные Базис/Вектор/Цель/Проверки на русском; явные analysis/decision; не telegraphic English; closing-задачи — «Закрыть разбор AN-n…», не «AN-n closing: epic-…».

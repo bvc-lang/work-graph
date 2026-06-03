@@ -4,30 +4,13 @@
   Per-block Базис/Вектор/Цель — не только summary.
 Вектор:
   architecture/main.bvc: root passport + 7 block atoms + edges atom.
-  canon.id architecture-l1-blocks-v1; charter.ref + protocol.ref в метках.
+  canon.id architecture-l1-blocks-v1; charter.ref + протокол.ref в метках.
 Цель:
   SSoT L1 существует как читаемый BVC-файл в Git.
 Проверки:
   architecture/main.bvc парсится без ошибок
   7 block ids совпадают с текущим runtime
   edges покрывают ARCHITECTURE_L1_EDGES
-Анализ:
-  Целесообразность:
-  Стоит завести «Author architecture/main.bvc v1 (L1 blocks BVC + edges + passport)» в бэклог — по материалам AN-36 (work/analytics/architecture-main-bvc-canon-hub.md).
-  Контекст и границы:
-  architecture/main.bvc: root passport + 7 block atoms + edges atom.
-  Зависимости и готовность:
-  depends_on=epic-architecture-main-bvc-canon; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  SSoT L1 существует как читаемый BVC-файл в Git.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-36 (work/analytics/architecture-main-bvc-canon-hub.md); исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -52,5 +35,6 @@
   work.risk: low
   work.status: done
   work.target_files: architecture/main.bvc, src/architectureSnapshot.mjs, protocols/architecture-graph-model-v1.bvc, work/analytics/architecture-main-bvc-canon-hub.md
-  work.title: Author architecture/main.bvc v1 (L1 blocks BVC + edges + passport)
+  work.title: SSoT L1 существует как читаемый BVC-файл в Git.
 ]>
+

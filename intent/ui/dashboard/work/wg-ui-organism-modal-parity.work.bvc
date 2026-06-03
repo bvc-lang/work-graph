@@ -1,13 +1,13 @@
 #Задача_wg_ui_organism_modal_parity<[
 Базис:
-  src/ui/atoms/modal.mjs — minimal shell; Gripe uses Alpine teleport + body scroll lock.
-  WG: vanilla confirm/dialog without Alpine dependency in backlog server.
+  src/ui/atoms/modal.mjs — минимальный shell; Gripe uses Alpine teleport + body scroll lock.
+  WG: vanilla confirm/dialog without Alpine dependency in бэклог server.
 Вектор:
   Move to src/ui/organisms/modal.mjs; re-export from atoms for compat.
   Props parity: title, showCloseButton, backdrop, data-testid.
   ui-kit modal demo + test.
 Цель:
-  Organism modal usable for future confirm flows in WG UI.
+  Organism modal пригоден для confirm-flows в UI WG.
 Проверки:
   renderUiModal from organisms/modal.mjs on ui-kit
   atoms/modal re-exports or deprecated with comment
@@ -52,5 +52,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/ui/organisms/modal.mjs, src/ui/atoms/modal.mjs, src/ui/pages/uiKitPage.mjs, work/analytics/gripe-ds-adoption-phase2-post-an21.md
-  work.title: WG src/ui/organisms/modal.mjs — Gripe organism shell (vanilla)
+  work.title: WG UI: паритет organism modal
 ]>
+

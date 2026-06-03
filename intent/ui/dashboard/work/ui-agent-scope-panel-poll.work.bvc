@@ -12,6 +12,8 @@
   API epic-scope 200 + schema test
   Agent dock или sidebar показывает scope list
   Статус done на доске отражается после poll
+Свидетельства:
+  Agent dock scope panel: GET /api/epic-scope poll 20s, data-testid=agent-scope-panel, click→task drawer; sessionEpicId in home snapshot; tests/missionControlUiClient.test.mjs agent scope panel 3/3 green
 Анализ:
   Целесообразность:
   Стоит завести «UI: session scope panel (poll epic scope, P2)» в бэклог — по материалам AN-28 (work/analytics/chat-work-graph-todo-sync.md).
@@ -53,8 +55,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/workGraphBacklogUiServer.mjs, src/missionControlClient.mjs, src/homeSnapshotApi.mjs, work/analytics/chat-work-graph-todo-sync.md
-  work.title: UI: session scope panel (poll epic scope, P2)
-
-Свидетельства:
-  - Agent dock scope panel: GET /api/epic-scope poll 20s, data-testid=agent-scope-panel, click→task drawer; sessionEpicId in home snapshot; tests/missionControlUiClient.test.mjs agent scope panel 3/3 green
+  work.title: Live rollup эпика без переключения на Доска и без chat todo.
 ]>
+

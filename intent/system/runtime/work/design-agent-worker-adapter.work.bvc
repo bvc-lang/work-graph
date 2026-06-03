@@ -11,23 +11,6 @@
   Не переносить business state в provider session; источник истины остаётся в .bvc/Work Graph.
 Цель:
   Любой agent provider можно подключить или заменить без изменения core Work Graph runtime.
-Анализ:
-  Целесообразность:
-  Стоит завести «спроектировать provider-neutral адаптер agent worker» в бэклог.
-  Контекст и границы:
-  Описать provider-neutral worker adapter, который claims Work Graph task и запускает внешний agent run.
-  Зависимости и готовность:
-  depends_on=implement-workgraph-minimal-runtime; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Любой agent provider можно подключить или заменить без изменения core Work Graph runtime.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -48,6 +31,6 @@
   work.risk: medium
   work.status: done
   work.target_files: protocols/agent-worker-adapter.bvc, work/backlog.bvc
-  work.title: спроектировать provider-neutral адаптер agent worker
+  work.title: Любой agent provider можно подключить или заменить без изменения core Work Graph runtime.
 ]>
 

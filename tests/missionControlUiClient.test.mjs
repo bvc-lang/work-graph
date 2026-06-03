@@ -17,7 +17,7 @@ describe('missionControlUiClient', () => {
       items: [{ id: 'ready-task', title: 'Ready Task', status: 'ready' }],
     }, null);
     assert.ok(rows.some((row) => row.workId === 'ready-task'));
-    assert.ok(rows.some((row) => row.id === 'cmd:home'));
+    assert.ok(rows.some((row) => row.id === 'cmd:analytics'));
   });
 
   it('filters palette rows by query', () => {

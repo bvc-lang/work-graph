@@ -1,30 +1,13 @@
 #Задача_design_role_chain_handoff<[
 Базис:
   WorkItems имеют owner roles; старый ioHasC имеет role profiles и skills. Rebuild нужен explicit handoff.
-  Задача «спроектировать role_chain handoff для agent worker» относится к контуру платформы агента и должна быть понятна агенту без чтения всего backlog.
+  Задача «спроектировать role_chain handoff для agent worker» относится к контуру платформы агента и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: phase-8-agent-prompt-eval-tools.
 Вектор:
   Определить mapping role_chain -> role profile для worker input и будущего выбора LLM provider.
   Ближайший шаг исполнения: —.
 Цель:
   Tasks могут переходить между product, engineering, QA и knowledge roles без hidden prompt state.
-Анализ:
-  Целесообразность:
-  Стоит завести «спроектировать role_chain handoff для agent worker» в бэклог.
-  Контекст и границы:
-  Определить mapping role_chain -> role profile для worker input и будущего выбора LLM provider.
-  Зависимости и готовность:
-  depends_on=phase-8-agent-prompt-eval-tools; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Tasks могут переходить между product, engineering, QA и knowledge roles без hidden prompt state.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -45,6 +28,6 @@
   work.risk: medium
   work.status: done
   work.target_files: protocols/role-chain-handoff-v1.bvc, src/workGraphToolSurfaceAudit.mjs, tests/workGraphToolSurfaceAudit.test.mjs, work/backlog.bvc
-  work.title: спроектировать role_chain handoff для agent worker
+  work.title: спроектировать role связать handoff
 ]>
 

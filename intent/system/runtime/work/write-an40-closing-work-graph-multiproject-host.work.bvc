@@ -11,6 +11,8 @@
   Итоговый md опубликован и открывается в панели аналитики
   Строка добавлена в analytics-records.jsonl
   В документе перечислены реальные артефакты: ADR, реестр, CLI, переключатель, runbook
+Свидетельства:
+  work/analytics/closing-epic-work-graph-multiproject-host.md
 Анализ:
   Зачем:
   Closing — не бюрократия, а точка для оператора: «AN-40 отработан, вот доказательства».
@@ -22,9 +24,6 @@
   Вердикт:
   полезно
   Делать последней задачей эпика, когда остальное уже в done.
-
-Свидетельства:
-  - work/analytics/closing-epic-work-graph-multiproject-host.md
 
 Метки:
   atom.profile: work_item
@@ -49,5 +48,6 @@
   work.risk: low
   work.status: done
   work.target_files: work/analytics/closing-epic-work-graph-multiproject-host.md, work/analytics-records.jsonl, work/analytics/work-graph-project-deployment-model.md
-  work.title: Закрыть разбор AN-40 после эпика multiproject host
+  work.title: Разбор AN-40 закрыт: в журнале аналитики видно, что рекомендация из разбора реализована и чем подтверждена.
 ]>
+

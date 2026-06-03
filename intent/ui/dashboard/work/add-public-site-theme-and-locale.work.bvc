@@ -1,0 +1,47 @@
+#Задача_add_public_site_theme_and_locale<[
+Базис:
+  AN-64 update: public site v1 must support light/dark theme and Russian/English locale for human-facing pages.
+Вектор:
+  Add public site theme tokens and light/dark toggle with persisted choice.
+  Add RU/EN locale catalog for nav, hero, CTA labels, product pages, docs index.
+  Ensure markdown/agent-facing docs remain discoverable and language-stable.
+Цель:
+  Visitor can switch theme and language without losing content; both themes are readable and both locales cover P0 pages.
+Проверки:
+  Theme toggle supports light/dark and persists selected theme
+  Locale switch supports ru/en for navigation, hero, product pages and docs index
+  public-site tests cover theme and locale rendering
+Анализ:
+  Theme and locale are P0 because public site must be usable for Russian operator workflow and English external/agent-facing audience.
+Решение:
+  Вердикт: полезно
+  Implement as data-driven locale catalog and CSS variables, not duplicate page trees.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-64
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-public-site-competitive-tz.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-02T22:27:28.346Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-02T22:27:28.346Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: implement-public-site-static-shell
+  work.id: add-public-site-theme-and-locale
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.parent_id: epic-work-graph-public-site-v1
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: low
+  work.status: done
+  work.target_files: src/publicSiteServer.mjs, src/publicSiteContent.mjs, tests/publicSite.test.mjs, docs/tz-public-site-v1.md
+  work.title: Site: light/dark theme and RU/EN locale
+
+Свидетельства:
+  - Implemented public site v1 in src/publicSiteContent.mjs + src/publicSiteServer.mjs; verified by node --test tests/publicSite.test.mjs tests/workGraphBacklogUiServer.test.mjs (22/22 pass).
+]>

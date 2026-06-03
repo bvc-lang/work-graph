@@ -1,0 +1,53 @@
+#Задача_wire_header_theme_toggle_icon<[
+Базис:
+  theme-toggle — full-width кнопка в sidebar-footer; оператор хочет быстрый доступ справа в header.
+Вектор:
+  page-header: flex row — title слева, .page-header-actions справа с icon theme toggle.
+  SVG sun/moon или emoji-less icon button; aria-label; синхронизировать с applyTheme/readStoredTheme.
+  Убрать дублирующую full-width кнопку из footer (оставить только settings nav).
+Цель:
+  Тема переключается одним кликом по иконке в header на любой странице.
+Проверки:
+  Header icon toggles data-theme
+  State persists in localStorage
+Свидетельства:
+  npm run test:deterministic — uiCatalog, appVersionApi, workGraphBacklogUiServer tests pass (726)
+Анализ:
+  Зачем:
+  theme-toggle — full-width кнопка в sidebar-footer; оператор хочет быстрый доступ справа в header.
+  Контекст: page-header: flex row — title слева, .page-header-actions справа с icon theme toggle.
+  Когда:
+  После готовности: epic-work-graph-ui-settings-v1.
+  Готово, когда:
+  Тема переключается одним кликом по иконке в header на любой странице.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: epic-work-graph-ui-settings-v1.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-55
+  intake.source_kind: operator-request
+  intake.source_ref: docs/plan-work-graph-ui-settings-v1.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-02T16:45:45.791Z
+  work.analysis.source: operator-request
+  work.decision.at: 2026-06-02T16:45:45.791Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: epic-work-graph-ui-settings-v1
+  work.id: wire-header-theme-toggle-icon
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.parent_id: epic-work-graph-ui-settings-v1
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: low
+  work.status: done
+  work.target_files: src/workGraphBacklogUiServer.mjs, src/ui/backlogShellButtons.mjs, tests/workGraphBacklogUiServer.test.mjs
+  work.title: Тема переключается одним кликом по иконке в header на любой странице.
+]>
+

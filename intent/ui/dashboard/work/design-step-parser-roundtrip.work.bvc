@@ -8,23 +8,6 @@
   Зафиксировать handling legacy fields через import warnings, не через new-write.
 Цель:
   Atom inspector, validators и migrations могут безопасно читать существующие .bvc.
-Анализ:
-  Целесообразность:
-  Стоит завести «спроектировать parser и roundtrip для Step Atom» в бэклог.
-  Контекст и границы:
-  Спроектировать parser .bvc -> StepAtomDraft records для BVC, проверки, evidence и Метки.
-  Зависимости и готовность:
-  depends_on=implement-step-atom-formatter; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Atom inspector, validators и migrations могут безопасно читать существующие .bvc.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -45,6 +28,6 @@
   work.risk: medium
   work.status: done
   work.target_files: protocols/step-parser-roundtrip.bvc, src/stepAtomFormatter.mjs, tests/stepAtomFormatter.test.mjs, work/backlog.bvc
-  work.title: спроектировать parser и roundtrip для Step Atom
+  work.title: Atom inspector, validators и migrations могут безопасно читать существующие .bvc.
 ]>
 

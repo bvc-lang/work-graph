@@ -1,7 +1,7 @@
 #Задача_implement_mcp_intent_graph_resources<[
 Базис:
   Resources workgraph://backlog и cycle есть; intent graph slices не экспонированы как URI.
-  Задача «Intent graph: MCP resources workgraph://intent/*» относится к контуру платформы агента и должна быть понятна агенту без чтения всего backlog.
+  Задача «Intent graph: MCP resources workgraph://intent/*» относится к контуру платформы агента и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: implement-mcp-get-architecture-snapshot, implement-mcp-get-intent-hierarchy.
 Вектор:
   Добавить resources: workgraph://intent/hierarchy, workgraph://architecture/snapshot, workgraph://linkage/projection.
@@ -45,6 +45,6 @@
   work.risk: medium
   work.status: done
   work.target_files: packages/workgraph-mcp/src/index.mjs, packages/workgraph-mcp/src/handlers.mjs, packages/workgraph-mcp/README.md
-  work.title: Intent graph: MCP resources workgraph://intent/*
+  work.title: реализовать MCP intent графа resources
 ]>
 

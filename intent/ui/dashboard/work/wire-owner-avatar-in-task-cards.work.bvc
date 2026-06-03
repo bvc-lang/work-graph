@@ -1,0 +1,50 @@
+#Задача_wire_owner_avatar_in_task_cards<[
+Базис:
+  renderIssueFooter и list rows всё ещё на initials.
+Вектор:
+  renderIssueFooter → renderOwnerAvatar(item.ownerRole || item.department).
+  memory/analytics list rows → renderOwnerAvatar.
+  CSS owner-avatar img 28px circle.
+Цель:
+  Все карточки показывают Jira-style avatar вместо букв.
+Проверки:
+  workGraphBacklogUiServer.test owner-avatar img
+  visual check on board view
+Анализ:
+  Зачем:
+  renderIssueFooter и list rows всё ещё на initials.
+  Контекст: renderIssueFooter → renderOwnerAvatar(item.ownerRole || item.department).
+  Когда:
+  После готовности: implement-user-avatar-renderer.
+  Готово, когда:
+  Все карточки показывают Jira-style avatar вместо букв.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: implement-user-avatar-renderer.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-60
+  intake.source_kind: operator-request
+  intake.source_ref: src/workGraphBacklogUiServer.mjs
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-02T21:31:55.844Z
+  work.analysis.source: operator-request
+  work.decision.at: 2026-06-02T21:31:55.844Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: implement-user-avatar-renderer
+  work.id: wire-owner-avatar-in-task-cards
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.parent_id: epic-work-graph-ui-avatars-v1
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: low
+  work.status: backlog
+  work.target_files: src/workGraphBacklogUiServer.mjs, tests/workGraphBacklogUiServer.test.mjs
+  work.title: UI: аватарки owner в kanban, backlog, memory, analytics
+]>

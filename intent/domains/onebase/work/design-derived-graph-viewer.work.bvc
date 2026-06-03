@@ -8,23 +8,6 @@
   Описать interaction model: filter, focus, expand/collapse, open atom, open file.
 Цель:
   Система показывает понятный граф проектирования без собственного visual graph editor.
-Анализ:
-  Целесообразность:
-  Стоит завести «спроектировать derived graph viewer» в бэклог.
-  Контекст и границы:
-  Описать проекцию nodes/edges: work depends_on, trace refs, target files, generated artifacts, evidence links.
-  Зависимости и готовность:
-  depends_on=design-operator-dashboard-snapshot; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Система показывает понятный граф проектирования без собственного visual graph editor.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -45,6 +28,6 @@
   work.risk: medium
   work.status: done
   work.target_files: ui/derived-graph-viewer.bvc, ui/operator-dashboard.bvc, ui/operator-dashboard-snapshot.bvc, protocols/language-adapter-layer.bvc, domains/onebase/artifact-mapping.bvc, work/backlog.bvc
-  work.title: спроектировать derived graph viewer
+  work.title: Система показывает понятный граф проектирования без собственного visual graph editor.
 ]>
 

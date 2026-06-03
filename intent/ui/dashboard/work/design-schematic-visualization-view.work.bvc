@@ -8,23 +8,6 @@
   Использовать решения из runtime-substrate, WorkGraph OS и intent tree layout как источник схемы.
 Цель:
   Пользователь получает отдельный обзор "как устроена система" без чтения всех protocol-файлов.
-Анализ:
-  Целесообразность:
-  Стоит завести «спроектировать sidebar view Схема» в бэклог.
-  Контекст и границы:
-  Спроектировать sidebar view "Схема" для архитектурной карты: Intent Tree, Work Graph, Runner, Evidence, Project Memory, Graph/RAG, UI, OneBase domain, snapshots/storage.
-  Зависимости и готовность:
-  depends_on=design-architecture-graph-model-v1; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Пользователь получает отдельный обзор "как устроена система" без чтения всех protocol-файлов.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -45,6 +28,6 @@
   work.risk: medium
   work.status: done
   work.target_files: protocols/schematic-visualization-view-v1.bvc, src/schematicView.mjs, protocols/workgraph-os-integration-model.bvc
-  work.title: спроектировать sidebar view Схема
+  work.title: Пользователь получает отдельный обзор "как устроена система" без чтения всех protocol-файлов.
 ]>
 

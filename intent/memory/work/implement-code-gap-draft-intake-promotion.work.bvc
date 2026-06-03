@@ -7,23 +7,6 @@
   Без silent auto-promotion; duplicate work.id check обязателен.
 Цель:
   Code-gap analyzer feed замыкается на controlled приём в бэклог, а не остаётся только projection list.
-Анализ:
-  Целесообразность:
-  Стоит завести «реализовать promotion code-gap suggestions в бэклог» в бэклог.
-  Контекст и границы:
-  Operator action: выбрать suggestion → validate StepAtomDraft → proposal → explicit apply в work/backlog.bvc с метки provenance (intake.source_kind=code-gap-analyzer).
-  Зависимости и готовность:
-  depends_on=design-draft-store-backlog-intake, implement-code-gap-operator-projection-mvp; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Code-gap analyzer feed замыкается на controlled приём в бэклог, а не остаётся только projection list.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -44,6 +27,6 @@
   work.risk: medium
   work.status: done
   work.target_files: protocols/workgraph-draft-intake.bvc, src/codeGapOperatorProjection.mjs, src/atomInspectorApi.mjs, src/codeGapDraftIntakeApi.mjs, src/workGraphBacklogUiServer.mjs, tests/codeGapDraftIntakeApi.test.mjs, tests/workGraphBacklogUiServer.test.mjs, work/backlog.bvc
-  work.title: реализовать promotion code-gap suggestions в бэклог
+  work.title: реализовать кода gap черновик приём promotion
 ]>
 

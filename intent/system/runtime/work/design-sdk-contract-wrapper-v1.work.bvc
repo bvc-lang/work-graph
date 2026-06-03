@@ -1,0 +1,39 @@
+#Задача_design_sdk_contract_wrapper_v1<[
+Базис:
+  AN-50.1 §2.4: npm sugar поверх MCP; не второй источник истины.
+Вектор:
+  docs/design-sdk-contract-wrapper-v1.md — API sketch, allowed_commands, auto-evidence generation.
+  Explicit defer implementation until MCP v1 stable.
+Цель:
+  Спроектировать doc для будущего @work-graph/contract-layer без кода в MVP.
+Проверки:
+  Спроектировать doc ссылается на MCP tools as canonical
+Свидетельства:
+  docs/design-sdk-contract-wrapper-v1.md (MCP-first, deferred npm)
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-50.1
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-bvc-contract-verification.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-02T14:12:30.478Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-02T14:12:30.478Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: implement-mcp-get-work-contract, implement-mcp-assert-task-ready-for-done
+  work.id: design-sdk-contract-wrapper-v1
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: agent_platform_architect
+  work.parent_id: epic-work-graph-bvc-contract-verification-v1
+  work.pipeline_stage: decided
+  work.priority: low
+  work.risk: low
+  work.status: done
+  work.target_files: docs/design-sdk-contract-wrapper-v1.md, work/analytics/work-graph-bvc-contract-verification.md
+  work.title: Спроектировать doc для будущего @work-graph/contract-layer без кода в MVP.
+]>
+

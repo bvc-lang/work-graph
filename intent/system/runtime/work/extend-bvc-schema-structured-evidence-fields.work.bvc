@@ -1,0 +1,41 @@
+#Задача_extend_bvc_schema_structured_evidence_fields<[
+Базис:
+  Dual view: prose Свидетельства + опционально evidence[] { type, cmd, exitCode } в atom-draft.
+Вектор:
+  packages/bvc-spec/schemas/bvc-atom-draft.v1.json — опционально evidence array.
+  bvc:lint / lint:backlog — validate shape when present.
+  Migration note in ADR: опционально → required for Tier A gates.
+Цель:
+  Machine view evidence в schema без ломания существующих атомов.
+Проверки:
+  Schema validates опционально evidence
+  lint:backlog green on repo
+Свидетельства:
+  bvc-atom-draft.v1.json structuredEvidence + stepAtomFormatter lint
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-50.1
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-bvc-contract-verification.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-02T14:12:30.428Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-02T14:12:30.428Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: decide-work-item-contract-projection-adr
+  work.id: extend-bvc-schema-structured-evidence-fields
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: agent_platform_architect
+  work.parent_id: epic-work-graph-bvc-contract-verification-v1
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: packages/bvc-spec/schemas/bvc-atom-draft.v1.json, src/backlogSchemaLint.mjs
+  work.title: расширить BVC schema структурированные свидетельства fields
+]>
+

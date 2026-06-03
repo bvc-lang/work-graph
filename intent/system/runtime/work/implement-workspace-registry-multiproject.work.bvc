@@ -1,7 +1,7 @@
 #Задача_implement_workspace_registry_multiproject<[
 Базис:
   Консоли нужен список «какие проекты я обслуживаю» — id, путь на диске, когда последний раз открывали.
-  AN-40 описывает это как ~/.work-graph/workspaces.json; на pilot — только локальные корни, без git remote.
+  AN-40 описывает это как ~/.work-graph/workspaces.json; на пилот — только локальные корни, без git remote.
 Вектор:
   Модуль src/workspaceRegistry.mjs: чтение, запись, список, register, resolve по id.
   Схема workspaces.v1 и тесты tests/workspaceRegistry.test.mjs.
@@ -11,18 +11,17 @@
   register добавляет корень повторно без дублей
   resolve возвращает абсолютный путь
   tests/workspaceRegistry.test.mjs проходит
+Свидетельства:
+  src/workspaceRegistry.mjs
+  tests/workspaceRegistry.test.mjs
 Анализ:
   Зачем:
   Без реестра переключатель проектов не к чему привязать.
   Когда:
-  После ADR, до backlog UI и CLI.
+  После ADR, до бэклог UI и CLI.
 Решение:
   Вердикт:
   полезно
-
-Свидетельства:
-  - src/workspaceRegistry.mjs
-  - tests/workspaceRegistry.test.mjs
 
 Метки:
   atom.profile: work_item
@@ -47,5 +46,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/workspaceRegistry.mjs, tests/workspaceRegistry.test.mjs, docs/plan-work-graph-multiproject-host.md
-  work.title: Реестр подключённых проектов (~/.work-graph/workspaces.json)
+  work.title: UI и CLI знают, какие корни проектов подключены, и могут получить абсолютный путь по id.
 ]>
+

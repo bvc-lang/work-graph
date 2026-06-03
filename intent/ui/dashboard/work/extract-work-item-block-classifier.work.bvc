@@ -1,0 +1,48 @@
+#Задача_extract_work_item_block_classifier<[
+Базис:
+  classifyWorkItemBlock дублировался в architectureSnapshot.mjs.
+Вектор:
+  Extract classifyWorkItemBlock to src/workItemBlockClassifier.mjs.
+  architectureSnapshot re-exports for operatorShellProjection.
+Цель:
+  Один источник классификации блоков для architecture graph и UI badges.
+Проверки:
+  architectureSnapshot imports classifyWorkItemBlock
+Анализ:
+  Зачем:
+  classifyWorkItemBlock дублировался в architectureSnapshot.mjs.
+  Контекст: Extract classifyWorkItemBlock to src/workItemBlockClassifier.mjs.
+  Когда:
+  После готовности: epic-work-graph-ui-classifier-badges-v1.
+  Готово, когда:
+  Один источник классификации блоков для architecture graph и UI badges.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: epic-work-graph-ui-classifier-badges-v1.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-61
+  intake.source_kind: operator-request
+  intake.source_ref: src/workItemBlockClassifier.mjs
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-02T21:40:16.506Z
+  work.analysis.source: operator-request
+  work.decision.at: 2026-06-02T21:40:16.506Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: epic-work-graph-ui-classifier-badges-v1
+  work.id: extract-work-item-block-classifier
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.parent_id: epic-work-graph-ui-classifier-badges-v1
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: low
+  work.status: backlog
+  work.target_files: src/workItemBlockClassifier.mjs, src/architectureSnapshot.mjs
+  work.title: UI: workItemBlockClassifier.mjs — classifyWorkItemBlock
+]>

@@ -51,5 +51,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/ui/molecules/rating.mjs, src/ui/molecules/tabs.mjs, src/ui/pages/uiKitPage.mjs, tests/uiMolecules.test.mjs, work/analytics/gripe-ds-adoption-phase2-post-an21.md
-  work.title: WG src/ui/molecules: rating + tabs renderers + ui-kit
+  work.title: Molecules demoable на /dev/ui-kit; готовы для wave-2 tab migration.
 ]>
+

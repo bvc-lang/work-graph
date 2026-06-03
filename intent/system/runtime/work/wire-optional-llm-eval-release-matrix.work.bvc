@@ -1,49 +1,27 @@
 #Задача_wire_optional_llm_eval_release_matrix<[
 Базис:
   eval:live-llm и claim-no-eligible optional; release matrix не перечисляет Tier B.
-  Задача «Фаза 10: optional LLM eval в release matrix» относится к контуру Work Graph rebuild и должна быть понятна агенту без чтения всего backlog.
-  Предварительно должны быть закрыты зависимости: optional-llm-claim-no-eligible-fixture.
 Вектор:
   Расширить releaseGateMatrix optional-llm tier + docs README workgraph.
-  Ближайший шаг исполнения: просмотреть и перевести в ready.
 Цель:
-  Optional eval видна из CI/release docs.
-  Готово, когда выполнены проверки: releaseGateMatrix перечисляет eval:optional:*.
-Анализ:
-  Целесообразность:
-  Стоит завести «Фаза 10: optional LLM eval в release matrix» в бэклог.
-  Контекст и границы:
-  Расширить releaseGateMatrix optional-llm tier + docs README workgraph.
-  Зависимости и готовность:
-  depends_on=optional-llm-claim-no-eligible-fixture; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Optional eval видна из CI/release docs.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+  Опционально eval видна из CI/release docs.
+Проверки:
+  releaseGateMatrix перечисляет eval:optional:*
+  Docs с IOHASC_E2E_REAL_LLM=1
 
 Метки:
   atom.profile: work_item
   migration.strategy: port
   trace.status: verified
-  work.analysis.at: 2026-05-30T17:22:37.880Z
-  work.analysis.source: backfill
-  work.decision.at: 2026-05-30T17:22:37.887Z
-  work.decision.verdict: useful
   work.department: qa
   work.depends_on: optional-llm-claim-no-eligible-fixture
   work.id: wire-optional-llm-eval-release-matrix
-  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.next_action: просмотреть и перевести в ready
   work.owner_role: qa_architect
-  work.pipeline_stage: decided
   work.priority: low
   work.risk: medium
   work.status: done
   work.target_files: src/releaseGateMatrix.mjs, package.json, docs/plan-workgraph-llm-usefulness.md
-  work.title: Фаза 10: optional LLM eval в release matrix
+  work.title: подключить опционально LLM eval release matrix
 ]>
+

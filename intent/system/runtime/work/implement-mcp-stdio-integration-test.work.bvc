@@ -1,8 +1,8 @@
 #Задача_implement_mcp_stdio_integration_test<[
 Базис:
   MCP handlers покрыты in-process; stdio roundtrip с реальным MCP client не тестируется (plan-workgraph-llm-usefulness gap).
-  Задача «добавить MCP stdio integration test» относится к контуру платформы агента и должна быть понятна агенту без чтения всего backlog.
-  Предварительно должны быть закрыты зависимости: implement-workgraph-mcp-server-mvp.
+  Задача «добавить MCP stdio integration test» относится к контуру платформы агента и должна быть понятна агенту без чтения всего бэклог.
+  Предварительно должны быть закрыты зависимости: реализовать MVP MCP-сервера Work Graph.
 Вектор:
   Spawn packages/workgraph-mcp на temp WORKGRAPH_ROOT fixture; JSON-RPC tools/list + get_current_cycle.
   Ближайший шаг исполнения: просмотреть и перевести в ready.
@@ -15,7 +15,7 @@
   Контекст и границы:
   Spawn packages/workgraph-mcp на temp WORKGRAPH_ROOT fixture; JSON-RPC tools/list + get_current_cycle.
   Зависимости и готовность:
-  depends_on=implement-workgraph-mcp-server-mvp; старт после закрытия upstream-зависимостей.
+  depends_on=реализовать MVP MCP-сервера Work Graph; старт после закрытия upstream-зависимостей.
   Риски и альтернативы:
   Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
   Критерии успеха:
@@ -45,6 +45,6 @@
   work.risk: medium
   work.status: done
   work.target_files: packages/workgraph-mcp/src/index.mjs, tests/workgraph-mcp-stdio.test.mjs
-  work.title: добавить MCP stdio integration test
+  work.title: Регрессия MCP протокол surface ловится без ручного Cursor restart.
 ]>
 

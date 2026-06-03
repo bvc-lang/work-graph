@@ -1,8 +1,8 @@
 #Задача_optional_llm_claim_no_eligible_fixture<[
 Базис:
   Фикстура Tier B claim-no-eligible из prompt-eval-workgraph-flows-v1 не автоматизирован; модель может выдумать task при пустой очередь ready.
-  Задача «реализовать optional LLM fixture claim-no-eligible» относится к контуру платформы агента и должна быть понятна агенту без чтения всего backlog.
-  Предварительно должны быть закрыты зависимости: design-prompt-eval-workgraph-flows, optional-live-llm-eval.
+  Задача «реализовать опционально LLM fixture claim-no-eligible» относится к контуру платформы агента и должна быть понятна агенту без чтения всего бэклог.
+  Предварительно должны быть закрыты зависимости: design-prompt-eval-workgraph-flows, опциональная live LLM eval.
 Вектор:
   Empty очередь ready snapshot + live LLM через worker/MCP; ожидание stop без hallucinated workId.
   Ближайший шаг исполнения: просмотреть и перевести в ready.
@@ -10,11 +10,11 @@
   Опциональная live LLM eval проверяет stop без выдуманного workId при пустой очередь ready.
 Анализ:
   Целесообразность:
-  Стоит завести «реализовать optional LLM fixture claim-no-eligible» в бэклог.
+  Стоит завести «реализовать опционально LLM fixture claim-no-eligible» в бэклог.
   Контекст и границы:
   Empty очередь ready snapshot + live LLM через worker/MCP; ожидание stop без hallucinated workId.
   Зависимости и готовность:
-  depends_on=design-prompt-eval-workgraph-flows, optional-live-llm-eval; старт после закрытия upstream-зависимостей.
+  depends_on=design-prompt-eval-workgraph-flows, опциональная live LLM eval; старт после закрытия upstream-зависимостей.
   Риски и альтернативы:
   Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
   Критерии успеха:
@@ -44,6 +44,6 @@
   work.risk: medium
   work.status: done
   work.target_files: protocols/prompt-eval-workgraph-flows-v1.bvc, scripts/run-optional-golden-path-llm-eval.mjs, docs/plan-workgraph-llm-usefulness.md
-  work.title: реализовать optional LLM fixture claim-no-eligible
+  work.title: Опциональная live LLM eval проверяет stop без выдуманного workId при пустой очередь ready.
 ]>
 

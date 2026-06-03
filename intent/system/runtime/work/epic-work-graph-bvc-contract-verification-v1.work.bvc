@@ -1,0 +1,48 @@
+#Задача_epic_work_graph_bvc_contract_verification_v1<[
+Базис:
+  AN-50: «Проверки» — read-only audit; доказательства привязаны к work.id, но контракт размазан по prose и matrix.
+  AN-50.1: сдвиг «лог теста → контракт исполнения»; BVC — машиночитаемый контракт через projection, не дублирование YAML.
+  Разрыв: MCP не отдаёт get_work_contract; complete_work_item не возвращает structured violations; evidence в .bvc — в основном строки.
+Вектор:
+  P0: ADR projection vs duplicate contract: YAML в атомах.
+  P0: work-item-contract.v1 builder из target_files, проверки, VERIFICATION_MATRIX.
+  P0: MCP get_work_contract, validate_evidence, assert_task_ready_for_done.
+  P1: расширить bvc-atom-draft + runtime validation on add_work_item_evidence.
+  P1: панель verification contract summary badge.
+  P2: спроектировать SDK contract wrapper (deferred implementation).
+Цель:
+  Агент (Cursor) получает контракт задачи одним MCP-вызовом и dry-run assert перед done; structured evidence — optional→required для Tier A.
+Проверки:
+  ADR work-item-contract-projection-v1 принят
+  Три MCP tools зарегистрированы и покрыты tests/workgraph-mcp.test.mjs
+  Projection не требует contract: блока в каждом атоме
+  docs/plan и packages/workgraph-mcp/README обновлены
+  AN-50.1 closing doc опубликован
+Свидетельства:
+  AN-50.1 P0+P1+P2 design closed; npm run test:deterministic green
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-50.1
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-bvc-contract-verification.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-02T14:12:30.309Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-02T14:12:30.309Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: design-evidence-model-v1, implement-workgraph-minimal-runtime
+  work.id: epic-work-graph-bvc-contract-verification-v1
+  work.item_kind: epic
+  work.next_action: —
+  work.owner_role: agent_platform_architect
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: work/analytics/work-graph-bvc-contract-verification.md, docs/plan-work-graph-bvc-contract-verification.md, docs/adr-work-item-contract-projection-v1.md, src/workItemContractProjection.mjs, packages/workgraph-mcp/src/index.mjs, packages/workgraph-mcp/src/handlers.mjs, tests/workgraph-mcp.test.mjs, src/workGraphRuntime.mjs, packages/bvc-spec/schemas/bvc-atom-draft.v1.json
+  work.title: BVC contract v1: projection + MCP gates + evidence (AN-50.1)
+]>
+

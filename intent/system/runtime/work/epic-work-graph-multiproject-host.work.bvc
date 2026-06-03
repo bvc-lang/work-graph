@@ -6,7 +6,7 @@
 Вектор:
   Зафиксировать модель в ADR (вариант C — гибрид).
   Сделать реестр подключённых корней проектов.
-  Научить backlog UI и снимок архитектуры читать выбранный корень, а не только cwd.
+  Научить бэклог UI и снимок архитектуры читать выбранный корень, а не только cwd.
   CLI для init / register / ui — подключить новый проект без ручной возни.
   Переключатель проекта в шапке UI.
   Runbook для оператора, тесты, закрытие разбора AN-40.
@@ -14,24 +14,12 @@
   Один процесс Work Graph, несколько проектов: оператор переключается между корнями без второго сервера на 4177 и без копирования движка.
 Проверки:
   В реестре два корня; переключение в UI без перезапуска сервера
-  WG_PROJECT_ROOT или параметр repoRoot меняет данные в backlog UI
+  WG_PROJECT_ROOT или параметр repoRoot меняет данные в бэклог UI
   CLI init создаёт .work-graph/config.json и каркас intent/
   npm test зелёный; разбор AN-40 закрыт итоговой записью
-Анализ:
-  Зачем:
-  Масштабирование на семейство похожих репозиториев без размножения инсталляций.
-  Границы:
-  Pilot — локальные корни; удалённые репозитории и multi-user — позже.
-  Зависимости:
-  Прецедент уже есть: loadArchitectureL1Canon(repoRoot), resolveOnebaseMetadataScanRoot.
-Решение:
-  Вердикт:
-  полезно
-  Исполнять по плану docs/plan-work-graph-multiproject-host.md после ADR.
-
 Свидетельства:
-  - AN-40 epic deliverables shipped
-  - closing doc published
+  AN-40 epic deliverables shipped
+  closing doc published
 
 Метки:
   atom.profile: work_item
@@ -54,5 +42,6 @@
   work.risk: medium
   work.status: done
   work.target_files: work/analytics/work-graph-project-deployment-model.md, docs/plan-work-graph-multiproject-host.md, src/workspaceRegistry.mjs, src/workGraphBacklogUiServer.mjs, src/architectureSnapshot.mjs, packages/work-graph-cli/, docs/runbook-deploy-work-graph-on-project.md
-  work.title: Несколько проектов в одной консоли Work Graph (AN-40)
+  work.title: Один процесс Work Graph, несколько проектов: оператор переключается между корнями без второго сервера на 41…
 ]>
+

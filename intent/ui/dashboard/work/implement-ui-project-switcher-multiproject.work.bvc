@@ -11,6 +11,9 @@
 Проверки:
   Тест (server или e2e): после switch меняется snapshot
   В UI видно имя активного корня проекта
+Свидетельства:
+  Не реализован по ADR per-project-install — UI switcher удалён
+  POST /api/workspace/switch остаётся для CLI power-user
 Анализ:
   Зачем:
   Без переключателя multiproject host — только для разработчиков через env.
@@ -19,10 +22,6 @@
 Решение:
   Вердикт:
   полезно
-
-Свидетельства:
-  - Не реализован по ADR per-project-install — UI switcher удалён
-  - POST /api/workspace/switch остаётся для CLI power-user
 
 Метки:
   atom.profile: work_item
@@ -47,5 +46,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/workGraphBacklogUiServer.mjs, tests/workGraphBacklogUiServer.test.mjs
-  work.title: Переключатель проектов в UI
+  work.title: Переключение между проектами из UI за пару кликов, без второго терминала и без restart сервера.
 ]>
+

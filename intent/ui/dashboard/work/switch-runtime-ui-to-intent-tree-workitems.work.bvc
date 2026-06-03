@@ -7,7 +7,7 @@
   Переключить workGraphBacklogUiServer, agentRunApi persist, promote-ready, atom-inspector apply, daemon tick и CLI на canonical intent files; writes — patch одного *.work.bvc atom, не rewrite всего monolith.
   work/backlog.bvc удалить из ручного канона; legacy compatibility остаётся только через explicit backlogPath в тестовых/внешних вызовах.
 Цель:
-  Один канон задач — intent tree files; backlog.bvc становится производной проекцией, snapshot equivalence сохраняется.
+  Один канон задач — intent tree files; бэклог.bvc становится производной проекцией, snapshot equivalence сохраняется.
 Анализ:
   Целесообразность:
   Стоит завести «переключить runtime и UI на intent tree WorkItems» в бэклог.
@@ -18,7 +18,7 @@
   Риски и альтернативы:
   Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
   Критерии успеха:
-  Один канон задач — intent tree files; backlog.bvc становится производной проекцией, snapshot equivalence сохраняется.; проверки из атома и `target_files`.
+  Один канон задач — intent tree files; бэклог.bvc становится производной проекцией, snapshot equivalence сохраняется.; проверки из атома и `target_files`.
   Рекомендация для решения:
   Полезно — задача готова к исполнению после разбора материалов приёма.
 Решение:
@@ -45,6 +45,6 @@
   work.risk: high
   work.status: done
   work.target_files: src/intentTreeWorkItems.mjs, src/intentTreeMigration.mjs, src/workGraphBacklogUiServer.mjs, src/workGraphBacklogPersist.mjs, src/workGraphPromoteReadyApi.mjs, src/atomInspector.mjs, src/atomInspectorApi.mjs, src/intentComposerApi.mjs, src/agentRunApi.mjs, src/workGraphDaemonTick.mjs, src/workGraphRunnerQueueProjection.mjs, src/backlogSchemaLint.mjs, tests/workGraphRuntime.test.mjs, tests/backlogSchemaLint.test.mjs, tests/atomInspector.test.mjs, tests/workGraphBacklogUiServer.test.mjs, intent/index.bvc
-  work.title: переключить runtime и UI на intent tree WorkItems
+  work.title: Один канон задач — intent tree files; бэклог.bvc становится производной проекцией, snapshot equivalence сох…
 ]>
 

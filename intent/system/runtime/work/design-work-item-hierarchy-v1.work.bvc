@@ -1,6 +1,6 @@
 #Задача_design_work_item_hierarchy_v1<[
 Базис:
-  Источник: аналитика analytics:parent-subtask-hierarchy (AN-2), блок C п.8 — protocol work-item-hierarchy-v1.
+  Источник: аналитика analytics:parent-subtask-hierarchy (AN-2), блок C п.8 — протокол work-item-hierarchy-v1.
   Сейчас нет work.parent_id; depends_on не выражает композицию эпик → подзадачи.
   work/analytics/parent-subtask-hierarchy.md
 Вектор:
@@ -9,30 +9,12 @@
   Rollup v1 канонический: parent нельзя закрыть без done/verified children; depends_on остаётся для порядка исполнения.
 Цель:
   Канон иерархии согласован с define-workitem-v1; агент создаёт эпик и подзадачи через MCP без ad-hoc labels.
-Анализ:
-  Целесообразность:
-  Стоит завести «спроектировать иерархию WorkItem v1 (эпик и подзадачи)» в бэклог — по материалам AN-2 (analytics:parent-subtask-hierarchy).
-  Контекст и границы:
-  Описать protocols/work-item-hierarchy-v1.bvc: work.parent_id, work.item_kind (epic|task|subtask), derived children и lifecycle parent/child.
-  Зависимости и готовность:
-  depends_on=define-workitem-v1; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Канон иерархии согласован с define-workitem-v1; агент создаёт эпик и подзадачи через MCP без ad-hoc labels.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-2 (analytics:parent-subtask-hierarchy); исполнять после вердикта «полезно» и готовности зависимостей.
 Проверки:
   protocols/work-item-hierarchy-v1.bvc описывает parent_id и item_kind
-  lint rules задокументированы в backlog-schema-lint-v1
+  lint rules задокументированы в бэклог-schema-lint-v1
   описаны правила rollup close gate и parent/child lifecycle
-
 Свидетельства:
-  - protocols/work-item-hierarchy-v1.bvc + src/workItemHierarchy.mjs; npm test pass
+  protocols/work-item-hierarchy-v1.bvc + src/workItemHierarchy.mjs; npm test pass
 
 Метки:
   atom.profile: work_item
@@ -55,5 +37,6 @@
   work.risk: medium
   work.status: done
   work.target_files: protocols/work-item-hierarchy-v1.bvc, protocols/backlog-schema-lint-v1.bvc, src/backlogSchemaLint.mjs, work/analytics/parent-subtask-hierarchy.md
-  work.title: спроектировать иерархию WorkItem v1 (эпик и подзадачи)
+  work.title: Канон иерархии согласован с define-workitem-v1; агент создаёт эпик и подзадачи через MCP без ad-hoc labels.
 ]>
+

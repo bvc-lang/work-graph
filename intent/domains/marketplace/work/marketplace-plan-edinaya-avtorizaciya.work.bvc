@@ -7,6 +7,8 @@
   Marketplace plan: единая авторизация
 Проверки:
   plan markdown linked in target_files
+Свидетельства:
+  Migrated from docs/plans/единая-авторизация.md to intent/domains/marketplace/work item
 Анализ:
   Целесообразность:
   Стоит завести «Marketplace plan: единая авторизация» в бэклог — по материалам AN-21 (work/analytics/marketplace-integration-and-shared-design-system.md).
@@ -49,7 +51,5 @@
   work.status: done
   work.target_files: ../../04 Marketplace/docs/plans/единая-авторизация.md
   work.title: Marketplace plan: единая авторизация
-
-Свидетельства:
-  - Migrated from docs/plans/единая-авторизация.md to intent/domains/marketplace/work item
 ]>
+

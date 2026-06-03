@@ -56,5 +56,6 @@
   work.risk: high
   work.status: done
   work.target_files: docs/plan-step-to-bvc-migration.md, scripts/migrate-step-to-bvc.mjs, charter/main.bvc, protocols/, rules/, architecture/main.bvc, intent/index.bvc, package.json, work/analytics/architecture-main-bvc-canon-hub.md
-  work.title: Bulk migration: все legacy .bvc → .bvc (charter, protocols, rules, work)
+  work.title: Work Graph repo: новые и канонические артефакты на .bvc; .bvc только где явно legacy до v2.
 ]>
+

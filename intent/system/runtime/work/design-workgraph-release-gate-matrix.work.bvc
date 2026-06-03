@@ -1,30 +1,13 @@
 #Задача_design_workgraph_release_gate_matrix<[
 Базис:
-  Full пересобрать нужна release gate matrix уровня ioHasC CI, но с разделением на mandatory и optional tiers.
-  Задача «спроектировать release gate matrix для full rebuild» относится к контуру Work Graph rebuild и должна быть понятна агенту без чтения всего backlog.
+  Full пересобрать нужна release gate matrix уровня ioHasC CI, но с разделением на mandatory и опционально tiers.
+  Задача «спроектировать release gate matrix для full rebuild» относится к контуру Work Graph пересобрать и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: phase-10-ci-e2e-release-gates.
 Вектор:
-  Определить release gate matrix: deterministic tests, OneBase, trace/linkage, daemon integration, E2E и optional LLM.
+  Определить release gate matrix: deterministic tests, OneBase, trace/linkage, daemon integration, E2E и опционально LLM.
   Ближайший шаг исполнения: —.
 Цель:
   Каждая будущая фаза может добавлять проверки без смешивания model quality и code correctness.
-Анализ:
-  Целесообразность:
-  Стоит завести «спроектировать release gate matrix для full rebuild» в бэклог.
-  Контекст и границы:
-  Определить release gate matrix: deterministic tests, OneBase, trace/linkage, daemon integration, E2E и optional LLM.
-  Зависимости и готовность:
-  depends_on=phase-10-ci-e2e-release-gates; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Каждая будущая фаза может добавлять проверки без смешивания model quality и code correctness.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -45,6 +28,6 @@
   work.risk: medium
   work.status: done
   work.target_files: protocols/workgraph-release-gate-matrix-v1.bvc, src/releaseGateMatrix.mjs, tests/releaseGateMatrix.test.mjs, package.json, work/backlog.bvc
-  work.title: спроектировать release gate matrix для full rebuild
+  work.title: Каждая будущая фаза может добавлять проверки без смешивания model quality и code correctness.
 ]>
 

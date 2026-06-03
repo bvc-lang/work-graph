@@ -26,6 +26,7 @@ export const UI_ATOM_REGISTRY = [
     renderPreview: () => [
       renderUiBadge({ label: 'default', testId: 'ui-kit-badge-default' }),
       renderUiBadge({ label: 'accent', tone: 'accent', testId: 'ui-kit-badge-accent' }),
+      renderUiBadge({ label: 'warning', tone: 'warning', testId: 'ui-kit-badge-warning' }),
       renderUiBadge({ label: 'danger', tone: 'danger', testId: 'ui-kit-badge-danger' }),
     ].join(' '),
   },
@@ -125,7 +126,7 @@ export function renderUiKitPageHtml() {
       -moz-osx-font-smoothing: grayscale;
       text-rendering: optimizeLegibility;
     }
-    body { margin: 0; background: rgb(var(--brand-bg-rgb, 30 30 30)); color: rgb(var(--ui-text-rgb, 212 212 212)); font: var(--text-base)/var(--text-base-line-height) var(--brand-font-sans); }
+    body { margin: 0; background: rgb(var(--brand-bg-rgb, 29 33 37)); color: rgb(var(--ui-text-rgb, 199 209 219)); font: var(--text-base)/var(--text-base-line-height) var(--brand-font-sans); }
     .ui-kit-layout { display: grid; grid-template-columns: 220px 1fr; min-height: 100vh; }
     .ui-kit-sidebar { border-right: 1px solid rgb(var(--brand-border-rgb, 60 60 60)); padding: 16px; }
     .ui-kit-sidebar ul { list-style: none; margin: 0; padding: 0; }

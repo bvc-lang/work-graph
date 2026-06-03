@@ -7,6 +7,12 @@
   Подготовка выделения в @bvc/parser (может быть follow-up work item).
 Цель:
   Фаза 1 migration plan выполнена в коде.
+Проверки:
+  unit test dual-extension green
+  lint бэклог не регрессит
+Свидетельства:
+  src/bvcFileFormat.mjs: dual-read .bvc и .bvc
+  tests/bvcDualExtension.test.mjs — 4 кейса pass
 Анализ:
   Целесообразность:
   Стоит завести «parser/linter: читать .bvc и .bvc (один AST)» в бэклог — по материалам AN-18 (analytics:bvc-naming-branding-review).
@@ -24,13 +30,6 @@
   Вердикт:
   полезно
   Создана по материалам приёма AN-18 (analytics:bvc-naming-branding-review); исполнять после вердикта «полезно» и готовности зависимостей.
-Проверки:
-  unit test dual-extension green
-  lint backlog не регрессит
-
-Свидетельства:
-  - src/bvcFileFormat.mjs: dual-read .bvc и .bvc
-  - tests/bvcDualExtension.test.mjs — 4 кейса pass
 
 Метки:
   atom.profile: work_item
@@ -55,5 +54,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/, tests/, docs/plan-step-to-bvc-migration.md
-  work.title: parser/linter: читать .bvc и .bvc (один AST)
+  work.title: Фаза 1 migration plan выполнена в коде.
 ]>
+

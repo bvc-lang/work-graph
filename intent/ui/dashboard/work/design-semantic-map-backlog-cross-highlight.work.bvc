@@ -1,7 +1,7 @@
 #Задача_design_semantic_map_backlog_cross_highlight<[
 Базис:
   Старый ioHasC semantic map умеет маршрутизировать от step/code concepts; пересобрать бэклог UI должен перекрёстная подсветка related tasks.
-  Задача «спроектировать перекрёстная подсветка semantic map и backlog» относится к контуру Work Graph rebuild и должна быть понятна агенту без чтения всего backlog.
+  Задача «спроектировать перекрёстная подсветка semantic map и backlog» относится к контуру Work Graph пересобрать и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: phase-9-ui-operator-shell.
 Вектор:
   Спроектировать mapping: task -> семантические узлы, semantic node -> WorkItems и focus behavior.
@@ -9,23 +9,6 @@
 Цель:
   Semantic map помогает управлять бэклог, а не остаётся разделить graph.
   Готово, когда выполнены проверки: relation task -> semantic node определена.
-Анализ:
-  Целесообразность:
-  Стоит завести «спроектировать перекрёстная подсветка semantic map и backlog» в бэклог.
-  Контекст и границы:
-  Спроектировать mapping: task -> семантические узлы, semantic node -> WorkItems и focus behavior.
-  Зависимости и готовность:
-  depends_on=phase-9-ui-operator-shell; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Semantic map помогает управлять бэклог, а не остаётся разделить graph.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -46,6 +29,6 @@
   work.risk: medium
   work.status: done
   work.target_files: protocols/semantic-map-backlog-cross-highlight-v1.bvc, src/operatorShellProjection.mjs, src/workGraphBacklogUiServer.mjs, tests/operatorShellProjection.test.mjs, work/backlog.bvc
-  work.title: спроектировать перекрёстная подсветка semantic map и backlog
+  work.title: спроектировать semantic map бэклог перекрёстная подсветка
 ]>
 

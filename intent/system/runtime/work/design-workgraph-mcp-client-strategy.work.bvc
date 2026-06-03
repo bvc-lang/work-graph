@@ -10,23 +10,6 @@
   Составить минимальный список tools/resources/prompts для MVP и безопасность write/status операций.
 Цель:
   Принять архитектурное решение о WorkGraph MCP-first integration вместо продолжения разработки собственного agent chat UI.
-Анализ:
-  Целесообразность:
-  Стоит завести «спроектировать стратегию WorkGraph через MCP-клиенты» в бэклог.
-  Контекст и границы:
-  Зафиксировать стратегию: ioHasC/WorkGraph предоставляет MCP tools/resources/prompts, а Cursor/Claude остаются основным агентным UI.
-  Зависимости и готовность:
-  depends_on=design-sidecar-mcp-execution-boundary, implement-agent-chat-ui-with-nlux; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Принять архитектурное решение о WorkGraph MCP-first integration вместо продолжения разработки собственного agent chat UI.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -47,6 +30,6 @@
   work.risk: medium
   work.status: done
   work.target_files: docs/workgraph-mcp-client-strategy.md, packages/workgraph-mcp/src/index.mjs, packages/workgraph-mcp/src/handlers.mjs
-  work.title: спроектировать стратегию WorkGraph через MCP-клиенты
+  work.title: Принять архитектурное решение о WorkGraph MCP-first integration вместо продолжения разработки собственного…
 ]>
 

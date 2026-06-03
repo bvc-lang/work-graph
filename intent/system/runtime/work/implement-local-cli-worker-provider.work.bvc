@@ -44,6 +44,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/agentWorkerLocalCliProvider.mjs, src/workGraphWorkerProvider.mjs, tests/agentWorkerLocalCliProvider.test.mjs, tests/workGraphWorkerProvider.test.mjs, protocols/agent-worker-provider-registry-v1.bvc, work/backlog.bvc
-  work.title: реализовать local-cli worker provider
+  work.title: реализовать local CLI worker provider
 ]>
 

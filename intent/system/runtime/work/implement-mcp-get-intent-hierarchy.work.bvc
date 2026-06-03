@@ -1,13 +1,13 @@
 #Задача_implement_mcp_get_intent_hierarchy<[
 Базис:
-  intent.hierarchy.snapshot.v1 собирается в src/intentHierarchy.mjs и UI operator shell, но агент в Cursor не видит domain tree через MCP.
-  Задача «Intent graph: MCP tool get_intent_hierarchy» относится к контуру графа знаний и retrieval и должна быть понятна агенту без чтения всего backlog.
+  intent.hierarchy.snapshot.v1 собирается в src/intentHierarchy.mjs и UI оболочка оператора, но агент в Cursor не видит domain tree через MCP.
+  Задача «Intent graph: MCP tool get_intent_hierarchy» относится к контуру графа знаний и retrieval и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: phase-4-trace-pvrg-semantic-map.
 Вектор:
   Добавить get_intent_hierarchy — обёртка buildIntentHierarchySnapshot над intent tree.
   Ближайший шаг исполнения: просмотреть и перевести в ready.
 Цель:
-  Агент навигирует по доменам намерений без чтения всего backlog snapshot.
+  Агент навигирует по доменам намерений без чтения всего бэклог snapshot.
   Готово, когда выполнены проверки: MCP tool get_intent_hierarchy возвращает intent.hierarchy.snapshot.v1.
 Анализ:
   Целесообразность:
@@ -19,7 +19,7 @@
   Риски и альтернативы:
   Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
   Критерии успеха:
-  Агент навигирует по доменам намерений без чтения всего backlog snapshot.; проверки из атома и `target_files`.
+  Агент навигирует по доменам намерений без чтения всего бэклог snapshot.; проверки из атома и `target_files`.
   Рекомендация для решения:
   Полезно — задача готова к исполнению после разбора материалов приёма.
 Решение:
@@ -45,6 +45,6 @@
   work.risk: medium
   work.status: done
   work.target_files: packages/workgraph-mcp/src/handlers.mjs, packages/workgraph-mcp/src/index.mjs, tests/workgraph-mcp.test.mjs
-  work.title: Intent graph: MCP tool get_intent_hierarchy
+  work.title: Навигирует по доменам намерений без чтения всего бэклог snapshot.
 ]>
 

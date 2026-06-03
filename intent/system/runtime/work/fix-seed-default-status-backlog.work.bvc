@@ -3,37 +3,19 @@
   Seed-скрипты ставят status: doing при создании — обход ready→claim (AN-25 §2.3).
   ux-mission-control-p0 и bvc-tooling-external seed — примеры anti-pattern.
 Вектор:
-  Обновить scripts/seed-*.mjs: default status backlog.
-  Опциональный флаг --activate-ready только после operator review (document in script header).
-  Этот seed (seed-epic-agent-workgraph-enforcement) — этalon с backlog.
+  Обновить scripts/seed-*.mjs: default status бэклог.
+  Опциональный флаг --activate-ready только после оператор review (документировать in script header).
+  Этот seed (seed-epic-agent-workgraph-enforcement) — этalon с бэклог.
 Цель:
   Новые work items из seed не попадают на доску как doing без явного review.
 Проверки:
   grep seed scripts: нет status: doing без комментария opt-in
-  npm run seed:epic-agent-workgraph-enforcement создаёт backlog items
-Анализ:
-  Целесообразность:
-  Стоит завести «seed scripts: default work.status backlog (не doing)» в бэклог — по материалам AN-25 (work/analytics/agent-bypass-work-graph-dual-backlog.md).
-  Контекст и границы:
-  Обновить scripts/seed-*.mjs: default status backlog.
-  Зависимости и готовность:
-  depends_on=epic-agent-workgraph-enforcement; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Новые work items из seed не попадают на доску как doing без явного review.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-25 (work/analytics/agent-bypass-work-graph-dual-backlog.md); исполнять после вердикта «полезно» и готовности зависимостей.
-
+  npm run seed:epic-agent-workgraph-enforcement создаёт бэклог items
 Свидетельства:
-  - scripts/seed-ux-mission-control-p0.mjs — status backlog (10 items)
-  - scripts/seed-bvc-tooling-external.mjs — status backlog (4 items)
-  - scripts/seed-bvc-phase2-new-write.mjs — status backlog (4 items)
-  - grep scripts/seed-*.mjs: нет status doing кроме комментариев
+  scripts/seed-ux-mission-control-p0.mjs — status бэклог (10 items)
+  scripts/seed-bvc-tooling-external.mjs — status бэклог (4 items)
+  scripts/seed-bvc-phase2-new-write.mjs — status бэклог (4 items)
+  grep scripts/seed-*.mjs: нет status doing кроме комментариев
 
 Метки:
   atom.profile: work_item
@@ -58,5 +40,6 @@
   work.risk: low
   work.status: done
   work.target_files: scripts/seed-epic-agent-workgraph-enforcement.mjs, scripts/seed-ux-mission-control-p0.mjs, scripts/seed-bvc-tooling-external.mjs
-  work.title: seed scripts: default work.status backlog (не doing)
+  work.title: Новые work items из seed не попадают на доску как doing без явного review.
 ]>
+

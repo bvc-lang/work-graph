@@ -11,6 +11,8 @@
 Проверки:
   Marketplace brand-tokens.css генерируется, не редактируется вручную
   /dev/ui-kit smoke green
+Свидетельства:
+  npm run sync:design-tokens:marketplace → 04 Marketplace/resources/css/brand-tokens.css; marketplace-uses-shared-tokens.mdc
 Анализ:
   Целесообразность:
   Стоит завести «Marketplace: переход на сгенерированный brand-tokens.css» в бэклог — по материалам AN-21 (work/analytics/marketplace-integration-and-shared-design-system.md).
@@ -52,8 +54,6 @@
   work.risk: medium
   work.status: done
   work.target_files: ../../04 Marketplace/resources/css/brand-tokens.css, ../../04 Marketplace/docs/ui/tokens.md, work/analytics/marketplace-integration-and-shared-design-system.md
-  work.title: Marketplace: переход на сгенерированный brand-tokens.css
-
-Свидетельства:
-  - npm run sync:design-tokens:marketplace → 04 Marketplace/resources/css/brand-tokens.css; marketplace-uses-shared-tokens.mdc
+  work.title: Marketplace потребляет shared tokens; визуально без изменений.
 ]>
+

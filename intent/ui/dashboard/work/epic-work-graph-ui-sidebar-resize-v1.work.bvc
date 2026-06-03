@@ -1,0 +1,46 @@
+#Задача_epic_work_graph_ui_sidebar_resize_v1<[
+Базис:
+  Sidebar фиксирован 252px; на mobile автоматически 56px icon rail через media query.
+  Оператор хочет drag-resize с ограничениями: min → icon-only, max → cap.
+Вектор:
+  P0: sidebar-resize-handle + pointer drag как detail drawer.
+  P0: --sidebar-width 56–360px, localStorage workGraphSidebarWidth.
+  P0: html.is-sidebar-compact вместо @media forced compact.
+  P1: keyboard ArrowLeft/Right на separator.
+Цель:
+  Оператор тянет правый край sidebar; при min ширине — только иконки; ширина сохраняется.
+Проверки:
+  id="sidebar-resize-handle" в HTML
+  workGraphSidebarWidth persist
+  html.is-sidebar-compact hides nav-tab-label
+  tests/workGraphBacklogUiServer.test.mjs green
+Анализ:
+  Reuse detail-resize-handle pattern; early head script avoids layout flash.
+Решение:
+  Вердикт: полезно
+  Max 360px; compact UI threshold ≤80px.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-62
+  intake.source_kind: operator-request
+  intake.source_ref: src/workGraphBacklogUiServer.mjs
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-02T21:43:00.663Z
+  work.analysis.source: operator-request
+  work.decision.at: 2026-06-02T21:43:00.663Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: epic-work-graph-ui-classifier-badges-v1
+  work.id: epic-work-graph-ui-sidebar-resize-v1
+  work.item_kind: epic
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: low
+  work.status: backlog
+  work.target_files: src/workGraphBacklogUiServer.mjs, tests/workGraphBacklogUiServer.test.mjs
+  work.title: UI Sidebar resize v1: ручная ширина с min (иконки) и max
+]>

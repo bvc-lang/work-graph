@@ -4,29 +4,14 @@
   WG не имеет каталога; нужен unified generator из atomic-spec.
 Вектор:
   packages/docs-generator/ — BVC spec → markdown sections.
-  docs/ui/components.md в WG; sync hook для Marketplace section.
+  docs/ui/components.md в WG; синхронизировать hook для Marketplace section.
 Цель:
   Один generator; оба проекта ссылаются на один формат каталога.
 Проверки:
   docs/ui/components.md генерируется из spec
   npm run script docs:components green
-Анализ:
-  Целесообразность:
-  Стоит завести «docs-generator: единый каталог components.md» в бэклог — по материалам AN-21 (work/analytics/marketplace-integration-and-shared-design-system.md).
-  Контекст и границы:
-  packages/docs-generator/ — BVC spec → markdown sections.
-  Зависимости и готовность:
-  depends_on=epic-marketplace-shared-design-system, atomic-spec-five-base-atoms; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Один generator; оба проекта ссылаются на один формат каталога.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-21 (work/analytics/marketplace-integration-and-shared-design-system.md); исполнять после вердикта «полезно» и готовности зависимостей.
+Свидетельства:
+  packages/docs-generator/generateComponentCatalog.mjs → docs/ui/components.md; npm run docs:components
 
 Метки:
   atom.profile: work_item
@@ -51,8 +36,6 @@
   work.risk: low
   work.status: done
   work.target_files: packages/docs-generator/, docs/ui/components.md, work/analytics/marketplace-integration-and-shared-design-system.md
-  work.title: docs-generator: единый каталог components.md
-
-Свидетельства:
-  - packages/docs-generator/generateComponentCatalog.mjs → docs/ui/components.md; npm run docs:components
+  work.title: Один generator; оба проекта ссылаются на один формат каталога.
 ]>
+

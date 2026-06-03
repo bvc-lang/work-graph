@@ -8,6 +8,13 @@
   Скриншот / GIF одного прогона golden path.
 Цель:
   Внешний 1С-разработчик за 5 минут понимает, что это и зачем.
+Проверки:
+  README имеет секцию «Кому это нужно» с одним сегментом
+  README имеет «5-минутный quick start»
+  README не упоминает Genesis/GVM/multi-domain как первоочередное
+Свидетельства:
+  README.md — 1С/OneBase vertical positioning
+  golden path + anti-goals
 Анализ:
   Целесообразность:
   Стоит завести «переписать README.md как Getting Started для 1С-разработчика» в бэклог — по материалам AN-7 (analytics:product-self-audit-user).
@@ -25,14 +32,6 @@
   Вердикт:
   полезно
   Создана по материалам приёма AN-7 (analytics:product-self-audit-user); исполнять после вердикта «полезно» и готовности зависимостей.
-Проверки:
-  README имеет секцию «Кому это нужно» с одним сегментом
-  README имеет «5-минутный quick start»
-  README не упоминает Genesis/GVM/multi-domain как первоочередное
-
-Свидетельства:
-  - README.md — 1С/OneBase vertical positioning
-  - golden path + anti-goals
 
 Метки:
   atom.profile: work_item
@@ -57,5 +56,6 @@
   work.risk: low
   work.status: done
   work.target_files: README.md
-  work.title: переписать README.md как Getting Started для 1С-разработчика
+  work.title: Внешний 1С-разработчик за 5 минут понимает, что это и зачем.
 ]>
+

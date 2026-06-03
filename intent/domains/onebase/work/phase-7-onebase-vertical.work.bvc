@@ -1,7 +1,7 @@
 #Задача_phase_7_onebase_vertical<[
 Базис:
   OneBase bridge — первая реальная доменная вертикаль; текущий пересобрать verified одно изменение gross-profit-by-warehouse, но полный bridge ещё не разложен.
-  Задача «Фаза 7: OneBase vertical» относится к контуру архитектуры продукта и должна быть понятна агенту без чтения всего backlog.
+  Задача «Фаза 7: OneBase vertical» относится к контуру архитектуры продукта и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: phase-5-ir-codegen-runtime, phase-6-project-memory-evidence.
 Вектор:
   Расширить OneBase как вертикаль: WorkItem templates, REST/PG evidence, PVRG nodes, MCP parity и автоматизация cross-repo layout.
@@ -46,6 +46,6 @@
   work.risk: high
   work.status: done
   work.target_files: domains/onebase/workitem-template.bvc, protocols/onebase-mcp-parity-v1.bvc, domains/onebase/defer-vector-dsl-codegen.bvc, src/onebaseWorkItemTemplate.mjs, tests/onebaseWorkItemTemplate.test.mjs, work/backlog.bvc
-  work.title: Фаза 7: OneBase vertical
+  work.title: OneBase становится повторяемым domain workflow, а не одноразовым golden path.
 ]>
 

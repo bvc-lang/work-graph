@@ -1,0 +1,57 @@
+#Задача_document_session_primer_runbook<[
+Базис:
+  AN-57 D4: первое сообщение «делай эпики» без primer → модель уходит в TodoWrite и EN prose.
+  docs/workgraph-mcp-clients.md описывает MCP, но не чеклист старта сессии.
+Вектор:
+  docs/workgraph-session-primer-runbook.md — чеклист: workspace root, MCP workgraph, синхронизировать rules, primer-текст.
+  Шаблон первого сообщения: take_next_work_item / summarize_current_cycle + запрет TodoWrite для trackable work.
+  Ссылка из docs/workgraph-mcp-clients.md и README (краткий блок «Старт сессии»).
+Цель:
+  Оператор копирует primer или следует runbook — агент с первого хода в WG-контуре без dual бэклог.
+Проверки:
+  docs/workgraph-session-primer-runbook.md существует
+  docs/workgraph-mcp-clients.md содержит § Session primer со ссылкой
+Анализ:
+  Зачем:
+  AN-57 D4: первое сообщение «делай эпики» без primer → модель уходит в TodoWrite и EN prose.
+  Контекст: docs/workgraph-mcp-clients.md описывает MCP, но не чеклист старта сессии.
+  Когда:
+  После готовности: epic-agent-session-warmup-v1, sync-cursor-wg-rules-to-repo.
+  Готово, когда:
+  Оператор копирует primer или следует runbook — агент с первого хода в WG-контуре без dual бэклог.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: epic-agent-session-warmup-v1, sync-cursor-wg-rules-to-repo.
+
+Свидетельства:
+  docs/workgraph-session-primer-runbook.md
+  docs/workgraph-mcp-clients.md § Session primer
+  README.md — ссылка на primer
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-57
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/agent-session-warmup-vs-enforcement.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-02T17:42:39.486Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-02T17:42:39.486Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: epic-agent-session-warmup-v1, sync-cursor-wg-rules-to-repo
+  work.id: document-session-primer-runbook
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: product_owner
+  work.parent_id: epic-agent-session-warmup-v1
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: low
+  work.status: done
+  work.target_files: docs/workgraph-session-primer-runbook.md, docs/workgraph-mcp-clients.md, README.md, work/analytics/agent-session-warmup-vs-enforcement.md
+  work.title: Runbook: primer сессии оператора WG
+]>
+

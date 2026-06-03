@@ -1,0 +1,41 @@
+#Задача_extract_backlog_shell_i18n<[
+Базис:
+  backlogShellButtons.mjs + sidebar nav — ~30 P0 chrome keys.
+Вектор:
+  Подключить t() into renderBacklogHtml / backlogShellButtons.
+  Locale switcher заглушка in header (sets wg_locale cookie).
+  Snapshot: locale=en → Tasks not Задачи.
+Цель:
+  Sidebar and shell buttons follow оператор locale.
+Проверки:
+  EN nav labels in en locale
+  RU preserved in ru locale
+Свидетельства:
+  npm run test:deterministic — uiCatalog, appVersionApi, workGraphBacklogUiServer тесты проходят (726)
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-55
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-ui-i18n-best-practices.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-02T16:36:21.423Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-02T16:36:21.423Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: implement-ui-locale-resolution, implement-ui-message-catalog-v1
+  work.id: extract-backlog-shell-i18n
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.parent_id: epic-work-graph-ui-i18n-v1
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: medium
+  work.status: done
+  work.target_files: src/ui/backlogShellButtons.mjs, src/workGraphBacklogUiServer.mjs, locales/en/ui.json, locales/ru/ui.json, tests/workGraphBacklogUiServer.test.mjs
+  work.title: Вынести строки shell бэклога в UI catalog (nav, theme, close)
+]>
+

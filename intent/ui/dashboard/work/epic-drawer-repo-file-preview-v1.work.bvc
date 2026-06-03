@@ -1,0 +1,48 @@
+#Задача_epic_drawer_repo_file_preview_v1<[
+Базис:
+  Related files / target_files в drawer — plain text; оператор не может открыть tests/*.mjs или protocols/*.bvc из разбора.
+  Detail stack поддерживает analytics/task, но нет frame type repo-file и API чтения файла для UI.
+  AN-59: клик по path → push следующего уровня stack с preview; код подсвечивается.
+Вектор:
+  P0: ADR frame repo-file + GET /api/repo-file/preview.
+  P0: кликабельные ссылки в relatedFiles и work.target_files.
+  P0: renderer в detailStack с codeSyntaxHighlight.
+  P1: autolink path tokens в markdown body analytics/task.
+Цель:
+  Оператор drill-down: разбор → файл → файл → задача без потери контекста; preview read-only с highlight.
+Проверки:
+  Click tests/homeSnapshotProjection.test.mjs opens L2 preview
+  Nested file click increases stack depth
+  API rejects path traversal
+  AN-59 closing doc published
+Анализ:
+  Reuse detailDrawerStack push/pop; codeSyntaxHighlight already in browser bundle.
+  Security: normalizeBoundedTargetPath under active workspace cwd.
+Решение:
+  Вердикт: полезно
+  Исполнять по docs/plan-drawer-repo-file-preview-v1.md.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-59
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/drawer-repo-file-preview.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-02T19:57:32.638Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-02T19:57:32.638Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: epic-detail-drawer-stack-v1
+  work.id: epic-drawer-repo-file-preview-v1
+  work.item_kind: epic
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: backlog
+  work.target_files: work/analytics/drawer-repo-file-preview.md, docs/plan-drawer-repo-file-preview-v1.md, docs/adr-detail-drawer-repo-file-frame-v1.md, src/workGraphBacklogUiServer.mjs, src/detailDrawerStack.mjs, src/codeSyntaxHighlight.mjs, tests/workGraphBacklogUiServer.test.mjs
+  work.title: Repo file preview v1: клик по path → stack frame + syntax highlight (AN-59)
+]>

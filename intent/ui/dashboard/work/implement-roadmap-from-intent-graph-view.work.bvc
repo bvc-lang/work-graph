@@ -8,6 +8,12 @@
   Сортировка по dependency/order/status; rollup прогресса берётся из parent/child canon.
 Цель:
   Раздел «Дорожная карта» отображает выбранную ветку intent graph с задачами, подзадачами и прогрессом.
+Проверки:
+  roadmap projection строится из intent graph, не из markdown
+  UI-тест показывает selected branch и переход к AN-n
+  отклонённые варианты не попадают в roadmap, но видны в analytics/intent graph
+Свидетельства:
+  src/intentRoadmapProjection.mjs + intent-roadmap-panel UI
 Анализ:
   Целесообразность:
   Стоит завести «построить дорожную карту как выбранную ветку графа намерений» в бэклог — по материалам AN-3 (analytics:intent-graph-storage-roadmap).
@@ -25,25 +31,17 @@
   Вердикт:
   полезно
   Создана по материалам приёма AN-3 (analytics:intent-graph-storage-roadmap); исполнять после вердикта «полезно» и готовности зависимостей.
-Проверки:
-  roadmap projection строится из intent graph, не из markdown
-  UI test показывает selected branch и переход к AN-n
-  отклонённые варианты не попадают в roadmap, но видны в analytics/intent graph
-
-Свидетельства:
-  - src/intentRoadmapProjection.mjs + intent-roadmap-panel UI
 
 Метки:
   atom.profile: work_item
   intake.analytics_key: AN-3
   intake.source_kind: analytics-record
   intake.source_ref: analytics:intent-graph-storage-roadmap
+  intent.decision_id: decision:intent-graph-storage-v1
+  intent.option_id: option-c-intent-node-canon
+  intent.question_id: iq:intent-graph-storage
   migration.strategy: rebuild
   trace.status: verified
-  intent.question_id: iq:intent-graph-storage
-  intent.option_id: option-c-intent-node-canon
-  intent.decision_id: decision:intent-graph-storage-v1
-  work.parent_id: design-intent-graph-storage-v1
   work.analysis.at: 2026-05-30T18:13:05.447Z
   work.analysis.source: analytics-record
   work.decision.at: 2026-05-30T18:13:05.447Z
@@ -53,10 +51,12 @@
   work.id: implement-roadmap-from-intent-graph-view
   work.next_action: —
   work.owner_role: feature_engineer
+  work.parent_id: design-intent-graph-storage-v1
   work.pipeline_stage: decided
   work.priority: high
   work.risk: high
   work.status: done
   work.target_files: src/workGraphBacklogUiServer.mjs, src/intentGraphGbcSliceBoundary.mjs, tests/workGraphBacklogUiServer.test.mjs, work/analytics/intent-graph-storage-roadmap.md
-  work.title: построить дорожную карту как выбранную ветку графа намерений
+  work.title: Раздел «Дорожная карта» отображает выбранную ветку intent graph с задачами, подзадачами и прогрессом.
 ]>
+

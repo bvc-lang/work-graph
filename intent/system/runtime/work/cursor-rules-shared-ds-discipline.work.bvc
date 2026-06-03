@@ -11,23 +11,8 @@
 Проверки:
   iohasc-ui-components.mdc exists with alwaysApply
   npm run audit:agent-behavior-rules или lint rules green
-Анализ:
-  Целесообразность:
-  Стоит завести «Cursor rules: shared DS discipline (WG + Marketplace)» в бэклог — по материалам AN-21 (work/analytics/marketplace-integration-and-shared-design-system.md).
-  Контекст и границы:
-  .cursor/rules/iohasc-ui-components.mdc — alwaysApply для WG.
-  Зависимости и готовность:
-  depends_on=epic-marketplace-shared-design-system; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Агент и разработчик не дублируют inline-вёрстку вне каталога.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-21 (work/analytics/marketplace-integration-and-shared-design-system.md); исполнять после вердикта «полезно» и готовности зависимостей.
+Свидетельства:
+  .cursor/rules/iohasc-ui-components.mdc + Marketplace marketplace-uses-shared-tokens.mdc
 
 Метки:
   atom.profile: work_item
@@ -52,8 +37,6 @@
   work.risk: low
   work.status: done
   work.target_files: .cursor/rules/iohasc-ui-components.mdc, ../../04 Marketplace/.cursor/rules/marketplace-uses-shared-tokens.mdc, work/analytics/marketplace-integration-and-shared-design-system.md
-  work.title: Cursor rules: shared DS discipline (WG + Marketplace)
-
-Свидетельства:
-  - .cursor/rules/iohasc-ui-components.mdc + Marketplace marketplace-uses-shared-tokens.mdc
+  work.title: Правила Cursor: shared DS discipline (WG + Marketplace)
 ]>
+

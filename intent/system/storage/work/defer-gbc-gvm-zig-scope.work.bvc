@@ -10,23 +10,6 @@
 Цель:
   Команда сохраняет GBC direction, но не блокирует MVP бинарным/runtime слоем.
   Готово, когда выполнены проверки: MVP GBC scope отделён от R&D GVM/Zig scope.
-Анализ:
-  Целесообразность:
-  Стоит завести «зафиксировать границу deferral для GBC/GVM/Zig» в бэклог.
-  Контекст и границы:
-  Зафиксировать acceptance boundary: что входит в MVP из GBC/GFS, а что остаётся R&D.
-  Зависимости и готовность:
-  depends_on=evaluate-flatbuffers-gbc-slice; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Команда сохраняет GBC direction, но не блокирует MVP бинарным/runtime слоем.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -47,6 +30,6 @@
   work.risk: medium
   work.status: done
   work.target_files: protocols/gbc-gvm-zig-deferral-boundary.bvc, charter/main.bvc, plans/rebuild-start-plan.bvc
-  work.title: зафиксировать границу deferral для GBC/GVM/Zig
+  work.title: Команда сохраняет GBC direction, но не блокирует MVP бинарным/runtime слоем.
 ]>
 

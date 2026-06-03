@@ -1,7 +1,7 @@
 #Задача_implement_mcp_get_unified_linkage<[
 Базис:
-  unified-linkage.projection.v1 — contract-only для оператора; агент не получает step↔code edges через MCP.
-  Задача «Intent graph: MCP tool get_unified_linkage» относится к контуру графа знаний и retrieval и должна быть понятна агенту без чтения всего backlog.
+  unified-linkage.projection.v1 — только контракт для оператора; агент не получает step↔code edges через MCP.
+  Задача «Intent graph: MCP tool get_unified_linkage» относится к контуру графа знаний и retrieval и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: port-unified-linkage-serialization.
 Вектор:
   Добавить get_unified_linkage — buildUnifiedLinkageProjectionV1 из intent tree.
@@ -45,6 +45,6 @@
   work.risk: medium
   work.status: done
   work.target_files: packages/workgraph-mcp/src/handlers.mjs, src/unifiedLinkageProjection.mjs, tests/workgraph-mcp.test.mjs
-  work.title: Intent graph: MCP tool get_unified_linkage
+  work.title: LLM видит typed linkage refs между задачами и target files.
 ]>
 

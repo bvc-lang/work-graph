@@ -1,7 +1,7 @@
 #Задача_onebase_posting_rule_golden_path<[
 Базис:
   OneBase содержит реальную доменную модель торговли и .os проведение РеализацияТоваров.
-  Задача «описать golden path для правила проведения OneBase» относится к контуру архитектуры продукта и должна быть понятна агенту без чтения всего backlog.
+  Задача «описать golden path для правила проведения OneBase» относится к контуру архитектуры продукта и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: onebase-verification-command.
 Вектор:
   Описать сценарий изменения правила проведения.
@@ -47,6 +47,6 @@
   work.risk: high
   work.status: done
   work.target_files: domains/onebase/golden-path.bvc, domains/onebase/artifact-mapping.bvc, domains/onebase/examples/realization-posting-step-atom-draft.example.json, domains/onebase/workflows/change-posting-rule.bvc, domains/onebase/verification-command.bvc
-  work.title: описать golden path для правила проведения OneBase
+  work.title: Новая система доказывает пользу на доменной бизнес-логике, а не на toy CRUD.
 ]>
 

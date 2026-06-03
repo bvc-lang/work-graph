@@ -5,7 +5,7 @@
   Протокол architecture-graph-model-v1: L1 derived from charter + intent, но не материализован как hub.
 Вектор:
   Track A: architecture/main.bvc v1 (7 blocks + edges + passport).
-  Track B: loader + migrate architectureSnapshot.mjs + schema l1Canon/BVC fields.
+  Track B: loader + мигрировать architectureSnapshot.mjs + schema l1Canon/BVC fields.
   Track C: UI drawer BVC + canon badge; Track D: l1-check CLI + AN-36 closing.
 Цель:
   Оператор и агент видят трассируемую L1-карту: charter → architecture/main.bvc → snapshot → UI.
@@ -14,23 +14,6 @@
   snapshot строится из canon, не inline JS array
   drawer L1 показывает Базис/Вектор/Цель
   architecture:l1-check green; AN-36 closing
-Анализ:
-  Целесообразность:
-  Стоит завести «Architecture main.bvc: L1 canon hub (charter → snapshot → UI BVC)» в бэклог — по материалам AN-36 (work/analytics/architecture-main-bvc-canon-hub.md).
-  Контекст и границы:
-  Track A: architecture/main.bvc v1 (7 blocks + edges + passport).
-  Зависимости и готовность:
-  depends_on=epic-architecture-views-v1; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Оператор и агент видят трассируемую L1-карту: charter → architecture/main.bvc → snapshot → UI.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-36 (work/analytics/architecture-main-bvc-canon-hub.md); исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -54,5 +37,6 @@
   work.risk: medium
   work.status: done
   work.target_files: work/analytics/architecture-main-bvc-canon-hub.md, docs/plan-architecture-main-bvc-canon.md, architecture/main.bvc, src/architectureL1Canon.mjs, src/architectureSnapshot.mjs, charter/main.bvc, protocols/architecture-graph-model-v1.bvc, schemas/architecture-snapshot.v1.json, src/workGraphBacklogUiServer.mjs
-  work.title: Architecture main.bvc: L1 canon hub (charter → snapshot → UI BVC)
+  work.title: main.bvc архитектуры: L1 hub (charter → snapshot → UI BVC)
 ]>
+

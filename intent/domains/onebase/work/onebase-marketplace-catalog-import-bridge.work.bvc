@@ -10,7 +10,9 @@
   Один односторонний bridge каталога без двусторонней sync.
 Проверки:
   Importer unit test на fixture tree
-  AN-17 cross-ref documented
+  AN-17 cross-ref задокументировано
+Свидетельства:
+  04 Marketplace/app/Catalog/OneBaseCatalogTreeImporter.php + tests/Unit/OneBaseCatalogTreeImporterTest.php
 Анализ:
   Целесообразность:
   Стоит завести «OneBase → Marketplace catalog import bridge (P2)» в бэклог — по материалам AN-21 (work/analytics/marketplace-integration-and-shared-design-system.md).
@@ -52,8 +54,6 @@
   work.risk: high
   work.status: done
   work.target_files: ../../04 Marketplace/packages/marketplace-core/src/Catalog/, work/analytics/onebase-integration-vertical-stack.md, work/analytics/marketplace-integration-and-shared-design-system.md
-  work.title: OneBase → Marketplace catalog import bridge (P2)
-
-Свидетельства:
-  - 04 Marketplace/app/Catalog/OneBaseCatalogTreeImporter.php + tests/Unit/OneBaseCatalogTreeImporterTest.php
+  work.title: Один односторонний bridge каталога без двусторонней sync.
 ]>
+

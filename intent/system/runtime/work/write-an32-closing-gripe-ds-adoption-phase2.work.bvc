@@ -11,7 +11,7 @@
   epic-gripe-ds-adoption-phase2 closed с evidence
 Анализ:
   Целесообразность:
-  Стоит завести «AN-32 closing analysis: epic-gripe-ds-adoption-phase2» в бэклог — по материалам AN-32 (work/analytics/gripe-ds-adoption-phase2-post-an21.md).
+  Стоит завести «AN-32 итоговый разбор: epic-gripe-ds-adoption-phase2» в бэклог — по материалам AN-32 (work/analytics/gripe-ds-adoption-phase2-post-an21.md).
   Контекст и границы:
   work/analytics/closing-epic-gripe-ds-adoption-phase2.md + journal AN-32 closing key.
   Зависимости и готовность:
@@ -50,5 +50,6 @@
   work.risk: low
   work.status: done
   work.target_files: work/analytics/closing-epic-gripe-ds-adoption-phase2.md, work/analytics-records.jsonl, work/analytics/gripe-ds-adoption-phase2-post-an21.md
-  work.title: AN-32 closing analysis: epic-gripe-ds-adoption-phase2
+  work.title: Эпик закрыт с метриками phase 2.
 ]>
+

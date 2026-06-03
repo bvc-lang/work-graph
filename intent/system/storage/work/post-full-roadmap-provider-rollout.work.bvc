@@ -1,10 +1,10 @@
 #Задача_post_full_roadmap_provider_rollout<[
 Базис:
-  Полный ioHasC пересобрать roadmap (фазы 0–11) закрыт; следующий шаг — optional real LLM provider rollout без блокировки deterministic CI.
-  Задача «post-full roadmap: provider rollout» относится к контуру Work Graph rebuild и должна быть понятна агенту без чтения всего backlog.
+  Полный ioHasC пересобрать roadmap (фазы 0–11) закрыт; следующий шаг — опционально real LLM provider rollout без блокировки deterministic CI.
+  Задача «post-full roadmap: provider rollout» относится к контуру Work Graph пересобрать и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: phase-11-gbc-gfs-gvm-deferred.
 Вектор:
-  Вести post-full track: OpenAI-compatible worker provider, live-loop provider selection, optional golden-path LLM eval live path.
+  Вести post-full track: OpenAI-compatible worker provider, live-loop provider selection, опционально golden-path LLM eval live path.
   Ближайший шаг исполнения: —.
 Цель:
   Work Graph live-loop может вызывать реальную LLM через env-gated HTTP adapter, сохраняя Worker Input/Output v1.
@@ -12,7 +12,7 @@
   Целесообразность:
   Стоит завести «post-full roadmap: provider rollout» в бэклог.
   Контекст и границы:
-  Вести post-full track: OpenAI-compatible worker provider, live-loop provider selection, optional golden-path LLM eval live path.
+  Вести post-full track: OpenAI-compatible worker provider, live-loop provider selection, опционально golden-path LLM eval live path.
   Зависимости и готовность:
   depends_on=phase-11-gbc-gfs-gvm-deferred; старт после закрытия upstream-зависимостей.
   Риски и альтернативы:
@@ -45,6 +45,6 @@
   work.risk: medium
   work.status: done
   work.target_files: docs/plan-rebuild-post-full-roadmap.md, src/workGraphWorkerProvider.mjs, src/agentWorkerOpenAiProvider.mjs, src/agentWorkerLiveLoop.mjs, package.json, work/backlog.bvc
-  work.title: post-full roadmap: provider rollout
+  work.title: Work Graph live-loop может вызывать реальную LLM через env-gated HTTP adapter, сохраняя Worker Input/Output…
 ]>
 

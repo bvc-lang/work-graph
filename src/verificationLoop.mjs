@@ -1,4 +1,6 @@
 import { buildCodegenVerificationGate } from './codegenEvidence.mjs';
+import { buildWorkItemContractV1 } from './workItemContractProjection.mjs';
+import { buildContractHealthSummary, evaluateWorkItemReadyForDone } from './workItemReadyForDone.mjs';
 
 /** @typedef {'deterministic' | 'optional-env' | 'optional-llm'} VerificationTier */
 /** @typedef {'passed' | 'pending' | 'blocked' | 'not_run' | 'failed'} VerificationStatus */
@@ -103,6 +105,26 @@ export function buildVerificationSummary(workGraphSnapshot, options = {}) {
   const tierCounts = summarizeTierCounts(matrix);
   const onebaseGate = matrix.find((row) => row.id === 'onebase-go-test') ?? null;
   const codegenGate = buildCodegenVerificationGate(items);
+  const contractSummaries = items
+    .filter((item) => VERIFICATION_MATRIX.some((row) => row.gateTaskIds.includes(item.id)))
+    .slice(0, 24)
+    .map((item) => {
+      const contract = buildWorkItemContractV1(item);
+      const readiness = evaluateWorkItemReadyForDone(item, { allItems: items });
+      return {
+        workId: item.id,
+        title: item.title,
+        status: item.status,
+        contract,
+        readiness: {
+          ok: readiness.ok,
+          violationCount: readiness.violations.length,
+          violations: readiness.violations,
+          suggestedCommands: readiness.suggestedCommands,
+        },
+      };
+    });
+  const contractHealth = buildContractHealthSummary(items);
 
   return {
     schema: 'verification.summary.v1',
@@ -118,6 +140,8 @@ export function buildVerificationSummary(workGraphSnapshot, options = {}) {
         }
       : null,
     codegenGate,
+    contractSummaries,
+    contractHealth,
     policy: {
       deterministicCommand: 'npm run test:deterministic',
       optionalOnebaseCommand: 'npm run test:optional:onebase',

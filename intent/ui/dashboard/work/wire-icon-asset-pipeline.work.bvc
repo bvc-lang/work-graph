@@ -1,0 +1,52 @@
+#Задача_wire_icon_asset_pipeline<[
+Базис:
+  Нет модуля чтения SVG и HTTP route для icons.
+Вектор:
+  src/ui/iconAssets.mjs — readPublicIconSvg, renderInlineIcon, NAV_VIEW_ICON_FILES.
+  tryServePublicIconsAsset в workGraphBacklogUiServer.mjs.
+Цель:
+  Иконки доступны для SSR inline и прямых URL.
+Проверки:
+  iconAssets tests pass
+  GET /assets/icons/bold/moon-bold.svg → 200
+Анализ:
+  Зачем:
+  Нет модуля чтения SVG и HTTP route для icons.
+  Контекст: src/ui/iconAssets.mjs — readPublicIconSvg, renderInlineIcon, NAV_VIEW_ICON_FILES.
+  Когда:
+  После готовности: epic-work-graph-ui-icons-v1.
+  Готово, когда:
+  Иконки доступны для SSR inline и прямых URL.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: epic-work-graph-ui-icons-v1.
+
+Свидетельства:
+  - src/ui/iconAssets.mjs + tryServePublicIconsAsset /assets/icons/*
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-56
+  intake.source_kind: operator-request
+  intake.source_ref: public/assets/icons
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-02T19:00:56.664Z
+  work.analysis.source: operator-request
+  work.decision.at: 2026-06-02T19:00:56.664Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: epic-work-graph-ui-icons-v1
+  work.id: wire-icon-asset-pipeline
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: feature_engineer
+  work.parent_id: epic-work-graph-ui-icons-v1
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: low
+  work.status: done
+  work.target_files: src/ui/iconAssets.mjs, src/workGraphBacklogUiServer.mjs, tests/iconAssets.test.mjs
+  work.title: UI: pipeline iconAssets + static /assets/icons
+]>

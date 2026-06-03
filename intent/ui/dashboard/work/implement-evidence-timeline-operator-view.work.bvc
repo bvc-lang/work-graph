@@ -1,49 +1,27 @@
 #Задача_implement_evidence_timeline_operator_view<[
 Базис:
   evidenceReadModel v1 без хронологического UI.
-  Задача «Фаза 6: хронология свидетельств WorkItem» относится к контуру Work Graph rebuild и должна быть понятна агенту без чтения всего backlog.
-  Предварительно должны быть закрыты зависимости: phase-6-project-memory-evidence.
 Вектор:
   Timeline в detail drawer: evidence и transitions по времени.
-  Ближайший шаг исполнения: просмотреть и перевести в ready.
 Цель:
   Audit trail читается без парсинга raw .work.bvc.
-  Готово, когда выполнены проверки: Timeline сортирует evidence и transitions.
-Анализ:
-  Целесообразность:
-  Стоит завести «Фаза 6: хронология свидетельств WorkItem» в бэклог.
-  Контекст и границы:
-  Timeline в detail drawer: evidence и transitions по времени.
-  Зависимости и готовность:
-  depends_on=phase-6-project-memory-evidence; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Audit trail читается без парсинга raw .work.bvc.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+Проверки:
+  Timeline сортирует evidence и transitions
+  UI-тест или snapshot
 
 Метки:
   atom.profile: work_item
   migration.strategy: rebuild
   trace.status: verified
-  work.analysis.at: 2026-05-30T17:22:36.672Z
-  work.analysis.source: backfill
-  work.decision.at: 2026-05-30T17:22:36.681Z
-  work.decision.verdict: useful
   work.department: frontend-ui
   work.depends_on: phase-6-project-memory-evidence
   work.id: implement-evidence-timeline-operator-view
-  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.next_action: просмотреть и перевести в ready
   work.owner_role: frontend_architect
-  work.pipeline_stage: decided
   work.priority: low
   work.risk: medium
   work.status: done
   work.target_files: src/evidenceReadModel.mjs, src/workGraphBacklogUiServer.mjs
-  work.title: Фаза 6: хронология свидетельств WorkItem
+  work.title: реализовать свидетельства timeline оператора view
 ]>
+

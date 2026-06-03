@@ -5,9 +5,16 @@
 Вектор:
   Lit components: GraphBlockNode, GraphIntentNode, GraphWorkNode — CSS из --cursor-* / intent-canvas-node.
   node-click → CustomEvent с nodeId, kind, taskId/intentId/blockId.
-  Selected / rejected / done states как в текущем canvas.
+  Selected / отказed / done states как в текущем canvas.
 Цель:
   Клик по карточке на lit-flow canvas открывает тот же drawer, что и сейчас.
+Проверки:
+  unit test на node template render
+  e2e или manual: click work node → task drawer
+Свидетельства:
+  protocols/graph-canvas-lit-flow-v1.bvc + schemas/graph-canvas-lit-flow-projection.v1.json
+  public/graph-canvas-lit-flow.js (lit-flow client island)
+  src/graphCanvasLitFlow/* + tests/graphCanvasLitFlow.test.mjs
 Анализ:
   Целесообразность:
   Стоит завести «реализовать custom Lit-узлы (карточки architecture / intent / work)» в бэклог — по материалам AN-4 (analytics:graph-visualization-engine).
@@ -25,14 +32,6 @@
   Вердикт:
   полезно
   Создана по материалам приёма AN-4 (analytics:graph-visualization-engine); исполнять после вердикта «полезно» и готовности зависимостей.
-Проверки:
-  unit test на node template render
-  e2e или manual: click work node → task drawer
-
-Свидетельства:
-  - protocols/graph-canvas-lit-flow-v1.bvc + schemas/graph-canvas-lit-flow-projection.v1.json
-  - public/graph-canvas-lit-flow.js (lit-flow client island)
-  - src/graphCanvasLitFlow/* + tests/graphCanvasLitFlow.test.mjs
 
 Метки:
   atom.profile: work_item
@@ -57,5 +56,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/graphCanvasLitFlow/nodes/, src/workGraphBacklogUiServer.mjs, src/style.css
-  work.title: реализовать custom Lit-узлы (карточки architecture / intent / work)
+  work.title: Клик по карточке на lit-flow canvas открывает тот же drawer, что и сейчас.
 ]>
+

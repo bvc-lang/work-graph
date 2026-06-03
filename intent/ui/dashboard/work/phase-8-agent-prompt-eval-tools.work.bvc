@@ -1,7 +1,7 @@
 #Задача_phase_8_agent_prompt_eval_tools<[
 Базис:
   Старый ioHasC agent layer содержит orchestrator, tools, prompt ops, prompt eval, Graph RAG и E2E matrix.
-  Задача «Фаза 8: agent runtime, prompt ops и eval» относится к контуру платформы агента и должна быть понятна агенту без чтения всего backlog.
+  Задача «Фаза 8: agent runtime, prompt ops и eval» относится к контуру платформы агента и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: phase-6-project-memory-evidence.
 Вектор:
   Перенести agent layer как tool/eval stack вокруг Work Graph live-loop: audit инструментов, role handoff, prompt eval, Graph RAG bundle и E2E-сценарии A14+.
@@ -45,6 +45,6 @@
   work.risk: high
   work.status: done
   work.target_files: protocols/workgraph-tool-surface-audit-v1.bvc, protocols/role-chain-handoff-v1.bvc, protocols/prompt-eval-workgraph-flows-v1.bvc, src/workGraphToolSurfaceAudit.mjs, tests/workGraphToolSurfaceAudit.test.mjs, work/backlog.bvc
-  work.title: Фаза 8: agent runtime, prompt ops и eval
+  work.title: Агентный слой становится проверяемым Work Graph executor, а не монолитным чатом.
 ]>
 

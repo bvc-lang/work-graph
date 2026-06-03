@@ -7,29 +7,11 @@
   Ссылка на ADR multilingual в basis или Метки.
 Цель:
   Charter — образец RU-файла с file-level pragma.
-Анализ:
-  Целесообразность:
-  Стоит завести «charter/main.bvc: #!bvc lang=ru (явный dialect файла)» в бэклог — по материалам AN-19 (analytics:bvc-multilingual-keys-design).
-  Контекст и границы:
-  Первая строка charter/main.bvc: #!bvc lang=ru.
-  Зависимости и готовность:
-  depends_on=adr-bvc-multilingual-keys; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Charter — образец RU-файла с file-level pragma.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-19 (analytics:bvc-multilingual-keys-design); исполнять после вердикта «полезно» и готовности зависимостей.
 Проверки:
   charter начинается с #!bvc lang=ru
   lint:backlog green
-
 Свидетельства:
-  - charter/main.bvc начинается с #!bvc lang=ru
+  charter/main.bvc начинается с #!bvc lang=ru
 
 Метки:
   atom.profile: work_item
@@ -54,5 +36,6 @@
   work.risk: low
   work.status: done
   work.target_files: charter/main.bvc, docs/adr-bvc-multilingual-keys.md
-  work.title: charter/main.bvc: #!bvc lang=ru (явный dialect файла)
+  work.title: Charter — образец RU-файла с file-level pragma.
 ]>
+

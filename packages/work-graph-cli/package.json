@@ -1,7 +1,7 @@
 {
   "name": "@work-graph/cli",
-  "version": "0.2.4",
-  "description": "Work Graph CLI — npm-first project setup, doctor, backlog UI",
+  "version": "0.2.5",
+  "description": "Work Graph CLI — install local agent work tracking, BVC work items and backlog UI in any project",
   "type": "module",
   "bin": {
     "work-graph": "bin/work-graph.mjs"
@@ -20,9 +20,9 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bvc-lang/work-graph.git",
-    "directory": "packages/work-graph-cli"
+    "url": "git+https://github.com/bvc-lang/work-graph-cli.git"
   },
+  "homepage": "https://github.com/bvc-lang/work-graph-cli#readme",
   "keywords": [
     "work-graph",
     "backlog",

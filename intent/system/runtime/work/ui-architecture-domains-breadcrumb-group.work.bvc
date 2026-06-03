@@ -9,6 +9,8 @@
 Проверки:
   UI smoke: grouped domain section visible
   workGraphBacklogUiServer tests при наличии
+Свидетельства:
+  cascade: reconcile epic epic-architecture-domains-l1-hierarchy already done
 Анализ:
   Целесообразность:
   Стоит завести «UI Architecture list: секция «Домены › {block title}»» в бэклог — по материалам AN-39 (work/analytics/architecture-domains-l1-hierarchy.md).
@@ -50,8 +52,6 @@
   work.risk: low
   work.status: done
   work.target_files: src/workGraphBacklogUiServer.mjs, tests/workGraphBacklogUiServer.test.mjs, work/analytics/architecture-domains-l1-hierarchy.md
-  work.title: UI Architecture list: секция «Домены › {block title}»
-
-Свидетельства:
-  - cascade: reconcile epic epic-architecture-domains-l1-hierarchy already done
+  work.title: Architecture list визуально отделяет прикладные домены от ядра.
 ]>
+

@@ -1,7 +1,7 @@
 #Задача_align_catalog_passport_with_intent_graph<[
 Базис:
   ioHasC catalog/passport существует как отдельный index; пересобрать должен выровнять его с intent graph и WorkItems.
-  Задача «связать catalog/passport с intent graph» относится к контуру платформы агента и должна быть понятна агенту без чтения всего backlog.
+  Задача «связать catalog/passport с intent graph» относится к контуру платформы агента и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: phase-3-step-canon-intent-graph.
 Вектор:
   Спроектировать, как catalog entries и step passports сопоставляются с intent ids, WorkItem target_files и trace refs.
@@ -9,23 +9,6 @@
 Цель:
   Step discovery и бэклог routing используют один consistent identity layer.
   Готово, когда выполнены проверки: связь passport id, intent id и work id определена.
-Анализ:
-  Целесообразность:
-  Стоит завести «связать catalog/passport с intent graph» в бэклог.
-  Контекст и границы:
-  Спроектировать, как catalog entries и step passports сопоставляются с intent ids, WorkItem target_files и trace refs.
-  Зависимости и готовность:
-  depends_on=phase-3-step-canon-intent-graph; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Step discovery и бэклог routing используют один consistent identity layer.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -46,6 +29,6 @@
   work.risk: medium
   work.status: done
   work.target_files: protocols/catalog-passport-intent-alignment.bvc, src/intentHierarchy.mjs, tests/intentHierarchy.test.mjs, work/backlog.bvc
-  work.title: связать catalog/passport с intent graph
+  work.title: Согласовать catalog passport с intent-графом
 ]>
 

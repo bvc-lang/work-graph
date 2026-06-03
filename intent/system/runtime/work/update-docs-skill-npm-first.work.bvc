@@ -12,6 +12,11 @@
   README начинается с npm init path
   Skill: одна команда init, без engineRoot
   engineRoot только в CONTRIBUTING
+Свидетельства:
+  README.md
+  docs/runbook-deploy-work-graph-on-project.md
+  skills/install-work-graph/SKILL.md
+  CONTRIBUTING.md
 Анализ:
   Зачем:
   README и install-work-graph skill сейчас учат clone + engineRoot.
@@ -24,12 +29,6 @@
   Вердикт:
   полезно
   Брать в работу после закрытия зависимостей: epic-work-graph-npm-first-distribution, refactor-init-npm-devdependencies.
-
-Свидетельства:
-  - README.md
-  - docs/runbook-deploy-work-graph-on-project.md
-  - skills/install-work-graph/SKILL.md
-  - CONTRIBUTING.md
 
 Метки:
   atom.profile: work_item
@@ -54,5 +53,6 @@
   work.risk: low
   work.status: done
   work.target_files: README.md, skills/install-work-graph/SKILL.md, docs/runbook-work-graph-per-project.md, CONTRIBUTING.md
-  work.title: Документация и skill: npx work-graph init, engineRoot только в CONTRIBUTING
+  work.title: Новичок не видит ручной clone в основной документации.
 ]>
+

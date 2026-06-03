@@ -7,6 +7,13 @@
   Discussions enabled для RFC.
 Цель:
   Публичный URL spec-репозитория зафиксирован в ADR и charter.
+Проверки:
+  GitHub repo доступен публично
+  README описывает BVC = Basis Vector Goal, extension .bvc
+Свидетельства:
+  GitHub org https://github.com/bvc-lang — создан 2026-05-31
+  https://github.com/bvc-lang/spec — transfer diflux/bvc-lang-spec + rename, 3 commits on main
+  10 files: README, LICENSE, dialects, schemas, spec/overview.md
 Анализ:
   Целесообразность:
   Стоит завести «создать GitHub org/repo bvc-lang (spec placeholder)» в бэклог — по материалам AN-18 (analytics:bvc-naming-branding-review).
@@ -24,15 +31,6 @@
   Вердикт:
   полезно
   Создана по материалам приёма AN-18 (analytics:bvc-naming-branding-review); исполнять после вердикта «полезно» и готовности зависимостей.
-Проверки:
-  GitHub repo доступен публично
-  README описывает BVC = Basis Vector Goal, extension .bvc
-
-Свидетельства:
-  - GitHub org https://github.com/bvc-lang — создан 2026-05-31
-  - https://github.com/bvc-lang/spec — transfer diflux/bvc-lang-spec + rename, 3 commits on main
-  - 10 files: README, LICENSE, dialects, schemas, spec/overview.md
-
 
 Метки:
   atom.profile: work_item
@@ -57,5 +55,6 @@
   work.risk: low
   work.status: done
   work.target_files: docs/adr-bvc-format-naming.md, charter/main.bvc
-  work.title: создать GitHub org/repo bvc-lang (spec placeholder)
+  work.title: Публичный URL spec-репозитория зафиксирован в ADR и charter.
 ]>
+

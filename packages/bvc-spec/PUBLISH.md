@@ -1,44 +1,72 @@
-# Publish @bvc-lang/spec and bvc-lang/spec (manual)
+# Publish @bvc-lang/spec and bvc-lang/spec
 
 npm org **`bvc`** занят → scope **`@bvc-lang/spec`** (org `bvc-lang` on npm).
 
-## 1. npm `@bvc-lang/spec@0.0.0`
+## 1. Prepare a patch release
+
+Update:
+
+- `package.json` version
+- `index.js` `BVC_SPEC_VERSION`
+- package docs (`README.md`, `spec/overview.md`) when public pages change
+- `tests/bvcSpecPackage.test.mjs` expected version in Work Graph source
+
+Run from the Work Graph repo root:
+
+```bash
+npm test -- tests/bvcConformance.test.mjs tests/bvcSpecPackage.test.mjs tests/bvcDualExtension.test.mjs
+```
+
+Then smoke the package:
 
 ```bash
 cd packages/bvc-spec
-npm pack          # smoke: tarball bvc-lang-spec-0.0.0.tgz
-npm login         # one-time, or granular token for org bvc-lang
+npm pack --dry-run
+```
+
+## 2. npm publish
+
+```bash
+npm whoami
 npm publish --access public
 npm view @bvc-lang/spec version
 ```
 
-Проверка из корня репо: `npm run pack:bvc-spec`
+## 3. GitHub `bvc-lang/spec`
 
-## 2. GitHub `bvc-lang/spec`
-
-1. Создать org **bvc-lang** (или user repo `bvc-lang/spec`).
-2. Экспорт bundle из Work Graph:
+Export the package mirror:
 
 ```bash
 npm run export:bvc-spec-github
 ```
 
-3. В новом repo:
+Copy or commit `dist/bvc-spec-github` into `github.com/bvc-lang/spec`, then push `main`.
 
 ```bash
-cd dist/bvc-spec-github
-git init
+git clone https://github.com/bvc-lang/spec.git ../bvc-lang-spec-publish
+# copy exported files into the clone
+cd ../bvc-lang-spec-publish
 git add .
-git commit -m "chore: initial @bvc/spec placeholder v0.0.0"
-git remote add origin git@github.com:bvc-lang/spec.git
-git push -u origin main
+git commit -m "chore: release @bvc-lang/spec vX.Y.Z"
+git push origin main
 ```
 
-4. Включить Discussions для RFC.
-5. Обновить `repository.url` в `package.json` если URL отличается.
+Create and push the tag:
 
-## 3. После публикации
+```bash
+git tag -a vX.Y.Z -m "@bvc-lang/spec vX.Y.Z"
+git push origin vX.Y.Z
+```
 
-- Закрыть work items: `reserve-bvc-spec-npm-package`, `reserve-bvc-github-org`
-- Отметить чеклисты в `docs/plan-step-to-bvc-migration.md` фаза 0
-- Обновить `docs/adr-bvc-format-naming.md` критерии v1
+Create a GitHub Release from that tag and mark it as **Latest**.
+
+## 4. Verify
+
+```bash
+npm view @bvc-lang/spec version
+```
+
+Check:
+
+- https://www.npmjs.com/package/@bvc-lang/spec
+- https://github.com/bvc-lang/spec/releases/latest

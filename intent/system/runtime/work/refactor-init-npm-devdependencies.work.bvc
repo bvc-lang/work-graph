@@ -12,6 +12,9 @@
 Проверки:
   Свежий проект после init имеет devDeps и scripts
   config.json не содержит engineRoot для новых install
+Свидетельства:
+  src/workGraphProjectInit.mjs config v2
+  devDependencies @work-graph/cli @work-graph/mcp
 Анализ:
   Зачем:
   workGraphProjectInit сейчас пишет engineRoot — это dev-first UX.
@@ -24,10 +27,6 @@
   Вердикт:
   полезно
   Брать в работу после закрытия зависимостей: epic-work-graph-npm-first-distribution, implement-engine-root-resolver-npm-first.
-
-Свидетельства:
-  - src/workGraphProjectInit.mjs config v2
-  - devDependencies @work-graph/cli @work-graph/mcp
 
 Метки:
   atom.profile: work_item
@@ -52,5 +51,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/workGraphProjectInit.mjs, packages/work-graph-cli/
-  work.title: init: devDependencies @work-graph/*, config v2 без engineRoot
+  work.title: Npx work-graph init . — полный onboarding без clone WG.
 ]>
+

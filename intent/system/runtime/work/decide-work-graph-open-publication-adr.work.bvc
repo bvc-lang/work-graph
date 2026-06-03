@@ -11,21 +11,8 @@
   ADR опубликован в docs/
   Таблица лицензий по слоям BVC / IR / PVRG / Work Graph / packs
   ADR ссылается на epic-work-graph-open-publication и AN-42
-Анализ:
-  Зачем:
-  AN-42 перечисляет варианты: Apache-2.0, MPL-2.0, BUSL, CC BY для specs — но без ADR команда будет спорить при каждом PR.
-  Контекст: Нужно зафиксировать: что открываем как стандарт, что остаётся commercial, почему не «прячем алгоритмы».
-  Когда:
-  После готовности: epic-work-graph-open-publication.
-  Готово, когда:
-  Стратегия публикации зафиксирована до разметки пакетов и публикации specs.
-Решение:
-  Вердикт:
-  полезно
-  Брать в работу после закрытия зависимостей: epic-work-graph-open-publication.
-
 Свидетельства:
-  - docs/adr-work-graph-open-publication.md
+  docs/adr-work-graph-open-publication.md
 
 Метки:
   atom.profile: work_item
@@ -50,5 +37,6 @@
   work.risk: low
   work.status: done
   work.target_files: work/analytics/open-publication-technology-holdback-strategy.md, docs/plan-work-graph-open-publication.md, docs/adr-work-graph-open-publication.md
-  work.title: ADR: стратегия публикации Work Graph — лицензии и open core
+  work.title: Стратегия публикации зафиксирована до разметки пакетов и публикации specs.
 ]>
+

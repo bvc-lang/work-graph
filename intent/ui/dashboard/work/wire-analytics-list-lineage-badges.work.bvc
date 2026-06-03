@@ -1,0 +1,52 @@
+#Задача_wire_analytics_list_lineage_badges<[
+Базис:
+  AN-51: список остаётся flat recency-first; badge `↳ AN-50` или «N продолжений».
+Вектор:
+  renderAnalyticsPanel: footerLeft badge from record.lineage / record.continuations.
+  Опционально filter «только корневые» — defer if scope tight.
+Цель:
+  В ленте видно, что запись — углубление или имеет детей, без tree collapse.
+Проверки:
+  List order unchanged (recency desc)
+  Badge visible for AN-50.1 when lineage seeded
+Свидетельства:
+  buildAnalyticsLineageListBadge in flat analytics list
+Анализ:
+  Зачем:
+  AN-51: список остаётся flat recency-first; badge `↳ AN-50` или «N продолжений».
+  Контекст: renderAnalyticsPanel: footerLeft badge from record.lineage / record.continuations.
+  Когда:
+  После готовности: implement-analytics-lineage-projection.
+  Готово, когда:
+  В ленте видно, что запись — углубление или имеет детей, без tree collapse.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: implement-analytics-lineage-projection.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-51
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/analytics-record-lineage-flat-list-graph-storage.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-02T15:02:00.025Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-02T15:02:00.025Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: implement-analytics-lineage-projection
+  work.id: wire-analytics-list-lineage-badges
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: feature_engineer
+  work.parent_id: epic-analytics-record-lineage-v1
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: src/workGraphBacklogUiServer.mjs
+  work.title: В ленте видно, что запись — углубление или имеет детей, без tree collapse.
+]>
+

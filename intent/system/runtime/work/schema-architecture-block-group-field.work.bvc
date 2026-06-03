@@ -9,9 +9,11 @@
 Проверки:
   schema validates blocks with group
   buildArchitectureSnapshot includes group on domain blocks
+Свидетельства:
+  cascade: reconcile epic epic-architecture-domains-l1-hierarchy already done
 Анализ:
   Целесообразность:
-  Стоит завести «Schema snapshot: optional group field on L1 blocks» в бэклог — по материалам AN-39 (work/analytics/architecture-domains-l1-hierarchy.md).
+  Стоит завести «Schema snapshot: опционально group field on L1 blocks» в бэклог — по материалам AN-39 (work/analytics/architecture-domains-l1-hierarchy.md).
   Контекст и границы:
   schemas/architecture-snapshot.v1.json: blocks[].group
   Зависимости и готовность:
@@ -50,8 +52,6 @@
   work.risk: low
   work.status: done
   work.target_files: schemas/architecture-snapshot.v1.json, src/architectureL1Canon.mjs, src/architectureSnapshot.mjs, work/analytics/architecture-domains-l1-hierarchy.md
-  work.title: Schema snapshot: optional group field on L1 blocks
-
-Свидетельства:
-  - cascade: reconcile epic epic-architecture-domains-l1-hierarchy already done
+  work.title: Snapshot экспортирует architecture.group для consumers.
 ]>
+

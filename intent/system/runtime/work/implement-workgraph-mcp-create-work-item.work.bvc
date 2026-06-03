@@ -1,8 +1,8 @@
 #Задача_implement_workgraph_mcp_create_work_item<[
 Базис:
   WorkGraph MCP умел читать и менять статусы, но создание задач требовало ручной правки intent/**/*.work.bvc.
-  Задача «реализовать MCP tool create_work_item» относится к контуру платформы агента и должна быть понятна агенту без чтения всего backlog.
-  Предварительно должны быть закрыты зависимости: implement-workgraph-mcp-server-mvp.
+  Задача «реализовать MCP tool create_work_item» относится к контуру платформы агента и должна быть понятна агенту без чтения всего бэклог.
+  Предварительно должны быть закрыты зависимости: реализовать MVP MCP-сервера Work Graph.
 Вектор:
   Добавить create_work_item MCP tool поверх appendWorkItemAtomToIntentTree + formatStepAtomDraft.
   Ближайший шаг исполнения: просмотреть и перевести в ready.
@@ -15,7 +15,7 @@
   Контекст и границы:
   Добавить create_work_item MCP tool поверх appendWorkItemAtomToIntentTree + formatStepAtomDraft.
   Зависимости и готовность:
-  depends_on=implement-workgraph-mcp-server-mvp; старт после закрытия upstream-зависимостей.
+  depends_on=реализовать MVP MCP-сервера Work Graph; старт после закрытия upstream-зависимостей.
   Риски и альтернативы:
   Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
   Критерии успеха:
@@ -45,6 +45,6 @@
   work.risk: medium
   work.status: done
   work.target_files: packages/workgraph-mcp/src/handlers.mjs, packages/workgraph-mcp/src/index.mjs, tests/workgraph-mcp.test.mjs, docs/workgraph-mcp-client-strategy.md
-  work.title: реализовать MCP tool create_work_item
+  work.title: В Cursor может заводить бэклог atoms без ручного редактирования index.
 ]>
 

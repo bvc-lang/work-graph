@@ -44,6 +44,6 @@
   work.risk: low
   work.status: done
   work.target_files: src/memoryWorkerSlice.mjs, src/agentWorkerLocalRunner.mjs, src/agentWorkerOpenAiProvider.mjs, tests/memoryWorkerSlice.test.mjs, tests/graphRagContextSlice.test.mjs, work/backlog.bvc
-  work.title: реализовать memory-record worker slice MVP
+  work.title: реализовать memory записи worker slice MVP
 ]>
 

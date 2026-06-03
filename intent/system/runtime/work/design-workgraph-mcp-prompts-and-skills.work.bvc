@@ -8,23 +8,6 @@
   Добавить ограничения: не переводить в done без evidence; не менять чужие target_files без явного согласия; destructive actions require confirmation.
 Цель:
   Cursor/Claude используют WorkGraph не как сырой API, а как понятный SCRUM/WorkItem workflow.
-Анализ:
-  Целесообразность:
-  Стоит завести «описать prompts/skills для WorkGraph MCP workflow» в бэклог.
-  Контекст и границы:
-  Спроектировать MCP prompts или задокументировано prompt recipes: take_next_work_item, create_work_item, add_evidence, close_work_item, show_blockers, summarize_current_cycle.
-  Зависимости и готовность:
-  depends_on=implement-workgraph-mcp-server-mvp; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Cursor/Claude используют WorkGraph не как сырой API, а как понятный SCRUM/WorkItem workflow.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -45,6 +28,6 @@
   work.risk: medium
   work.status: done
   work.target_files: docs/workgraph-mcp-prompts.md, packages/workgraph-mcp/src/prompts.mjs, packages/workgraph-mcp/src/index.mjs
-  work.title: описать prompts/skills для WorkGraph MCP workflow
+  work.title: Cursor/Claude используют WorkGraph не как сырой API, а как понятный SCRUM/WorkItem workflow.
 ]>
 

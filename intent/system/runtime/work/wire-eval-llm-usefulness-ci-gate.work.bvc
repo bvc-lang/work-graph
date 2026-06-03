@@ -1,7 +1,7 @@
 #Задача_wire_eval_llm_usefulness_ci_gate<[
 Базис:
   Harness eval:llm-usefulness реализован, но ci:mandatory пока не вызывает scorecard; run-mandatory-prompt-eval-fixtures ещё open.
-  Задача «подключить eval:llm-usefulness к ci:mandatory» относится к контуру платформы агента и должна быть понятна агенту без чтения всего backlog.
+  Задача «подключить eval:llm-usefulness к ci:mandatory» относится к контуру платформы агента и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: run-mandatory-prompt-eval-fixtures.
 Вектор:
   Добавить npm run eval:llm-usefulness в ci:mandatory после test:deterministic; зафиксировать evidence и закрыть run-mandatory-prompt-eval-fixtures.
@@ -45,6 +45,6 @@
   work.risk: medium
   work.status: done
   work.target_files: package.json, src/workGraphLlmUsefulnessEval.mjs, scripts/run-mandatory-prompt-eval-fixtures.mjs, docs/plan-workgraph-llm-usefulness.md
-  work.title: подключить eval:llm-usefulness к ci:mandatory
+  work.title: подключить eval LLM полезности ci gate
 ]>
 

@@ -1,0 +1,53 @@
+#Задача_add_schema_org_jsonld_and_semantic_html<[
+Базис:
+  AN-63: semantic HTML + JSON-LD improve agent extraction and search engines.
+Вектор:
+  Add JSON-LD for home, docs, BVC spec, MCP tools.
+  Ensure h1/h2 hierarchy and article/section/nav landmarks.
+  Add alt/aria-labels for diagrams and nav.
+Цель:
+  Сайт извлекается агентами и валидируется как structured docs/software content.
+Проверки:
+  HTML contains application/ld+json
+  route tests assert h1 and landmarks
+Анализ:
+  Зачем:
+  AN-63: semantic HTML + JSON-LD improve agent extraction and search engines.
+  Контекст: Add JSON-LD for home, docs, BVC spec, MCP tools.
+  Когда:
+  После готовности: implement-public-site-static-shell.
+  Готово, когда:
+  Сайт извлекается агентами и валидируется как structured docs/software content.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: implement-public-site-static-shell.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-64
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-public-site-competitive-tz.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-02T22:20:53.102Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-02T22:20:53.102Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: implement-public-site-static-shell
+  work.id: add-schema-org-jsonld-and-semantic-html
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.parent_id: epic-work-graph-public-site-v1
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: src/publicSiteServer.mjs, src/publicSiteContent.mjs, tests/publicSite.test.mjs
+  work.title: Site: Schema.org JSON-LD and semantic HTML pass
+
+Свидетельства:
+  - Implemented public site v1 in src/publicSiteContent.mjs + src/publicSiteServer.mjs; verified by node --test tests/publicSite.test.mjs tests/workGraphBacklogUiServer.test.mjs (22/22 pass).
+]>

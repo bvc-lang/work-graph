@@ -1,0 +1,52 @@
+#Задача_wire_sidebar_nav_icons<[
+Базис:
+  Nav tabs — только текст; оператор просит визуальные маркеры разделов.
+Вектор:
+  renderNavTab/renderSettingsNavTab — labelHtml с nav-tab-icon + nav-tab-label.
+  CSS flex gap; selected state наследует color на stroke currentColor.
+Цель:
+  Каждый пункт sidebar показывает иконку слева от подписи.
+Проверки:
+  HTML contains nav-tab-icon
+  All 8 nav views mapped
+Анализ:
+  Зачем:
+  Nav tabs — только текст; оператор просит визуальные маркеры разделов.
+  Контекст: renderNavTab/renderSettingsNavTab — labelHtml с nav-tab-icon + nav-tab-label.
+  Когда:
+  После готовности: epic-work-graph-ui-icons-v1, wire-icon-asset-pipeline.
+  Готово, когда:
+  Каждый пункт sidebar показывает иконку слева от подписи.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: epic-work-graph-ui-icons-v1, wire-icon-asset-pipeline.
+
+Свидетельства:
+  - renderNavTab labelHtml with nav-tab-icon for all sidebar views
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-56
+  intake.source_kind: operator-request
+  intake.source_ref: public/assets/icons
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-02T19:00:56.687Z
+  work.analysis.source: operator-request
+  work.decision.at: 2026-06-02T19:00:56.687Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: epic-work-graph-ui-icons-v1, wire-icon-asset-pipeline
+  work.id: wire-sidebar-nav-icons
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: feature_engineer
+  work.parent_id: epic-work-graph-ui-icons-v1
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: low
+  work.status: done
+  work.target_files: src/ui/backlogShellButtons.mjs, src/ui/iconAssets.mjs, src/workGraphBacklogUiServer.mjs, tests/workGraphBacklogUiServer.test.mjs
+  work.title: UI: иконки в пунктах sidebar nav
+]>

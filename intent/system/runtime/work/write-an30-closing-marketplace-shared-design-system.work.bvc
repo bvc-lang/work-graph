@@ -4,15 +4,17 @@
   AN-21 §8 metrics — baseline vs achieved.
 Вектор:
   work/analytics/closing-epic-marketplace-shared-design-system.md + journal AN-30.
-  Outcomes: tokens unified, WG atomified, marketplace backlog in WG.
+  Outcomes: tokens unified, WG atomified, marketplace бэклог in WG.
 Цель:
   Эпик закрыт с метриками и уроками DS integration.
 Проверки:
   analytics-records.jsonl содержит AN-30
   epic-marketplace-shared-design-system closed с evidence
+Свидетельства:
+  work/analytics/closing-epic-marketplace-shared-design-system.md + AN-30 in analytics-records.jsonl
 Анализ:
   Целесообразность:
-  Стоит завести «AN-30 closing analysis: epic-marketplace-shared-design-system» в бэклог — по материалам AN-21 (work/analytics/marketplace-integration-and-shared-design-system.md).
+  Стоит завести «AN-30 итоговый разбор: epic-marketplace-shared-design-system» в бэклог — по материалам AN-21 (work/analytics/marketplace-integration-and-shared-design-system.md).
   Контекст и границы:
   work/analytics/closing-epic-marketplace-shared-design-system.md + journal AN-30.
   Зависимости и готовность:
@@ -51,8 +53,6 @@
   work.risk: low
   work.status: done
   work.target_files: work/analytics/closing-epic-marketplace-shared-design-system.md, work/analytics-records.jsonl
-  work.title: AN-30 closing analysis: epic-marketplace-shared-design-system
-
-Свидетельства:
-  - work/analytics/closing-epic-marketplace-shared-design-system.md + AN-30 in analytics-records.jsonl
+  work.title: закрытие: an30 закрытие Marketplace общая дизайна системы
 ]>
+

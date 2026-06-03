@@ -47,6 +47,6 @@
   work.risk: high
   work.status: done
   work.target_files: domains/onebase/workflows/change-posting-rule.bvc
-  work.title: спроектировать сценарий изменения posting rule OneBase
+  work.title: Получает чёткую доменную задачу с проверяемым результатом.
 ]>
 

@@ -1,7 +1,7 @@
 #Задача_implement_workgraph_minimal_runtime<[
 Базис:
   Work Graph должен быть инструментом агента, а не ручной доской.
-  Задача «реализовать минимальный runtime Work Graph» относится к контуру платформы агента и должна быть понятна агенту без чтения всего backlog.
+  Задача «реализовать минимальный runtime Work Graph» относится к контуру платформы агента и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: implement-step-atom-formatter.
 Вектор:
   Описать минимальные операции: upsert, claimNext, recordEvidence, transitionStatus.
@@ -47,6 +47,6 @@
   work.risk: high
   work.status: done
   work.target_files: src/workGraphRuntime.mjs, tests/workGraphRuntime.test.mjs, work/backlog.bvc, plans/rebuild-start-plan.bvc
-  work.title: реализовать минимальный runtime Work Graph
+  work.title: Может вести задачу от ready до verify/done без ручной правки файла.
 ]>
 

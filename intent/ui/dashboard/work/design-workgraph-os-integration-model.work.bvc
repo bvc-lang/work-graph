@@ -8,23 +8,6 @@
   Определить минимальный OS snapshot для dashboard оператора: current task, runner state, evidence summary, memory updates и next actions.
 Цель:
   Сохранить Work Graph как операционную систему проекта, а не как очередной task queue или notes vault.
-Анализ:
-  Целесообразность:
-  Стоит завести «спроектировать Work Graph как операционную систему проекта» в бэклог.
-  Контекст и границы:
-  Описать loop: WorkItem -> worker claim/run -> Worker Output -> Evidence Record -> Memory extraction -> next task/status/UI snapshot.
-  Зависимости и готовность:
-  depends_on=analyze-claude-note-memory-extractor-reference, analyze-promptpilot-task-runner-reference, design-agent-worker-adapter, design-evidence-model-v1, design-operator-dashboard-snapshot, design-project-memory-v1; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Сохранить Work Graph как операционную систему проекта, а не как очередной task queue или notes vault.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -45,6 +28,6 @@
   work.risk: high
   work.status: done
   work.target_files: protocols/workgraph-os-integration-model.bvc, protocols/agent-worker-adapter.bvc, protocols/evidence-model-v1.bvc, protocols/project-memory-v1.bvc, protocols/pvrg-graph-rag-minimal.bvc, ui/operator-dashboard-snapshot.bvc, work/backlog.bvc
-  work.title: спроектировать Work Graph как операционную систему проекта
+  work.title: Сохранить Work Graph как операционную систему проекта, а не как очередной task queue или notes vault.
 ]>
 

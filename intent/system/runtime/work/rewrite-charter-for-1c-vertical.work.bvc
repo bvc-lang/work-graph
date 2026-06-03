@@ -9,6 +9,13 @@
   Прежний charter сохранить в charter/legacy/main-pre-an7.bvc как след решения.
 Цель:
   Charter снова работает как компас: новый код можно сверить со scope.
+Проверки:
+  charter/main.bvc ссылается на AN-7 как обоснование
+  все блоки переписаны (Базис/Вектор/Цель/Метки/Критерии_готовности/Анти_Цели)
+  legacy charter сохранён
+Свидетельства:
+  charter/main.bvc updated post-AN-7
+  charter/legacy/main-pre-an7.bvc preserved
 Анализ:
   Целесообразность:
   Стоит завести «переписать charter/main.bvc под 1С/OneBase vertical» в бэклог — по материалам AN-7 (analytics:product-self-audit-user).
@@ -26,14 +33,6 @@
   Вердикт:
   полезно
   Создана по материалам приёма AN-7 (analytics:product-self-audit-user); исполнять после вердикта «полезно» и готовности зависимостей.
-Проверки:
-  charter/main.bvc ссылается на AN-7 как обоснование
-  все блоки переписаны (Базис/Вектор/Цель/Метки/Критерии_готовности/Анти_Цели)
-  legacy charter сохранён
-
-Свидетельства:
-  - charter/main.bvc updated post-AN-7
-  - charter/legacy/main-pre-an7.bvc preserved
 
 Метки:
   atom.profile: work_item
@@ -58,5 +57,6 @@
   work.risk: medium
   work.status: done
   work.target_files: charter/main.bvc, charter/legacy/main-pre-an7.bvc
-  work.title: переписать charter/main.bvc под 1С/OneBase vertical
+  work.title: Charter снова работает как компас: новый код можно сверить со scope.
 ]>
+

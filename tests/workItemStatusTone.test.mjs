@@ -12,8 +12,10 @@ describe('workItemStatusTone', () => {
 
   it('maps statuses to badge tones', () => {
     assert.equal(statusToBadgeTone('ready'), 'accent');
+    assert.equal(statusToBadgeTone('doing'), 'warning');
     assert.equal(statusToBadgeTone('blocked'), 'danger');
     assert.equal(statusToBadgeTone('done'), 'ok');
+    assert.equal(statusToBadgeTone('verify'), 'muted');
     assert.equal(statusToBadgeTone('backlog', 'planned'), 'accent');
   });
 });

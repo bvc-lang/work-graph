@@ -51,6 +51,14 @@ import {
   attachUiReference,
   listUiReferences,
 } from '../../../src/workItemUiReferences.mjs';
+import { buildWorkItemContractV1 } from '../../../src/workItemContractProjection.mjs';
+import {
+  evaluateWorkItemReadyForDone,
+  validateEvidenceForContract,
+} from '../../../src/workItemReadyForDone.mjs';
+import { prepareWorkItemEvidenceAppend } from '../../../src/structuredEvidenceV1.mjs';
+import { buildAnalyticsPanelProjection } from '../../../src/analyticsPanelProjection.mjs';
+import { findAnalyticsRecordByKeyOrId } from '../../../src/analyticsLineageProjection.mjs';
 
 const DONE_STATUSES = new Set(['done', 'verified']);
 
@@ -390,13 +398,23 @@ export async function updateWorkItemStatus(args = {}, options = {}) {
 
 export async function addWorkItemEvidence(args = {}, options = {}) {
   const workId = requireWorkId(args);
-  const evidence = String(args.evidence ?? '').trim();
-  if (!evidence) {
-    throw new Error('evidence is required');
-  }
   const items = await readItems(options);
   const item = findItem(items, workId);
-  const updated = recordEvidence(item, evidence);
+  const prepared = prepareWorkItemEvidenceAppend(item, args, { allItems: items });
+
+  if (!prepared.ok) {
+    return {
+      ok: false,
+      workId,
+      ...prepared,
+    };
+  }
+
+  let updated = item;
+  for (const line of prepared.lines) {
+    updated = recordEvidence(updated, line);
+  }
+
   const persisted = await persistWorkItemUpdateToRepo({
     cwd: resolveRoot(options),
     item: updated,
@@ -405,6 +423,7 @@ export async function addWorkItemEvidence(args = {}, options = {}) {
     ok: true,
     workId,
     evidenceCount: updated.evidence.length,
+    structured: prepared.structured === true,
     path: persisted.path,
   };
 }
@@ -461,14 +480,75 @@ export async function claimWorkItem(args = {}, options = {}) {
   };
 }
 
+export async function getWorkContract(args = {}, options = {}) {
+  const workId = requireWorkId(args);
+  const items = await readItems(options);
+  const item = findItem(items, workId);
+  return buildWorkItemContractV1(item, { allItems: items, source: 'workgraph-mcp' });
+}
+
+export async function assertTaskReadyForDone(args = {}, options = {}) {
+  const workId = requireWorkId(args);
+  const items = await readItems(options);
+  const item = findItem(items, workId);
+  return evaluateWorkItemReadyForDone(item, { allItems: items, targetStatus: 'done' });
+}
+
+export async function validateEvidence(args = {}, options = {}) {
+  const workId = requireWorkId(args);
+  const items = await readItems(options);
+  const item = findItem(items, workId);
+  const contract = buildWorkItemContractV1(item, { allItems: items });
+
+  let evidenceJson = args.evidenceJson ?? args.evidence_json ?? args.evidence;
+  if (typeof evidenceJson === 'string') {
+    evidenceJson = JSON.parse(evidenceJson);
+  }
+
+  const result = validateEvidenceForContract(evidenceJson, contract, workId);
+  return {
+    schema: 'work-item-evidence-validation.v1',
+    workId,
+    contractSchema: contract.schema,
+    ...result,
+  };
+}
+
 export async function completeWorkItem(args = {}, options = {}) {
   const workId = requireWorkId(args);
   const evidence = String(args.evidence ?? '').trim();
   if (!evidence) {
-    throw new Error('evidence is required to complete a WorkItem');
+    return {
+      ok: false,
+      schema: 'work-item-ready-for-done.v1',
+      workId,
+      violations: [{
+        code: 'missing_evidence',
+        severity: 'error',
+        message: 'evidence is required to complete a WorkItem',
+        fix: 'add_work_item_evidence with command output',
+      }],
+      suggestedCommands: [],
+    };
   }
+
   const items = await readItems(options);
   const item = findItem(items, workId);
+  const evaluation = evaluateWorkItemReadyForDone(item, {
+    allItems: items,
+    pendingEvidence: evidence,
+    targetStatus: 'done',
+  });
+
+  if (!evaluation.ok) {
+    return {
+      ok: false,
+      workId,
+      previousStatus: item.status,
+      ...evaluation,
+    };
+  }
+
   const updated = transitionWorkItemWithEpicCascade(items, item, 'done', { evidence });
   const persisted = await persistWorkItemUpdatesToRepo(updated.updatedItems, {
     cwd: resolveRoot(options),
@@ -482,6 +562,26 @@ export async function completeWorkItem(args = {}, options = {}) {
     cascadedChildIds: updated.cascadedChildIds,
     paths: persisted.map((entry) => entry.path),
     path: persisted.find((entry) => entry.workId === workId)?.path ?? persisted.at(-1)?.path,
+    readiness: evaluation,
+  };
+}
+
+export async function getAnalyticsLineage(args = {}, options = {}) {
+  const recordKey = normalizeOptional(args.recordKey ?? args.key);
+  const recordId = normalizeOptional(args.recordId ?? args.id);
+  if (!recordKey && !recordId) {
+    throw new Error('recordKey or recordId is required');
+  }
+
+  const projection = await buildAnalyticsPanelProjection({ cwd: resolveRoot(options) });
+  const record = findAnalyticsRecordByKeyOrId(projection.records, { recordKey, recordId });
+  if (!record) {
+    throw new Error(`Analytics record not found: ${recordKey || recordId}`);
+  }
+
+  return {
+    ...record.analyticsLineage,
+    relatedWorkItems: record.relatedWorkItems ?? [],
   };
 }
 
@@ -517,6 +617,10 @@ export async function readWorkGraphResource(uri, options = {}) {
   const epicScopeMatch = value.match(/^workgraph:\/\/epic\/(.+)\/scope$/u);
   if (epicScopeMatch) {
     return getEpicWorkScope({ epicId: decodeURIComponent(epicScopeMatch[1]) }, options);
+  }
+  const contractMatch = value.match(/^workgraph:\/\/contract\/(.+)$/u);
+  if (contractMatch) {
+    return getWorkContract({ workId: decodeURIComponent(contractMatch[1]) }, options);
   }
   const scopeMatch = value.match(/^workgraph:\/\/pvrg\/scope\/(.+)$/u);
   if (scopeMatch) {

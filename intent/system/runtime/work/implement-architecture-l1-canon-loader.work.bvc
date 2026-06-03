@@ -3,29 +3,12 @@
   Runtime должен читать canon, не дублировать массив в JS.
 Вектор:
   src/architectureL1Canon.mjs: parse BVC blocks, edges, digest.
-  Export typed canon model for buildArchitectureSnapshot.
+  Экспорт typed canon model for buildArchitectureSnapshot.
 Цель:
   Единая точка загрузки L1 для snapshot builder и CLI.
 Проверки:
   loader returns blocks + edges + canon metadata
   unit tests on fixture architecture/main.bvc
-Анализ:
-  Целесообразность:
-  Стоит завести «Implement loadArchitectureL1Canon() from architecture/main.bvc» в бэклог — по материалам AN-36 (work/analytics/architecture-main-bvc-canon-hub.md).
-  Контекст и границы:
-  src/architectureL1Canon.mjs: parse BVC blocks, edges, digest.
-  Зависимости и готовность:
-  depends_on=epic-architecture-main-bvc-canon, author-architecture-main-bvc-v1; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Единая точка загрузки L1 для snapshot builder и CLI.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-36 (work/analytics/architecture-main-bvc-canon-hub.md); исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -50,5 +33,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/architectureL1Canon.mjs, architecture/main.bvc, tests/architectureL1Canon.test.mjs, work/analytics/architecture-main-bvc-canon-hub.md
-  work.title: Implement loadArchitectureL1Canon() from architecture/main.bvc
+  work.title: реализовать архитектуры l1 канон loader
 ]>
+

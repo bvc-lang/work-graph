@@ -52,6 +52,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/workGraphBacklogUiServer.mjs, src/agentRunApi.mjs, tests/workGraphBacklogUiServer.test.mjs, work/backlog.bvc
-  work.title: переделать экран «Агент» в chat-first SCRUM flow
+  work.title: Экран «Агент» становится основным LLM-чатом продукта, связанным с backlog/SCRUM flow и агентным исполнением…
 ]>
 

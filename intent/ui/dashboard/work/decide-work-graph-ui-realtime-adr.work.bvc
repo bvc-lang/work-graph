@@ -1,0 +1,41 @@
+#Задача_decide_work_graph_ui_realtime_adr<[
+Базис:
+  AN-56 §3–4: ETag revision, view-scoped poll, incremental DOM; WS deferred.
+  Align intervals with AN-20 mission control RAM policy.
+Вектор:
+  docs/adr-work-graph-ui-realtime-v1.md — transport, intervals, anti-goals (TodoWrite).
+  Fallback: full render when patch fails.
+Цель:
+  Single задокументировано pattern for all live UI surfaces.
+Проверки:
+  ADR published
+  Linked from plan AN-56
+Свидетельства:
+  docs/adr-work-graph-ui-realtime-v1.md accepted; npm run test:deterministic — 742 tests
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-56
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-ui-realtime-updates-best-practices.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-02T16:41:23.550Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-02T16:41:23.550Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: epic-work-graph-ui-realtime-v1
+  work.id: decide-work-graph-ui-realtime-adr
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.parent_id: epic-work-graph-ui-realtime-v1
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: low
+  work.status: done
+  work.target_files: work/analytics/work-graph-ui-realtime-updates-best-practices.md, docs/plan-work-graph-ui-realtime-v1.md, docs/adr-work-graph-ui-realtime-v1.md
+  work.title: ADR: UI realtime — revision poll, kanban patch, SSE optional
+]>
+

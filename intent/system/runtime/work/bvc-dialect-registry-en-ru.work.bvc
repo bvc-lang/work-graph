@@ -1,6 +1,6 @@
 #Задача_bvc_dialect_registry_en_ru<[
 Базис:
-  Источник: analytics:bvc-multilingual-keys-design §6 — registry в bvc-lang/dialects; pilot в репо.
+  Источник: analytics:bvc-multilingual-keys-design §6 — registry в bvc-lang/dialects; пилот в репо.
   Контракт: уникальные localized keys; profile/label keys всегда EN.
 Вектор:
   Создать packages/bvc-dialects/en.json (canonical) и ru.json.
@@ -8,31 +8,13 @@
   README: PR-based расширение dialects; link ADR.
 Цель:
   Парсер и linter могут загрузить registry без hardcode RU keywords.
-Анализ:
-  Целесообразность:
-  Стоит завести «dialect registry: en.json + ru.json (Basis/Vector/Goal/Labels)» в бэклог — по материалам AN-19 (analytics:bvc-multilingual-keys-design).
-  Контекст и границы:
-  Создать packages/bvc-dialects/en.json (canonical) и ru.json.
-  Зависимости и готовность:
-  depends_on=adr-bvc-multilingual-keys; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Парсер и linter могут загрузить registry без hardcode RU keywords.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-19 (analytics:bvc-multilingual-keys-design); исполнять после вердикта «полезно» и готовности зависимостей.
 Проверки:
   en.json и ru.json валидны
   ru покрывает все 4 обязательных BVC-ключа
   npm run lint:backlog green
-
 Свидетельства:
-  - packages/bvc-dialects/en.json + ru.json + README.md
-  - ru покрывает Basis/Vector/Goal/Labels
+  packages/bvc-dialects/en.json + ru.json + README.md
+  ru покрывает Basis/Vector/Goal/Labels
 
 Метки:
   atom.profile: work_item
@@ -57,5 +39,6 @@
   work.risk: low
   work.status: done
   work.target_files: packages/bvc-dialects/en.json, packages/bvc-dialects/ru.json, docs/adr-bvc-multilingual-keys.md
-  work.title: dialect registry: en.json + ru.json (Basis/Vector/Goal/Labels)
+  work.title: BVC: реестр dialect EN + RU
 ]>
+

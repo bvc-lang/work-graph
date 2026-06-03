@@ -1,0 +1,57 @@
+#Задача_wire_analytics_related_task_sub_drawer<[
+Базис:
+  В drawer разбора (Аналитика) клик по «Задачи из разбора» вызывает openTaskDetails в L1 drawer — контент разбора заменяется задачей.
+  В Architecture клик по карточке структуры (L2) открывает #detail-sub-drawer поверх L1 (#detail-sub-overlay + openL2SubDrawer) — контекст блока сохраняется.
+  Оператор теряет контекст аналитического разбора при просмотре связанной work item.
+Вектор:
+  handleTaskCardClick: для .analytics-related-task-btn из #detail-body открывать задачу в sub-drawer, не в L1.
+  Reuse openL2SubDrawer / #detail-sub-drawer: openAnalyticsRelatedTaskSubDrawer(item, analyticsRecord) с back «← AN-n».
+  renderTaskDetailContent в detailSubBody; закрытие sub возвращает к openAnalyticsRecordDetails без закрытия L1.
+  Не регрессить Architecture L2 и block→task navigation; tests/workGraphBacklogUiServer.test.mjs smoke.
+Цель:
+  Оператор читает разбор и открывает связанную задачу поверх drawer аналитики, как L2 в Architecture.
+Проверки:
+  Клик related task из analytics drawer открывает #detail-sub-drawer
+  L1 analytics drawer остаётся открытым под overlay
+  Back/close sub-drawer возвращает к тому же AN-разбору
+  Architecture L2 node drill-down без регрессии
+Свидетельства:
+  openAnalyticsRelatedTaskSubDrawer: related task opens in #detail-sub-drawer
+  L1 analytics drawer preserved; back closes sub-drawer only
+  tests/workGraphBacklogUiServer.test.mjs smoke
+Анализ:
+  Зачем:
+  UX-запрос оператора: не заменять drawer разбора при просмотре задачи.
+  Контекст:
+  Паттерн уже есть: openL2NodeDetails + detail-sub-drawer в Architecture.
+  handleTaskCardClick (analytics-related-task-btn) сейчас: fromDrawer → openTaskDetails в L1.
+  Готово, когда:
+  Задача из «Задачи из разбора» открывается в sub-drawer поверх analytics L1.
+Решение:
+  Вердикт:
+  полезно
+  Operational UX fix; исполнять после wire-analytics-drawer-lineage-sections (done).
+
+Метки:
+  atom.profile: work_item
+  intake.source_kind: operator-request
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-02T15:43:44.455Z
+  work.analysis.source: operator-request
+  work.decision.at: 2026-06-02T15:43:44.455Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: wire-analytics-drawer-lineage-sections
+  work.id: wire-analytics-related-task-sub-drawer
+  work.intake.bypass: operational
+  work.next_action: —
+  work.owner_role: feature_engineer
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: src/workGraphBacklogUiServer.mjs, tests/workGraphBacklogUiServer.test.mjs
+  work.title: Оператор читает разбор и открывает связанную задачу поверх drawer аналитики, как L2 в Architecture.
+]>
+

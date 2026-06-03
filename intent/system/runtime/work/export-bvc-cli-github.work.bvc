@@ -9,27 +9,9 @@
 Проверки:
   https://github.com/bvc-lang/cli
   package.json repository.url совпадает
-Анализ:
-  Целесообразность:
-  Стоит завести «экспорт и публикация github.com/bvc-lang/cli» в бэклог — по материалам plan: docs/plan-step-to-bvc-migration.md.
-  Контекст и границы:
-  scripts/export-bvc-cli-github.mjs → dist/bvc-cli-github.
-  Зависимости и готовность:
-  depends_on=bvc-tooling-external, publish-bvc-lang-cli-npm; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Публичный репозиторий bvc-lang/cli с тегом v0.1.0.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма plan: docs/plan-step-to-bvc-migration.md; исполнять после вердикта «полезно» и готовности зависимостей.
-
 Свидетельства:
-  - https://github.com/bvc-lang/cli — main + tag v0.1.3
-  - scripts/export-bvc-cli-github.mjs → dist/bvc-cli-github; git push 2026-05-31
+  https://github.com/bvc-lang/cli — main + tag v0.1.3
+  scripts/export-bvc-cli-github.mjs → dist/bvc-cli-github; git push 2026-05-31
 
 Метки:
   atom.profile: work_item
@@ -53,5 +35,6 @@
   work.risk: low
   work.status: done
   work.target_files: scripts/export-bvc-cli-github.mjs, packages/bvc-cli/README.md
-  work.title: экспорт и публикация github.com/bvc-lang/cli
+  work.title: Публичный репозиторий bvc-lang/cli с тегом v0.1.0.
 ]>
+

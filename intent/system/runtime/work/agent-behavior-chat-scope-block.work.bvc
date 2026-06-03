@@ -11,23 +11,12 @@
 Проверки:
   rules/agent-behavior/chat-work-scope-readonly.bvc существует
   npm run audit:agent-behavior-rules green
-Анализ:
-  Целесообразность:
-  Стоит завести «agent-behavior: chat-work-scope-readonly step (Scope block)» в бэклог — по материалам AN-28 (work/analytics/chat-work-graph-todo-sync.md).
-  Контекст и границы:
-  rules/agent-behavior/chat-work-scope-readonly.bvc — prompt_rule в bundle.
-  Зависимости и готовность:
-  depends_on=epic-chat-work-scope-readonly, mcp-epic-rollup-scope-resource; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Cursor-агент показывает scope из WG в тексте ответа; оператор видит реальные work.id.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-28 (work/analytics/chat-work-graph-todo-sync.md); исполнять после вердикта «полезно» и готовности зависимостей.
+Свидетельства:
+  rules/agent-behavior/chat-work-scope-readonly.bvc — prompt_rule chat-work-scope-readonly
+  src/agentBehaviorRulesBundle.mjs — WORKER_BEHAVIOR_RULE_IDS includes chat-work-scope-readonly
+  src/epicWorkScope.mjs — formatEpicScopeMarkdown + scopeChecklistMark
+  npm run audit:agent-behavior-rules ok; tests 8/8 pass
+  agent-behavior chat scope rule in bundle; AN-28 R2 scope markdown template
 
 Метки:
   atom.profile: work_item
@@ -52,12 +41,6 @@
   work.risk: low
   work.status: done
   work.target_files: rules/agent-behavior/chat-work-scope-readonly.bvc, src/agentBehaviorRulesBundle.mjs, work/analytics/chat-work-graph-todo-sync.md
-  work.title: agent-behavior: chat-work-scope-readonly step (Scope block)
-
-Свидетельства:
-  - rules/agent-behavior/chat-work-scope-readonly.bvc — prompt_rule chat-work-scope-readonly
-  - src/agentBehaviorRulesBundle.mjs — WORKER_BEHAVIOR_RULE_IDS includes chat-work-scope-readonly
-  - src/epicWorkScope.mjs — formatEpicScopeMarkdown + scopeChecklistMark
-  - npm run audit:agent-behavior-rules ok; tests 8/8 pass
-  - agent-behavior chat scope rule in bundle; AN-28 R2 scope markdown template
+  work.title: Поведение агента: read-only scope чата (блок Scope)
 ]>
+

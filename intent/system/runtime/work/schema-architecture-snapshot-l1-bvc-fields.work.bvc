@@ -2,18 +2,18 @@
 Базис:
   Drawer и MCP нужны structured BVC fields, не только summary string.
 Вектор:
-  schemas/architecture-snapshot.v1.json: l1Canon object + optional block BVC strings.
-  Validate in architectureSnapshot.test.mjs subset schema check.
+  schemas/architecture-snapshot.v1.json: l1Canon object + опционально block BVC strings.
+  Проверить in architectureSnapshot.test.mjs subset schema check.
 Цель:
   Контракт snapshot документирует canon provenance и BVC.
 Проверки:
   schema validates fixture snapshot with l1Canon + block BVC
-  breaking change documented in plan
+  breaking change задокументировано in plan
 Анализ:
   Целесообразность:
   Стоит завести «Schema: block basis/vector/goal + l1Canon in architecture.snapshot.v1» в бэклог — по материалам AN-36 (work/analytics/architecture-main-bvc-canon-hub.md).
   Контекст и границы:
-  schemas/architecture-snapshot.v1.json: l1Canon object + optional block BVC strings.
+  schemas/architecture-snapshot.v1.json: l1Canon object + опционально block BVC strings.
   Зависимости и готовность:
   depends_on=epic-architecture-main-bvc-canon, migrate-architecture-snapshot-from-canon; старт после закрытия upstream-зависимостей.
   Риски и альтернативы:
@@ -50,5 +50,6 @@
   work.risk: low
   work.status: done
   work.target_files: schemas/architecture-snapshot.v1.json, tests/architectureSnapshot.test.mjs, work/analytics/architecture-main-bvc-canon-hub.md
-  work.title: Schema: block basis/vector/goal + l1Canon in architecture.snapshot.v1
+  work.title: Контракт snapshot документирует canon provenance и BVC.
 ]>
+

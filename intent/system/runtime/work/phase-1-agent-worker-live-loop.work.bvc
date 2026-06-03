@@ -1,7 +1,7 @@
 #Задача_phase_1_agent_worker_live_loop<[
 Базис:
   Local runner MVP есть, но live-loop ещё не выполняет автономный claim/run/evidence/proposal цикл.
-  Задача «Фаза 1: live-loop agent worker» относится к контуру платформы агента и должна быть понятна агенту без чтения всего backlog.
+  Задача «Фаза 1: live-loop agent worker» относится к контуру платформы агента и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: phase-0-inventory-boundaries.
 Вектор:
   Свести `implement-agent-worker-live-loop` и связанные тесты в границу фазы для первого post-MVP execution loop.
@@ -46,6 +46,6 @@
   work.risk: high
   work.status: done
   work.target_files: src/agentWorkerLiveLoop.mjs, src/agentWorkerLocalRunner.mjs, tests/agentWorkerLiveLoop.test.mjs, package.json, work/backlog.bvc
-  work.title: Фаза 1: live-loop agent worker
+  work.title: Agent Runtime получает первый не-чатовый цикл исполнения Work Graph task.
 ]>
 

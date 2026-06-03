@@ -18,12 +18,14 @@ import {
 import { buildCodeGapOperatorProjection } from './codeGapOperatorProjection.mjs';
 import { buildEpicWorkScopeSlice } from './epicWorkScope.mjs';
 import { renderUiKitPageHtml } from './ui/pages/uiKitPage.mjs';
+import { handlePublicSiteRequest } from './publicSiteServer.mjs';
 import { UI_BUTTON_CSS } from './ui/atoms/button.mjs';
 import { UI_BADGE_CSS } from './ui/atoms/badge.mjs';
 import { UI_SELECT_CSS } from './ui/atoms/select.mjs';
 import {
   renderNavTab,
-  renderThemeToggleButton,
+  renderHeaderThemeToggleButton,
+  renderSettingsNavTab,
   renderDetailCloseButton,
   renderDetailSubCloseButton,
   renderAgentRunDockCloseButton,
@@ -37,7 +39,14 @@ import {
   renderWorkflowSubtabsShell,
   renderArchitectureSubtabsShell,
   renderWorkflowDisplayModeSelect,
+  renderSettingsLocaleOptions,
 } from './ui/backlogShellButtons.mjs';
+import { renderThemeIcon } from './ui/iconAssets.mjs';
+import { buildAppVersionResponse } from './appVersionApi.mjs';
+import { computeBacklogRevision } from './backlogRevision.mjs';
+import { createBacklogUiEventsHub } from './backlogUiEventsHub.mjs';
+import { createUiTranslator, loadUiCatalogSync } from './ui/i18n/uiCatalog.mjs';
+import { resolveUiLocale, UI_LOCALE_COOKIE } from './ui/i18n/resolveUiLocale.mjs';
 import { UI_TABS_CSS } from './ui/molecules/tabs.mjs';
 import { buildPvrgTaskScopeSlice } from './pvrgTaskScope.mjs';
 import { buildWorkItemLinkageDrilldown } from './unifiedLinkageProjection.mjs';
@@ -73,6 +82,7 @@ import {
   executeIntentComposerProposal,
 } from './intentComposerApi.mjs';
 import { buildWorkItemPipelineView } from './workItemDecisionPipeline.mjs';
+import { getFieldSectionsForDialect } from './bvcDialectRegistry.mjs';
 import {
   attachUiReference,
   listUiReferences,
@@ -116,6 +126,48 @@ function contentTypeForPublicFont(filePath) {
   return 'application/octet-stream';
 }
 
+function tryServePublicIconsAsset(url, response) {
+  if (!url.pathname.startsWith('/assets/icons/')) {
+    return false;
+  }
+  return tryServePublicAssetDir(url, response, join(PUBLIC_ROOT, 'assets', 'icons'), '/assets/icons/');
+}
+
+function tryServePublicAvatarsAsset(url, response) {
+  if (!url.pathname.startsWith('/assets/avatars/')) {
+    return false;
+  }
+  return tryServePublicAssetDir(url, response, join(PUBLIC_ROOT, 'assets', 'avatars'), '/assets/avatars/');
+}
+
+function tryServePublicAssetDir(url, response, rootDir, urlPrefix) {
+  const relativePath = decodeURIComponent(url.pathname.slice(urlPrefix.length));
+  if (!relativePath || relativePath.includes('..')) {
+    sendText(response, 403, 'forbidden');
+    return true;
+  }
+  const filePath = join(rootDir, relativePath);
+  if (!filePath.startsWith(rootDir)) {
+    sendText(response, 403, 'forbidden');
+    return true;
+  }
+  try {
+    const source = readFileSync(filePath);
+    const contentType = filePath.endsWith('.svg')
+      ? 'image/svg+xml; charset=utf-8'
+      : 'application/octet-stream';
+    response.writeHead(200, {
+      'content-type': contentType,
+      'cache-control': 'public, max-age=3600',
+    });
+    response.end(source);
+    return true;
+  } catch {
+    sendText(response, 404, 'not_found');
+    return true;
+  }
+}
+
 function tryServePublicFontsAsset(url, response) {
   if (!url.pathname.startsWith('/assets/fonts/')) {
     return false;
@@ -144,6 +196,17 @@ function tryServePublicFontsAsset(url, response) {
   }
 }
 
+function stripBrowserInlineLocalFunctions(source, names) {
+  let result = source;
+  for (const name of names) {
+    result = result.replace(
+      new RegExp(`\\nfunction ${name}\\([^)]*\\) \\{[\\s\\S]*?\\n\\}\\n`, 'g'),
+      '\n',
+    );
+  }
+  return result;
+}
+
 function stripModuleForBrowserInline(source) {
   return source
     .replace(/^import\s[\s\S]*?from\s+['"][^'"]+['"];?\s*$/gm, '')
@@ -168,23 +231,33 @@ function loadBrowserArchitectureLayoutSource() {
 }
 
 function loadBrowserMarkdownDocumentRenderSource() {
-  return [
-    readFileSync(join(__dirname, 'codeSyntaxHighlight.mjs'), 'utf8'),
-    readFileSync(join(__dirname, 'markdownDocumentRender.mjs'), 'utf8'),
-  ].join('\n')
+  const codeSyntaxHighlight = readFileSync(join(__dirname, 'codeSyntaxHighlight.mjs'), 'utf8')
     .replace(/^import\s.+$/gm, '')
     .replace(/^export /gm, '');
+  const markdownDocumentRender = stripBrowserInlineLocalFunctions(
+    readFileSync(join(__dirname, 'markdownDocumentRender.mjs'), 'utf8')
+      .replace(/^import\s.+$/gm, '')
+      .replace(/^export /gm, ''),
+    ['escapeHtml'],
+  );
+  return `${codeSyntaxHighlight}\n${markdownDocumentRender}`;
 }
 
 function loadBrowserPipelineProseRenderSource() {
-  return readFileSync(join(__dirname, 'pipelineProseRender.mjs'), 'utf8')
-    .replace(/^import\s.+$/gm, '')
-    .replace(/^export /gm, '');
+  return stripBrowserInlineLocalFunctions(
+    readFileSync(join(__dirname, 'pipelineProseRender.mjs'), 'utf8')
+      .replace(/^import\s.+$/gm, '')
+      .replace(/^export /gm, ''),
+    ['escapeHtml'],
+  );
 }
 
 function loadBrowserMissionControlClientSource() {
-  return stripModuleForBrowserInline(
-    readFileSync(join(__dirname, 'missionControlUiClient.mjs'), 'utf8'),
+  return stripBrowserInlineLocalFunctions(
+    stripModuleForBrowserInline(
+      readFileSync(join(__dirname, 'missionControlUiClient.mjs'), 'utf8'),
+    ),
+    ['escapeHtml'],
   );
 }
 
@@ -221,6 +294,55 @@ function loadBrowserUiBadgeClientSource() {
 function loadBrowserWorkItemStatusToneSource() {
   return stripModuleForBrowserInline(
     readFileSync(join(__dirname, 'ui/workItemStatusTone.mjs'), 'utf8'),
+  );
+}
+
+function loadBrowserKanbanBoardDeltaSource() {
+  return stripModuleForBrowserInline(
+    readFileSync(join(__dirname, 'kanbanBoardDelta.mjs'), 'utf8'),
+  );
+}
+
+function loadBrowserKanbanBoardPatcherSource() {
+  return stripModuleForBrowserInline(
+    readFileSync(join(__dirname, 'ui/kanbanBoardPatcher.mjs'), 'utf8'),
+  );
+}
+
+function loadBrowserUserAvatarsSource() {
+  return stripModuleForBrowserInline(
+    readFileSync(join(__dirname, 'ui/userAvatars.mjs'), 'utf8'),
+  );
+}
+
+function loadBrowserWorkItemIssueTypeSource() {
+  return stripModuleForBrowserInline(
+    readFileSync(join(__dirname, 'ui/workItemIssueType.mjs'), 'utf8'),
+  );
+}
+
+function loadBrowserWorkItemClassifierSource() {
+  return [
+    stripModuleForBrowserInline(readFileSync(join(__dirname, 'workItemBlockClassifier.mjs'), 'utf8')),
+    stripModuleForBrowserInline(readFileSync(join(__dirname, 'ui/workItemClassifierBadge.mjs'), 'utf8')),
+  ].join('\n');
+}
+
+function loadBrowserDetailDrawerStackSource() {
+  return stripModuleForBrowserInline(
+    readFileSync(join(__dirname, 'detailDrawerStack.mjs'), 'utf8'),
+  );
+}
+
+function loadBrowserLiveSyncCoordinatorSource() {
+  return stripModuleForBrowserInline(
+    readFileSync(join(__dirname, 'ui/liveSyncCoordinator.mjs'), 'utf8'),
+  );
+}
+
+function loadBrowserLiveSyncSseAdapterSource() {
+  return stripModuleForBrowserInline(
+    readFileSync(join(__dirname, 'ui/liveSyncSseAdapter.mjs'), 'utf8'),
   );
 }
 
@@ -334,7 +456,10 @@ export async function readArchitectureSnapshot(options = {}) {
   });
 }
 
-export function renderBacklogHtml() {
+export function renderBacklogHtml(options = {}) {
+  const catalog = options.catalog ?? loadUiCatalogSync(options.locale ?? 'ru', options);
+  const { locale, t, messages } = createUiTranslator(catalog);
+  const i18nBootstrapScript = JSON.stringify({ locale, messages });
   const schematicModelFull = buildSchematicViewModel({ viewMode: GRAPH_CANVAS_VIEW_FULL });
   const schematicModelPipeline = buildSchematicViewModel({ viewMode: GRAPH_CANVAS_VIEW_PIPELINE });
   const architectureLayoutSource = loadBrowserArchitectureLayoutSource();
@@ -348,15 +473,27 @@ export function renderBacklogHtml() {
   const uiButtonClientSource = loadBrowserUiButtonClientSource();
   const uiBadgeClientSource = loadBrowserUiBadgeClientSource();
   const workItemStatusToneSource = loadBrowserWorkItemStatusToneSource();
-  const shellNavHome = renderNavTab({ view: 'home', label: 'Главная', selected: true });
-  const shellNavBoard = renderNavTab({ view: 'board', label: 'Доска', selected: false });
-  const shellNavWorkflow = renderNavTab({ view: 'workflow', label: 'Задачи', selected: false });
-  const shellNavVerification = renderNavTab({ view: 'verification', label: 'Проверки', selected: false });
-  const shellNavPrompts = renderNavTab({ view: 'prompts', label: 'Промпты', selected: false });
-  const shellNavMemory = renderNavTab({ view: 'memory', label: 'Память', selected: false });
-  const shellNavAnalytics = renderNavTab({ view: 'analytics', label: 'Аналитика', selected: false });
-  const shellNavArchitecture = renderNavTab({ view: 'architecture', label: 'Архитектура', selected: false });
-  const shellThemeToggle = renderThemeToggleButton();
+  const kanbanBoardDeltaSource = loadBrowserKanbanBoardDeltaSource();
+  const kanbanBoardPatcherSource = loadBrowserKanbanBoardPatcherSource();
+  const userAvatarsSource = loadBrowserUserAvatarsSource();
+  const workItemIssueTypeSource = loadBrowserWorkItemIssueTypeSource();
+  const workItemClassifierSource = loadBrowserWorkItemClassifierSource();
+  const detailDrawerStackSource = loadBrowserDetailDrawerStackSource();
+  const liveSyncCoordinatorSource = loadBrowserLiveSyncCoordinatorSource();
+  const liveSyncSseAdapterSource = loadBrowserLiveSyncSseAdapterSource();
+  const bvcDialectSectionTitles = Object.fromEntries(
+    ['en', 'ru'].map((lang) => [lang, Object.fromEntries(getFieldSectionsForDialect(lang))]),
+  );
+  const shellNavAnalytics = renderNavTab({ view: 'analytics', label: t('nav.analytics'), selected: true });
+  const shellNavWorkflow = renderNavTab({ view: 'workflow', label: t('nav.workflow'), selected: false });
+  const shellNavBoard = renderNavTab({ view: 'board', label: t('nav.board'), selected: false });
+  const shellNavVerification = renderNavTab({ view: 'verification', label: t('nav.verification'), selected: false });
+  const shellNavMemory = renderNavTab({ view: 'memory', label: t('nav.memory'), selected: false });
+  const shellNavArchitecture = renderNavTab({ view: 'architecture', label: t('nav.architecture'), selected: false });
+  const shellNavPrompts = renderNavTab({ view: 'prompts', label: t('nav.prompts'), selected: false });
+  const shellSettingsNav = renderSettingsNavTab({ label: t('nav.settings') });
+  const shellHeaderThemeToggle = renderHeaderThemeToggleButton({ ariaLabel: t('theme.toggleAria') });
+  const shellSettingsLocaleOptions = renderSettingsLocaleOptions({ locale, t });
   const shellDetailClose = renderDetailCloseButton();
   const shellDetailSubClose = renderDetailSubCloseButton();
   const shellAgentDockClose = renderAgentRunDockCloseButton();
@@ -367,14 +504,34 @@ export function renderBacklogHtml() {
   const shellCycleFilterSelect = renderCycleFilterSelect();
   const shellIntentDomainFilterSelect = renderIntentDomainFilterSelect();
   const shellAnalyticsSubtabs = renderAnalyticsSubtabsShell();
-  const shellWorkflowSubtabs = renderWorkflowSubtabsShell();
+  const shellWorkflowSubtabs = renderWorkflowSubtabsShell({
+    backlog: t('workflow.tab.backlog'),
+    archive: t('workflow.tab.archive'),
+  });
   const shellArchitectureSubtabs = renderArchitectureSubtabsShell();
   const shellWorkflowDisplayModeSelect = renderWorkflowDisplayModeSelect();
+  const themeIconMoonHtml = renderThemeIcon('moon');
+  const themeIconSunHtml = renderThemeIcon('sun');
   return `<!doctype html>
-<html lang="ru" data-iohasc-theme="workgraph-dark">
+<html lang="${locale}" data-iohasc-theme="workgraph-dark">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script id="sidebar-width-bootstrap">
+    (function () {
+      var key = 'workGraphSidebarWidth';
+      var min = 56;
+      var max = 360;
+      var fallback = 252;
+      var compactMax = 80;
+      var raw = Number(localStorage.getItem(key));
+      var width = Number.isFinite(raw) ? Math.max(min, Math.min(max, raw)) : fallback;
+      document.documentElement.style.setProperty('--sidebar-width', width + 'px');
+      if (width <= compactMax) {
+        document.documentElement.classList.add('is-sidebar-compact');
+      }
+    })();
+  </script>
   <title>Work Graph: атомы задач</title>
   <link rel="stylesheet" href="/assets/fonts/GraphikLCG/stylesheet.css">
   <link rel="stylesheet" href="/assets/graph-canvas-lit-flow.css">
@@ -402,31 +559,37 @@ export function renderBacklogHtml() {
       --scrollbar-thumb: rgba(9, 30, 66, 0.28);
       --scrollbar-thumb-hover: rgba(9, 30, 66, 0.42);
       --scrollbar-thumb-active: var(--accent);
-      --sidebar-width: 224px;
+      --sidebar-width: 252px;
+      --sidebar-width-compact: 56px;
+      --sidebar-width-min: 56px;
+      --sidebar-width-max: 360px;
+      --sidebar-width-default: 252px;
+      --sidebar-compact-ui-max: 80px;
     }
 
     body[data-theme="dark"] {
       color-scheme: dark;
-      --bg: rgb(var(--brand-bg-rgb, 30 30 30));
-      --header-bg: rgb(var(--brand-bg-rgb, 24 24 24));
-      --panel: rgb(var(--ui-surface-rgb, 37 37 38));
-      --panel-2: rgb(var(--ui-surface-muted-rgb, 45 45 48));
-      --card: rgb(var(--ui-surface-rgb, 31 31 31));
-      --border: rgb(var(--brand-border-rgb, 60 60 60));
-      --text: rgb(var(--ui-text-rgb, 212 212 212));
-      --muted: rgb(var(--ui-muted-rgb, 157 157 157));
-      --accent: rgb(var(--ui-accent-rgb, 0 102 255));
-      --accent-soft: rgba(var(--ui-accent-rgb, 0 102 255), 0.16);
-      --warn: #f0ad4e;
-      --danger: rgb(var(--ui-danger-rgb, 241 76 76));
-      --ok: #6a9955;
-      --shadow-card: 0 1px 1px rgba(0, 0, 0, .28);
+      --bg: rgb(var(--brand-bg-rgb, 29 33 37));
+      --header-bg: rgb(22 26 29);
+      --panel: rgb(var(--ui-surface-rgb, 44 51 56));
+      --panel-2: rgb(var(--ui-surface-muted-rgb, 56 65 74));
+      --column-bg: rgb(22 26 29);
+      --card: rgb(40 46 51);
+      --border: rgb(var(--brand-border-rgb, 61 71 77));
+      --text: rgb(var(--ui-text-rgb, 199 209 219));
+      --muted: rgb(var(--ui-muted-rgb, 159 173 188));
+      --accent: rgb(var(--ui-accent-rgb, 133 184 255));
+      --accent-soft: rgba(9, 41, 87, 0.72);
+      --warn: #e2b203;
+      --danger: rgb(var(--ui-danger-rgb, 255 156 143));
+      --ok: #4bce97;
+      --shadow-card: 0 1px 1px rgba(0, 0, 0, .32);
       --scrollbar-track: var(--bg);
-      --scrollbar-thumb: rgba(255, 255, 255, 0.22);
-      --scrollbar-thumb-hover: rgba(255, 255, 255, 0.34);
+      --scrollbar-thumb: rgba(161, 189, 217, 0.22);
+      --scrollbar-thumb-hover: rgba(161, 189, 217, 0.34);
       --scrollbar-thumb-active: var(--accent);
-      --cursor-accent: rgb(var(--ui-accent-rgb, 0 102 255));
-      --cursor-accent-hover: rgb(var(--ui-accent-hover-rgb, 0 90 230));
+      --cursor-accent: rgb(var(--ui-accent-rgb, 133 184 255));
+      --cursor-accent-hover: rgb(var(--ui-accent-hover-rgb, 87 157 255));
     }
 
     * { box-sizing: border-box; }
@@ -517,7 +680,38 @@ export function renderBacklogHtml() {
       overflow-x: hidden;
       overflow-y: auto;
       padding: 16px 0 12px;
+      position: relative;
       width: var(--sidebar-width);
+    }
+
+    .sidebar-resize-handle {
+      bottom: 0;
+      cursor: col-resize;
+      position: absolute;
+      right: -6px;
+      top: 0;
+      width: 12px;
+      z-index: 3;
+    }
+
+    .sidebar-resize-handle::after {
+      background: transparent;
+      bottom: 0;
+      content: "";
+      position: absolute;
+      right: 5px;
+      top: 0;
+      width: 2px;
+    }
+
+    .sidebar-resize-handle:hover::after,
+    body.is-resizing-sidebar .sidebar-resize-handle::after {
+      background: var(--accent);
+    }
+
+    body.is-resizing-sidebar {
+      cursor: col-resize;
+      user-select: none;
     }
 
     .sidebar-footer {
@@ -550,25 +744,28 @@ export function renderBacklogHtml() {
     }
 
     .sidebar-nav-advanced {
+      border-top: 1px solid var(--border);
       margin-top: 8px;
+      padding-top: 8px;
     }
 
     .nav-tab {
       align-items: center;
       background: transparent;
       border: 0;
-      border-left: 3px solid transparent;
-      border-radius: 0 3px 3px 0;
+      border-radius: 10px;
       box-sizing: border-box;
       color: var(--text);
       cursor: pointer;
       display: flex;
       font: inherit;
-      font-size: var(--text-sm);
-      gap: 8px;
+      font-size: var(--text-base);
+      gap: 10px;
       justify-content: flex-start;
+      line-height: var(--text-base-line-height, 1.5rem);
       min-width: 0;
-      padding: 8px 10px 8px 7px;
+      padding: 9px 12px;
+      position: relative;
       text-align: left;
       width: 100%;
     }
@@ -579,21 +776,33 @@ export function renderBacklogHtml() {
 
     .nav-tab[aria-selected="true"] {
       background: #ebecf0;
-      border-left-color: var(--accent);
       color: var(--accent);
       font-weight: 600;
     }
 
     body[data-theme="dark"] .nav-tab[aria-selected="true"] {
-      background: #17324d;
-      border-left-color: var(--accent);
-      color: #cce0ff;
+      background: #092957;
+      color: #85b8ff;
     }
 
     .nav-tab[disabled] {
       color: var(--muted);
       cursor: not-allowed;
       opacity: .62;
+    }
+
+    .nav-tab-icon {
+      display: block;
+      flex-shrink: 0;
+      height: 22px;
+      width: 22px;
+    }
+
+    .nav-tab-label {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .badge {
@@ -733,7 +942,23 @@ export function renderBacklogHtml() {
     }
 
     .page-header {
+      align-items: flex-start;
+      display: flex;
+      gap: 12px;
+      justify-content: space-between;
       margin-bottom: 16px;
+    }
+
+    .page-header-main {
+      min-width: 0;
+    }
+
+    .page-header-actions {
+      align-items: center;
+      display: flex;
+      flex-shrink: 0;
+      gap: 8px;
+      margin-top: 2px;
     }
 
     .breadcrumbs {
@@ -760,11 +985,12 @@ export function renderBacklogHtml() {
       font-weight: 500;
     }
 
-    .page-header h1 {
-      font-size: var(--text-2xl, 1.4375rem);
+    .page-header h1,
+    #view-title {
+      font-size: 2rem;
       font-weight: var(--font-weight-strong, 600);
       letter-spacing: var(--text-heading-letter-spacing, 0.01em);
-      line-height: var(--text-2xl-line-height, 1.875rem);
+      line-height: 2.5rem;
       margin: 0;
     }
 
@@ -800,7 +1026,9 @@ export function renderBacklogHtml() {
 
     body[data-theme="dark"] .workflow-subtab.is-active,
     body[data-theme="dark"] .workflow-subtab[aria-selected="true"] {
-      background: rgba(0, 102, 255, 0.16);
+      background: #092957;
+      border-color: #388bff;
+      color: #85b8ff;
     }
 
     .workflow-panel[hidden] {
@@ -876,8 +1104,9 @@ export function renderBacklogHtml() {
     }
 
     body[data-theme="dark"] .board-tab.is-active {
-      background: #17324d;
-      color: #cce0ff;
+      background: #092957;
+      border-color: #388bff;
+      color: #85b8ff;
     }
 
     .toolbar {
@@ -941,6 +1170,114 @@ export function renderBacklogHtml() {
       padding: 7px 9px;
       text-align: left;
       width: 100%;
+    }
+
+    .header-theme-toggle {
+      align-items: center;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      cursor: pointer;
+      display: inline-flex;
+      height: 36px;
+      justify-content: center;
+      padding: 0;
+      width: 36px;
+    }
+
+    .header-theme-toggle:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .header-theme-toggle-icon {
+      display: block;
+    }
+
+    .settings-panel {
+      display: grid;
+      gap: 12px;
+      max-width: 720px;
+    }
+
+    .settings-section {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: var(--shadow-card);
+      display: grid;
+      gap: 12px;
+      padding: 14px 16px;
+    }
+
+    .settings-section h2 {
+      font-size: var(--text-lg);
+      margin: 0;
+    }
+
+    .settings-row {
+      align-items: center;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      justify-content: space-between;
+    }
+
+    .settings-row label,
+    .settings-row > span:first-child {
+      color: var(--text);
+      font-size: var(--text-sm);
+      font-weight: 500;
+    }
+
+    .settings-theme-options,
+    .settings-locale-options {
+      display: inline-flex;
+      gap: 8px;
+    }
+
+    .settings-theme-options .wg-btn.is-active,
+    .settings-locale-options .wg-btn.is-active {
+      border-color: var(--accent);
+    }
+
+    body:not([data-theme="dark"]) .settings-theme-options .wg-btn--secondary.is-active,
+    body:not([data-theme="dark"]) .settings-locale-options .wg-btn--secondary.is-active {
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    body[data-theme="dark"] .settings-theme-options .wg-btn--secondary.is-active,
+    body[data-theme="dark"] .settings-locale-options .wg-btn--secondary.is-active {
+      background: #092957;
+      border-color: #388bff;
+      color: #85b8ff;
+    }
+
+    .settings-version-value {
+      font-family: var(--brand-font-mono, monospace);
+      font-size: var(--text-sm);
+    }
+
+    .settings-update-status {
+      color: var(--muted);
+      font-size: var(--text-sm);
+      margin: 0;
+    }
+
+    .settings-install-command {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-family: var(--brand-font-mono, monospace);
+      font-size: 12px;
+      padding: 8px 10px;
+      word-break: break-all;
+    }
+
+    .nav-tab-settings {
+      margin-top: 2px;
     }
 
     .theme-toggle:hover {
@@ -1080,7 +1417,7 @@ export function renderBacklogHtml() {
 
     .code-gap-intake-preview,
     .code-gap-intake-errors {
-      background: #1e1e1e;
+      background: var(--panel);
       border: 1px solid var(--border);
       border-radius: 6px;
       color: var(--text);
@@ -1270,10 +1607,6 @@ export function renderBacklogHtml() {
       padding: 8px 8px 12px;
     }
 
-    body[data-theme="dark"] .column {
-      background: var(--panel-2);
-    }
-
     .column h2 {
       align-items: center;
       display: flex;
@@ -1302,7 +1635,7 @@ export function renderBacklogHtml() {
     }
 
     body[data-theme="dark"] .count {
-      background: var(--panel-2);
+      background: rgb(var(--ui-surface-rgb, 44 51 56));
       color: var(--muted);
     }
 
@@ -1328,8 +1661,28 @@ export function renderBacklogHtml() {
     }
 
     body[data-theme="dark"] .task-atom:hover {
-      background: var(--card);
-      border-color: #555555;
+      background: rgb(var(--ui-surface-hover-rgb, 56 65 74));
+      border-color: rgb(var(--brand-border-rgb, 61 71 77));
+    }
+
+    .task-atom.kanban-card.is-new {
+      animation: kanban-card-new 1.2s ease-out;
+      box-shadow: 0 0 0 2px var(--accent-soft);
+    }
+
+    @keyframes kanban-card-new {
+      0% { background: var(--accent-soft); }
+      100% { background: var(--card); }
+    }
+
+    .detail-remote-update-banner {
+      background: var(--accent-soft);
+      border: 1px solid var(--accent);
+      border-radius: 4px;
+      color: var(--accent);
+      font-size: 13px;
+      margin-bottom: 10px;
+      padding: 8px 10px;
     }
 
     .task-atom h3 {
@@ -1376,23 +1729,91 @@ export function renderBacklogHtml() {
       min-width: 0;
     }
 
-    .owner-avatar {
+    .issue-key-chip {
       align-items: center;
-      background: #deebff;
+      display: inline-flex;
+      flex: 0 1 auto;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .issue-type-icon {
+      align-items: center;
+      border-radius: 2px;
+      display: inline-flex;
+      flex-shrink: 0;
+      height: 16px;
+      justify-content: center;
+      width: 16px;
+    }
+
+    .issue-type-icon svg {
+      display: block;
+    }
+
+    .issue-type-icon.is-task {
+      background: #2684ff;
+    }
+
+    .issue-type-icon.is-story {
+      background: #36b37e;
+    }
+
+    .issue-type-icon.is-epic {
+      background: #6554c0;
+    }
+
+    .issue-type-icon.is-subtask {
+      background: #0065ff;
+    }
+
+    .issue-type-icon.is-bug {
+      background: #ff5630;
+    }
+
+    .issue-key-text {
+      color: var(--muted);
+      font-family: inherit;
+      font-size: var(--text-sm);
+      font-weight: 500;
+      letter-spacing: 0;
+      line-height: 1.2;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-transform: none;
+      white-space: nowrap;
+    }
+
+    .owner-avatar {
       border-radius: 50%;
-      color: #0747a6;
       display: inline-flex;
       flex: 0 0 auto;
-      font-size: var(--text-sm);
-      font-weight: 700;
       height: 28px;
-      justify-content: center;
+      overflow: hidden;
       width: 28px;
     }
 
-    body[data-theme="dark"] .owner-avatar {
-      background: #17324d;
-      color: #cce0ff;
+    .owner-avatar img {
+      display: block;
+      height: 100%;
+      object-fit: cover;
+      width: 100%;
+    }
+
+    .owner-avatar-stack {
+      align-items: center;
+      display: inline-flex;
+      flex: 0 0 auto;
+    }
+
+    .owner-avatar-stack .owner-avatar {
+      box-shadow: 0 0 0 2px var(--bg);
+      margin-left: -8px;
+    }
+
+    .owner-avatar-stack .owner-avatar:first-child {
+      margin-left: 0;
     }
 
     .semantic-core {
@@ -1403,7 +1824,8 @@ export function renderBacklogHtml() {
       color: #5e6c84;
       font-size: var(--text-base);
       line-height: 1.35;
-      overflow-wrap: anywhere;
+      overflow-wrap: break-word;
+      word-break: normal;
     }
 
     body[data-theme="dark"] .semantic-line {
@@ -1851,7 +2273,7 @@ export function renderBacklogHtml() {
 
     body[data-theme="dark"] .list-row.is-selected,
     body[data-theme="dark"] .list-row.is-highlighted {
-      background: #2d333b;
+      background: rgb(var(--ui-surface-rgb, 44 51 56));
     }
 
     .list-row.is-selected {
@@ -2322,6 +2744,42 @@ export function renderBacklogHtml() {
 
     .detail-sub-drawer.is-open {
       transform: translateX(0);
+    }
+
+    .detail-stack-breadcrumb {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+      margin-top: 4px;
+    }
+
+    .detail-stack-crumb-sep {
+      margin: 0 4px;
+      opacity: .65;
+    }
+
+    .detail-stack-crumb.is-current {
+      color: var(--text);
+    }
+
+    .atom-inspector-lang-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .04em;
+      margin-left: 8px;
+      opacity: .75;
+      text-transform: uppercase;
+    }
+
+    .atom-inspector-warnings {
+      background: rgba(255, 171, 0, .12);
+      border: 1px solid rgba(255, 171, 0, .35);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 12px;
+      margin: 8px 0 12px;
+      padding: 8px 10px;
     }
 
     .detail-resize-handle {
@@ -2887,6 +3345,19 @@ export function renderBacklogHtml() {
       text-transform: uppercase;
     }
 
+    .analytics-section-header {
+      align-items: center;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .analytics-section-header .analytics-section-title {
+      margin: 0;
+    }
+
     .analytics-query-section {
       margin-bottom: 14px;
     }
@@ -2945,6 +3416,40 @@ export function renderBacklogHtml() {
       color: var(--muted);
       font-size: var(--font-size-sm);
       white-space: nowrap;
+    }
+
+    .analytics-lineage-badge {
+      color: var(--muted);
+      font-size: var(--font-size-sm);
+    }
+
+    .analytics-lineage-section {
+      margin-top: 16px;
+    }
+
+    .analytics-lineage-list {
+      display: grid;
+      gap: 8px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .analytics-lineage-nav-btn {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--accent);
+      cursor: pointer;
+      display: block;
+      font: inherit;
+      padding: 10px 12px;
+      text-align: left;
+      width: 100%;
+    }
+
+    .analytics-lineage-nav-btn:hover {
+      border-color: var(--accent);
     }
 
     .analytics-intent-options,
@@ -3507,21 +4012,68 @@ export function renderBacklogHtml() {
       margin-top: 0;
     }
 
+    html.is-sidebar-compact .sidebar {
+      padding: 8px 0;
+    }
+
+    html.is-sidebar-compact .project-title {
+      display: none;
+    }
+
+    html.is-sidebar-compact .sidebar-nav,
+    html.is-sidebar-compact .sidebar-nav-advanced {
+      grid-template-columns: 1fr;
+      padding: 4px 6px 0;
+    }
+
+    html.is-sidebar-compact .sidebar-nav-advanced {
+      margin-top: 4px;
+      padding-top: 4px;
+    }
+
+    html.is-sidebar-compact .sidebar-footer {
+      padding: 8px 6px 0;
+    }
+
+    html.is-sidebar-compact .nav-tab {
+      gap: 0;
+      justify-content: center;
+      padding: 10px 8px;
+    }
+
+    html.is-sidebar-compact .nav-tab-label {
+      border: 0;
+      clip: rect(0 0 0 0);
+      height: 1px;
+      margin: -1px;
+      overflow: hidden;
+      padding: 0;
+      position: absolute;
+      white-space: nowrap;
+      width: 1px;
+    }
+
     @media (max-width: 900px) {
-      .app-shell { grid-template-columns: 1fr; }
-      .sidebar {
-        border-bottom: 1px solid var(--border);
-        border-right: 0;
-        max-width: none;
-        min-width: 0;
-        width: 100%;
-      }
-      .sidebar-nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .board { grid-template-columns: minmax(260px, 1fr); }
       .detail-drawer { width: 100vw; }
     }
     ${MISSION_CONTROL_CSS}
     ${UI_BUTTON_CSS}
+    body:not([data-theme="dark"]) .wg-btn--secondary {
+      background: var(--panel-2);
+      color: var(--text);
+      border-color: var(--border);
+    }
+    body:not([data-theme="dark"]) .wg-btn--secondary:hover:not(:disabled) {
+      background: #ebecf0;
+      color: var(--text);
+      border-color: #c1c7d0;
+    }
+    body:not([data-theme="dark"]) .wg-btn--inverse {
+      background: var(--panel);
+      color: var(--text);
+      border-color: var(--border);
+    }
     ${UI_BADGE_CSS}
     ${UI_SELECT_CSS}
     ${UI_TABS_CSS}
@@ -3669,32 +4221,46 @@ export function renderBacklogHtml() {
           data-testid="workgraph-logo"
         >
       </div>
-      <nav class="sidebar-nav" aria-label="Разделы">
-        ${shellNavHome}
-        ${shellNavBoard}
+      <nav class="sidebar-nav" aria-label="Канон Work Graph">
+        ${shellNavAnalytics}
         ${shellNavWorkflow}
+        ${shellNavBoard}
         ${shellNavVerification}
+        ${shellNavMemory}
+      </nav>
+      <nav class="sidebar-nav sidebar-nav-advanced" aria-label="Дополнительно">
         ${shellNavArchitecture}
         ${shellNavPrompts}
-        ${shellNavMemory}
-        ${shellNavAnalytics}
       </nav>
       <div class="sidebar-footer">
-        ${shellThemeToggle}
+        ${shellSettingsNav}
       </div>
+      <div
+        id="sidebar-resize-handle"
+        class="sidebar-resize-handle"
+        role="separator"
+        tabindex="0"
+        aria-orientation="vertical"
+        aria-label="Изменить ширину боковой панели"
+        aria-valuemin="56"
+        aria-valuemax="360"
+        data-testid="sidebar-resize-handle"
+      ></div>
     </aside>
     <main class="content">
       <header class="page-header">
-        <nav class="breadcrumbs" aria-label="Хлебные крошки">
-          <span class="breadcrumb-current" id="breadcrumb-project">Work Graph</span>
-        </nav>
-        <h1 id="view-title">Главная</h1>
+        <div class="page-header-main">
+          <nav class="breadcrumbs" aria-label="Хлебные крошки">
+            <span class="breadcrumb-current" id="breadcrumb-project">Work Graph</span>
+          </nav>
+          <h1 id="view-title">${t('view.analytics')}</h1>
+        </div>
+        <div class="page-header-actions">
+          ${shellHeaderThemeToggle}
+        </div>
       </header>
-      <section id="home-view" class="view" data-testid="home-view" aria-live="polite">
-        <article id="home-mission-control-root" class="home-mission-control"></article>
-      </section>
       <section id="view-toolbar" class="toolbar" hidden>
-        <input id="search" class="search" type="search" placeholder="Поиск задач..." autocomplete="off">
+        <input id="search" class="search" type="search" placeholder="${t('search.placeholder')}" autocomplete="off">
         ${shellSearchModeSelect}
         <div id="workflow-filters" class="workflow-filters" aria-label="Фильтры потока">
           ${shellCycleFilterSelect}
@@ -3707,12 +4273,18 @@ export function renderBacklogHtml() {
         <article id="verification-panel" class="verification-panel">
           <header class="verification-panel-header">
             <div>
-              <h2>Цикл проверки</h2>
-              <p>Детерминированные тесты уровня A отделены от опциональных гейтов OneBase и LLM. Только чтение — проекция из свидетельств Work Graph.</p>
+              <h2>${t('verification.title')}</h2>
+              <p>${t('verification.subtitle')}</p>
             </div>
             <div id="verification-tier-badges" class="verification-tier-badges"></div>
           </header>
           <div id="verification-matrix-wrap"></div>
+          <div>
+            <h3 style="font-size:14px;margin:0 0 6px">Контракт gate-задач <span id="verification-contract-count" class="badge">0</span></h3>
+            <p class="empty" style="margin:0 0 8px">Projection work-item-contract.v1 и readiness (violations[]) для задач из VERIFICATION_MATRIX.</p>
+            <div id="verification-contract-health" class="prompts-summary" data-testid="verification-contract-health"></div>
+            <ul id="verification-contract-list" class="verification-evidence-list" data-testid="verification-contract-list"></ul>
+          </div>
           <div>
             <h3 style="font-size:14px;margin:0 0 6px">Гейт codegen <span id="codegen-gate-count" class="badge">0</span></h3>
             <p class="empty" style="margin:0 0 8px">Успех или провал проверки codegen для WorkItems с меткой trace.codegen (целостность, roundtrip, bracket IR).</p>
@@ -3812,6 +4384,41 @@ export function renderBacklogHtml() {
           <div id="architecture-blocks-list" class="backlog-list list-rows" data-testid="architecture-blocks-list"></div>
         </article>
       </section>
+      <section id="settings-view" class="view" aria-live="polite" hidden>
+        <div class="settings-panel" data-testid="settings-panel">
+          <article class="settings-section" aria-labelledby="settings-appearance-title">
+            <h2 id="settings-appearance-title">${t('settings.appearance.title')}</h2>
+            <div class="settings-row">
+              <label for="settings-theme-light">${t('settings.appearance.theme')}</label>
+              <div class="settings-theme-options" role="group" aria-label="${t('settings.appearance.theme')}">
+                <button type="button" class="wg-btn wg-btn--secondary wg-btn--sm" id="settings-theme-light" data-settings-theme="light">${t('settings.appearance.themeLight')}</button>
+                <button type="button" class="wg-btn wg-btn--secondary wg-btn--sm" id="settings-theme-dark" data-settings-theme="dark">${t('settings.appearance.themeDark')}</button>
+              </div>
+            </div>
+          </article>
+          <article class="settings-section" aria-labelledby="settings-language-title">
+            <h2 id="settings-language-title">${t('settings.language.title')}</h2>
+            <div class="settings-row">
+              <span id="settings-language-label">${t('settings.language.label')}</span>
+              <div class="settings-locale-options" role="group" aria-labelledby="settings-language-label" data-testid="settings-locale-options">
+                ${shellSettingsLocaleOptions}
+              </div>
+            </div>
+          </article>
+          <article class="settings-section" aria-labelledby="settings-about-title">
+            <h2 id="settings-about-title">${t('settings.about.title')}</h2>
+            <div class="settings-row">
+              <label>${t('settings.about.version')}</label>
+              <span id="settings-version-value" class="settings-version-value" data-testid="settings-version-value">—</span>
+            </div>
+            <div class="settings-row">
+              <button type="button" class="wg-btn wg-btn--secondary wg-btn--sm" id="settings-check-update" data-testid="settings-check-update">${t('settings.about.checkUpdate')}</button>
+            </div>
+            <p id="settings-update-status" class="settings-update-status" data-testid="settings-update-status" hidden></p>
+            <code id="settings-install-command" class="settings-install-command" data-testid="settings-install-command" hidden></code>
+          </article>
+        </div>
+      </section>
       <section id="board-view" class="view" aria-live="polite" hidden>
         <div id="kanban-board" class="board kanban-board" data-testid="kanban-board-panel" aria-label="Kanban planning columns"></div>
         <div id="board" class="board"></div>
@@ -3820,7 +4427,7 @@ export function renderBacklogHtml() {
         ${shellWorkflowSubtabs}
         <article id="workflow-backlog-panel" class="list-panel backlog-panel workflow-panel" role="tabpanel" aria-labelledby="workflow-tab-backlog">
           <header class="list-panel-header backlog-panel-header">
-            <h2>Бэклог</h2>
+            <h2>${t('workflow.panel.backlog')}</h2>
             <span id="backlog-panel-count" class="count">0</span>
           </header>
           <div id="backlog-list" class="backlog-list list-rows"></div>
@@ -3828,7 +4435,7 @@ export function renderBacklogHtml() {
         </article>
         <article id="workflow-archive-panel" class="list-panel backlog-panel workflow-panel" role="tabpanel" aria-labelledby="workflow-tab-archive" hidden>
           <header class="list-panel-header backlog-panel-header">
-            <h2>Архив</h2>
+            <h2>${t('workflow.panel.archive')}</h2>
             <span id="archive-panel-count" class="count">0</span>
           </header>
           <div id="archive-list" class="backlog-list list-rows"></div>
@@ -3885,10 +4492,31 @@ export function renderBacklogHtml() {
   </div>
   <script src="/vendor/mermaid.min.js"></script>
   <script src="/assets/graph-canvas-lit-flow.js" defer></script>
-  <script>
+  <script id="workgraph-app">
     ${uiButtonClientSource}
     ${uiBadgeClientSource}
     ${workItemStatusToneSource}
+    ${kanbanBoardDeltaSource}
+    ${kanbanBoardPatcherSource}
+    ${userAvatarsSource}
+    ${workItemIssueTypeSource}
+    ${workItemClassifierSource}
+    ${detailDrawerStackSource}
+    ${liveSyncCoordinatorSource}
+    ${liveSyncSseAdapterSource}
+    const detailStack = createDetailDrawerStack();
+    const BVC_DIALECT_SECTION_TITLES = ${JSON.stringify(bvcDialectSectionTitles)};
+    function resolveAtomInspectorLang(draft) {
+      const fromDraft = String(draft?.lang ?? '').trim().toLowerCase();
+      if (fromDraft === 'en' || fromDraft === 'ru') return fromDraft;
+      const fromLabels = String(draft?.labels?.lang ?? '').trim().toLowerCase();
+      if (fromLabels === 'en' || fromLabels === 'ru') return fromLabels;
+      return 'ru';
+    }
+    function atomSectionTitle(lang, field) {
+      const dialect = BVC_DIALECT_SECTION_TITLES[lang] || BVC_DIALECT_SECTION_TITLES.ru;
+      return dialect[field] || field;
+    }
     const statusGroups = ${JSON.stringify(STATUS_GROUPS)};
     const operationalBoardGroups = ${JSON.stringify(OPERATIONAL_BOARD_GROUPS)};
     const doneArchiveGroup = ${JSON.stringify(DONE_ARCHIVE_GROUP)};
@@ -3908,6 +4536,30 @@ export function renderBacklogHtml() {
     ${workflowTreeProjectionSource}
     ${missionControlClientSource}
     const themeStorageKey = 'workGraphBacklogTheme';
+    const i18nBootstrap = ${i18nBootstrapScript};
+    window.__WG_LOCALE__ = i18nBootstrap.locale;
+    window.__WG_I18N__ = i18nBootstrap.messages;
+    function t(key, params) {
+      let text = (window.__WG_I18N__ && window.__WG_I18N__[key]) || key;
+      if (params) {
+        for (const [paramKey, paramValue] of Object.entries(params)) {
+          text = text.split('{' + paramKey + '}').join(String(paramValue));
+        }
+      }
+      return text;
+    }
+    function localizedKanbanColumnTitle(columnId, fallback) {
+      const key = 'kanban.col.' + columnId;
+      const value = t(key);
+      return value === key ? (fallback || columnId) : value;
+    }
+    function localizedBoardGroupTitle(groupId, fallback) {
+      const key = 'board.group.' + groupId;
+      const value = t(key);
+      return value === key ? (fallback || groupId) : value;
+    }
+    const THEME_ICON_MOON = ${JSON.stringify(themeIconMoonHtml)};
+    const THEME_ICON_SUN = ${JSON.stringify(themeIconSunHtml)};
     const viewStorageKey = 'workGraphBacklogView';
     const workflowTabStorageKey = 'workGraphWorkflowTab';
     const analyticsTabStorageKey = 'workGraphAnalyticsTab';
@@ -3920,12 +4572,20 @@ export function renderBacklogHtml() {
     const intentDomainFilterStorageKey = 'workGraphIntentDomainFilter';
     const detailDrawerWidthStorageKey = 'workGraphDetailDrawerWidth';
     const detailSubDrawerWidthStorageKey = 'workGraphDetailSubDrawerWidth';
+    const sidebarWidthStorageKey = 'workGraphSidebarWidth';
+    const SIDEBAR_WIDTH_MIN = 56;
+    const SIDEBAR_WIDTH_MAX = 360;
+    const SIDEBAR_WIDTH_DEFAULT = 252;
+    const SIDEBAR_COMPACT_UI_MAX = 80;
     const graphCanvasModeStorageKey = 'workGraphGraphCanvasMode';
     const workflowDisplayModeStorageKey = 'workGraphWorkflowDisplayMode';
     const collapsedWorkflowTreeIdsStorageKey = 'workGraphWorkflowTreeCollapsed.v1';
     localStorage.removeItem('workGraphArchitectureMatrixFilter');
 
     let graphCanvasViewMode = localStorage.getItem(graphCanvasModeStorageKey) === 'full' ? 'full' : 'pipeline';
+    let backlogRevision = null;
+    const liveSyncViews = new Set(['board', 'workflow']);
+    const liveSyncIntervalMs = 3000;
     let snapshot = null;
     let architectureSnapshot = null;
     let architectureLoaded = false;
@@ -3963,13 +4623,9 @@ export function renderBacklogHtml() {
     let semanticSearchWorkIds = null;
     let semanticSearchTimer = null;
     let homeSnapshot = null;
-    let homePanelLoaded = false;
     let cmdKRows = [];
     let cmdKActiveIndex = 0;
     let lastAgentRunTaskId = null;
-    let homePollTimer = null;
-    let agentDockPollTimer = null;
-    let agentScopePollTimer = null;
     const agentScopePollMs = 20000;
     const ownerRoleStorageKey = 'workGraphOwnerRoleFilter';
     const agentDockOpenStorageKey = 'workGraphAgentDockOpen';
@@ -4007,8 +4663,6 @@ export function renderBacklogHtml() {
     const board = document.querySelector('#board');
     const kanbanBoard = document.querySelector('#kanban-board');
     const boardView = document.querySelector('#board-view');
-    const homeView = document.querySelector('#home-view');
-    const homeMissionControlRoot = document.querySelector('#home-mission-control-root');
     const layoutRoot = document.querySelector('#layout-root');
     const agentRunDock = document.querySelector('#agent-run-dock');
     const agentRunDockBody = document.querySelector('#agent-run-dock-body');
@@ -4040,6 +4694,7 @@ export function renderBacklogHtml() {
     const detailSubTitle = document.querySelector('#detail-sub-title');
     const detailResizeHandle = document.querySelector('#detail-resize-handle');
     const detailSubResizeHandle = document.querySelector('#detail-sub-resize-handle');
+    const sidebarResizeHandle = document.querySelector('#sidebar-resize-handle');
     const detailTitle = document.querySelector('#detail-title');
     const navTabs = [...document.querySelectorAll('.nav-tab[data-view]')];
     const search = document.querySelector('#search');
@@ -4050,11 +4705,22 @@ export function renderBacklogHtml() {
     const daemonAuditList = document.querySelector('#daemon-audit-list');
     const daemonAuditCount = document.querySelector('#daemon-audit-count');
     const verificationMatrixWrap = document.querySelector('#verification-matrix-wrap');
+    const verificationContractCount = document.querySelector('#verification-contract-count');
+    const verificationContractHealth = document.querySelector('#verification-contract-health');
+    const verificationContractList = document.querySelector('#verification-contract-list');
     const codegenGateList = document.querySelector('#codegen-gate-list');
     const codegenGateSummary = document.querySelector('#codegen-gate-summary');
     const codegenGateCount = document.querySelector('#codegen-gate-count');
     const verificationTierBadges = document.querySelector('#verification-tier-badges');
     const verificationView = document.querySelector('#verification-view');
+    const settingsView = document.querySelector('#settings-view');
+    const settingsThemeLight = document.querySelector('#settings-theme-light');
+    const settingsThemeDark = document.querySelector('#settings-theme-dark');
+    const settingsLocaleButtons = [...document.querySelectorAll('[data-settings-locale]')];
+    const settingsVersionValue = document.querySelector('#settings-version-value');
+    const settingsCheckUpdate = document.querySelector('#settings-check-update');
+    const settingsUpdateStatus = document.querySelector('#settings-update-status');
+    const settingsInstallCommand = document.querySelector('#settings-install-command');
     const codeGapSummary = document.querySelector('#code-gap-summary');
     const codeGapList = document.querySelector('#code-gap-list');
     const codeGapCount = document.querySelector('#code-gap-count');
@@ -4089,8 +4755,39 @@ export function renderBacklogHtml() {
     const intentDomainClear = document.querySelector('#intent-domain-clear');
 
     applyTheme(readStoredTheme());
+    applyStoredSidebarWidth();
     applyStoredDetailDrawerWidth();
     applyStoredDetailSubDrawerWidth();
+
+    const liveSync = createLiveSyncCoordinator({
+      tickMs: 1000,
+      isDocumentHidden: () => document.hidden,
+      setTimer: (fn, ms) => window.setTimeout(fn, ms),
+      clearTimer: (id) => window.clearTimeout(id),
+    });
+    liveSync.registerScope('backlog-revision', {
+      intervalMs: liveSyncIntervalMs,
+      enabled: () => liveSyncViews.has(activeView),
+      onTick: () => { pollBacklogRevision().catch(() => undefined); },
+    });
+    liveSync.registerScope('home', {
+      intervalMs: 30000,
+      enabled: () => true,
+      onTick: () => { refreshHomeSnapshot().catch(() => undefined); },
+    });
+    liveSync.registerScope('agent-dock', {
+      intervalMs: 5000,
+      enabled: () => agentRunDock?.classList.contains('is-open'),
+      onTick: () => { refreshAgentRunDock().catch(() => undefined); },
+    });
+    liveSync.registerScope('agent-scope', {
+      intervalMs: agentScopePollMs,
+      enabled: () => agentRunDock?.classList.contains('is-open'),
+      onTick: () => { refreshAgentScopePanel().catch(() => undefined); },
+    });
+    document.addEventListener('visibilitychange', () => liveSync.sync());
+    connectLiveSyncRevisionSse(liveSync);
+
     applyView(activeView);
     applyWorkflowTab(activeWorkflowTab);
     applyAnalyticsTab(activeAnalyticsTab);
@@ -4098,6 +4795,7 @@ export function renderBacklogHtml() {
       workflowDisplayModeSelect.value = workflowDisplayMode;
     }
     initMissionControlUi();
+    liveSync.forceTick('home');
 
     fetch('/api/snapshot')
       .then((response) => {
@@ -4121,7 +4819,16 @@ export function renderBacklogHtml() {
       .then((data) => {
         operatorShellSnapshot = data;
         populateCycleFilterOptions();
-        return ensureLazyViewData(activeView).then(() => {
+        return fetch('/api/backlog-revision').then((response) => {
+          if (!response.ok) return null;
+          return response.json();
+        }).catch(() => null);
+      })
+      .then((revisionPayload) => {
+        if (revisionPayload?.revision) {
+          backlogRevision = revisionPayload.revision;
+        }
+        return refreshHomeSnapshot().catch(() => undefined).then(() => ensureLazyViewData(activeView).then(() => {
           if (activeView === 'architecture') {
             renderArchitecturePanels();
           }
@@ -4131,7 +4838,7 @@ export function renderBacklogHtml() {
             renderArchitecturePanels();
           }
           render();
-        });
+        }));
       })
       .catch((error) => {
         const message = '<div class="error">Не удалось загрузить срез backlog: ' + escapeHtml(error.message) + '</div>';
@@ -4192,11 +4899,16 @@ export function renderBacklogHtml() {
     syncGraphCanvasModeUi();
     detailClose.addEventListener('click', closeTaskDetails);
     detailOverlay.addEventListener('click', closeTaskDetails);
-    if (detailSubClose) detailSubClose.addEventListener('click', closeL2NodeDetails);
-    if (detailSubOverlay) detailSubOverlay.addEventListener('click', closeL2NodeDetails);
+    if (detailSubClose) detailSubClose.addEventListener('click', () => popDetailStackNavigation());
+    if (detailSubOverlay) detailSubOverlay.addEventListener('click', () => closeDetailStackFully());
     if (detailSubBody) detailSubBody.addEventListener('click', handleBoardClick);
     detailResizeHandle.addEventListener('pointerdown', startDetailDrawerResize);
     detailResizeHandle.addEventListener('keydown', handleDetailDrawerResizeKeydown);
+    if (sidebarResizeHandle) {
+      sidebarResizeHandle.addEventListener('pointerdown', startSidebarResize);
+      sidebarResizeHandle.addEventListener('keydown', handleSidebarResizeKeydown);
+    }
+    window.addEventListener('resize', handleSidebarViewportResize);
     if (detailSubResizeHandle) {
       detailSubResizeHandle.addEventListener('pointerdown', startDetailSubDrawerResize);
       detailSubResizeHandle.addEventListener('keydown', handleDetailSubDrawerResizeKeydown);
@@ -4208,10 +4920,11 @@ export function renderBacklogHtml() {
     document.addEventListener('keydown', (event) => {
       if (event.key !== 'Escape') return;
       if (detailSubDrawer?.classList.contains('is-open')) {
-        closeL2NodeDetails();
+        popDetailStackNavigation();
         return;
       }
       if (!detailDrawer.classList.contains('is-open')) return;
+      closeDetailStackFully();
       const backButton = document.querySelector('#detail-nav-back');
       if (backButton) backButton.click();
       else closeTaskDetails();
@@ -4223,9 +4936,9 @@ export function renderBacklogHtml() {
     codeGapList.addEventListener('click', handleCodeGapIntakeClick);
     navTabs.forEach((tab) => {
       tab.addEventListener('click', () => {
-        activeView = ['home', 'workflow', 'verification', 'prompts', 'memory', 'analytics', 'board', 'architecture'].includes(tab.dataset.view)
+        activeView = ['workflow', 'verification', 'prompts', 'memory', 'analytics', 'board', 'architecture', 'settings'].includes(tab.dataset.view)
           ? tab.dataset.view
-          : 'home';
+          : 'analytics';
         localStorage.setItem(viewStorageKey, activeView);
         applyView(activeView);
         ensureLazyViewData(activeView).then(() => {
@@ -4275,11 +4988,68 @@ export function renderBacklogHtml() {
         renderAnalyticsPanel();
       });
     });
-    themeToggle.addEventListener('click', () => {
-      const nextTheme = document.body.dataset.theme === 'light' ? 'dark' : 'light';
-      applyTheme(nextTheme);
-      localStorage.setItem(themeStorageKey, nextTheme);
-    });
+    if (themeToggle) {
+      themeToggle.addEventListener('click', () => {
+        const nextTheme = document.body.dataset.theme === 'light' ? 'dark' : 'light';
+        applyTheme(nextTheme);
+        localStorage.setItem(themeStorageKey, nextTheme);
+      });
+    }
+
+    if (settingsThemeLight) {
+      settingsThemeLight.addEventListener('click', () => {
+        applyTheme('light');
+        localStorage.setItem(themeStorageKey, 'light');
+      });
+    }
+    if (settingsThemeDark) {
+      settingsThemeDark.addEventListener('click', () => {
+        applyTheme('dark');
+        localStorage.setItem(themeStorageKey, 'dark');
+      });
+    }
+    if (settingsLocaleButtons.length) {
+      function applySettingsLocaleUi(nextLocale) {
+        settingsLocaleButtons.forEach((button) => {
+          const isActive = button.dataset.settingsLocale === nextLocale;
+          button.classList.toggle('is-active', isActive);
+          button.setAttribute('aria-pressed', String(isActive));
+        });
+      }
+
+      function setUiLocale(nextLocale) {
+        if (!nextLocale || nextLocale === window.__WG_LOCALE__) return;
+        fetch('/api/ui-locale', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ locale: nextLocale }),
+        }).then((response) => {
+          if (!response.ok) throw new Error('locale ' + response.status);
+          window.location.reload();
+        }).catch(() => {
+          window.alert(t('settings.language.changeFailed'));
+        });
+      }
+
+      settingsLocaleButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+          setUiLocale(button.dataset.settingsLocale);
+        });
+      });
+      applySettingsLocaleUi(window.__WG_LOCALE__);
+    }
+    if (settingsCheckUpdate) {
+      settingsCheckUpdate.addEventListener('click', () => {
+        settingsCheckUpdate.disabled = true;
+        if (settingsUpdateStatus) {
+          settingsUpdateStatus.hidden = false;
+          settingsUpdateStatus.textContent = t('settings.about.checking');
+        }
+        renderSettingsPanel({ checkUpdate: true }).finally(() => {
+          settingsCheckUpdate.disabled = false;
+        });
+      });
+    }
 
     function readStoredTheme() {
       return localStorage.getItem(themeStorageKey) === 'dark' ? 'dark' : 'light';
@@ -4294,12 +5064,12 @@ export function renderBacklogHtml() {
         return storedView === 'architecture' ? 'architecture' : 'workflow';
       }
       if (storedView === 'home') {
-        return 'home';
+        return 'analytics';
       }
-      if (['workflow', 'verification', 'prompts', 'memory', 'analytics', 'board', 'architecture'].includes(storedView)) {
+      if (['workflow', 'verification', 'prompts', 'memory', 'analytics', 'board', 'architecture', 'settings'].includes(storedView)) {
         return storedView;
       }
-      return 'home';
+      return 'analytics';
     }
 
     function readStoredWorkflowTab() {
@@ -4378,12 +5148,30 @@ export function renderBacklogHtml() {
       return 'intake';
     }
 
+    function getPanelSearchQuery() {
+      const raw = search.value.trim();
+      if (!raw) {
+        return '';
+      }
+
+      const normalized = raw.toLowerCase();
+      if (activeView === 'memory' && normalized.startsWith('work:')) {
+        return normalized;
+      }
+
+      if (activeView === 'board' || activeView === 'workflow') {
+        return normalized;
+      }
+
+      return '';
+    }
+
     function getFilteredItems() {
       if (!snapshot) {
         return [];
       }
 
-      const query = search.value.trim().toLowerCase();
+      const query = getPanelSearchQuery();
       let items = snapshot.items.filter((item) => matchesQuery(item, query));
       if (semanticSearchWorkIds && semanticSearchWorkIds.size > 0) {
         items = items.filter((item) => semanticSearchWorkIds.has(item.id));
@@ -4424,6 +5212,77 @@ export function renderBacklogHtml() {
             semanticSearchWorkIds = null;
           });
       }, 250);
+    }
+
+    function maxSidebarWidth() {
+      return Math.max(SIDEBAR_WIDTH_MIN, Math.min(SIDEBAR_WIDTH_MAX, window.innerWidth - 160));
+    }
+
+    function clampSidebarWidth(width) {
+      return Math.max(SIDEBAR_WIDTH_MIN, Math.min(maxSidebarWidth(), Number(width) || SIDEBAR_WIDTH_DEFAULT));
+    }
+
+    function readStoredSidebarWidth() {
+      const raw = Number(localStorage.getItem(sidebarWidthStorageKey));
+      return Number.isFinite(raw) ? raw : SIDEBAR_WIDTH_DEFAULT;
+    }
+
+    function getSidebarWidth() {
+      const raw = getComputedStyle(document.documentElement).getPropertyValue('--sidebar-width').trim();
+      const parsed = Number.parseFloat(raw);
+      return Number.isFinite(parsed) && parsed > 0 ? parsed : readStoredSidebarWidth();
+    }
+
+    function applySidebarWidth(width, { persist = true } = {}) {
+      const clamped = clampSidebarWidth(width);
+      document.documentElement.style.setProperty('--sidebar-width', clamped + 'px');
+      document.documentElement.classList.toggle('is-sidebar-compact', clamped <= SIDEBAR_COMPACT_UI_MAX);
+      if (sidebarResizeHandle) {
+        sidebarResizeHandle.setAttribute('aria-valuenow', String(Math.round(clamped)));
+      }
+      if (persist) {
+        localStorage.setItem(sidebarWidthStorageKey, String(Math.round(clamped)));
+      }
+    }
+
+    function applyStoredSidebarWidth() {
+      applySidebarWidth(readStoredSidebarWidth(), { persist: false });
+    }
+
+    function handleSidebarViewportResize() {
+      applySidebarWidth(getSidebarWidth(), { persist: true });
+    }
+
+    function startSidebarResize(event) {
+      if (!sidebarResizeHandle) return;
+      event.preventDefault();
+      sidebarResizeHandle.setPointerCapture?.(event.pointerId);
+      document.body.classList.add('is-resizing-sidebar');
+      const onPointerMove = (moveEvent) => {
+        applySidebarWidth(moveEvent.clientX, { persist: false });
+      };
+      const onPointerUp = (upEvent) => {
+        document.body.classList.remove('is-resizing-sidebar');
+        applySidebarWidth(upEvent.clientX, { persist: true });
+        sidebarResizeHandle.releasePointerCapture?.(event.pointerId);
+        window.removeEventListener('pointermove', onPointerMove);
+        window.removeEventListener('pointerup', onPointerUp);
+        window.removeEventListener('pointercancel', onPointerUp);
+      };
+      window.addEventListener('pointermove', onPointerMove);
+      window.addEventListener('pointerup', onPointerUp);
+      window.addEventListener('pointercancel', onPointerUp);
+    }
+
+    function handleSidebarResizeKeydown(event) {
+      if (!sidebarResizeHandle || !['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+      event.preventDefault();
+      const step = event.shiftKey ? 48 : 16;
+      const current = getSidebarWidth();
+      if (event.key === 'ArrowLeft') applySidebarWidth(current + step);
+      if (event.key === 'ArrowRight') applySidebarWidth(current - step);
+      if (event.key === 'Home') applySidebarWidth(SIDEBAR_WIDTH_MIN);
+      if (event.key === 'End') applySidebarWidth(maxSidebarWidth());
     }
 
     function readStoredDetailDrawerWidth() {
@@ -4561,9 +5420,66 @@ export function renderBacklogHtml() {
       document.documentElement.dataset.iohascTheme = 'workgraph-dark';
       document.body.dataset.theme = theme;
       const isDark = theme === 'dark';
-      themeToggle.textContent = isDark ? 'Светлая тема' : 'Тёмная тема';
-      themeToggle.setAttribute('aria-pressed', String(isDark));
-      themeToggle.setAttribute('aria-label', 'Тема: ' + (isDark ? 'тёмная' : 'светлая'));
+      if (themeToggle) {
+        const inner = themeToggle.querySelector('.header-theme-toggle-inner');
+        if (inner) {
+          inner.innerHTML = isDark ? THEME_ICON_SUN : THEME_ICON_MOON;
+        }
+        themeToggle.setAttribute('aria-pressed', String(isDark));
+        themeToggle.setAttribute('aria-label', t(isDark ? 'theme.light' : 'theme.dark'));
+      }
+      if (settingsThemeLight) {
+        settingsThemeLight.classList.toggle('is-active', theme === 'light');
+      }
+      if (settingsThemeDark) {
+        settingsThemeDark.classList.toggle('is-active', theme === 'dark');
+      }
+    }
+
+    async function loadSettingsVersionInfo(checkUpdate) {
+      const query = checkUpdate ? '?checkUpdate=1' : '';
+      const response = await fetch('/api/app-version' + query);
+      if (!response.ok) {
+        throw new Error('app-version ' + response.status);
+      }
+      return response.json();
+    }
+
+    async function renderSettingsPanel(options = {}) {
+      if (!settingsView) return;
+      try {
+        const info = await loadSettingsVersionInfo(options.checkUpdate === true);
+        if (settingsVersionValue) {
+          settingsVersionValue.textContent = info.version + ' · ' + info.npmPackage;
+        }
+        if (!settingsUpdateStatus) return;
+        if (options.checkUpdate !== true) {
+          settingsUpdateStatus.hidden = true;
+          if (settingsInstallCommand) settingsInstallCommand.hidden = true;
+          return;
+        }
+        settingsUpdateStatus.hidden = false;
+        if (info.checkError) {
+          settingsUpdateStatus.textContent = t('settings.about.checkFailed');
+          if (settingsInstallCommand) settingsInstallCommand.hidden = true;
+          return;
+        }
+        if (info.updateAvailable) {
+          settingsUpdateStatus.textContent = t('settings.about.updateAvailable', { latest: info.latestVersion });
+          if (settingsInstallCommand) {
+            settingsInstallCommand.hidden = false;
+            settingsInstallCommand.textContent = t('settings.about.installHint') + ' ' + info.installCommand;
+          }
+          return;
+        }
+        settingsUpdateStatus.textContent = t('settings.about.upToDate');
+        if (settingsInstallCommand) settingsInstallCommand.hidden = true;
+      } catch (error) {
+        if (settingsUpdateStatus && options.checkUpdate === true) {
+          settingsUpdateStatus.hidden = false;
+          settingsUpdateStatus.textContent = t('settings.about.checkFailed');
+        }
+      }
     }
 
     function remountActiveGraphWorkspace() {
@@ -4581,9 +5497,6 @@ export function renderBacklogHtml() {
       const response = await fetch('/api/home-snapshot' + query);
       if (!response.ok) throw new Error('home snapshot ' + response.status);
       homeSnapshot = await response.json();
-      if (activeView === 'home' && homeMissionControlRoot) {
-        renderHomeMissionControl(homeMissionControlRoot, homeSnapshot);
-      }
       cmdKRows = buildCommandPaletteIndex(snapshot, analyticsProjection);
       return homeSnapshot;
     }
@@ -4629,18 +5542,14 @@ export function renderBacklogHtml() {
     }
 
     function stopAgentScopePoll() {
-      if (agentScopePollTimer) {
-        window.clearInterval(agentScopePollTimer);
-        agentScopePollTimer = null;
-      }
+      liveSync.sync();
     }
 
     function startAgentScopePoll() {
-      if (agentScopePollTimer) return;
-      agentScopePollTimer = window.setInterval(
-        () => refreshAgentScopePanel().catch(() => undefined),
-        agentScopePollMs,
-      );
+      liveSync.sync();
+      if (agentRunDock?.classList.contains('is-open')) {
+        liveSync.forceTick('agent-scope');
+      }
     }
 
     function setAgentDockOpen(open) {
@@ -4650,16 +5559,11 @@ export function renderBacklogHtml() {
       localStorage.setItem(agentDockOpenStorageKey, open ? '1' : '0');
       if (open) {
         refreshAgentRunDock().catch(() => undefined);
-        if (!agentDockPollTimer) {
-          agentDockPollTimer = window.setInterval(() => refreshAgentRunDock().catch(() => undefined), 5000);
-        }
-        startAgentScopePoll();
+        liveSync.sync();
+        liveSync.forceTick('agent-dock');
+        liveSync.forceTick('agent-scope');
       } else {
-        if (agentDockPollTimer) {
-          window.clearInterval(agentDockPollTimer);
-          agentDockPollTimer = null;
-        }
-        stopAgentScopePoll();
+        liveSync.sync();
       }
     }
 
@@ -4777,19 +5681,6 @@ export function renderBacklogHtml() {
       if (localStorage.getItem(agentDockOpenStorageKey) === '1') {
         setAgentDockOpen(true);
       }
-      if (homeMissionControlRoot) {
-        homeMissionControlRoot.addEventListener('click', (event) => {
-          const row = event.target.closest('[data-work-id], [data-analytics-key]');
-          if (!row) return;
-          const analyticsKey = row.getAttribute('data-analytics-key');
-          if (analyticsKey) {
-            handleHomeAnalyticsClick(analyticsKey).catch(() => undefined);
-            return;
-          }
-          const workId = row.getAttribute('data-work-id');
-          if (workId) handleHomeWorkItemClick(workId).catch(() => undefined);
-        });
-      }
       if (agentRunDockClose) {
         agentRunDockClose.addEventListener('click', () => setAgentDockOpen(false));
       }
@@ -4862,15 +5753,9 @@ export function renderBacklogHtml() {
           openCommandPalette();
         }
       });
-      if (!homePollTimer) {
-        homePollTimer = window.setInterval(() => {
-          if (activeView === 'home') refreshHomeSnapshot().catch(() => undefined);
-        }, 30000);
-      }
     }
 
     function applyView(view) {
-      const isHome = view === 'home';
       const isWorkflow = view === 'workflow';
       const isVerification = view === 'verification';
       const isArchitecture = view === 'architecture';
@@ -4878,6 +5763,7 @@ export function renderBacklogHtml() {
       const isPrompts = view === 'prompts';
       const isMemory = view === 'memory';
       const isAnalytics = view === 'analytics';
+      const isSettings = view === 'settings';
       if (contentRoot) {
         contentRoot.classList.remove('is-graph-workspace');
       }
@@ -4885,9 +5771,8 @@ export function renderBacklogHtml() {
       if (workflowDisplayModeSelect) {
         workflowDisplayModeSelect.hidden = !isWorkflow;
       }
-      if (viewToolbar) viewToolbar.hidden = isHome;
-      if (homeView) homeView.hidden = !isHome;
-      boardView.hidden = isHome || isWorkflow || isVerification || isIntent || isPrompts || isMemory || isAnalytics || isArchitecture;
+      if (viewToolbar) viewToolbar.hidden = !(view === 'board' || isWorkflow);
+      boardView.hidden = isWorkflow || isVerification || isIntent || isPrompts || isMemory || isAnalytics || isArchitecture || isSettings;
       workflowView.hidden = !isWorkflow;
       if (isWorkflow) {
         applyWorkflowTab(activeWorkflowTab);
@@ -4897,6 +5782,7 @@ export function renderBacklogHtml() {
       promptsView.hidden = !isPrompts;
       memoryView.hidden = !isMemory;
       analyticsView.hidden = !isAnalytics;
+      if (settingsView) settingsView.hidden = !isSettings;
       if (architectureView) architectureView.hidden = !isArchitecture;
       if (isArchitecture) {
         renderArchitecturePanels();
@@ -4904,17 +5790,20 @@ export function renderBacklogHtml() {
       if (isAnalytics) {
         applyAnalyticsTab(activeAnalyticsTab);
       }
+      if (isSettings) {
+        renderSettingsPanel().catch(() => undefined);
+      }
       const viewCopy = {
-        home: 'Главная',
-        board: 'Доска',
-        workflow: 'Задачи',
-        architecture: 'Архитектура',
-        verification: 'Проверки',
-        prompts: 'Промпты',
-        memory: 'Память',
-        analytics: 'Аналитика',
+        board: t('view.board'),
+        workflow: t('view.workflow'),
+        architecture: t('view.architecture'),
+        verification: t('view.verification'),
+        prompts: t('view.prompts'),
+        memory: t('view.memory'),
+        analytics: t('view.analytics'),
+        settings: t('view.settings'),
       };
-      const title = viewCopy[view] ?? viewCopy.home;
+      const title = viewCopy[view] ?? viewCopy.analytics;
       viewTitle.textContent = title;
       if (breadcrumbProject) {
         breadcrumbProject.textContent = 'Work Graph';
@@ -4922,13 +5811,110 @@ export function renderBacklogHtml() {
       navTabs.forEach((tab) => {
         tab.setAttribute('aria-selected', String(tab.dataset.view === view));
       });
+      syncLivePollInterval();
+    }
+
+    async function pollBacklogRevision() {
+      if (!liveSyncViews.has(activeView)) {
+        return;
+      }
+      try {
+        const response = await fetch('/api/backlog-revision');
+        if (!response.ok) return;
+        const payload = await response.json();
+        if (backlogRevision && payload.revision !== backlogRevision) {
+          const prevKanbanProjection = operatorShellSnapshot?.kanbanBoard ?? null;
+          await reloadOperatorSnapshots();
+          let patched = false;
+          if (activeView === 'board' && prevKanbanProjection) {
+            patched = patchKanbanBoardIncremental(prevKanbanProjection);
+          }
+          if (!patched) {
+            render();
+          } else {
+            const items = getFilteredItems();
+            renderIntentDomainFilter();
+            renderNavigationCounts(items);
+            renderBoard(items);
+          }
+          await reconcileDetailDrawerOnRemotePatch();
+        }
+        backlogRevision = payload.revision;
+      } catch {
+        // ignore transient poll errors
+      }
+    }
+
+    function patchKanbanBoardIncremental(prevProjection) {
+      if (!kanbanBoard || !prevProjection) {
+        return false;
+      }
+      const nextProjection = operatorShellSnapshot?.kanbanBoard ?? null;
+      if (!nextProjection) {
+        return false;
+      }
+      const delta = computeKanbanBoardDelta(prevProjection, nextProjection);
+      if (delta.fullRender) {
+        return false;
+      }
+      const itemsById = new Map((snapshot?.items ?? []).map((item) => [item.id, item]));
+      const result = applyKanbanBoardPatch(kanbanBoard, delta, {
+        renderCard: (item, options) => renderTaskAtomCard(item, 'kanban-card', options),
+        emptyColumnHtml: '<div class="empty">' + escapeHtml(t('empty.noTasks')) + '</div>',
+        itemsById,
+      });
+      return result.ok === true;
+    }
+
+    async function reconcileDetailDrawerOnRemotePatch() {
+      const l1Open = detailDrawer.classList.contains('is-open');
+      const l2Open = detailSubDrawer?.classList.contains('is-open');
+      if (!l1Open && !l2Open) {
+        return;
+      }
+
+      async function refreshTaskDrawerBody(body, workId, mode) {
+        const item = snapshot?.items?.find((candidate) => candidate.id === workId);
+        if (!item || mode === 'edit') {
+          return;
+        }
+        const storedStatus = body.dataset.remoteStatus ?? '';
+        if (storedStatus && storedStatus !== item.status) {
+          await renderTaskDetailContent(item, {
+            parentContext: detailContext?.parent ?? null,
+            mode: 'view',
+            targetBody: body,
+            subDrawer: body !== detailBody,
+          });
+          const banner = '<div class="detail-remote-update-banner" data-testid="detail-remote-update-banner">' +
+            escapeHtml(t('drawer.remoteUpdate')) + '</div>';
+          if (!body.querySelector('[data-testid="detail-remote-update-banner"]')) {
+            body.insertAdjacentHTML('afterbegin', banner);
+          }
+        }
+        body.dataset.remoteStatus = item.status;
+      }
+
+      if (l1Open && detailContext?.type === 'task' && detailContext.taskId) {
+        await refreshTaskDrawerBody(detailBody, detailContext.taskId, detailInspectorState?.mode ?? 'view');
+      }
+      if (l2Open && detailStack.depth() > 0) {
+        const top = detailStack.peek();
+        if (top?.type === 'task' && top.payload?.workId && detailSubBody) {
+          await refreshTaskDrawerBody(detailSubBody, top.payload.workId, 'view');
+        }
+      }
+    }
+
+    function syncLivePollInterval() {
+      liveSync.sync();
+      if (liveSyncViews.has(activeView)) {
+        liveSync.forceTick('backlog-revision');
+      }
     }
 
     function render() {
       if (!snapshot) return;
-      if (activeView === 'home' && homeMissionControlRoot && homeSnapshot) {
-        renderHomeMissionControl(homeMissionControlRoot, homeSnapshot);
-      }
       const items = getFilteredItems();
       renderIntentDomainFilter();
       renderNavigationCounts(items);
@@ -4944,12 +5930,6 @@ export function renderBacklogHtml() {
     }
 
     function ensureLazyViewData(view) {
-      if (view === 'home' && !homePanelLoaded) {
-        return refreshHomeSnapshot().then(() => {
-          homePanelLoaded = true;
-        });
-      }
-
       if (view === 'prompts' && !promptsPanelLoaded) {
         return fetch('/api/prompt-rules-projection').then((response) => {
           if (!response.ok) throw new Error('запрос prompt rules projection завершился с кодом ' + response.status);
@@ -5303,7 +6283,7 @@ export function renderBacklogHtml() {
         return;
       }
 
-      const query = search.value.trim().toLowerCase();
+      const query = getPanelSearchQuery();
       const rules = (promptsProjection.rules ?? []).filter((rule) => matchesPromptRuleQuery(rule, query));
       const summary = promptsProjection.summary ?? { total: 0, valid: 0, invalid: 0 };
 
@@ -5370,7 +6350,7 @@ export function renderBacklogHtml() {
         return;
       }
 
-      const query = search.value.trim().toLowerCase();
+      const query = getPanelSearchQuery();
       const records = (memoryProjection.records ?? []).filter((record) => matchesMemoryRecordQuery(record, query));
       const summary = memoryProjection.summary ?? { total: 0, reviewRequired: 0 };
 
@@ -5391,7 +6371,7 @@ export function renderBacklogHtml() {
               escapeHtml((record.relatedFiles ?? []).join(', ') || 'no related files'),
             ],
             footerLeft: '<span class="id">' + escapeHtml(record.id) + '</span>',
-            footerRight: '<span class="owner-avatar" title="' + escapeHtml(owner) + '">' + escapeHtml(ownerInitials(owner)) + '</span>',
+            footerRight: renderOwnerAvatar(owner, { title: owner }),
             selected: selectedMemoryRecordId === record.id,
             attrs: { 'data-memory-record-id': record.id },
           });
@@ -5474,7 +6454,7 @@ export function renderBacklogHtml() {
         return;
       }
 
-      const query = search.value.trim().toLowerCase();
+      const query = getPanelSearchQuery();
       const queryMatched = (analyticsProjection.records ?? []).filter((record) => matchesAnalyticsRecordQuery(record, query));
       const intakeRecords = queryMatched.filter((record) => readAnalyticsRecordKind(record) === 'intake');
       const closingRecords = queryMatched.filter((record) => readAnalyticsRecordKind(record) === 'closing');
@@ -5508,14 +6488,15 @@ export function renderBacklogHtml() {
           const kindLine = isClosing
             ? 'closing · post-mortem' + epicNote
             : escapeHtml(record.topic) + ' · ' + escapeHtml(record.status);
+          const lineageBadge = buildAnalyticsLineageListBadge(record);
           return renderListRow({
             title: record.title,
             lines: [
               kindLine + ' · ' + escapeHtml((record.tags ?? []).filter((tag) => tag !== 'closing-analysis').join(', ') || 'no tags'),
               escapeHtml(queryPreview + (String(record.query ?? '').length > 120 ? '…' : '')),
             ],
-            footerLeft: '<span class="id">' + escapeHtml(record.key || record.id) + relatedNote + '</span>',
-            footerRight: '<span class="owner-avatar" title="' + escapeHtml(record.author || 'operator') + '">' + escapeHtml(ownerInitials(record.author || 'AG')) + '</span>',
+            footerLeft: '<span class="id">' + escapeHtml(record.key || record.id) + relatedNote + lineageBadge + '</span>',
+            footerRight: renderOwnerAvatar(record.author || 'operator', { title: record.author || 'operator' }),
             selected: selectedAnalyticsRecordId === record.id,
             attrs: { 'data-analytics-record-id': record.id },
           });
@@ -5531,6 +6512,84 @@ export function renderBacklogHtml() {
       }
 
       const record = (analyticsProjection.records ?? []).find((entry) => entry.id === button.dataset.analyticsRecordId);
+      if (!record) {
+        return;
+      }
+
+      selectedAnalyticsRecordId = record.id;
+      renderAnalyticsPanel();
+      openAnalyticsRecordDetails(record);
+    }
+
+    function buildAnalyticsLineageListBadge(record) {
+      const lineage = record.analyticsLineage;
+      if (!lineage) {
+        return '';
+      }
+
+      const parts = [];
+      if (lineage.parent && lineage.parent.key) {
+        parts.push('↳ ' + escapeHtml(lineage.parent.key));
+      }
+
+      const continuationCount = Array.isArray(lineage.continuations) ? lineage.continuations.length : 0;
+      if (continuationCount > 0) {
+        const suffix = continuationCount === 1
+          ? 'продолжение'
+          : (continuationCount < 5 ? 'продолжения' : 'продолжений');
+        parts.push(continuationCount + ' ' + suffix);
+      }
+
+      if (parts.length === 0) {
+        return '';
+      }
+
+      return ' · <span class="analytics-lineage-badge" data-testid="analytics-lineage-badge">' + parts.join(' · ') + '</span>';
+    }
+
+    function renderAnalyticsLineageSections(record) {
+      const lineage = record.analyticsLineage;
+      if (!lineage) {
+        return '';
+      }
+
+      const hasParent = Boolean(lineage.parent);
+      const continuations = Array.isArray(lineage.continuations) ? lineage.continuations : [];
+      const related = Array.isArray(lineage.related) ? lineage.related : [];
+      if (!hasParent && continuations.length === 0 && related.length === 0) {
+        return '';
+      }
+
+      function renderLineageNavItem(entry) {
+        const label = (entry.key ? entry.key + ': ' : '') + (entry.title || entry.id);
+        return '<li><button type="button" class="analytics-lineage-nav-btn" data-analytics-record-id="' + escapeHtml(entry.id) + '" data-testid="analytics-lineage-nav">' +
+          escapeHtml(label) +
+        '</button></li>';
+      }
+
+      let html = '<section class="detail-section analytics-lineage-section" data-testid="analytics-lineage-section">';
+
+      if (hasParent) {
+        html += '<h3 class="analytics-section-title">Родительский разбор</h3>' +
+          '<ul class="analytics-lineage-list">' + renderLineageNavItem(lineage.parent) + '</ul>';
+      }
+
+      if (continuations.length > 0) {
+        html += '<h3 class="analytics-section-title">Продолжения</h3>' +
+          '<ul class="analytics-lineage-list">' + continuations.map(renderLineageNavItem).join('') + '</ul>';
+      }
+
+      if (related.length > 0) {
+        html += '<h3 class="analytics-section-title">Связанные разборы</h3>' +
+          '<ul class="analytics-lineage-list">' + related.map(renderLineageNavItem).join('') + '</ul>';
+      }
+
+      html += '</section>';
+      return html;
+    }
+
+    function openAnalyticsRecordById(recordId) {
+      const record = (analyticsProjection?.records ?? []).find((entry) => entry.id === recordId);
       if (!record) {
         return;
       }
@@ -5614,11 +6673,86 @@ export function renderBacklogHtml() {
         '</section>';
     }
 
+    function buildAnalyticsMarkdownForLlm(record) {
+      const rawBody = String(record?.body ?? '').trim();
+      if (rawBody) {
+        return rawBody;
+      }
+
+      const lines = [];
+      const title = String(record?.title ?? '').trim();
+      const query = String(record?.query ?? '').trim();
+      const topic = String(record?.topic ?? '').trim();
+      const key = String(record?.key ?? record?.id ?? '').trim();
+
+      if (title) {
+        lines.push('# ' + title, '');
+      }
+      if (key) {
+        lines.push('**Ключ:** ' + key, '');
+      }
+      if (query) {
+        lines.push('**Запрос:** ' + query, '');
+      }
+      if (topic) {
+        lines.push('**Тема:** ' + topic, '');
+      }
+
+      return lines.join('\\n').trim() || '—';
+    }
+
+    async function copyTextToClipboard(text) {
+      if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+        await navigator.clipboard.writeText(text);
+        return;
+      }
+
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.setAttribute('readonly', 'readonly');
+      textarea.style.position = 'fixed';
+      textarea.style.left = '-9999px';
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+    }
+
+    let analyticsCopyMdFeedbackTimer = null;
+
+    async function copyAnalyticsMarkdownForLlm(record, button) {
+      const markdown = buildAnalyticsMarkdownForLlm(record);
+      await copyTextToClipboard(markdown);
+
+      if (!button) {
+        return;
+      }
+
+      const previousLabel = button.textContent;
+      button.textContent = 'Скопировано';
+      button.disabled = true;
+      if (analyticsCopyMdFeedbackTimer) {
+        clearTimeout(analyticsCopyMdFeedbackTimer);
+      }
+      analyticsCopyMdFeedbackTimer = setTimeout(function() {
+        button.textContent = previousLabel;
+        button.disabled = false;
+        analyticsCopyMdFeedbackTimer = null;
+      }, 1600);
+    }
+
     function openAnalyticsRecordDetails(record) {
       const isClosing = readAnalyticsRecordKind(record) === 'closing';
       detailContext = { type: 'analytics', recordId: record.id, recordKey: record.key || record.id, recordKind: isClosing ? 'closing' : 'intake' };
       detailTitle.textContent = record.title;
       detailId.textContent = record.key || record.id;
+      detailStack.reset();
+      detailStack.push({
+        type: 'analytics',
+        key: record.id,
+        title: record.title || record.key || record.id,
+        payload: { recordId: record.id, recordKey: record.key || record.id },
+      });
       const answerBody = stripAnalyticsBodyPreamble(record.body || '');
       const feedsEpics = Array.isArray(record.feeds_epics) ? record.feeds_epics : [];
       const metadataHtml =
@@ -5646,17 +6780,31 @@ export function renderBacklogHtml() {
           '</section>';
 
       const bodySectionTitle = isClosing ? 'Итоги эпика' : 'Ответ';
+      const copyMdButton = renderClientUiButton({
+        label: 'Копировать MD',
+        variant: 'secondary',
+        size: 'xs',
+        testId: 'analytics-copy-md',
+        attrs: {
+          'data-action': 'copy-analytics-md',
+          'aria-label': 'Копировать markdown разбора для LLM',
+        },
+      });
 
       detailBody.innerHTML =
         renderDetailBackButton('← К аналитике') +
         '<div class="analytics-qna" data-testid="analytics-qna">' +
           querySection +
           '<section class="detail-section analytics-record-body" data-testid="analytics-record-body">' +
-            '<h3 class="analytics-section-title">' + bodySectionTitle + '</h3>' +
+            '<div class="analytics-section-header">' +
+              '<h3 class="analytics-section-title">' + bodySectionTitle + '</h3>' +
+              copyMdButton +
+            '</div>' +
             renderMarkdownDocument(answerBody || '—') +
           '</section>' +
         '</div>' +
         (isClosing ? '' : renderAnalyticsIntentGraphSections(record)) +
+        renderAnalyticsLineageSections(record) +
         renderAnalyticsRelatedWorkItemsSection(record) +
         wrapDetailAccordion('Метаданные', metadataHtml, { testid: 'analytics-record-meta' });
       openDetailDrawer();
@@ -5948,23 +7096,21 @@ export function renderBacklogHtml() {
     }
 
     function formatVerificationStatusLabel(status) {
-      const labels = {
-        passed: 'пройдено',
-        pending: 'ожидает',
-        blocked: 'заблокировано',
-        not_run: 'не запускалось',
-        failed: 'провалено',
-      };
-      return labels[status] || status || 'ожидает';
+      const key = 'verification.status.' + String(status ?? 'pending');
+      const localized = t(key);
+      if (localized !== key) {
+        return localized;
+      }
+      return status || t('verification.status.pending');
     }
 
     function formatVerificationTierLabel(tier) {
-      const labels = {
-        deterministic: 'детерминированный',
-        'optional-env': 'опционально (окружение)',
-        'optional-llm': 'опционально (LLM)',
-      };
-      return labels[tier] || tier;
+      const key = 'verification.tierLabel.' + String(tier ?? '');
+      const localized = t(key);
+      if (localized !== key) {
+        return localized;
+      }
+      return tier;
     }
 
     function renderVerificationPanel() {
@@ -5973,6 +7119,9 @@ export function renderBacklogHtml() {
         verificationMatrixWrap.innerHTML = '<div class="empty">Сводка проверок не загружена</div>';
         verificationEvidenceList.innerHTML = '';
         verificationWorkerRuns.innerHTML = '';
+        if (verificationContractList) verificationContractList.innerHTML = '';
+        if (verificationContractHealth) verificationContractHealth.innerHTML = '';
+        if (verificationContractCount) verificationContractCount.textContent = '0';
         renderCodegenGatePanel();
         renderDaemonAuditPanel();
         renderCodeGapPanel();
@@ -5982,12 +7131,12 @@ export function renderBacklogHtml() {
       const verification = dashboardSnapshot.verification;
       const counts = verification.tierCounts;
       verificationTierBadges.innerHTML =
-        renderVerificationTierBadge('Уровень A', counts.deterministic) +
-        renderVerificationTierBadge('OneBase (окружение)', counts.optionalEnv) +
-        renderVerificationTierBadge('LLM (опционально)', counts.optionalLlm);
+        renderVerificationTierBadge(t('verification.tier.a'), counts.deterministic) +
+        renderVerificationTierBadge(t('verification.tier.onebase'), counts.optionalEnv) +
+        renderVerificationTierBadge(t('verification.tier.llm'), counts.optionalLlm);
 
       verificationMatrixWrap.innerHTML =
-        '<table class="verification-matrix"><thead><tr><th>Проверка</th><th>Уровень</th><th>Команда</th><th>Статус</th></tr></thead><tbody>' +
+        '<table class="verification-matrix"><thead><tr><th>' + escapeHtml(t('verification.matrix.check')) + '</th><th>' + escapeHtml(t('verification.matrix.tier')) + '</th><th>' + escapeHtml(t('verification.matrix.command')) + '</th><th>' + escapeHtml(t('verification.matrix.status')) + '</th></tr></thead><tbody>' +
         verification.matrix.map((row) =>
           '<tr><td>' + escapeHtml(row.title) + '</td><td>' + escapeHtml(formatVerificationTierLabel(row.tier)) + '</td><td><code>' + escapeHtml(row.command) + '</code></td><td>' +
           renderVerificationStatus(row.status) + '</td></tr>'
@@ -5996,6 +7145,8 @@ export function renderBacklogHtml() {
         (verification.onebaseGate?.status === 'blocked'
           ? '<p class="empty">Гейт OneBase заблокирован' + (verification.onebaseGate.blockedTaskId ? ': ' + escapeHtml(verification.onebaseGate.blockedTaskId) : '') + '. Установите Go и запустите npm run test:optional:onebase.</p>'
           : '');
+
+      renderVerificationContractPanel();
 
       const evidenceRows = dashboardSnapshot.recentEvidence || [];
       renderCodegenGatePanel();
@@ -6019,6 +7170,40 @@ export function renderBacklogHtml() {
 
       renderDaemonAuditPanel();
       renderCodeGapPanel();
+    }
+
+    function renderVerificationContractPanel() {
+      if (!verificationContractList || !verificationContractHealth || !verificationContractCount) {
+        return;
+      }
+
+      const summaries = dashboardSnapshot?.verification?.contractSummaries ?? [];
+      const health = dashboardSnapshot?.verification?.contractHealth;
+
+      verificationContractCount.textContent = String(summaries.length);
+      verificationContractHealth.innerHTML = health
+        ? '<span class="pill">Structured evidence: <strong>' + escapeHtml(String(health.structuredEvidencePct ?? 0)) + '%</strong></span>' +
+          '<span class="pill">Contract ready: <strong>' + escapeHtml(String(health.contractReadyPct ?? 0)) + '%</strong></span>' +
+          '<span class="pill">Gate tasks: <strong>' + escapeHtml(String(health.gateTaskCount ?? 0)) + '</strong></span>'
+        : '';
+
+      verificationContractList.innerHTML = summaries.length
+        ? summaries.map((entry) => {
+          const tier = entry.contract?.verification?.tier ?? '—';
+          const matrixRowId = entry.contract?.verification?.matrixRowId ?? '—';
+          const violationLines = (entry.readiness?.violations ?? []).map((violation) =>
+            '<li><strong>' + escapeHtml(violation.code) + '</strong>: ' + escapeHtml(violation.message) +
+            (violation.fix ? ' · ' + escapeHtml(violation.fix) : '') + '</li>',
+          ).join('');
+          return '<li data-work-id="' + escapeHtml(entry.workId) + '">' +
+            '<h3>' + escapeHtml(entry.title || entry.workId) + '</h3>' +
+            '<p class="list-row-line">Контракт · Tier ' + escapeHtml(String(tier)) + ' · ' + escapeHtml(String(matrixRowId)) +
+            ' · ' + renderVerificationStatus(entry.readiness?.ok ? 'passed' : 'failed') +
+            ' · нарушений: ' + escapeHtml(String(entry.readiness?.violationCount ?? 0)) + '</p>' +
+            (violationLines ? '<ul>' + violationLines + '</ul>' : '') +
+            '</li>';
+        }).join('')
+        : '<li class="empty">Нет gate-задач в текущем snapshot</li>';
     }
 
     function renderCodegenGatePanel() {
@@ -6101,7 +7286,7 @@ export function renderBacklogHtml() {
       }
 
       const suggestions = codeGapProjection.suggestions ?? [];
-      const query = search.value.trim().toLowerCase();
+      const query = getPanelSearchQuery();
       const filtered = suggestions.filter((entry) => {
         if (!query) {
           return true;
@@ -6355,9 +7540,15 @@ export function renderBacklogHtml() {
       const prevDisabled = pagination.page <= 1;
       const nextDisabled = pagination.page >= pagination.totalPages;
       container.innerHTML =
-        renderClientUiButton({ label: 'Назад', variant: 'secondary', className: 'workflow-page-btn', disabled: prevDisabled, attrs: { 'data-workflow-page': kind, 'data-page-action': 'prev' } }) +
-        '<span class="workflow-page-meta">Стр. ' + pagination.page + ' из ' + pagination.totalPages + ' · ' + pagination.from + '–' + pagination.to + ' из ' + pagination.total + '</span>' +
-        renderClientUiButton({ label: 'Вперёд', variant: 'secondary', className: 'workflow-page-btn', disabled: nextDisabled, attrs: { 'data-workflow-page': kind, 'data-page-action': 'next' } });
+        renderClientUiButton({ label: t('pagination.prev'), variant: 'secondary', className: 'workflow-page-btn', disabled: prevDisabled, attrs: { 'data-workflow-page': kind, 'data-page-action': 'prev' } }) +
+        '<span class="workflow-page-meta">' + escapeHtml(t('pagination.meta', {
+          page: pagination.page,
+          totalPages: pagination.totalPages,
+          from: pagination.from,
+          to: pagination.to,
+          total: pagination.total,
+        })) + '</span>' +
+        renderClientUiButton({ label: t('pagination.next'), variant: 'secondary', className: 'workflow-page-btn', disabled: nextDisabled, attrs: { 'data-workflow-page': kind, 'data-page-action': 'next' } });
     }
 
     function handleWorkflowPaginationClick(event) {
@@ -6407,7 +7598,7 @@ export function renderBacklogHtml() {
         ?? null;
 
       if (!projection) {
-        kanbanBoard.innerHTML = '<div class="empty">Kanban projection не загружен</div>';
+        kanbanBoard.innerHTML = '<div class="empty">' + escapeHtml(t('empty.kanbanNotLoaded')) + '</div>';
         return;
       }
 
@@ -6419,8 +7610,8 @@ export function renderBacklogHtml() {
           .join('');
 
         return '<article class="column" data-kanban-column="' + escapeHtml(column.id) + '">' +
-          '<h2>' + escapeHtml(column.title) + renderClientUiBadge({ label: String(column.count), tone: 'muted', testId: 'kanban-col-count-' + column.id }) + '</h2>' +
-          (cards || '<div class="empty">Нет задач</div>') +
+          '<h2>' + escapeHtml(localizedKanbanColumnTitle(column.id, column.title)) + renderClientUiBadge({ label: String(column.count), tone: 'default', testId: 'kanban-col-count-' + column.id }) + '</h2>' +
+          (cards || '<div class="empty">' + escapeHtml(t('empty.noTasks')) + '</div>') +
           '</article>';
       }).join('');
     }
@@ -6437,13 +7628,13 @@ export function renderBacklogHtml() {
             .map((item) => ({ item, queueKind: null }));
 
         return '<article class="column">' +
-          '<h2>' + escapeHtml(group.title) + renderClientUiBadge({ label: String(groupEntries.length), tone: 'muted', testId: 'board-col-count-' + group.id }) + '</h2>' +
+          '<h2>' + escapeHtml(localizedBoardGroupTitle(group.id, group.title)) + renderClientUiBadge({ label: String(groupEntries.length), tone: 'default', testId: 'board-col-count-' + group.id }) + '</h2>' +
           (groupEntries.length
             ? groupEntries.map((entry) => renderTaskAtomCard(entry.item, '', {
               queueKind: entry.queueKind,
               promoteEligible: entry.queueKind === 'planned',
             })).join('')
-            : '<div class="empty">Нет атомов задач</div>') +
+            : '<div class="empty">' + escapeHtml(t('empty.noTaskAtoms')) + '</div>') +
           '</article>';
       }).join('');
     }
@@ -6454,15 +7645,15 @@ export function renderBacklogHtml() {
       const progress = group.childCount > 0
         ? group.doneChildCount + '/' + group.childCount
         : '0';
-      const toggleLabel = collapsed ? 'Развернуть' : 'Свернуть';
+      const toggleLabel = collapsed ? t('workflow.epic.expand') : t('workflow.epic.collapse');
       const childrenHtml = group.children.length
         ? group.children.map((child) => renderTaskAtom(child, 'list-row')).join('')
-        : '<div class="empty">Нет подзадач в этом списке</div>';
+        : '<div class="empty">' + escapeHtml(t('empty.noSubtasks')) + '</div>';
 
       return '<article class="workflow-epic-group" data-testid="workflow-epic-' + escapeHtml(epic.id) + '">' +
         '<div class="workflow-epic-header">' +
           '<button class="task-atom list-row" type="button" data-task-id="' + escapeHtml(epic.id) + '">' +
-            '<h3><span class="workflow-epic-badge">Эпик</span>' + escapeHtml(epic.title || epic.id) +
+            '<h3><span class="workflow-epic-badge">' + escapeHtml(t('workflow.epic.badge')) + '</span>' + escapeHtml(epic.title || epic.id) +
             '<span class="workflow-epic-meta">' + escapeHtml(progress) + '</span></h3>' +
             renderSemanticCore(epic) +
             renderIssueFooter(epic) +
@@ -7194,12 +8385,14 @@ export function renderBacklogHtml() {
 
     function renderTaskAtom(item, extraClass = '', options = {}) {
       const queueKind = options.queueKind ?? null;
+      const surface = extraClass.includes('kanban-card') ? 'board' : 'default';
       const targets = highlightTaskId ? crossHighlightTargets(highlightTaskId) : { peerIds: [] };
       const highlightClass = item.id === highlightTaskId || targets.peerIds.includes(item.id) ? ' is-highlighted' : '';
-      return '<button class="task-atom' + highlightClass + (extraClass ? ' ' + extraClass : '') + '" type="button" data-task-id="' + escapeHtml(item.id) + '">' +
+      const newClass = options.isNew ? ' is-new' : '';
+      return '<button class="task-atom' + highlightClass + newClass + (extraClass ? ' ' + extraClass : '') + '" type="button" data-task-id="' + escapeHtml(item.id) + '" data-work-id="' + escapeHtml(item.id) + '">' +
         '<h3>' + escapeHtml(item.title || item.id) + '</h3>' +
         renderSemanticCore(item) +
-        renderIssueFooter(item, { queueKind }) +
+        renderIssueFooter(item, { queueKind, surface }) +
       '</button>';
     }
 
@@ -7214,6 +8407,36 @@ export function renderBacklogHtml() {
     }
 
     function handleBoardClick(event) {
+      const copyAnalyticsBtn = event.target.closest('[data-action="copy-analytics-md"]');
+      if (copyAnalyticsBtn) {
+        event.preventDefault();
+        event.stopPropagation();
+        const recordId = detailContext?.type === 'analytics'
+          ? detailContext.recordId
+          : selectedAnalyticsRecordId;
+        const record = (analyticsProjection?.records ?? []).find((entry) => entry.id === recordId);
+        if (record) {
+          copyAnalyticsMarkdownForLlm(record, copyAnalyticsBtn).catch(() => undefined);
+        }
+        return;
+      }
+
+      const lineageNavBtn = event.target.closest('.analytics-lineage-nav-btn[data-analytics-record-id]');
+      if (lineageNavBtn) {
+        event.preventDefault();
+        event.stopPropagation();
+        const fromDrawer = Boolean(lineageNavBtn.closest('#detail-body, #detail-sub-body'));
+        if (fromDrawer && detailDrawer.classList.contains('is-open')) {
+          const record = (analyticsProjection?.records ?? []).find((entry) => entry.id === lineageNavBtn.dataset.analyticsRecordId);
+          if (record) {
+            openAnalyticsLineageStackDrawer(record);
+            return;
+          }
+        }
+        openAnalyticsRecordById(lineageNavBtn.dataset.analyticsRecordId);
+        return;
+      }
+
       const epicToggle = event.target.closest('[data-workflow-epic-toggle]');
       if (epicToggle) {
         event.preventDefault();
@@ -7318,7 +8541,38 @@ export function renderBacklogHtml() {
       const item = snapshot.items.find((candidate) => candidate.id === card.dataset.taskId);
       if (!item) return;
       applyCrossHighlight(item.id);
-      const fromDrawer = detailDrawer.classList.contains('is-open') && Boolean(card.closest('#detail-body'));
+
+      const fromAnalyticsRelated = card.classList.contains('analytics-related-task-btn')
+        && detailDrawer.classList.contains('is-open')
+        && Boolean(card.closest('#detail-body, #detail-sub-body'));
+      if (fromAnalyticsRelated) {
+        let recordId = selectedAnalyticsRecordId || detailContext?.recordId;
+        if (card.closest('#detail-sub-body')) {
+          const top = detailStack.peek();
+          if (top?.type === 'analytics') {
+            recordId = top.payload?.recordId ?? top.key ?? recordId;
+          }
+        }
+        const record = (analyticsProjection?.records ?? []).find((entry) => entry.id === recordId);
+        if (record) {
+          openAnalyticsRelatedTaskSubDrawer(item, record);
+          return;
+        }
+      }
+
+      const fromHierarchy = Boolean(card.closest('[data-testid="hierarchy-parent"], [data-testid="hierarchy-children"]'));
+      const fromDrawerBody = Boolean(card.closest('#detail-body'));
+      const fromSubDrawerBody = Boolean(card.closest('#detail-sub-body'));
+      const fromDrawer = detailDrawer.classList.contains('is-open') && fromDrawerBody;
+      const fromSubDrawer = detailSubDrawer?.classList.contains('is-open') && fromSubDrawerBody;
+
+      if (fromHierarchy && (fromDrawer || fromSubDrawer)) {
+        event.preventDefault();
+        event.stopPropagation();
+        openTaskHierarchyStackDrawer(item);
+        return;
+      }
+
       const analyticsParent = card.classList.contains('analytics-related-task-btn') && selectedAnalyticsRecordId
         ? { type: 'analytics', recordId: selectedAnalyticsRecordId }
         : detailContext;
@@ -7364,6 +8618,228 @@ export function renderBacklogHtml() {
     function bindDetailSubNavBack(handler) {
       const button = document.querySelector('#detail-sub-nav-back');
       if (button && handler) button.addEventListener('click', handler, { once: true });
+    }
+
+    function renderDetailStackBreadcrumb() {
+      const frames = detailStack.getFrames();
+      if (frames.length <= 1) {
+        return '';
+      }
+      const crumbs = frames.map((frame, index) => {
+        const label = frame.title || frame.key || frame.type;
+        const isCurrent = index === frames.length - 1;
+        return '<span class="detail-stack-crumb' + (isCurrent ? ' is-current' : '') + '">' + escapeHtml(label) + '</span>';
+      });
+      return '<nav class="detail-stack-breadcrumb" data-testid="detail-stack-breadcrumb" aria-label="Navigation trail">' +
+        crumbs.join('<span class="detail-stack-crumb-sep">›</span>') + '</nav>';
+    }
+
+    function syncDetailSubHeaderFromStack() {
+      const top = detailStack.peek();
+      if (!top || !detailSubTitle || !detailSubId) {
+        return;
+      }
+      detailSubTitle.textContent = top.title || top.key || top.type;
+      if (top.type === 'task') {
+        detailSubId.textContent = top.payload?.workId || top.key || '';
+      } else if (top.type === 'analytics') {
+        detailSubId.textContent = top.payload?.recordKey || top.payload?.recordId || top.key || '';
+      } else if (top.type === 'architecture-l2') {
+        detailSubId.textContent = top.payload?.nodePath || top.payload?.nodeId || top.key || '';
+      } else {
+        detailSubId.textContent = top.key || '';
+      }
+      const headerWrap = detailSubTitle.closest('.detail-header > div');
+      if (!headerWrap) {
+        return;
+      }
+      const existing = headerWrap.querySelector('[data-testid="detail-stack-breadcrumb"]');
+      const breadcrumbHtml = renderDetailStackBreadcrumb();
+      if (breadcrumbHtml) {
+        if (existing) {
+          existing.outerHTML = breadcrumbHtml;
+        } else {
+          detailSubId.insertAdjacentHTML('afterend', breadcrumbHtml);
+        }
+      } else if (existing) {
+        existing.remove();
+      }
+    }
+
+    function closeDetailStackFully() {
+      detailStack.reset();
+      closeL2NodeDetails();
+    }
+
+    function popDetailStackNavigation() {
+      if (!detailSubDrawer?.classList.contains('is-open')) {
+        return false;
+      }
+      if (detailStack.depth() > 1) {
+        detailStack.pop();
+        renderTopDetailStackFrame().catch(() => undefined);
+        return true;
+      }
+      closeDetailStackFully();
+      detailClose?.focus();
+      return true;
+    }
+
+    function resolveStackParentContext(parentFrame) {
+      if (!parentFrame) {
+        return null;
+      }
+      if (parentFrame.type === 'task') {
+        return {
+          type: 'task',
+          taskId: parentFrame.payload?.workId ?? parentFrame.key,
+          title: parentFrame.title || parentFrame.key,
+        };
+      }
+      if (parentFrame.type === 'analytics') {
+        return {
+          type: 'analytics',
+          recordId: parentFrame.payload?.recordId ?? parentFrame.key,
+        };
+      }
+      if (parentFrame.type === 'architecture-block') {
+        return {
+          type: 'block',
+          blockId: parentFrame.payload?.blockId ?? parentFrame.key,
+        };
+      }
+      return null;
+    }
+
+    async function renderDetailStackFrame(frame, parentFrame) {
+      if (frame.type === 'task') {
+        const item = snapshot?.items?.find((candidate) => candidate.id === (frame.payload?.workId || frame.key));
+        if (!item || !detailSubBody) {
+          return;
+        }
+        detailSubBody.setAttribute(
+          'data-testid',
+          parentFrame?.type === 'analytics' ? 'analytics-related-task-sub-drawer' : 'task-hierarchy-sub-drawer',
+        );
+        detailSubBody.dataset.remoteStatus = item.status ?? '';
+        await renderTaskDetailContent(item, {
+          parentContext: resolveStackParentContext(parentFrame),
+          mode: 'view',
+          targetBody: detailSubBody,
+          subDrawer: true,
+        });
+        bindDetailSubNavBack(() => popDetailStackNavigation());
+        return;
+      }
+      if (frame.type === 'analytics') {
+        const record = (analyticsProjection?.records ?? []).find((entry) => entry.id === (frame.payload?.recordId || frame.key));
+        if (!record || !detailSubBody) {
+          return;
+        }
+        detailSubBody.setAttribute('data-testid', 'analytics-lineage-sub-drawer');
+        renderAnalyticsRecordStackBody(record, parentFrame);
+        bindDetailSubNavBack(() => popDetailStackNavigation());
+        return;
+      }
+      if (frame.type === 'architecture-l2') {
+        const block = architectureSnapshot?.blocks?.find((candidate) => candidate.id === frame.payload?.blockId);
+        if (!block || !detailSubBody) {
+          return;
+        }
+        const l2Graph = block.l2Graph;
+        const nodes = l2Graph?.layoutNodes || l2Graph?.nodes || [];
+        const node = nodes.find((candidate) => candidate.id === frame.payload?.nodeId);
+        if (!node) {
+          return;
+        }
+        detailSubBody.setAttribute('data-testid', 'architecture-l2-sub-drawer');
+        const backLabel = parentFrame?.type === 'architecture-block'
+          ? '← ' + (parentFrame.title || parentFrame.key)
+          : '← ' + (block.title || block.id);
+        detailSubBody.innerHTML = renderDetailSubBackButton(backLabel) + buildL2NodeDetailSections(node, l2Graph, block);
+        bindDetailSubNavBack(() => popDetailStackNavigation());
+      }
+    }
+
+    async function renderTopDetailStackFrame() {
+      const top = detailStack.peek();
+      const below = detailStack.peekBelow();
+      if (!top || detailStack.depth() <= 1) {
+        closeDetailStackFully();
+        return;
+      }
+      await renderDetailStackFrame(top, below);
+      syncDetailSubHeaderFromStack();
+      openL2SubDrawer();
+    }
+
+    function renderAnalyticsRecordStackBody(record, parentFrame) {
+      const parentContext = resolveStackParentContext(parentFrame);
+      const backLabel = parentContext?.type === 'analytics'
+        ? '← ' + ((analyticsProjection?.records ?? []).find((entry) => entry.id === parentContext.recordId)?.key || 'Аналитика')
+        : '← ' + (record.key || record.title || 'Аналитика');
+      detailSubBody.innerHTML = renderDetailSubBackButton(backLabel) + buildAnalyticsRecordDetailInnerHtml(record);
+      queueMicrotask(function() {
+        mountMarkdownMermaidDiagrams(detailSubBody.querySelector('.analytics-record-body'));
+      });
+    }
+
+    function buildAnalyticsRecordDetailInnerHtml(record) {
+      const isClosing = readAnalyticsRecordKind(record) === 'closing';
+      const answerBody = stripAnalyticsBodyPreamble(record.body || '');
+      const querySection = isClosing
+        ? (String(record.query ?? '').trim() !== ''
+          ? '<section class="detail-section analytics-query-section" data-testid="analytics-query-section">' +
+            '<h3 class="analytics-section-title">Контекст</h3>' +
+            '<p class="analytics-query-text">' + escapeHtml(record.query) + '</p>' +
+            '</section>'
+          : '')
+        : '<section class="detail-section analytics-query-section" data-testid="analytics-query-section">' +
+          '<h3 class="analytics-section-title">Запрос</h3>' +
+          '<p class="analytics-query-text">' + escapeHtml(record.query || '—') + '</p>' +
+          '</section>';
+      const bodySectionTitle = isClosing ? 'Итоги эпика' : 'Ответ';
+      return '<div class="analytics-qna" data-testid="analytics-qna">' +
+        querySection +
+        '<section class="detail-section analytics-record-body" data-testid="analytics-record-body">' +
+          '<h3 class="analytics-section-title">' + bodySectionTitle + '</h3>' +
+          renderMarkdownDocument(answerBody || '—') +
+        '</section>' +
+      '</div>' +
+      (isClosing ? '' : renderAnalyticsIntentGraphSections(record)) +
+      renderAnalyticsLineageSections(record) +
+      renderAnalyticsRelatedWorkItemsSection(record);
+    }
+
+    function openAnalyticsLineageStackDrawer(record) {
+      if (!record?.id) {
+        return;
+      }
+      const currentRecordId = detailContext?.recordId || selectedAnalyticsRecordId;
+      const currentRecord = currentRecordId
+        ? (analyticsProjection?.records ?? []).find((entry) => entry.id === currentRecordId)
+        : null;
+
+      if (currentRecord && detailStack.depth() === 0) {
+        detailStack.push({
+          type: 'analytics',
+          key: currentRecord.id,
+          title: currentRecord.title || currentRecord.key || currentRecord.id,
+          payload: { recordId: currentRecord.id, recordKey: currentRecord.key || currentRecord.id },
+        });
+      }
+
+      detailStack.push({
+        type: 'analytics',
+        key: record.id,
+        title: record.title || record.key || record.id,
+        payload: { recordId: record.id, recordKey: record.key || record.id },
+      });
+
+      selectedAnalyticsRecordId = record.id;
+      renderAnalyticsPanel();
+      renderTopDetailStackFrame().catch(() => undefined);
+      detailSubClose?.focus();
     }
 
     function resolveL2NodeLabel(nodeRef, l2Graph) {
@@ -7466,25 +8942,117 @@ export function renderBacklogHtml() {
       const node = nodes.find((candidate) => candidate.id === nodeId);
       if (!node || !detailSubBody || !detailSubTitle || !detailSubId) return;
 
-      const openedFromDrawer = fromBlockDrawer
-        || (detailDrawer.classList.contains('is-open')
-          && detailContext?.type === 'block'
-          && detailContext.blockId === block.id);
+      if (fromBlockDrawer && detailContext?.type === 'block' && detailStack.depth() === 0) {
+        detailStack.push({
+          type: 'architecture-block',
+          key: block.id,
+          title: block.title || block.id,
+          payload: { blockId: block.id },
+        });
+      }
 
-      detailSubTitle.textContent = node.kind === 'file' ? (node.title || node.path || node.id) : (node.title || node.id);
-      detailSubId.textContent = node.kind === 'container'
-        ? ('Контейнер · ' + formatArchitectureContainerKind(node.subtitle || ''))
-        : (node.path || node.id);
-      detailSubBody.innerHTML =
-        renderDetailSubBackButton('← ' + (block.title || block.id)) +
-        buildL2NodeDetailSections(node, l2Graph, block);
-      openL2SubDrawer();
-      bindDetailSubNavBack(() => {
-        closeL2NodeDetails();
-        if (!openedFromDrawer && detailSubClose) {
-          detailSubClose.focus();
-        }
+      detailStack.push({
+        type: 'architecture-l2',
+        key: block.id + ':' + nodeId,
+        title: node.kind === 'file' ? (node.title || node.path || node.id) : (node.title || node.id),
+        payload: {
+          blockId: block.id,
+          nodeId: node.id,
+          nodePath: node.path || node.id,
+        },
       });
+
+      renderTopDetailStackFrame().catch(() => undefined);
+      detailSubClose?.focus();
+    }
+
+    function openTaskHierarchyStackDrawer(item) {
+      if (!item?.id) {
+        return;
+      }
+
+      const currentWorkId = detailContext?.taskId ?? detailInspectorState?.workId;
+      const currentItem = currentWorkId
+        ? snapshot?.items?.find((candidate) => candidate.id === currentWorkId)
+        : null;
+
+      if (currentItem && detailStack.depth() === 0) {
+        detailStack.push({
+          type: 'task',
+          key: currentItem.id,
+          title: currentItem.title || currentItem.id,
+          payload: { workId: currentItem.id },
+        });
+      }
+
+      detailStack.push({
+        type: 'task',
+        key: item.id,
+        title: item.title || item.id,
+        payload: { workId: item.id },
+      });
+
+      renderTopDetailStackFrame().catch(() => undefined);
+      detailSubClose?.focus();
+    }
+
+    function openTaskStackSubDrawer(item, previousFrame) {
+      if (!item || !detailSubBody || !detailSubTitle || !detailSubId) {
+        return;
+      }
+
+      detailSubTitle.textContent = item.title || item.id;
+      detailSubId.textContent = item.id;
+      detailSubBody.setAttribute('data-testid', 'task-hierarchy-sub-drawer');
+      detailSubBody.dataset.remoteStatus = item.status ?? '';
+
+      const parentContext = previousFrame?.type === 'task'
+        ? {
+          type: 'task',
+          taskId: previousFrame.payload?.workId ?? previousFrame.key,
+          title: previousFrame.title || previousFrame.key,
+        }
+        : null;
+
+      renderTaskDetailContent(item, {
+        parentContext,
+        mode: 'view',
+        targetBody: detailSubBody,
+        subDrawer: true,
+      }).catch((error) => {
+        detailSubBody.innerHTML = '<div class="error">' + escapeHtml(error.message) + '</div>';
+      });
+
+      openL2SubDrawer();
+      detailSubClose?.focus();
+    }
+
+    function openAnalyticsRelatedTaskSubDrawer(item, record) {
+      if (!item || !record) {
+        return;
+      }
+
+      const top = detailStack.peek();
+      if (!top || top.type !== 'analytics' || top.payload?.recordId !== record.id) {
+        if (detailStack.depth() > 0) {
+          detailStack.reset();
+        }
+        detailStack.push({
+          type: 'analytics',
+          key: record.id,
+          title: record.title || record.key || record.id,
+          payload: { recordId: record.id, recordKey: record.key || record.id },
+        });
+      }
+
+      detailStack.push({
+        type: 'task',
+        key: item.id,
+        title: item.title || item.id,
+        payload: { workId: item.id },
+      });
+
+      renderTopDetailStackFrame().catch(() => undefined);
       detailSubClose?.focus();
     }
 
@@ -7521,7 +9089,7 @@ export function renderBacklogHtml() {
       if (parentId !== '') {
         const parent = snapshot?.items?.find((candidate) => candidate.id === parentId);
         parts.push('<div class="detail-section hierarchy-parent" data-testid="hierarchy-parent">' +
-          '<h3>Родитель</h3>' +
+          '<h3>' + escapeHtml(t('drawer.section.parent')) + '</h3>' +
           '<div class="hierarchy-panel">' +
           '<button type="button" class="task-atom list-row" data-task-id="' + escapeHtml(parentId) + '">' +
           '<h3>' + escapeHtml(parent?.title ?? parentId) + '</h3>' +
@@ -7544,9 +9112,9 @@ export function renderBacklogHtml() {
         }).join('');
 
         parts.push('<div class="detail-section hierarchy-children" data-testid="hierarchy-children">' +
-          '<h3>Подзадачи <span class="count">' + doneCount + '/' + childIds.length + '</span></h3>' +
+          '<h3>' + escapeHtml(t('drawer.section.children')) + ' <span class="count">' + doneCount + '/' + childIds.length + '</span></h3>' +
           (closeBlocked
-            ? '<p class="hierarchy-close-gate">Закрытие родителя заблокировано: не все подзадачи завершены.</p>'
+            ? '<p class="hierarchy-close-gate">' + escapeHtml(t('drawer.section.closeBlocked')) + '</p>'
             : '') +
           '<div class="hierarchy-panel">' + childButtons + '</div></div>');
       }
@@ -7557,18 +9125,18 @@ export function renderBacklogHtml() {
     function buildTaskDetailSections(item) {
       return '<div class="meta">' + renderTags(item).join('') + '</div>' +
         renderParentChildHierarchy(item) +
-        renderDetailText('Базис', item.basis) +
-        renderDetailText('Вектор', item.vector) +
-        renderDetailText('Цель', item.goal) +
+        renderDetailText(t('drawer.section.basis'), item.basis) +
+        renderDetailText(t('drawer.section.vector'), item.vector) +
+        renderDetailText(t('drawer.section.goal'), item.goal) +
         renderPipelineReadOnly(item) +
-        renderOptionalDetailAccordion('Зависимости', item.dependsOn, 'list') +
-        renderOptionalDetailAccordion('Проверки', item.checks, 'list') +
-        renderOptionalDetailAccordion('Свидетельства', item.evidence, 'list') +
-        renderOptionalDetailAccordion('Следующее действие', item.nextAction, 'text') +
-        renderOptionalDetailAccordion('Блокер', item.blocker, 'text') +
-        renderOptionalDetailAccordion('Трасса файлов', item.targetFiles, 'list') +
-        wrapDetailAccordion('Память',
-          '<button type="button" class="detail-link-btn" data-action="open-memory-for-task" data-work-id="' + escapeHtml(item.id) + '" data-testid="open-memory-for-task">Память по work.id</button>',
+        renderOptionalDetailAccordion(t('drawer.section.dependencies'), item.dependsOn, 'list') +
+        renderOptionalDetailAccordion(t('drawer.section.checks'), item.checks, 'list') +
+        renderOptionalDetailAccordion(t('drawer.section.evidence'), item.evidence, 'list') +
+        renderOptionalDetailAccordion(t('drawer.section.nextAction'), item.nextAction, 'text') +
+        renderOptionalDetailAccordion(t('drawer.section.blocker'), item.blocker, 'text') +
+        renderOptionalDetailAccordion(t('drawer.section.targetFiles'), item.targetFiles, 'list') +
+        wrapDetailAccordion(t('drawer.section.memory'),
+          '<button type="button" class="detail-link-btn" data-action="open-memory-for-task" data-work-id="' + escapeHtml(item.id) + '" data-testid="open-memory-for-task">' + escapeHtml(t('drawer.section.memoryLink')) + '</button>',
           { required: true });
     }
 
@@ -7596,7 +9164,7 @@ export function renderBacklogHtml() {
         parts.push(renderPipelineProse(decision));
       }
 
-      return wrapDetailAccordion('Анализ и решение', parts.join(''), {
+      return wrapDetailAccordion(t('drawer.section.analysisDecision'), parts.join(''), {
         testid: options.testid ?? 'work-pipeline-panel',
         dataWorkId: options.dataWorkId ?? source.id,
         className: 'pipeline-readonly',
@@ -7639,8 +9207,9 @@ export function renderBacklogHtml() {
       return renderUiReferencesPanel(payload);
     }
 
-    function bindUiReferenceActions(item) {
-      const panel = detailBody.querySelector('[data-testid="ui-refs-panel"]');
+    function bindUiReferenceActions(item, options = {}) {
+      const root = options.root ?? detailBody;
+      const panel = root.querySelector('[data-testid="ui-refs-panel"]');
       if (!panel) return;
 
       const fileInput = panel.querySelector('[data-testid="ui-ref-file-input"]');
@@ -7694,13 +9263,14 @@ export function renderBacklogHtml() {
       }
 
       activeView = 'memory';
-      localStorage.setItem('iohasc.workgraph.activeView', activeView);
+      localStorage.setItem(viewStorageKey, activeView);
       search.value = 'work:' + normalizedWorkId;
-      setActiveView('memory');
-      ensureViewData('memory').then(() => {
-        renderMemoryPanel();
+      applyView(activeView);
+      ensureLazyViewData('memory').then(() => {
+        render();
       }).catch((error) => {
         console.error(error);
+        render();
       });
     }
 
@@ -7751,6 +9321,14 @@ export function renderBacklogHtml() {
       detailTitle.textContent = item.title || item.id;
       detailId.textContent = item.id;
       detailInspectorState = { workId: item.id, draft: null, mode };
+      detailBody.dataset.remoteStatus = item.status ?? '';
+      detailStack.reset();
+      detailStack.push({
+        type: 'task',
+        key: item.id,
+        title: item.title || item.id,
+        payload: { workId: item.id },
+      });
       renderTaskDetailContent(item, { parentContext, mode }).catch((error) => {
         detailBody.innerHTML = '<div class="error">' + escapeHtml(error.message) + '</div>';
       });
@@ -7758,31 +9336,54 @@ export function renderBacklogHtml() {
       detailClose.focus();
     }
 
-    async function renderTaskDetailContent(item, { parentContext = null, mode = 'view' } = {}) {
+    async function renderTaskDetailContent(item, { parentContext = null, mode = 'view', targetBody = null, subDrawer = false } = {}) {
+      const body = targetBody ?? detailBody;
+      const renderBackButton = subDrawer ? renderDetailSubBackButton : renderDetailBackButton;
+      const bindBack = subDrawer ? bindDetailSubNavBack : bindDetailNavBack;
+      const effectiveMode = subDrawer ? 'view' : mode;
+
       let backRow = '';
       let backHandler = null;
       if (parentContext?.type === 'block') {
         const block = architectureSnapshot?.blocks?.find((candidate) => candidate.id === parentContext.blockId);
-        backRow = renderDetailBackButton('← ' + (block?.title || block?.id || 'Блок'));
+        backRow = renderBackButton('← ' + (block?.title || block?.id || 'Блок'));
         backHandler = () => {
+          if (subDrawer) {
+            popDetailStackNavigation();
+            if (block) openBlockDetails(block, { resetNav: false });
+            return;
+          }
           if (block) openBlockDetails(block, { resetNav: false });
         };
       } else if (parentContext?.type === 'analytics') {
         const record = (analyticsProjection?.records ?? []).find((candidate) => candidate.id === parentContext.recordId);
-        backRow = renderDetailBackButton('← ' + (record?.key || record?.title || 'Аналитика'));
+        backRow = renderBackButton('← ' + (record?.key || record?.title || 'Аналитика'));
         backHandler = () => {
+          if (subDrawer) {
+            popDetailStackNavigation();
+            return;
+          }
           if (record) openAnalyticsRecordDetails(record);
+        };
+      } else if (parentContext?.type === 'task') {
+        backRow = renderBackButton('← ' + (parentContext.title || parentContext.taskId || t('drawer.back.task')));
+        backHandler = () => {
+          if (subDrawer) {
+            popDetailStackNavigation();
+            return;
+          }
+          detailClose?.focus();
         };
       }
 
-      if (mode === 'edit') {
+      if (effectiveMode === 'edit') {
         const response = await fetch('/api/atom-inspector/draft?workId=' + encodeURIComponent(item.id));
         const payload = await response.json();
         if (!response.ok) {
           throw new Error(payload.message || payload.error || ('HTTP ' + response.status));
         }
         detailInspectorState.draft = payload.draft;
-        detailBody.innerHTML = backRow +
+        body.innerHTML = backRow +
           renderDetailToolbar('edit') +
           renderAtomInspectorForm(payload) +
           '<pre id="atom-inspector-preview" class="atom-inspector-preview" data-testid="atom-inspector-preview"></pre>' +
@@ -7808,20 +9409,24 @@ export function renderBacklogHtml() {
           ),
         ]);
 
-        detailBody.innerHTML = backRow +
-          renderDetailToolbar('view') +
+        body.innerHTML = backRow +
+          (subDrawer ? '' : renderDetailToolbar('view')) +
           buildTaskDetailSections(item) +
           wrapDetailAccordion('UI-референсы', uiRefsSection, { testid: 'ui-refs-accordion' }) +
           wrapDetailAccordion('Evidence timeline', timelineSection, { testid: 'evidence-timeline-accordion' }) +
           wrapDetailAccordion('Trace связи', linkageSection, { testid: 'linkage-drilldown-accordion' }) +
           wrapDetailAccordion('PVRG область', pvrgSection, { testid: 'pvrg-task-scope-accordion' }) +
-          renderDetailPromoteRow(item);
+          (subDrawer ? '' : renderDetailPromoteRow(item));
       }
 
-      if (backHandler) bindDetailNavBack(backHandler);
-      bindDetailToolbar(item);
-      bindUiReferenceActions(item);
-      detailBody.querySelectorAll('[data-action="open-memory-for-task"]').forEach((button) => {
+      if (backHandler) bindBack(backHandler);
+      if (!subDrawer) {
+        bindDetailToolbar(item);
+        bindUiReferenceActions(item);
+      } else {
+        bindUiReferenceActions(item, { root: body });
+      }
+      body.querySelectorAll('[data-action="open-memory-for-task"]').forEach((button) => {
         button.addEventListener('click', () => {
           openMemoryPanelForTask(button.dataset.workId);
         });
@@ -7871,15 +9476,23 @@ export function renderBacklogHtml() {
     function renderAtomInspectorForm(payload) {
       const draft = payload.draft ?? {};
       const labels = draft.labels ?? {};
+      const lang = resolveAtomInspectorLang(draft);
+      const warnings = Array.isArray(payload.warnings) ? payload.warnings : [];
+      const warningHtml = warnings.length > 0
+        ? '<div class="atom-inspector-warnings" data-testid="atom-inspector-warnings">' +
+          warnings.map((entry) => '<div>' + escapeHtml(typeof entry === 'string' ? entry : (entry.message || String(entry))) + '</div>').join('') +
+          '</div>'
+        : '';
       const statusOptions = workItemStatusOptions.map((status) =>
         '<option value="' + escapeHtml(status) + '"' + (labels['work.status'] === status ? ' selected' : '') + '>' + escapeHtml(status) + '</option>'
       ).join('');
 
       return '<form id="atom-inspector-form" class="atom-inspector-form" data-testid="atom-inspector-form">' +
-        '<div class="atom-inspector-field"><label>Atom name</label><input name="name" value="' + escapeHtml(draft.name ?? '') + '" readonly></div>' +
-        '<div class="atom-inspector-field"><label>Базис</label><textarea name="basis">' + escapeHtml((draft.basis ?? []).join('\\n')) + '</textarea></div>' +
-        '<div class="atom-inspector-field"><label>Вектор</label><textarea name="vector">' + escapeHtml((draft.vector ?? []).join('\\n')) + '</textarea></div>' +
-        '<div class="atom-inspector-field"><label>Цель</label><textarea name="goal">' + escapeHtml((draft.goal ?? []).join('\\n')) + '</textarea></div>' +
+        warningHtml +
+        '<div class="atom-inspector-field"><label>Atom name<span class="atom-inspector-lang-badge" data-testid="atom-inspector-lang-badge">' + escapeHtml(lang) + '</span></label><input name="name" value="' + escapeHtml(draft.name ?? '') + '" readonly></div>' +
+        '<div class="atom-inspector-field"><label>' + escapeHtml(atomSectionTitle(lang, 'basis')) + '</label><textarea name="basis">' + escapeHtml((draft.basis ?? []).join('\\n')) + '</textarea></div>' +
+        '<div class="atom-inspector-field"><label>' + escapeHtml(atomSectionTitle(lang, 'vector')) + '</label><textarea name="vector">' + escapeHtml((draft.vector ?? []).join('\\n')) + '</textarea></div>' +
+        '<div class="atom-inspector-field"><label>' + escapeHtml(atomSectionTitle(lang, 'goal')) + '</label><textarea name="goal">' + escapeHtml((draft.goal ?? []).join('\\n')) + '</textarea></div>' +
         '<div class="atom-inspector-field"><label>work.status</label><select name="work.status">' + statusOptions + '</select></div>' +
         '<div class="atom-inspector-field"><label>work.owner_role</label><input name="work.owner_role" value="' + escapeHtml(labels['work.owner_role'] ?? '') + '"></div>' +
         '<div class="atom-inspector-field"><label>work.department</label><input name="work.department" value="' + escapeHtml(labels['work.department'] ?? '') + '"></div>' +
@@ -7889,8 +9502,8 @@ export function renderBacklogHtml() {
         '<div class="atom-inspector-field"><label>work.blocker</label><input name="work.blocker" value="' + escapeHtml(labels['work.blocker'] ?? '') + '"></div>' +
         '<div class="atom-inspector-field"><label>work.depends_on</label><input name="work.depends_on" value="' + escapeHtml(labels['work.depends_on'] ?? '') + '"></div>' +
         '<div class="atom-inspector-field"><label>work.target_files</label><input name="work.target_files" value="' + escapeHtml(labels['work.target_files'] ?? '') + '"></div>' +
-        '<div class="atom-inspector-field"><label>Проверки</label><textarea name="checks">' + escapeHtml((draft.checks ?? []).join('\\n')) + '</textarea></div>' +
-        '<div class="atom-inspector-field"><label>Свидетельства</label><textarea name="evidence">' + escapeHtml((draft.evidence ?? []).join('\\n')) + '</textarea></div>' +
+        '<div class="atom-inspector-field"><label>' + escapeHtml(atomSectionTitle(lang, 'checks')) + '</label><textarea name="checks">' + escapeHtml((draft.checks ?? []).join('\\n')) + '</textarea></div>' +
+        '<div class="atom-inspector-field"><label>' + escapeHtml(atomSectionTitle(lang, 'evidence')) + '</label><textarea name="evidence">' + escapeHtml((draft.evidence ?? []).join('\\n')) + '</textarea></div>' +
         '<div class="atom-inspector-actions">' +
           '<button type="button" data-action="proposal" data-testid="atom-inspector-propose">Preview proposal</button>' +
           '<button type="button" data-action="apply" data-testid="atom-inspector-apply">Apply to backlog</button>' +
@@ -7997,7 +9610,7 @@ export function renderBacklogHtml() {
     }
 
     function closeTaskDetails() {
-      closeL2NodeDetails();
+      closeDetailStackFully();
       detailDrawer.classList.remove('is-open');
       detailOverlay.classList.remove('is-open');
       detailDrawer.setAttribute('aria-hidden', 'true');
@@ -8109,10 +9722,10 @@ export function renderBacklogHtml() {
     }
 
     function renderSemanticCore(item) {
-      if (!item.vector) return '';
+      if (!item.goal) return '';
 
-      return '<section class="semantic-core" aria-label="Семантическое ядро атома">' +
-        '<div class="semantic-line">' + escapeHtml(preview(item.vector)) + '</div>' +
+      return '<section class="semantic-core" aria-label="Цель задачи">' +
+        '<div class="semantic-line">' + escapeHtml(preview(item.goal)) + '</div>' +
       '</section>';
     }
 
@@ -8148,22 +9761,22 @@ export function renderBacklogHtml() {
         '</div>';
     }
 
-    function renderIssueFooter(item, { queueKind = null } = {}) {
-      const statusBadge = (item.status || queueKind)
-        ? renderStatusBadge(item.status, queueKind)
-        : '';
-      const leftTags = '<span class="id">' + escapeHtml(item.key || issueKey(item.id)) + '</span>' + statusBadge;
+    function renderIssueFooter(item, { queueKind = null, surface = 'default' } = {}) {
+      const secondaryBadge = surface === 'board'
+        ? renderWorkItemClassifierBadge(item)
+        : ((item.status || queueKind) ? renderStatusBadge(item.status, queueKind) : '');
+      const leftTags = renderWorkItemIssueKeyChip(item) + secondaryBadge;
       const owner = item.ownerRole || item.department || 'WG';
       return '<div class="issue-footer">' +
         '<div class="issue-footer-left">' + leftTags + '</div>' +
-        '<div class="issue-footer-right"><span class="owner-avatar" title="' + escapeHtml(owner) + '">' + escapeHtml(ownerInitials(owner)) + '</span></div>' +
+        '<div class="issue-footer-right">' + renderOwnerAvatar(owner, { title: owner }) + '</div>' +
         '</div>';
     }
 
     function renderStatusBadge(status, queueKind = null) {
       if (queueKind === 'planned') {
         return renderClientUiBadge({
-          label: 'в плане',
+          label: t('status.planned'),
           tone: 'accent',
           title: 'backlog, зависимости выполнены',
           testId: 'status-planned',
@@ -8231,17 +9844,6 @@ export function renderBacklogHtml() {
       return normalized.length > 110 ? normalized.slice(0, 107) + '...' : normalized;
     }
 
-    function issueKey(id) {
-      const normalized = String(id || '').replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-|-$/g, '').toUpperCase();
-      return normalized || 'WG';
-    }
-
-    function ownerInitials(value) {
-      const words = String(value || 'WG').split(/[^a-zA-Zа-яА-Я0-9]+/).filter(Boolean);
-      const initials = words.slice(0, 2).map((word) => word[0]).join('').toUpperCase();
-      return initials || 'WG';
-    }
-
     function countByStatus(items) {
       return items.reduce((counts, item) => {
         counts[item.status] = (counts[item.status] || 0) + 1;
@@ -8251,15 +9853,6 @@ export function renderBacklogHtml() {
 
     function countGroupItems(counts, group) {
       return group.statuses.reduce((sum, status) => sum + (counts[status] || 0), 0);
-    }
-
-    function escapeHtml(value) {
-      return String(value)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
     }
   </script>
 </body>
@@ -8272,6 +9865,7 @@ export function createBacklogUiServer(options = {}) {
   const journalPath = options.journalPath ?? 'work/worker-runs.jsonl';
   const auditPath = options.auditPath ?? 'work/daemon-audit.jsonl';
   const pathOptions = { backlogPath, journalPath, auditPath };
+  const uiEventsHub = createBacklogUiEventsHub();
   let hostReady = ensureHostStateInitialized(hostState, {
     hostLabel: options.hostLabel ?? 'Work Graph',
   });
@@ -8283,6 +9877,10 @@ export function createBacklogUiServer(options = {}) {
     const requestCtx = resolveWorkGraphRequestContext(hostState, url, pathOptions);
     const cwd = requestCtx.repoRoot;
     const serverOptions = { cwd, backlogPath, journalPath, auditPath };
+
+    if (handlePublicSiteRequest(request, response, url)) {
+      return;
+    }
 
     if (url.pathname === '/api/prompt-rules-projection' && method === 'GET') {
       try {
@@ -8815,6 +10413,23 @@ export function createBacklogUiServer(options = {}) {
       return;
     }
 
+    if (url.pathname === '/api/ui-locale' && method === 'POST') {
+      try {
+        const rawBody = await readRequestBody(request);
+        const body = rawBody ? JSON.parse(rawBody) : {};
+        const locale = resolveUiLocale({ queryLocale: body.locale });
+        sendJson(response, 200, { ok: true, locale }, {
+          'Set-Cookie': `${UI_LOCALE_COOKIE}=${encodeURIComponent(locale)}; Path=/; Max-Age=31536000; SameSite=Lax`,
+        });
+      } catch (error) {
+        sendJson(response, 422, {
+          error: 'failed_to_set_ui_locale',
+          message: error instanceof Error ? error.message : String(error),
+        });
+      }
+      return;
+    }
+
     if (method !== 'GET') {
       sendText(response, 405, 'Method Not Allowed');
       return;
@@ -8844,6 +10459,50 @@ export function createBacklogUiServer(options = {}) {
       } catch (error) {
         sendJson(response, 404, {
           error: 'ui_ref_file_not_found',
+          message: error instanceof Error ? error.message : String(error),
+        });
+      }
+      return;
+    }
+
+    if (url.pathname === '/api/backlog-revision' && method === 'GET') {
+      try {
+        const items = await readWorkItemsFromRepo({ cwd, backlogPath });
+        sendJson(response, 200, computeBacklogRevision(items));
+      } catch (error) {
+        sendJson(response, 500, {
+          error: 'failed_to_compute_backlog_revision',
+          message: error instanceof Error ? error.message : String(error),
+        });
+      }
+      return;
+    }
+
+    if (url.pathname === '/api/ui-events/stream' && method === 'GET') {
+      try {
+        await uiEventsHub.ensureStarted({ cwd, backlogPath });
+        uiEventsHub.handleSse(request, response);
+      } catch (error) {
+        sendJson(response, 500, {
+          error: 'failed_to_open_ui_events_stream',
+          message: error instanceof Error ? error.message : String(error),
+        });
+      }
+      return;
+    }
+
+    if (url.pathname === '/api/app-version' && method === 'GET') {
+      try {
+        const checkUpdate = url.searchParams.get('checkUpdate') === '1'
+          || url.searchParams.get('checkUpdate') === 'true';
+        const payload = await buildAppVersionResponse({
+          cwd,
+          checkUpdate,
+        });
+        sendJson(response, 200, payload);
+      } catch (error) {
+        sendJson(response, 500, {
+          error: 'failed_to_read_app_version',
           message: error instanceof Error ? error.message : String(error),
         });
       }
@@ -9025,6 +10684,13 @@ export function createBacklogUiServer(options = {}) {
       return;
     }
 
+    if (tryServePublicIconsAsset(url, response)) {
+      return;
+    }
+    if (tryServePublicAvatarsAsset(url, response)) {
+      return;
+    }
+
     if (url.pathname === '/favicon.ico' && method === 'GET') {
       response.writeHead(204);
       response.end();
@@ -9106,8 +10772,13 @@ export function createBacklogUiServer(options = {}) {
       return;
     }
 
-    if (url.pathname === '/' || url.pathname === '/index.html') {
-      sendHtml(response, 200, renderBacklogHtml());
+    if (url.pathname === '/app' || url.pathname === '/app/' || url.pathname === '/app/index.html') {
+      const locale = resolveUiLocale({
+        cookieHeader: request.headers.cookie,
+        acceptLanguage: request.headers['accept-language'],
+        queryLocale: url.searchParams.get('locale'),
+      });
+      sendHtml(response, 200, renderBacklogHtml({ locale }));
       return;
     }
 
@@ -9131,10 +10802,11 @@ export async function startBacklogUiServer(options = {}) {
   return { server, host, port };
 }
 
-function sendJson(response, statusCode, payload) {
+function sendJson(response, statusCode, payload, extraHeaders = {}) {
   response.writeHead(statusCode, {
     'content-type': 'application/json; charset=utf-8',
     'cache-control': 'no-store',
+    ...extraHeaders,
   });
   response.end(`${JSON.stringify(payload, null, 2)}\n`);
 }

@@ -7,23 +7,6 @@
   Зафиксировать состояния UI, ошибки, точки ручного review и какие данные переходят между разделами.
 Цель:
   Команда получает продуктовую карту, по которой можно довести dashboard до удобного ежедневного workflow.
-Анализ:
-  Целесообразность:
-  Стоит завести «описать flow от замысла до verified WorkItem» в бэклог.
-  Контекст и границы:
-  Описать product flow: Замысел → черновик → бэклог → ready → Agent Run → verification → done/verified → MemoryRecord.
-  Зависимости и готовность:
-  depends_on=design-intent-composer-chat-contract, design-operator-agent-run-panel, design-operator-memory-panel-mvp; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Команда получает продуктовую карту, по которой можно довести dashboard до удобного ежедневного workflow.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -44,6 +27,6 @@
   work.risk: low
   work.status: done
   work.target_files: docs/plan-workgraph-intent-to-verified-flow.md, work/backlog.bvc
-  work.title: описать flow от замысла до verified WorkItem
+  work.title: Команда получает продуктовую карту, по которой можно довести dashboard до удобного ежедневного workflow.
 ]>
 

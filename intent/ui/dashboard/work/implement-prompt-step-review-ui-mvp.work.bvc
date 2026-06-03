@@ -45,6 +45,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/promptRulesProjection.mjs, src/workGraphBacklogUiServer.mjs, tests/promptRulesProjection.test.mjs, tests/workGraphBacklogUiServer.test.mjs, protocols/prompt-step-lowcode-replacement-scope-v1.bvc, work/backlog.bvc
-  work.title: реализовать MVP Prompt Step Review UI
+  work.title: Prompt rules in .bvc становятся видимой частью Work Graph UI, а не скрытым файлом.
 ]>
 

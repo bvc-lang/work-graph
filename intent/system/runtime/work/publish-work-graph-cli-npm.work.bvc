@@ -11,6 +11,10 @@
 Проверки:
   npm view @work-graph/cli version
   npx @work-graph/cli --help работает
+Свидетельства:
+  packages/work-graph-cli/package.json v0.2.0 public
+  scripts/sync-work-graph-cli-vendor.mjs
+  npm pack ready
 Анализ:
   Зачем:
   packages/work-graph-cli уже @work-graph/cli но private: true.
@@ -23,11 +27,6 @@
   Вердикт:
   полезно
   Брать в работу после закрытия зависимостей: epic-work-graph-npm-first-distribution, decide-work-graph-npm-first-distribution-adr.
-
-Свидетельства:
-  - packages/work-graph-cli/package.json v0.2.0 public
-  - scripts/sync-work-graph-cli-vendor.mjs
-  - npm pack ready
 
 Метки:
   atom.profile: work_item
@@ -52,5 +51,6 @@
   work.risk: medium
   work.status: done
   work.target_files: packages/work-graph-cli/package.json, PUBLIC_API.md
-  work.title: Опубликовать @work-graph/cli на npm (снять private)
+  work.title: @work-graph/cli доступен через npx без clone репо.
 ]>
+

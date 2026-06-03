@@ -47,6 +47,6 @@
   work.risk: high
   work.status: done
   work.target_files: domains/onebase/artifact-mapping.bvc, domains/onebase/examples/realization-posting-step-atom-draft.example.json, ../onebase/examples/trade/documents/реализация_товаров.yaml, ../onebase/examples/trade/src/реализациятоваров.posting.os
-  work.title: сопоставить artifacts OneBase со StepAtomDraft
+  work.title: OneBase artifacts становятся структурированным входом для Work Graph и memory.
 ]>
 

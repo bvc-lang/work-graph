@@ -1,0 +1,55 @@
+#Задача_write_an58_closing_agent_session_warmup_v1<[
+Базис:
+  Правило epic closed_without_closing_analysis: итоговый разбор после done эпика.
+  AN-57 задаёт гипотезу «прогрев + rules»; closing фиксирует что сработало на инцидентах TodoWrite/EN.
+Вектор:
+  work/analytics/closing-epic-agent-session-warmup-v1.md + journal AN-58.
+  Метрики: воспроизводимость rules на clone; наличие few-shot ids; primer в docs.
+Цель:
+  Эпик закрыт с зафиксированными outcomes и уроками для embedded agent (AN-47).
+Проверки:
+  work/analytics-records.jsonl содержит AN-58
+  epic-agent-session-warmup-v1 closed с verified evidence
+Анализ:
+  Зачем:
+  Правило epic closed_without_closing_analysis: итоговый разбор после done эпика.
+  Контекст: AN-57 задаёт гипотезу «прогрев + rules»; closing фиксирует что сработало на инцидентах TodoWrite/EN.
+  Когда:
+  После готовности: epic-agent-session-warmup-v1, sync-cursor-wg-rules-to-repo, document-session-primer-runbook, add-workgraph-few-shot-examples, document-cursor-user-rule-wg-template, eval-cursor-mcp-usefulness-fixture.
+  Готово, когда:
+  Эпик закрыт с зафиксированными outcomes и уроками для embedded agent (AN-47).
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: epic-agent-session-warmup-v1, sync-cursor-wg-rules-to-repo, document-session-primer-runbook, add-workgraph-few-shot-examples, document-cursor-user-rule-wg-template, eval-cursor-mcp-usefulness-fixture.
+
+Свидетельства:
+  work/analytics/closing-epic-agent-session-warmup-v1.md
+  work/analytics-records.jsonl — AN-58
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-57
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/agent-session-warmup-vs-enforcement.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-02T17:42:39.541Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-02T17:42:39.541Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: epic-agent-session-warmup-v1, sync-cursor-wg-rules-to-repo, document-session-primer-runbook, add-workgraph-few-shot-examples, document-cursor-user-rule-wg-template, eval-cursor-mcp-usefulness-fixture
+  work.id: write-an58-closing-agent-session-warmup-v1
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: product_owner
+  work.parent_id: epic-agent-session-warmup-v1
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: work/analytics/closing-epic-agent-session-warmup-v1.md, work/analytics-records.jsonl, work/analytics/agent-session-warmup-vs-enforcement.md
+  work.title: Закрыть разбор AN-58 после эпика session-warmup-v1
+]>
+

@@ -11,22 +11,9 @@
   CI job или script проверяет npm pack output
   Тест на forbidden path patterns
   Документировано в plan или ADR
-Анализ:
-  Зачем:
-  AN-42: package-level защита через files в package.json и npm pack --dry-run в CI.
-  Контекст: Без автоматической проверки eval/fixtures/private утекут в tarball при ошибке maintainer.
-  Когда:
-  После готовности: epic-work-graph-open-publication, inventory-public-private-packages-an42, split-work-graph-core-commercial-packs-an42.
-  Готово, когда:
-  Public npm release не содержит private corpus и commercial packs по ошибке.
-Решение:
-  Вердикт:
-  полезно
-  Брать в работу после закрытия зависимостей: epic-work-graph-open-publication, inventory-public-private-packages-an42, split-work-graph-core-commercial-packs-an42.
-
 Свидетельства:
-  - scripts/check-npm-pack-public-boundary.mjs
-  - npm run check:npm-pack-boundary
+  scripts/check-npm-pack-public-boundary.mjs
+  npm run check:npm-pack-boundary
 
 Метки:
   atom.profile: work_item
@@ -51,5 +38,6 @@
   work.risk: low
   work.status: done
   work.target_files: work/analytics/open-publication-technology-holdback-strategy.md, docs/plan-work-graph-open-publication.md, scripts/check-npm-pack-public-boundary.mjs
-  work.title: CI: private paths не попадают в npm pack
+  work.title: Public npm release не содержит private corpus и commercial packs по ошибке.
 ]>
+

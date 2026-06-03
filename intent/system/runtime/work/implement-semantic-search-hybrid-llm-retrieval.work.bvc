@@ -1,8 +1,8 @@
 #Задача_implement_semantic_search_hybrid_llm_retrieval<[
 Базис:
   semantic_search lexical-v1 done; для LLM usefulness нужны excerpts/BM25 или hybrid — gap matrix и plan-workgraph-llm-usefulness.
-  Задача «улучшить semantic search для LLM (excerpts/BM25 phase-1)» относится к контуру Work Graph rebuild и должна быть понятна агенту без чтения всего backlog.
-  Предварительно должны быть закрыты зависимости: implement-full-semantic-search-workflow, phase-8-agent-prompt-eval-tools.
+  Задача «улучшить semantic search для LLM (excerpts/BM25 phase-1)» относится к контуру Work Graph пересобрать и должна быть понятна агенту без чтения всего бэклог.
+  Предварительно должны быть закрыты зависимости: реализовать полный semantic search workflow, phase-8-agent-prompt-eval-tools.
 Вектор:
   Phase-1: bounded file excerpt index + BM25 rerank поверх lexical-v1; без full ioHasC ANN worker.
   Ближайший шаг исполнения: просмотреть и перевести в ready.
@@ -14,7 +14,7 @@
   Контекст и границы:
   Phase-1: bounded file excerpt index + BM25 rerank поверх lexical-v1; без full ioHasC ANN worker.
   Зависимости и готовность:
-  depends_on=implement-full-semantic-search-workflow, phase-8-agent-prompt-eval-tools; старт после закрытия upstream-зависимостей.
+  depends_on=реализовать полный semantic search workflow, phase-8-agent-prompt-eval-tools; старт после закрытия upstream-зависимостей.
   Риски и альтернативы:
   Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
   Критерии успеха:
@@ -44,6 +44,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/semanticSearchWorkflow.mjs, tests/semanticSearchWorkflow.test.mjs, docs/plan-workgraph-llm-usefulness.md
-  work.title: улучшить semantic search для LLM (excerpts/BM25 phase-1)
+  work.title: MCP: semantic_search полезнее для LLM: content snippets, не только WorkItem path stubs.
 ]>
 

@@ -45,6 +45,6 @@
   work.risk: high
   work.status: done
   work.target_files: src/languageAdapterRegistry.mjs, src/languageAdapters/, tests/languageAdapterRegistry.test.mjs, src/agentWorkerOpenAiProvider.mjs, protocols/language-adapter-layer.bvc, work/backlog.bvc
-  work.title: реализовать MVP language adapter layer
+  work.title: OneBase и agent worker получают структурированные факты через единый adapter layer, а не через случайные па…
 ]>
 

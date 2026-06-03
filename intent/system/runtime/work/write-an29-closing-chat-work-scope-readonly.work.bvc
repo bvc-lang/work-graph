@@ -10,9 +10,11 @@
 Проверки:
   analytics-records.jsonl содержит AN-29
   epic-chat-work-scope-readonly closed с evidence
+Свидетельства:
+  work/analytics/closing-epic-chat-work-scope-readonly.md published; AN-29 in work/analytics-records.jsonl; outcomes: scope panel read-only, chat todo incident not auto-fixed by design
 Анализ:
   Целесообразность:
-  Стоит завести «AN-29 closing analysis: epic-chat-work-scope-readonly» в бэклог — по материалам AN-28 (work/analytics/chat-work-graph-todo-sync.md).
+  Стоит завести «AN-29 итоговый разбор: epic-chat-work-scope-readonly» в бэклог — по материалам AN-28 (work/analytics/chat-work-graph-todo-sync.md).
   Контекст и границы:
   work/analytics/closing-epic-chat-work-scope-readonly.md + journal AN-29.
   Зависимости и готовность:
@@ -51,8 +53,6 @@
   work.risk: low
   work.status: done
   work.target_files: work/analytics/closing-epic-chat-work-scope-readonly.md, work/analytics-records.jsonl
-  work.title: AN-29 closing analysis: epic-chat-work-scope-readonly
-
-Свидетельства:
-  - work/analytics/closing-epic-chat-work-scope-readonly.md published; AN-29 in work/analytics-records.jsonl; outcomes: scope panel read-only, chat todo incident not auto-fixed by design
+  work.title: Эпик закрыт с outcomes; уроки для agent-UX интеграций.
 ]>
+

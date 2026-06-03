@@ -1,6 +1,16 @@
 # @work-graph/cli
 
-Install [Work Graph](https://github.com/bvc-lang/work-graph) in any project via npm — no engine clone, no manual `engineRoot`.
+Install **Work Graph** in any project via npm. No engine clone, no manual `engineRoot`.
+
+Work Graph is a local, Git-friendly work system for AI-assisted development. It stores work items as BVC files, keeps project intent close to the codebase, and opens a local backlog UI for operators and agents.
+
+Use it when you want:
+
+- a project-local backlog without SaaS lock-in;
+- BVC work contracts that can be reviewed in Git;
+- Cursor MCP configuration generated for the project;
+- a local UI for task status, evidence and project navigation;
+- repeatable setup through `npx`, not a copied engine repository.
 
 ## Quick start
 
@@ -12,14 +22,31 @@ npm run workgraph:ui
 
 → http://127.0.0.1:4177/
 
+## What `init` Creates
+
+`work-graph init` is intentionally project-first. It updates the target repository rather than asking you to clone Work Graph itself.
+
+Typical output:
+
+| Path | Purpose |
+|---|---|
+| `.work-graph/config.json` | Project id, label and UI settings |
+| `intent/` | BVC intent tree for work items |
+| `intent/index.bvc` | Index of work item files |
+| `.cursor/mcp.json` | Cursor MCP server entry for Work Graph |
+| `.cursor/rules/work-graph-project.mdc` | Project rule that tells agents to use Work Graph |
+| `package.json` | `workgraph:*` scripts and devDependencies |
+
+After `npm install`, the project owns its Work Graph runtime through `node_modules/@work-graph/cli` and `node_modules/@work-graph/mcp`.
+
 ## Commands
 
 | Command | Description |
 |---------|-------------|
-| `init [path]` | Scaffold `intent/`, add devDependencies, MCP config, Cursor rule |
-| `ui [path]` | Start backlog UI for the project |
-| `doctor [path]` | Verify installation |
-| `register [path]` | Optional: multiproject registry (power users) |
+| `init [path]` | Scaffold Work Graph into a project: BVC intent tree, config, npm scripts, MCP config and Cursor rule |
+| `ui [path]` | Start the local backlog UI for the project |
+| `doctor [path]` | Verify that project config, package dependencies and runtime resolution are healthy |
+| `register [path]` | Optional: register a project in the shared multiproject host |
 
 ## Flags (`init`)
 
@@ -28,7 +55,59 @@ npm run workgraph:ui
 | `--label`, `--id` | Display name and project id |
 | `--no-mcp` | Do not update `.cursor/mcp.json` |
 | `--no-package` | Do not update `package.json` |
+| `--no-rule` | Do not create `.cursor/rules/work-graph-project.mdc` |
+| `--register-host` | Register the project in the shared multiproject host after init |
+| `--port` | Set the default local UI port |
 | `--legacy-engine-config` | Dev only: write deprecated `engineRoot` to config |
+
+## Common Workflows
+
+Create a fresh Work Graph project:
+
+```bash
+mkdir my-project
+cd my-project
+npx @work-graph/cli init . --label "My Project"
+npm install
+npm run workgraph:ui
+```
+
+Add Work Graph to an existing repository:
+
+```bash
+cd existing-repo
+npx @work-graph/cli init .
+npm install
+npm run workgraph:doctor
+```
+
+Run the UI without npm scripts:
+
+```bash
+npx @work-graph/cli ui .
+```
+
+Register a project for a multiproject host:
+
+```bash
+npx @work-graph/cli register . --label "Client A"
+```
+
+## Relationship to BVC
+
+Work Graph uses [BVC](https://github.com/bvc-lang/spec) files for durable work contracts. A work item is not just a card title; it carries Basis, Vector, Goal, labels, checks and evidence in a reviewable text artifact.
+
+The CLI installs the runtime and UI. The BVC format itself is published separately as `@bvc-lang/spec`, and command-line BVC formatting/linting is available as `@bvc-lang/cli`.
+
+## Troubleshooting
+
+| Symptom | Fix |
+|---|---|
+| `work-graph doctor` says dependencies are missing | Run `npm install` in the target project |
+| Cursor does not see Work Graph MCP tools | Re-run `npx @work-graph/cli init .` without `--no-mcp`, then reload Cursor MCP servers |
+| UI port is already in use | Run `npx @work-graph/cli ui . --port 4178` |
+| Existing package scripts were not updated | Re-run without `--no-package` or add the `workgraph:*` scripts manually |
+| You are hacking Work Graph itself | Use `WORKGRAPH_ENGINE_ROOT=.` or `--engine` from the monorepo, not in normal projects |
 
 ## Contributors (monorepo dev)
 
@@ -38,3 +117,10 @@ WORKGRAPH_ENGINE_ROOT=. npx work-graph ui /path/to/project
 ```
 
 See [CONTRIBUTING.md](https://github.com/bvc-lang/work-graph/blob/main/CONTRIBUTING.md) in the Work Graph repository.
+
+## Links
+
+- CLI mirror: https://github.com/bvc-lang/work-graph-cli
+- Work Graph monorepo: https://github.com/bvc-lang/work-graph
+- BVC spec: https://github.com/bvc-lang/spec
+- MCP package: https://www.npmjs.com/package/@work-graph/mcp

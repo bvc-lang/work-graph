@@ -1,11 +1,11 @@
 #Задача_port_bracket_ir_trace_envelope<[
 Базис:
   Bracket IR cache может обнаруживать структурные изменения step; Work Graph нужен этот сигнал как trace signal.
-  Задача «связать Bracket IR cache с WorkItem trace envelope» относится к контуру платформы агента и должна быть понятна агенту без чтения всего backlog.
+  Задача «связать Bracket IR cache с WorkItem trace envelope» относится к контуру платформы агента и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: phase-5-ir-codegen-runtime.
 Вектор:
   Спроектировать интеграцию Bracket IR hash/diff в WorkItem trace envelope и verify steps.
-  Ближайший шаг исполнения: спроектировать code-gap feeder для backlog.
+  Ближайший шаг исполнения: спроектировать code-gap feeder для бэклог.
 Цель:
   Step edits могут детерминированно инвалидировать или обновлять связанные tasks.
   Готово, когда выполнены проверки: Bracket IR hash связан со step refs.
@@ -48,6 +48,6 @@
   work.risk: medium
   work.status: done
   work.target_files: protocols/bracket-ir-trace-envelope-v1.bvc, src/bracketIrTraceSignal.mjs, tests/codegenEvidence.test.mjs, work/backlog.bvc
-  work.title: связать Bracket IR cache с WorkItem trace envelope
+  work.title: Step edits могут детерминированно инвалидировать или обновлять связанные tasks.
 ]>
 

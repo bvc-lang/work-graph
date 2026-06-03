@@ -1,0 +1,47 @@
+#Задача_epic_analytics_record_lineage_v1<[
+Базис:
+  AN-50 → AN-50.1: углубление разбора уже в markdown, но не в machine-readable lineage.
+  AN-3 закрыл question→options→decision→work; не закрыт analysis→deeper analysis.
+  AN-51: хранить граф рёбер (deepens/related/feeds/closes), показывать плоский recency-first список + lineage в drawer.
+Вектор:
+  P0: ADR graph storage vs tree navigation.
+  P0: lineage fields в analytics-record.v1 + projection builder.
+  P0: drawer секции родитель / продолжения / связанные.
+  P1: badges в list-row; миграция AN-50↔AN-50.1.
+  P2: MCP get_analytics_lineage.
+Цель:
+  Оператор и агент видят цепочку AN-50 → AN-50.1 → epic без tree-view в главном списке.
+Проверки:
+  ADR analytics-record-lineage-v1 принят
+  Projection и drawer lineage покрыты тестами
+  AN-50.1 имеет lineage.parentKey в journal
+  Список аналитики остаётся flat recency-first
+  AN-51 closing doc опубликован
+Свидетельства:
+  AN-51 P0-P2 closed; npm run test:deterministic green
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-51
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/analytics-record-lineage-flat-list-graph-storage.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-02T15:01:59.943Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-02T15:01:59.943Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: implement-analytics-decision-structure, implement-intent-graph-drilldown-ui
+  work.id: epic-analytics-record-lineage-v1
+  work.item_kind: epic
+  work.next_action: —
+  work.owner_role: feature_engineer
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: work/analytics/analytics-record-lineage-flat-list-graph-storage.md, docs/plan-analytics-record-lineage-v1.md, docs/adr-analytics-record-lineage-v1.md, src/analyticsPanelProjection.mjs, src/analyticsRecordStore.mjs, src/workGraphBacklogUiServer.mjs, tests/analyticsPanelProjection.test.mjs
+  work.title: Lineage записей аналитики v1: граф, плоский список, drawer (AN-51)
+]>
+

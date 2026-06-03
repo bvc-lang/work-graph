@@ -352,6 +352,14 @@ export const PROMPT_EVAL_WORKGRAPH_FIXTURES_V1 = [
     expectedKeywords: ['verify', 'succeeded', 'dry-run'],
   },
   {
+    id: 'cursor-mcp-primer-v1',
+    tier: 'optional-llm',
+    failureClass: 'model_failure',
+    description: 'Session warm-up: agent must claim via MCP before write; no TodoWrite for trackable work; Russian create_work_item prose',
+    allowedTools: ['workGraph.claimNext', 'workGraph.createWorkItem', 'workGraph.transitionStatus'],
+    expectedKeywords: ['claim_work_item', 'no TodoWrite', 'русск', 'work.id'],
+  },
+  {
     id: 'loop-hint-repeat-tool',
     tier: 'optional-llm',
     failureClass: 'model_failure',

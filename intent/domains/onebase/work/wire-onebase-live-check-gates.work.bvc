@@ -1,7 +1,7 @@
 #Задача_wire_onebase_live_check_gates<[
 Базис:
   onebase check/describe/ai-guide отсутствуют в текущей сборке OneBase; gates сейчас skip.
-  Задача «включить live onebase check gates после обновления CLI» относится к контуру Work Graph rebuild и должна быть понятна агенту без чтения всего backlog.
+  Задача «включить live onebase check gates после обновления CLI» относится к контуру Work Graph пересобрать и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: sync-onebase-cli-parity-evidence.
 Вектор:
   После probe с check=available перепрогнать verification loop и записать non-skip evidence.
@@ -44,6 +44,6 @@
   work.risk: medium
   work.status: done
   work.target_files: scripts/run-onebase-config-check.mjs, src/verificationLoop.mjs, work/onebase-cli-capabilities.v1.json
-  work.title: включить live onebase check gates после обновления CLI
+  work.title: подключить OneBase live check gates
 ]>
 

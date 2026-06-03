@@ -1,8 +1,8 @@
 #Задача_implement_workgraph_mcp_prompts<[
 Базис:
-  После design prompts нужно сделать их доступными MCP-клиентам, а не держать только в документации.
+  После спроектировать prompts нужно сделать их доступными MCP-клиентам, а не держать только в документации.
   MCP clients могут показывать server-provided prompts/resources как reusable entrypoints.
-  Предварительно должны быть закрыты зависимости: design-workgraph-mcp-prompts-and-skills.
+  Предварительно должны быть закрыты зависимости: спроектировать MCP prompts и skills Work Graph.
 Вектор:
   Реализовать MCP prompts в packages/workgraph-mcp: take_next_work_item, create_work_item, add_evidence, close_work_item, show_blockers, summarize_current_cycle.
   Каждый prompt должен ссылаться на доступные tools/resources и явно формулировать safety/evidence rules.
@@ -16,7 +16,7 @@
   Контекст и границы:
   Реализовать MCP prompts в packages/workgraph-mcp: take_next_work_item, create_work_item, add_evidence, close_work_item, show_blockers, summarize_current_cycle.
   Зависимости и готовность:
-  depends_on=design-workgraph-mcp-prompts-and-skills; старт после закрытия upstream-зависимостей.
+  depends_on=спроектировать MCP prompts и skills Work Graph; старт после закрытия upstream-зависимостей.
   Риски и альтернативы:
   Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
   Критерии успеха:
@@ -47,6 +47,6 @@
   work.risk: medium
   work.status: done
   work.target_files: packages/workgraph-mcp/src/index.mjs, packages/workgraph-mcp/src/prompts.mjs, tests/workgraph-mcp.test.mjs, docs/workgraph-mcp-prompts.md
-  work.title: реализовать MCP prompts для WorkGraph workflows
+  work.title: Cursor/Claude видят готовые WorkGraph workflows прямо из MCP server.
 ]>
 

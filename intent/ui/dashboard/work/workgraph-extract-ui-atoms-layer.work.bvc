@@ -11,6 +11,8 @@
 Проверки:
   src/ui/atoms/ существует с ≥3 модулями
   tests на render atoms green
+Свидетельства:
+  src/ui/atoms/{button,badge,input,icon,modal}.mjs; tests/uiAtoms.test.mjs green
 Анализ:
   Целесообразность:
   Стоит завести «Work Graph: вынести UI atoms из monolith server» в бэклог — по материалам AN-21 (work/analytics/marketplace-integration-and-shared-design-system.md).
@@ -52,8 +54,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/ui/atoms/, src/workGraphBacklogUiServer.mjs, work/analytics/marketplace-integration-and-shared-design-system.md
-  work.title: Work Graph: вынести UI atoms из monolith server
-
-Свидетельства:
-  - src/ui/atoms/{button,badge,input,icon,modal}.mjs; tests/uiAtoms.test.mjs green
+  work.title: Inline LOC снижен; button/badge/input переиспользуются.
 ]>
+

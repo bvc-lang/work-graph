@@ -1,7 +1,7 @@
 #Задача_phase_9_ui_operator_shell<[
 Базис:
   Rebuild UI сейчас локальный и без тяжёлых зависимостей, а старый ioHasC имеет более крупный IDE shell с panels, semantic map, agent panel и workspace.
-  Задача «Фаза 9: UI оболочка оператора» относится к контуру Work Graph rebuild и должна быть понятна агенту без чтения всего backlog.
+  Задача «Фаза 9: UI оболочка оператора» относится к контуру Work Graph пересобрать и должна быть понятна агенту без чтения всего бэклог.
 Вектор:
   Спланировать перенос UI оболочка оператора: dashboard v2, intent tree sidebar, semantic map/backlog перекрёстная подсветка, kanban projection и startup performance budget.
   Ближайший шаг исполнения: выполнить фазу 10 CI/E2E release gates.
@@ -44,6 +44,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/operatorShellProjection.mjs, src/workGraphCycleSlice.mjs, src/workGraphBacklogUiServer.mjs, ui/operator-dashboard-v2.bvc, protocols/ui-startup-performance-budget-v1.bvc, work/backlog.bvc
-  work.title: Фаза 9: UI оболочка оператора
+  work.title: UI растёт из MVP-доски в оболочке оператора без немедленного воссоздания старой монолитной IDE.
 ]>
 

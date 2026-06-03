@@ -12,23 +12,10 @@
   ENV override работает для contributors
   Legacy config → warning + работает
   Без config и ENV — резолв из node_modules
-Анализ:
-  Зачем:
-  Сейчас engineRoot в config — единственный путь для большинства сценариев.
-  Контекст: Нужен единый getEngineRoot() с приоритетом ENV, legacy warning, npm default.
-  Когда:
-  После готовности: epic-work-graph-npm-first-distribution, decide-work-graph-npm-first-distribution-adr.
-  Готово, когда:
-  CLI, MCP и UI server используют один резолвер.
-Решение:
-  Вердикт:
-  полезно
-  Брать в работу после закрытия зависимостей: epic-work-graph-npm-first-distribution, decide-work-graph-npm-first-distribution-adr.
-
 Свидетельства:
-  - src/workGraphEngineRoot.mjs
-  - src/workGraphInstallLayout.mjs
-  - tests/workGraphEngineRoot.test.mjs
+  src/workGraphEngineRoot.mjs
+  src/workGraphInstallLayout.mjs
+  tests/workGraphEngineRoot.test.mjs
 
 Метки:
   atom.profile: work_item
@@ -53,5 +40,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/workGraphProjectInit.mjs, packages/work-graph-cli/, packages/workgraph-mcp/
-  work.title: Резолвер движка: WORKGRAPH_ENGINE_ROOT → legacy → node_modules
+  work.title: CLI, MCP и UI server используют один резолвер.
 ]>
+

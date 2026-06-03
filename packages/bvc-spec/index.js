@@ -1,5 +1,5 @@
 /**
- * @bvc-lang/spec — static artifacts for BVC open format v0.0.1
+ * @bvc-lang/spec — static artifacts for BVC open format v0.0.6
  */
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -11,7 +11,7 @@ function readJson(relativePath) {
   return JSON.parse(readFileSync(join(ROOT, relativePath), 'utf8'));
 }
 
-export const BVC_SPEC_VERSION = '0.0.1';
+export const BVC_SPEC_VERSION = '0.0.6';
 export const BVC_EXTENSION_CANON = '.bvc';
 export const BVC_EXTENSION_LEGACY = '.step';
 

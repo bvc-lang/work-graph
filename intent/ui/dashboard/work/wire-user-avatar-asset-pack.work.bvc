@@ -1,0 +1,49 @@
+#Задача_wire_user_avatar_asset_pack<[
+Базис:
+  Нет цветного avatar pack и HTTP route.
+Вектор:
+  public/assets/avatars/avatar-01.svg … avatar-10.svg.
+  tryServePublicAvatarsAsset в workGraphBacklogUiServer.mjs.
+Цель:
+  Аватарки доступны по URL с cache-control.
+Проверки:
+  10 SVG files exist
+  GET /assets/avatars/avatar-07.svg → 200
+Анализ:
+  Зачем:
+  Нет цветного avatar pack и HTTP route.
+  Контекст: public/assets/avatars/avatar-01.svg … avatar-10.svg.
+  Когда:
+  После готовности: epic-work-graph-ui-avatars-v1.
+  Готово, когда:
+  Аватарки доступны по URL с cache-control.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: epic-work-graph-ui-avatars-v1.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-60
+  intake.source_kind: operator-request
+  intake.source_ref: public/assets/avatars
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-02T21:31:55.806Z
+  work.analysis.source: operator-request
+  work.decision.at: 2026-06-02T21:31:55.806Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: epic-work-graph-ui-avatars-v1
+  work.id: wire-user-avatar-asset-pack
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.parent_id: epic-work-graph-ui-avatars-v1
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: low
+  work.status: backlog
+  work.target_files: public/assets/avatars, src/workGraphBacklogUiServer.mjs
+  work.title: UI: пак SVG-аватарок + static /assets/avatars
+]>

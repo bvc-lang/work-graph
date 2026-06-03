@@ -1,50 +1,27 @@
 #Задача_port_full_agent_tool_rules_migrated_bundle<[
 Базис:
-  Port minimal subset agent-behavior; полный tool-rules в ../project отложен.
-  Задача «Фаза 8: port полного bundle tool-rules-migrated» относится к контуру платформы агента и должна быть понятна агенту без чтения всего backlog.
-  Предварительно должны быть закрыты зависимости: phase-8-agent-prompt-eval-tools.
+  Перенести минимальный subset agent-behavior; полный tool-rules в ../project отложен.
 Вектор:
   Расширить rules/agent-behavior/ + audit diff vs tool-rules-migrated.bvc.
-  Ближайший шаг исполнения: просмотреть и перевести в ready.
 Цель:
   Prompts worker ближе к editing policy ioHasC.
-  Готово, когда выполнены проверки: Audit: covered vs missing rules.
-Анализ:
-  Целесообразность:
-  Стоит завести «Фаза 8: port полного bundle tool-rules-migrated» в бэклог.
-  Контекст и границы:
-  Расширить rules/agent-behavior/ + audit diff vs tool-rules-migrated.bvc.
-  Зависимости и готовность:
-  depends_on=phase-8-agent-prompt-eval-tools; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Prompts worker ближе к editing policy ioHasC.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+Проверки:
+  Audit: covered vs missing rules
+  Тест bundle load
 
 Метки:
   atom.profile: work_item
   migration.strategy: port
   trace.status: verified
-  work.analysis.at: 2026-05-30T17:22:37.577Z
-  work.analysis.source: backfill
-  work.decision.at: 2026-05-30T17:22:37.584Z
-  work.decision.verdict: useful
   work.department: agent-platform
   work.depends_on: phase-8-agent-prompt-eval-tools
   work.id: port-full-agent-tool-rules-migrated-bundle
-  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.next_action: просмотреть и перевести в ready
   work.owner_role: agent_platform_architect
-  work.pipeline_stage: decided
   work.priority: medium
   work.risk: medium
   work.status: done
-  work.target_files: rules/agent-behavior/, src/agentBehaviorRulesBundle.mjs, src/agentBehaviorRulesAudit.mjs, scripts/audit-agent-behavior-rules.mjs, tests/agentBehaviorRulesAudit.test.mjs
-  work.title: Фаза 8: port полного bundle tool-rules-migrated
+  work.target_files: rules/agent-behavior/, src/agentBehaviorRulesBundle.mjs
+  work.title: перенести full агента инструмент правила migrated bundle
 ]>
 

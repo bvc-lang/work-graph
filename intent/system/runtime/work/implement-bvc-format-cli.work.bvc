@@ -10,28 +10,10 @@
 Проверки:
   npm run bvc format tests/conformance/minimal.en.bvc --stdout
   node --test tests/bvcFormatCli.test.mjs
-Анализ:
-  Целесообразность:
-  Стоит завести «реализовать bvc format (canonical .bvc writer)» в бэклог — по материалам plan: docs/plan-step-to-bvc-migration.md.
-  Контекст и границы:
-  src/bvcFormatCli.mjs + formatBvcFileContent в bvcFileFormat.mjs.
-  Зависимости и готовность:
-  depends_on=bvc-phase2-new-write; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  bvc format <path.bvc> пишет sibling .bvc с сохранением lang и file pragma.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма plan: docs/plan-step-to-bvc-migration.md; исполнять после вердикта «полезно» и готовности зависимостей.
-
 Свидетельства:
-  - src/bvcFormatCli.mjs + formatBvcFileContent in bvcFileFormat.mjs
-  - npm run bvc format; packages/bvc-cli command format
-  - tests/bvcFormatCli.test.mjs pass
+  src/bvcFormatCli.mjs + formatBvcFileContent in bvcFileFormat.mjs
+  npm run bvc format; packages/bvc-cli command format
+  tests/bvcFormatCli.test.mjs pass
 
 Метки:
   atom.profile: work_item
@@ -55,5 +37,6 @@
   work.risk: low
   work.status: done
   work.target_files: src/bvcFormatCli.mjs, src/bvcFileFormat.mjs, packages/bvc-cli/bin/bvc.mjs
-  work.title: реализовать bvc format (canonical .bvc writer)
+  work.title: реализовать BVC формата CLI
 ]>
+

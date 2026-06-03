@@ -28,9 +28,12 @@ describe('ui atoms', () => {
     assert.match(html, /data-view="home"/);
   });
 
-  it('badge css uses theme-aware surface tokens for muted tone', () => {
-    assert.match(UI_BADGE_CSS, /\.wg-badge--muted \{ background: var\(--panel-2\); color: var\(--muted\); \}/);
-    assert.doesNotMatch(UI_BADGE_CSS, /--ui-control-bg-rgb/);
+  it('badge css uses Jira lozenge styling', () => {
+    assert.match(UI_BADGE_CSS, /border-radius: 3px/);
+    assert.match(UI_BADGE_CSS, /text-transform: uppercase/);
+    assert.match(UI_BADGE_CSS, /\.wg-badge--accent \{[\s\S]*background: #deebff/);
+    assert.match(UI_BADGE_CSS, /\.wg-badge--ok \{[\s\S]*background: #baf3db/);
+    assert.match(UI_BADGE_CSS, /\.wg-badge--warning \{[\s\S]*background: #fff0b3/);
   });
 
   it('renders badge, input, icon, modal', () => {

@@ -3,9 +3,9 @@
   Client script duplicates server badge HTML; need DRY tone map.
 Вектор:
   src/ui/atoms/badgeClient.mjs + workItemStatusTone.mjs shared map.
-  loadBrowserBadgeClientSource in backlog server.
+  loadBrowserBadgeClientSource in бэклог server.
 Цель:
-  Server/client badge rendering consistent.
+  Рендер badge на server/client согласован.
 Проверки:
   tests for status→tone map
 Анализ:
@@ -49,5 +49,6 @@
   work.risk: low
   work.status: done
   work.target_files: src/ui/atoms/badgeClient.mjs, src/ui/workItemStatusTone.mjs, src/workGraphBacklogUiServer.mjs, work/analytics/gripe-ds-visual-default-wave3.md
-  work.title: Wave 3: badgeClient + shared tone map module
+  work.title: WG UI волна 3: helpers badge/button на клиенте
 ]>
+

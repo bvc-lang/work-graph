@@ -1,0 +1,42 @@
+#Задача_decide_analytics_lineage_storage_adr<[
+Базис:
+  AN-51 §2: дерево в списке отвергнуто; граф рёбер + flat UI — канон.
+  Согласовать с AN-3 intent graph (question→work) без дублирования.
+Вектор:
+  docs/adr-analytics-record-lineage-v1.md: relations deepens/related/feeds/closes.
+  Projection vs duplicate markdown-only links.
+  Migration: опционально lineage block; AN-50.1 as reference.
+Цель:
+  ADR принят; команда не строит tree-view как default navigation.
+Проверки:
+  ADR опубликован с trace на AN-51
+  Ссылка из plan-analytics-record-lineage-v1.md
+Свидетельства:
+  docs/adr-analytics-record-lineage-v1.md accepted (AN-51)
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-51
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/analytics-record-lineage-flat-list-graph-storage.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-02T15:01:59.957Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-02T15:01:59.957Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: epic-analytics-record-lineage-v1
+  work.id: decide-analytics-lineage-storage-adr
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: feature_engineer
+  work.parent_id: epic-analytics-record-lineage-v1
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: low
+  work.status: done
+  work.target_files: work/analytics/analytics-record-lineage-flat-list-graph-storage.md, docs/plan-analytics-record-lineage-v1.md, docs/adr-analytics-record-lineage-v1.md
+  work.title: ADR: lineage аналитики — graph storage, flat list UI
+]>
+

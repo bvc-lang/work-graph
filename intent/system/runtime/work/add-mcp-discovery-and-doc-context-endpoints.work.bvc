@@ -1,0 +1,54 @@
+#Задача_add_mcp_discovery_and_doc_context_endpoints<[
+Базис:
+  AN-63: /.well-known/mcp.json и unified context endpoints нужны агентам.
+Вектор:
+  Add /.well-known/mcp.json with Work Graph MCP server/tool descriptions.
+  Add /api/docs/bvc-authoring-context.
+  Add /api/docs/mcp-tools-context.
+  Add /api/docs/errors-context.
+Цель:
+  Agents discover tools/schemas/examples through stable JSON, not prose scraping.
+Проверки:
+  mcp.json valid JSON
+  context endpoints include examples and error codes
+Анализ:
+  Зачем:
+  AN-63: /.well-known/mcp.json и unified context endpoints нужны агентам.
+  Контекст: Add /.well-known/mcp.json with Work Graph MCP server/tool descriptions.
+  Когда:
+  После готовности: add-llms-markdown-docs-projections.
+  Готово, когда:
+  Agents discover tools/schemas/examples through stable JSON, not prose scraping.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: add-llms-markdown-docs-projections.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-64
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-public-site-competitive-tz.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-02T22:20:53.085Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-02T22:20:53.085Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: add-llms-markdown-docs-projections
+  work.id: add-mcp-discovery-and-doc-context-endpoints
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.parent_id: epic-work-graph-public-site-v1
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: public/.well-known/mcp.json, src/publicSiteServer.mjs, tests/publicSite.test.mjs
+  work.title: Site: MCP discovery + docs context endpoints
+
+Свидетельства:
+  - Implemented public site v1 in src/publicSiteContent.mjs + src/publicSiteServer.mjs; verified by node --test tests/publicSite.test.mjs tests/workGraphBacklogUiServer.test.mjs (22/22 pass).
+]>

@@ -49,6 +49,36 @@
     "evidence": {
       "type": "array",
       "items": { "type": "string", "minLength": 1 }
+    },
+    "structuredEvidence": {
+      "type": "array",
+      "description": "Optional machine-readable evidence records (dual view with prose evidence strings).",
+      "items": { "$ref": "#/$defs/evidenceRecordV1" }
+    }
+  },
+  "$defs": {
+    "evidenceRecordV1": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["type", "status"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["command", "test", "file", "change", "decision", "worker-run", "manual-review", "blocker"]
+        },
+        "status": {
+          "type": "string",
+          "enum": ["succeeded", "failed", "pending", "skipped", "blocked"]
+        },
+        "taskId": { "type": "string", "minLength": 1 },
+        "summary": { "type": "string" },
+        "command": { "type": "string", "minLength": 1 },
+        "cmd": { "type": "string", "minLength": 1 },
+        "exitCode": { "type": "integer" },
+        "exit_code": { "type": "integer" },
+        "source": { "type": "string" },
+        "time": { "type": "string" }
+      }
     }
   }
 }

@@ -1,0 +1,52 @@
+#Задача_write_closing_epic_work_graph_bvc_contract_verification_v1<[
+Базис:
+  Закрытие эпика с evidence: MCP tool list, test output, ADR link.
+Вектор:
+  work/analytics/closing-epic-work-graph-bvc-contract-verification-v1.md
+  Обновить work/analytics-records.jsonl closing record.
+Цель:
+  AN-50.1 закрыт с проверяемыми артефактами.
+Проверки:
+  Closing doc опубликован
+  Эпик и P0 subtasks в done согласно факту
+Свидетельства:
+  work/analytics/closing-epic-work-graph-bvc-contract-verification-v1.md
+Анализ:
+  Зачем:
+  Закрытие эпика с evidence: MCP tool list, test output, ADR link.
+  Контекст: work/analytics/closing-epic-work-graph-bvc-contract-verification-v1.md
+  Когда:
+  После готовности: epic-work-graph-bvc-contract-verification-v1, implement-mcp-get-work-contract, implement-mcp-assert-task-ready-for-done, implement-mcp-validate-evidence.
+  Готово, когда:
+  AN-50.1 закрыт с проверяемыми артефактами.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: epic-work-graph-bvc-contract-verification-v1, implement-mcp-get-work-contract, implement-mcp-assert-task-ready-for-done, implement-mcp-validate-evidence.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-50.1
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-bvc-contract-verification.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-02T14:12:30.494Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-02T14:12:30.494Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: epic-work-graph-bvc-contract-verification-v1, implement-mcp-get-work-contract, implement-mcp-assert-task-ready-for-done, implement-mcp-validate-evidence
+  work.id: write-closing-epic-work-graph-bvc-contract-verification-v1
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: agent_platform_architect
+  work.parent_id: epic-work-graph-bvc-contract-verification-v1
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: work/analytics/closing-epic-work-graph-bvc-contract-verification-v1.md, work/analytics/work-graph-bvc-contract-verification.md
+  work.title: закрытие: закрытие эпик work графа BVC контракта проверки v1
+]>
+

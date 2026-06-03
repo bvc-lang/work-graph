@@ -1,7 +1,7 @@
 #Задача_design_code_gap_backlog_feeder<[
 Базис:
   Старый ioHasC Phase 8 code-gap умеет находить code без step coverage.
-  Задача «спроектировать code-gap feeder для backlog» относится к контуру платформы агента и должна быть понятна агенту без чтения всего backlog.
+  Задача «спроектировать code-gap feeder для backlog» относится к контуру платформы агента и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: phase-5-ir-codegen-runtime.
 Вектор:
   Спроектировать output code-gap analyzer как бэклог suggestion feeder с confidence, source files и suggested WorkItems.
@@ -9,23 +9,6 @@
 Цель:
   Existing code можно втягивать в Work Graph, а не оставлять невидимым.
   Готово, когда выполнены проверки: mapping gap report -> WorkItem черновик определён.
-Анализ:
-  Целесообразность:
-  Стоит завести «спроектировать code-gap feeder для backlog» в бэклог.
-  Контекст и границы:
-  Спроектировать output code-gap analyzer как бэклог suggestion feeder с confidence, source files и suggested WorkItems.
-  Зависимости и готовность:
-  depends_on=phase-5-ir-codegen-runtime; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Existing code можно втягивать в Work Graph, а не оставлять невидимым.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -48,6 +31,6 @@
   work.risk: medium
   work.status: done
   work.target_files: protocols/code-gap-backlog-feeder-v1.bvc, src/codeGapBacklogFeeder.mjs, tests/codegenEvidence.test.mjs, work/backlog.bvc
-  work.title: спроектировать code-gap feeder для backlog
+  work.title: спроектировать code gap источник пополнения бэклога
 ]>
 

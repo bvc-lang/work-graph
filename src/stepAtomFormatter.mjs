@@ -13,6 +13,7 @@ import {
   scanBvcSectionDialects,
   stripBvcFilePragmaLine,
 } from './bvcAtomParser.mjs';
+import { validateStructuredEvidenceDraftArray } from './structuredEvidenceV1.mjs';
 
 const ALLOWED_PROFILES = new Set([
   'charter',
@@ -62,6 +63,7 @@ export function validateStepAtomDraft(draft) {
   validateTextArray(draft.goal, 'goal', errors, { required: true });
   validateTextArray(draft.checks, 'checks', errors, { required: false });
   validateTextArray(draft.evidence, 'evidence', errors, { required: false });
+  errors.push(...validateStructuredEvidenceDraftArray(draft.structuredEvidence));
   validateLabels(draft.labels, errors);
   validateLang(draft.lang, errors);
 

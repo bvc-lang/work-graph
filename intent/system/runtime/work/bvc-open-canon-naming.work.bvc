@@ -10,32 +10,14 @@
   Charter + parser + VS Code: bvc primary, .bvc legacy.
 Цель:
   Публичный open canon имеет зафиксированное имя и зарезервированные npm/org; миграция не ломает существующие *.bvc.
-Анализ:
-  Целесообразность:
-  Стоит завести «BVC open canon: reserve @bvc/spec + migration .bvc → .bvc» в бэклог — по материалам AN-18 (analytics:bvc-naming-branding-review).
-  Контекст и границы:
-  Опубликовать @bvc/spec@0.0.0 (placeholder).
-  Зависимости и готовность:
-  depends_on=нет; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Публичный open canon имеет зафиксированное имя и зарезервированные npm/org; миграция не ломает существующие *.bvc.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-18 (analytics:bvc-naming-branding-review); исполнять после вердикта «полезно» и готовности зависимостей.
 Проверки:
   @bvc/spec опубликован на npm
   bvc-lang org или spec repo существует
   docs/plan-step-to-bvc-migration.md актуален и все фазы 0–2 имеют owner
   parser принимает .bvc и .bvc
-
 Свидетельства:
-  - @bvc-lang/spec@0.0.0 на npm; dual-read parser; migration plan; ADR принят
-  - GitHub https://github.com/bvc-lang/spec — org transfer + rename 2026-05-31
+  @bvc-lang/spec@0.0.0 на npm; dual-read parser; migration plan; ADR принят
+  GitHub https://github.com/bvc-lang/spec — org transfer + rename 2026-05-31
 
 Метки:
   atom.profile: work_item
@@ -58,5 +40,6 @@
   work.risk: medium
   work.status: done
   work.target_files: docs/adr-bvc-format-naming.md, docs/plan-step-to-bvc-migration.md, work/analytics/bvc-naming-branding-review.md, work/analytics/step-as-open-canon-standard.md, charter/main.bvc
-  work.title: BVC open canon: reserve @bvc/spec + migration .bvc → .bvc
+  work.title: BVC open canon: @bvc/spec + именование (AN-18)
 ]>
+

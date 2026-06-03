@@ -7,32 +7,14 @@
   Перед правкой src/: read atom / get_work_item; после: evidence + status update.
   Ссылка на protocols/decision-pipeline-canon-v1.bvc и operational bypass.
 Цель:
-  Системный промпт/bundle агента содержит parity IDE↔MCP для backlog и исполнения.
+  Системный промпт/bundle агента содержит parity IDE↔MCP для бэклог и исполнения.
 Проверки:
   rules/agent-behavior/cursor-ide-workgraph-parity.bvc существует
   npm run audit:agent-behavior-rules green
-Анализ:
-  Целесообразность:
-  Стоит завести «agent-behavior step: cursor-ide-workgraph-parity» в бэклог — по материалам AN-25 (work/analytics/agent-bypass-work-graph-dual-backlog.md).
-  Контекст и границы:
-  rules/agent-behavior/cursor-ide-workgraph-parity.bvc — prompt_rule в bundle.
-  Зависимости и готовность:
-  depends_on=epic-agent-workgraph-enforcement, add-cursor-rule-single-backlog; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Системный промпт/bundle агента содержит parity IDE↔MCP для backlog и исполнения.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-25 (work/analytics/agent-bypass-work-graph-dual-backlog.md); исполнять после вердикта «полезно» и готовности зависимостей.
-
 Свидетельства:
-  - rules/agent-behavior/cursor-ide-workgraph-parity.bvc — rule.id cursor-ide-workgraph-parity
-  - src/agentBehaviorRulesBundle.mjs — в WORKER_BEHAVIOR_RULE_IDS
-  - npm run audit:agent-behavior-rules — bundle ok
+  rules/agent-behavior/cursor-ide-workgraph-parity.bvc — rule.id cursor-ide-workgraph-parity
+  src/agentBehaviorRulesBundle.mjs — в WORKER_BEHAVIOR_RULE_IDS
+  npm run audit:agent-behavior-rules — bundle ok
 
 Метки:
   atom.profile: work_item
@@ -57,5 +39,6 @@
   work.risk: low
   work.status: done
   work.target_files: rules/agent-behavior/cursor-ide-workgraph-parity.bvc, rules/agent-behavior/mcp-editing-policy.bvc, src/agentBehaviorRulesBundle.mjs
-  work.title: agent-behavior step: cursor-ide-workgraph-parity
+  work.title: Шаг agent-behavior: паритет Cursor IDE ↔ Work Graph
 ]>
+

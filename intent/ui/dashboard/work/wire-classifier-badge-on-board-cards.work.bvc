@@ -1,0 +1,50 @@
+#Задача_wire_classifier_badge_on_board_cards<[
+Базис:
+  renderIssueFooter всегда показывает status badge.
+Вектор:
+  loadBrowserWorkItemClassifierSource in workGraphBacklogUiServer.mjs.
+  renderTaskAtom kanban-card → surface board.
+  renderIssueFooter: board → renderWorkItemClassifierBadge; else status.
+Цель:
+  Kanban cards показывают UI / WORK GRAPH / MEMORY вместо ready/doing.
+Проверки:
+  workGraphBacklogUiServer.test renderWorkItemClassifierBadge
+  visual check board view lozenges
+Анализ:
+  Зачем:
+  renderIssueFooter всегда показывает status badge.
+  Контекст: loadBrowserWorkItemClassifierSource in workGraphBacklogUiServer.mjs.
+  Когда:
+  После готовности: implement-work-item-classifier-badge.
+  Готово, когда:
+  Kanban cards показывают UI / WORK GRAPH / MEMORY вместо ready/doing.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: implement-work-item-classifier-badge.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-61
+  intake.source_kind: operator-request
+  intake.source_ref: src/workGraphBacklogUiServer.mjs
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-02T21:40:16.536Z
+  work.analysis.source: operator-request
+  work.decision.at: 2026-06-02T21:40:16.536Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: implement-work-item-classifier-badge
+  work.id: wire-classifier-badge-on-board-cards
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.parent_id: epic-work-graph-ui-classifier-badges-v1
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: low
+  work.status: backlog
+  work.target_files: src/workGraphBacklogUiServer.mjs, tests/workGraphBacklogUiServer.test.mjs
+  work.title: UI: classifier badge на kanban cards (surface=board)
+]>

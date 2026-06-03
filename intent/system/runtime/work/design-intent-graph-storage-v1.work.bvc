@@ -11,42 +11,23 @@
   Определить JSON/projection shape для intent_node и lineage query.
 Цель:
   Канон graph of intent v1 позволяет восстановить путь question → options → selected decision → epic/task → subtasks → evidence.
-Анализ:
-  Целесообразность:
-  Стоит завести «спроектировать хранение графа намерений v1» в бэклог — по материалам AN-3 (analytics:intent-graph-storage-roadmap).
-  Контекст и границы:
-  Описать protocols/intent-graph-storage-v1.bvc: question, option, decision, work_ref, evidence_ref.
-  Зависимости и готовность:
-  depends_on=design-work-item-hierarchy-v1; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Канон graph of intent v1 позволяет восстановить путь question → options → selected decision → epic/task → subtasks → evidence.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-3 (analytics:intent-graph-storage-roadmap); исполнять после вердикта «полезно» и готовности зависимостей.
 Проверки:
   protocols/intent-graph-storage-v1.bvc описывает node kinds и links
   protocols/intent-tree-workgraph-layout.bvc ссылается на intent graph storage как канон
   документирована разница intent graph vs roadmap view
-
 Свидетельства:
-  - protocols/intent-graph-storage-v1.bvc + src/intentGraphProjection.mjs
+  protocols/intent-graph-storage-v1.bvc + src/intentGraphProjection.mjs
 
 Метки:
   atom.profile: work_item
   intake.analytics_key: AN-3
   intake.source_kind: analytics-record
   intake.source_ref: analytics:intent-graph-storage-roadmap
+  intent.decision_id: decision:intent-graph-storage-v1
+  intent.option_id: option-c-intent-node-canon
+  intent.question_id: iq:intent-graph-storage
   migration.strategy: rebuild
   trace.status: verified
-  intent.question_id: iq:intent-graph-storage
-  intent.option_id: option-c-intent-node-canon
-  intent.decision_id: decision:intent-graph-storage-v1
-  work.item_kind: epic
   work.analysis.at: 2026-05-30T18:13:05.405Z
   work.analysis.source: analytics-record
   work.decision.at: 2026-05-30T18:13:05.405Z
@@ -54,6 +35,7 @@
   work.department: system-runtime
   work.depends_on: design-work-item-hierarchy-v1
   work.id: design-intent-graph-storage-v1
+  work.item_kind: epic
   work.next_action: —
   work.owner_role: system_architect
   work.pipeline_stage: decided
@@ -63,3 +45,4 @@
   work.target_files: protocols/intent-graph-storage-v1.bvc, protocols/intent-tree-workgraph-layout.bvc, src/intentGraphGbcSliceBoundary.mjs, work/analytics/intent-graph-storage-roadmap.md
   work.title: спроектировать хранение графа намерений v1
 ]>
+

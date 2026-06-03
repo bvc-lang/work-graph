@@ -17,21 +17,9 @@
   init создаёт devDependencies и config без engineRoot
   Документация и skill не продают ручной clone
   Тесты npm-first path зелёные
-Анализ:
-  Зачем:
-  engineRoot как основной UX — временный костыль разработки WG, не продуктовая модель.
-  Границы:
-  Полный split @work-graph/runtime / ui-server — phase 2; MVP может bundle в cli.
-  Зависимости:
-  AN-40 (per-project), AN-42 (open publication / npm publish).
-Решение:
-  Вердикт:
-  полезно
-  Исполнять по docs/plan-work-graph-npm-first-distribution.md.
-
 Свидетельства:
-  - AN-43 npm-first distribution shipped in repo
-  - closing doc published
+  AN-43 npm-first distribution shipped in repo
+  closing doc published
 
 Метки:
   atom.profile: work_item
@@ -54,5 +42,6 @@
   work.risk: medium
   work.status: done
   work.target_files: work/analytics/work-graph-npm-first-distribution.md, docs/plan-work-graph-npm-first-distribution.md, docs/adr-work-graph-npm-first-distribution.md, packages/work-graph-cli/, packages/workgraph-mcp/, skills/install-work-graph/SKILL.md
-  work.title: Work Graph npm-first: user-first install через npm (AN-43)
+  work.title: Work Graph npm-first: установка через npm (AN-43)
 ]>
+

@@ -1,0 +1,49 @@
+#Задача_epic_work_graph_ui_avatars_v1<[
+Базис:
+  Карточки задач показывают owner-avatar с инициалами на однотонном фоне.
+  Оператор просит пак цветных векторных аватарок в стиле Jira/Atlassian.
+Вектор:
+  P0: public/assets/avatars — 10 SVG (Atlassian palette + силуэт).
+  P0: src/ui/userAvatars.mjs — deterministic pick по ownerRole/department.
+  P0: GET /assets/avatars/** + renderOwnerAvatar в kanban/list/analytics/memory.
+  P1: owner-avatar-stack CSS для overlapping assignees.
+Цель:
+  Owner на карточках — цветная круглая векторная аватарка как в Jira, стабильная для одной роли.
+Проверки:
+  GET /assets/avatars/avatar-01.svg → 200
+  renderOwnerAvatar deterministic for same owner key
+  task cards use img.owner-avatar instead of initials
+  tests/userAvatars.test.mjs green
+Анализ:
+  Atlassian default avatar colors: #FF5630 … #8777D9; hash owner → variant.
+Решение:
+  Вердикт: полезно
+  Собственные SVG-силуэты, не копировать Atlaskit assets.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-60
+  intake.source_kind: operator-request
+  intake.source_ref: public/assets/avatars
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-02T21:31:55.792Z
+  work.analysis.source: operator-request
+  work.decision.at: 2026-06-02T21:31:55.792Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: epic-work-graph-ui-icons-v1
+  work.id: epic-work-graph-ui-avatars-v1
+  work.item_kind: epic
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: low
+  work.status: ready
+  work.target_files: public/assets/avatars, src/ui/userAvatars.mjs, src/workGraphBacklogUiServer.mjs, tests/userAvatars.test.mjs, tests/workGraphBacklogUiServer.test.mjs
+  work.title: UI Avatars v1: Jira-style цветные векторные аватарки owner
+
+Свидетельства:
+  - promote-ready: backlog→ready via operator board
+]>

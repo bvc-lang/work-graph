@@ -11,6 +11,9 @@
 Проверки:
   npm view @work-graph/mcp
   MCP tools работают на проекте после npm install
+Свидетельства:
+  packages/workgraph-mcp → @work-graph/mcp@0.2.0
+  bin/workgraph-mcp.mjs
 Анализ:
   Зачем:
   MCP сейчас @iohasc/workgraph-mcp — не совпадает с брендом Work Graph.
@@ -23,10 +26,6 @@
   Вердикт:
   полезно
   Брать в работу после закрытия зависимостей: epic-work-graph-npm-first-distribution, implement-engine-root-resolver-npm-first.
-
-Свидетельства:
-  - packages/workgraph-mcp → @work-graph/mcp@0.2.0
-  - bin/workgraph-mcp.mjs
 
 Метки:
   atom.profile: work_item
@@ -51,5 +50,6 @@
   work.risk: medium
   work.status: done
   work.target_files: packages/workgraph-mcp/package.json, packages/workgraph-mcp/src/
-  work.title: Переименовать и опубликовать @work-graph/mcp (ex @iohasc/workgraph-mcp)
+  work.title: Cursor MCP подключается через @work-graph/mcp без путей к clone.
 ]>
+

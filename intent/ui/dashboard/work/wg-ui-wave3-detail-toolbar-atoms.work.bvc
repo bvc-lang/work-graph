@@ -5,7 +5,7 @@
   Просмотр/Редактор modes → wg-btn secondary + flat active state.
   Preserve data-detail-mode hooks.
 Цель:
-  Detail drawer toolbar on Gripe buttons.
+  Toolbar detail drawer на кнопках Gripe.
 Проверки:
   detail-toolbar contains wg-btn
   data-testid detail-mode-edit unchanged
@@ -50,5 +50,6 @@
   work.risk: low
   work.status: done
   work.target_files: src/workGraphBacklogUiServer.mjs, work/analytics/gripe-ds-visual-default-wave3.md
-  work.title: Wave 3: detail drawer toolbar → renderUiButton
+  work.title: WG UI волна 3: atoms toolbar в detail view
 ]>
+

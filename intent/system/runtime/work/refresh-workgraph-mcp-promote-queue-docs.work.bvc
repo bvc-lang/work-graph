@@ -1,7 +1,7 @@
 #Задача_refresh_workgraph_mcp_promote_queue_docs<[
 Базис:
   get_promote_ready_queue добавлен в код; MCP README и Cursor session требуют restart для нового tool.
-  Задача «обновить MCP docs и restart guide для promote queue» относится к контуру платформы агента и должна быть понятна агенту без чтения всего backlog.
+  Задача «обновить MCP docs и restart guide для promote queue» относится к контуру платформы агента и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: sync-onebase-cli-parity-evidence.
 Вектор:
   Документировать get_promote_ready_queue; чеклист перезапуска WorkGraph MCP в Cursor.
@@ -44,6 +44,6 @@
   work.risk: medium
   work.status: done
   work.target_files: packages/workgraph-mcp/README.md, docs/workgraph-mcp-clients.md, packages/workgraph-mcp/src/index.mjs
-  work.title: обновить MCP docs и restart guide для promote queue
+  work.title: обновить Work Graph MCP promote очередь docs
 ]>
 

@@ -1,0 +1,59 @@
+#Задача_sync_cursor_wg_rules_to_repo<[
+Базис:
+  AN-57 D2: .cursor/ в .gitignore — seven .mdc (single-backlog, work-items-russian, claim-context) не переносятся на другую машину.
+  mcp.json может содержать локальные пути — нельзя слепо коммитить весь .cursor/.
+Вектор:
+  Каталог docs/cursor-rules/ — канон alwaysApply .mdc (копия из .cursor/rules/).
+  scripts/sync-cursor-wg-rules.mjs — копирует в .cursor/rules/ (npm run sync:cursor-rules).
+  README в docs/cursor-rules: после clone выполнить sync; .cursor/mcp.json остаётся локальным.
+  CI или lint: предупреждение если docs/cursor-rules и .cursor/rules расходятся (optional).
+Цель:
+  Любой clone work graph получает те же WG Cursor rules одной командой без ручного копирования.
+Проверки:
+  docs/cursor-rules/agent-workgraph-single-backlog.mdc существует
+  npm run sync:cursor-rules обновляет .cursor/rules/
+  tests/sync-cursor-wg-rules.test.mjs green (dry-run diff)
+Анализ:
+  Зачем:
+  AN-57 D2: .cursor/ в .gitignore — seven .mdc (single-backlog, work-items-russian, claim-context) не переносятся на другую машину.
+  Контекст: mcp.json может содержать локальные пути — нельзя слепо коммитить весь .cursor/.
+  Когда:
+  После готовности: epic-agent-session-warmup-v1.
+  Готово, когда:
+  Любой clone work graph получает те же WG Cursor rules одной командой без ручного копирования.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: epic-agent-session-warmup-v1.
+
+Свидетельства:
+  docs/cursor-rules/*.mdc — 6 канонических правил
+  npm run sync:cursor-rules + tests/sync-cursor-wg-rules.test.mjs
+  npm run lint:cursor-rules-drift
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-57
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/agent-session-warmup-vs-enforcement.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-02T17:42:39.471Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-02T17:42:39.471Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: epic-agent-session-warmup-v1
+  work.id: sync-cursor-wg-rules-to-repo
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: integration_architect
+  work.parent_id: epic-agent-session-warmup-v1
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: low
+  work.status: done
+  work.target_files: docs/cursor-rules/, scripts/sync-cursor-wg-rules.mjs, package.json, .gitignore, work/analytics/agent-session-warmup-vs-enforcement.md
+  work.title: Правила Cursor WG в git: docs/cursor-rules + sync
+]>
+

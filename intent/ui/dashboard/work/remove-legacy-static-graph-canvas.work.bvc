@@ -8,6 +8,13 @@
   Обновить tests и docs AN-4 todo.
 Цель:
   Один render path — lit-flow; нет параллельного static canvas кода.
+Проверки:
+  grep не находит renderIntentRoadmapCanvas SVG builder в UI server
+  npm test green
+Свидетельства:
+  protocols/graph-canvas-lit-flow-v1.bvc + schemas/graph-canvas-lit-flow-projection.v1.json
+  public/graph-canvas-lit-flow.js (lit-flow client island)
+  src/graphCanvasLitFlow/* + tests/graphCanvasLitFlow.test.mjs
 Анализ:
   Целесообразность:
   Стоит завести «удалить legacy HTML+SVG graph canvas renderers» в бэклог — по материалам AN-4 (analytics:graph-visualization-engine).
@@ -25,14 +32,6 @@
   Вердикт:
   полезно
   Создана по материалам приёма AN-4 (analytics:graph-visualization-engine); исполнять после вердикта «полезно» и готовности зависимостей.
-Проверки:
-  grep не находит renderIntentRoadmapCanvas SVG builder в UI server
-  npm test green
-
-Свидетельства:
-  - protocols/graph-canvas-lit-flow-v1.bvc + schemas/graph-canvas-lit-flow-projection.v1.json
-  - public/graph-canvas-lit-flow.js (lit-flow client island)
-  - src/graphCanvasLitFlow/* + tests/graphCanvasLitFlow.test.mjs
 
 Метки:
   atom.profile: work_item
@@ -57,5 +56,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/workGraphBacklogUiServer.mjs, src/intentRoadmapCanvas.mjs, src/architectureLayout.mjs, work/analytics/graph-visualization-engine.md
-  work.title: удалить legacy HTML+SVG graph canvas renderers
+  work.title: Один render path — lit-flow; нет параллельного static canvas кода.
 ]>
+

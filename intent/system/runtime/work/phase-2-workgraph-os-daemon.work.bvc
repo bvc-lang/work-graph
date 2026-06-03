@@ -1,7 +1,7 @@
 #Задача_phase_2_workgraph_os_daemon<[
 Базис:
   Старый ioHasC имеет daemon, хранилище черновиков, WorkGraph scheduler и recovery идеи, но пересобрать пока ограничен локальным UI и одноразовым runner.
-  Задача «Фаза 2: WorkGraph OS и daemon» относится к контуру платформы агента и должна быть понятна агенту без чтения всего backlog.
+  Задача «Фаза 2: WorkGraph OS и daemon» относится к контуру платформы агента и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: phase-1-agent-worker-live-loop.
 Вектор:
   Спроектировать фазу WorkGraph OS: scheduler owns tick, recovery presets, приём черновиков, audit journal и derived projections.
@@ -45,6 +45,6 @@
   work.risk: high
   work.status: done
   work.target_files: protocols/workgraph-daemon-scheduler-tick.bvc, src/workGraphDaemonTick.mjs, protocols/workgraph-recovery-policy-presets.bvc, work/daemon-audit.jsonl, work/backlog.bvc
-  work.title: Фаза 2: WorkGraph OS и daemon
+  work.title: Work Graph становится операционной системой проекта, а не только backlog-файлом.
 ]>
 

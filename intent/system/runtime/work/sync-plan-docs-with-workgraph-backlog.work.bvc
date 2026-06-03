@@ -1,7 +1,7 @@
 #Задача_sync_plan_docs_with_workgraph_backlog<[
 Базис:
   docs/plan-workgraph-llm-usefulness.md и eval harness добавлены; gap matrix и phase-8 plan ещё без ссылок на work items.
-  Задача «синхронизировать plan docs с WorkGraph backlog» относится к контуру платформы агента и должна быть понятна агенту без чтения всего backlog.
+  Задача «синхронизировать plan docs с WorkGraph backlog» относится к контуру платформы агента и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: wire-eval-llm-usefulness-ci-gate.
 Вектор:
   Обновить Todo/checklist в plan-*.md: work.id, depends_on, критерии done.
@@ -45,6 +45,6 @@
   work.risk: medium
   work.status: done
   work.target_files: docs/plan-phase-8-plus-continuation.md, docs/plan-workgraph-llm-usefulness.md, docs/plan-iohasc-rebuild-audit-gap-matrix.md
-  work.title: синхронизировать plan docs с WorkGraph backlog
+  work.title: Планы на диске отражают актуальные WorkItems и статусы ready/backlog.
 ]>
 

@@ -1,13 +1,13 @@
 #Задача_implement_step_code_trace_link_validator<[
 Базис:
-  Trace Links v1 design завершён, но links пока являются протоколом без runtime validator.
+  Trace Links v1 спроектировать завершён, но links пока являются протоколом без runtime validator.
   Первым implementation шагом нужен deterministic validator, который читает .bvc labels/sections, reverse code markers and adapter-resolved file facts without introducing PVRG/GBC as источник истины.
 Вектор:
   Реализовать минимальный парсер/валидатор trace.code_refs, trace.artifact_refs, trace.evidence_refs, trace.links and iohasc-ref markers.
   Проверять существование work.id, atom guid when available, evidence ids when available, logical file paths and simple symbol/range locators.
   Возвращать diagnostics for broken links, orphan markers, stale ranges and weak target_files-only coverage.
 Цель:
-  Work Graph can block trace.status verified when step-code links drift and can expose actionable navigation diagnostics for UI/Graph RAG.
+  Work Graph может блокировать trace.status verified при drift step-code links и показывать навигационную диагностику для UI/Graph RAG.
 Анализ:
   Целесообразность:
   Стоит завести «реализовать validator Trace Links v1 между .bvc и кодом» в бэклог.
@@ -45,6 +45,6 @@
   work.risk: high
   work.status: done
   work.target_files: src/workGraphRuntime.mjs, tests/workGraphRuntime.test.mjs, protocols/step-code-trace-links-v1.bvc, work/backlog.bvc
-  work.title: реализовать validator Trace Links v1 между .bvc и кодом
+  work.title: реализовать step кода trace link validator
 ]>
 

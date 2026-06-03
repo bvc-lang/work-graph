@@ -11,28 +11,10 @@
 Проверки:
   tests/inboxEventStream.test.mjs зелёный
   unread count корректно меняется после mark-read
-Анализ:
-  Целесообразность:
-  Стоит завести «Inbox events: журнал → unread feed» в бэклог — по материалам work/analytics/ux-current-state-and-vector.md.
-  Контекст и границы:
-  src/inboxEventStream.mjs: builder из journal sources, ordered, severity/kind/link.
-  Зависимости и готовность:
-  depends_on=ux-mission-control-p0, design-home-mission-control-view; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Operator видит свежие события одной лентой, помечает прочитанным, badge обнуляется.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма work/analytics/ux-current-state-and-vector.md; исполнять после вердикта «полезно» и готовности зависимостей.
-
 Свидетельства:
-  - src/inboxEventStream.mjs
-  - GET /api/inbox-events
-  - schema inbox.events.v1
+  src/inboxEventStream.mjs
+  GET /api/inbox-events
+  schema inbox.events.v1
 
 Метки:
   atom.profile: work_item
@@ -56,5 +38,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/inboxEventStream.mjs, src/workGraphBacklogUiServer.mjs, tests/inboxEventStream.test.mjs
-  work.title: Inbox events: журнал → unread feed
+  work.title: Operator видит свежие события одной лентой, помечает прочитанным, badge обнуляется.
 ]>
+

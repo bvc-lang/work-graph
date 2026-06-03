@@ -1,0 +1,50 @@
+#Задача_wire_clickable_repo_file_links_in_drawers<[
+Базис:
+  renderDetailList выводит plain text без data-repo-file-path.
+Вектор:
+  renderRepoFileLink(path) → button.repo-file-link.
+  Заменить relatedFiles в analytics + target_files accordion в task drawer.
+  handleBoardClick delegated handler → openRepoFileStackPreview(path).
+Цель:
+  Related files из AN-50 closing кликабельны.
+Проверки:
+  data-repo-file-path in HTML
+  click from detail-body opens sub-drawer
+Анализ:
+  Зачем:
+  renderDetailList выводит plain text без data-repo-file-path.
+  Контекст: renderRepoFileLink(path) → button.repo-file-link.
+  Когда:
+  После готовности: epic-drawer-repo-file-preview-v1, decide-drawer-repo-file-frame-adr.
+  Готово, когда:
+  Related files из AN-50 closing кликабельны.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: epic-drawer-repo-file-preview-v1, decide-drawer-repo-file-frame-adr.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-59
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/drawer-repo-file-preview.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-02T19:57:33.397Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-02T19:57:33.397Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: epic-drawer-repo-file-preview-v1, decide-drawer-repo-file-frame-adr
+  work.id: wire-clickable-repo-file-links-in-drawers
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.parent_id: epic-drawer-repo-file-preview-v1
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: low
+  work.status: backlog
+  work.target_files: src/workGraphBacklogUiServer.mjs, tests/workGraphBacklogUiServer.test.mjs
+  work.title: UI: кликабельные repo paths в relatedFiles и target_files
+]>

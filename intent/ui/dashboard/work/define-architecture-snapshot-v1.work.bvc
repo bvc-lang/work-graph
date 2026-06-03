@@ -4,27 +4,10 @@
   UI, PVRG slice и dashboard оператора не должны парсить raw .bvc в браузере для architecture map.
 Вектор:
   Определить architecture.snapshot.v1 JSON schema: blocks, containers, artifacts, edges, counts, focusBlockId, source refs.
-  Зафиксировать deterministic builder input: charter, intent/index.bvc, workgraph.snapshot.v1, trace links validator output, optional memory/evidence exports.
+  Зафиксировать deterministic builder input: charter, intent/index.bvc, workgraph.snapshot.v1, trace links validator output, опционально memory/evidence exports.
   Описать stable ids для blocks/containers и typed edges compatible with derived graph viewer contracts.
 Цель:
   Architecture map и block detail panel читают один rebuildable snapshot contract, а не ad-hoc HTML data.
-Анализ:
-  Целесообразность:
-  Стоит завести «определить JSON schema architecture.snapshot.v1» в бэклог.
-  Контекст и границы:
-  Определить architecture.snapshot.v1 JSON schema: blocks, containers, artifacts, edges, counts, focusBlockId, source refs.
-  Зависимости и готовность:
-  depends_on=design-architecture-graph-model-v1; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Architecture map и block detail panel читают один rebuildable snapshot contract, а не ad-hoc HTML data.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -45,6 +28,6 @@
   work.risk: medium
   work.status: done
   work.target_files: schemas/architecture-snapshot.v1.json, src/architectureSnapshot.mjs, tests/architectureSnapshot.test.mjs, work/backlog.bvc
-  work.title: определить JSON schema architecture.snapshot.v1
+  work.title: определить архитектуры snapshot v1
 ]>
 

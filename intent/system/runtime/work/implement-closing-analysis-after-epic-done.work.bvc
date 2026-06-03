@@ -8,32 +8,14 @@
   Триггер — серверный (workGraphBacklogUiServer) при apply patch на эпик; UI — banner «эпик закрыт, создать closing-анализ?» в task drawer.
 Цель:
   Замкнуть обратный контур learning: каждый закрытый эпик имеет шанс породить closing-AN и новые эпики/charter updates.
-Анализ:
-  Целесообразность:
-  Без замкнутого контура analytics остаётся только проспективным; уроки теряются между циклами.
-  Контекст и границы:
-  Closing-анализ опциональный (не блокирующий gate); создаётся только для эпиков (work.item_kind=epic), не для каждой подзадачи.
-  Зависимости и готовность:
-  Зависит от T1 (canon должен описать analytics.feeds_epics и порог rollup).
-  Риски и альтернативы:
-  Риск шума: оператор закрывает 5 эпиков подряд и получает 5 banner-ов. Закрывается порогом (только при значимом эпике) и rate-limit на UI.
-  Критерии успеха:
-  При apply patch, переводящем эпик в done, в журнал audit пишется событие epic_closed_suggest_closing_analysis; в UI появляется banner с CTA «создать AN-XX»; при создании AN-XX автоматически проставляется analytics.feeds_epics.
-  Рекомендация для решения:
-  Полезно — закрывает один из трёх провалов пайплайна.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-22; стартует после T1.
 Проверки:
   тест: apply patch на эпик с status=done эмитит closingAnalysisSuggestion
   тест: buildClosingAnalysisSuggestion возвращает feeds_epics и suggestedBodyPath
   docs/decision-pipeline-canon.md описывает closing-loop в §«Обратный контур»
-
 Свидетельства:
-  - src/closingAnalysisSuggest.mjs buildClosingAnalysisSuggestion
-  - atomInspector apply response включает closingAnalysisSuggestion при epic→done
-  - tests/closingAnalysisSuggest.test.mjs 3/3 pass
+  src/closingAnalysisSuggest.mjs buildClosingAnalysisSuggestion
+  atomInspector apply response включает closingAnalysisSuggestion при epic→done
+  tests/closingAnalysisSuggest.test.mjs 3/3 pass
 
 Метки:
   atom.profile: work_item
@@ -58,5 +40,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/closingAnalysisSuggest.mjs, src/atomInspector.mjs, tests/closingAnalysisSuggest.test.mjs, docs/decision-pipeline-canon.md
-  work.title: closing-анализ при закрытии эпика — замкнуть обратный контур AN-XX
+  work.title: Замкнуть обратный контур learning: каждый закрытый эпик имеет шанс породить closing-AN и новые эпики/charte…
 ]>
+

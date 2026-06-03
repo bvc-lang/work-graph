@@ -8,29 +8,12 @@
   Track B: workflow tree mode, pipeline default, matrix prototype.
   Track C: mermaid export CLI + tests + AN-34 closing.
 Цель:
-  Оператор видит architecture и backlog в правильном view profile без canvas-only dead-end.
+  Оператор видит architecture и бэклог в правильном view profile без canvas-only dead-end.
 Проверки:
   ADR architecture-views-v1 опубликован
-  Architecture tab: list-rows + Tree/Pipeline toggle
+  Вкладка Architecture: list-rows + Tree/Pipeline toggle
   workflow tree mode по work.parent_id
   AN-34 closing + epic done
-Анализ:
-  Целесообразность:
-  Стоит завести «Architecture views v1: list + tree + pipeline graph + export» в бэклог — по материалам AN-34 (work/analytics/architecture-visualization-patterns-comparison.md).
-  Контекст и границы:
-  Track A: ADR profiles + architecture blocks list tab.
-  Зависимости и готовность:
-  depends_on=ux-mission-control-p0, implement-graph-canvas-svg-edges-v1; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Оператор видит architecture и backlog в правильном view profile без canvas-only dead-end.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-34 (work/analytics/architecture-visualization-patterns-comparison.md); исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -54,5 +37,6 @@
   work.risk: medium
   work.status: done
   work.target_files: work/analytics/architecture-visualization-patterns-comparison.md, docs/plan-architecture-views-v1.md, src/workGraphBacklogUiServer.mjs, src/architectureSnapshot.mjs, docs/adr-architecture-views-v1.md
-  work.title: Architecture views v1: list + tree + pipeline graph + export
+  work.title: Представления архитектуры v1: list + tree + pipeline + export
 ]>
+

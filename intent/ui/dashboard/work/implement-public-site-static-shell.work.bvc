@@ -1,0 +1,54 @@
+#Задача_implement_public_site_static_shell<[
+Базис:
+  Нужны public routes, независимые от backlog operator UI.
+Вектор:
+  Create server/render module for public site HTML.
+  Semantic HTML: header/nav/main/article/section/footer.
+  Routes: /, /product, /evidence-ledger, /onebase, /compare, /docs, /docs/*.
+Цель:
+  Публичный сайт рендерится статично и не требует JS для основного контента.
+Проверки:
+  GET / contains Local evidence ledger
+  GET /compare contains competitors table
+  GET /docs contains docs index
+Анализ:
+  Зачем:
+  Нужны public routes, независимые от backlog operator UI.
+  Контекст: Create server/render module for public site HTML.
+  Когда:
+  После готовности: write-public-site-information-architecture.
+  Готово, когда:
+  Публичный сайт рендерится статично и не требует JS для основного контента.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: write-public-site-information-architecture.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-64
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-public-site-competitive-tz.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-02T22:20:53.052Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-02T22:20:53.052Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: write-public-site-information-architecture
+  work.id: implement-public-site-static-shell
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.parent_id: epic-work-graph-public-site-v1
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: src/publicSiteServer.mjs, src/publicSiteContent.mjs, tests/publicSite.test.mjs
+  work.title: Site: static shell for landing/product/compare/docs
+
+Свидетельства:
+  - Implemented public site v1 in src/publicSiteContent.mjs + src/publicSiteServer.mjs; verified by node --test tests/publicSite.test.mjs tests/workGraphBacklogUiServer.test.mjs (22/22 pass).
+]>

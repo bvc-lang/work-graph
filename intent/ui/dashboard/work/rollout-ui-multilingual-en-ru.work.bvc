@@ -1,0 +1,56 @@
+#Задача_rollout_ui_multilingual_en_ru<[
+Базис:
+  ~300+ hardcoded RU strings; settings/nav — первый extract, остальное по AN-55 strangler.
+  Operator request: UI на нескольких языках (v1: en + ru).
+Вектор:
+  Завершить вынести subtasks epic-work-graph-ui-i18n-v1 для shell, kanban, drawer, settings.
+  Gate: locale=en → no Cyrillic in nav/settings/errors P0 chrome.
+  Settings labels и sidebar «Settings» / «Настройки» в ui.json.
+Цель:
+  Переключение языка в Настройках переводит весь оператор chrome EN↔RU.
+Проверки:
+  en locale: sidebar Settings, header labels EN
+  ru locale: Настройки, nav RU
+  uiCatalog key parity green
+Анализ:
+  Зачем:
+  ~300+ hardcoded RU strings; settings/nav — первый extract, остальное по AN-55 strangler.
+  Контекст: Operator request: UI на нескольких языках (v1: en + ru).
+  Когда:
+  После готовности: epic-work-graph-ui-i18n-v1, wire-settings-theme-and-locale-sections, extract-backlog-shell-i18n, extract-kanban-workflow-i18n, extract-detail-drawer-i18n.
+  Готово, когда:
+  Переключение языка в Настройках переводит весь оператор chrome EN↔RU.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: epic-work-graph-ui-i18n-v1, wire-settings-theme-and-locale-sections, extract-backlog-shell-i18n, extract-kanban-workflow-i18n, extract-detail-drawer-i18n.
+
+Свидетельства:
+  - tests/uiCatalog.test.mjs en/ru key parity; renderBacklogHtml({ locale: en }) smoke
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-55
+  intake.source_kind: operator-request
+  intake.source_ref: docs/plan-work-graph-ui-settings-v1.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-02T16:45:45.849Z
+  work.analysis.source: operator-request
+  work.decision.at: 2026-06-02T16:45:45.849Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: epic-work-graph-ui-i18n-v1, wire-settings-theme-and-locale-sections, extract-backlog-shell-i18n, extract-kanban-workflow-i18n, extract-detail-drawer-i18n
+  work.id: rollout-ui-multilingual-en-ru
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: feature_engineer
+  work.parent_id: epic-work-graph-ui-settings-v1
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: medium
+  work.status: done
+  work.target_files: work/analytics/work-graph-ui-i18n-best-practices.md, docs/plan-work-graph-ui-i18n-v1.md, locales/en/ui.json, locales/ru/ui.json, src/workGraphBacklogUiServer.mjs, tests/uiCatalog.test.mjs
+  work.title: Раскатка: перевод UI chrome на EN и RU (settings + все views)
+]>
+

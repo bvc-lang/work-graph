@@ -1,0 +1,41 @@
+#Задача_extract_kanban_workflow_i18n<[
+Базис:
+  Kanban columns, filters, empty states — hardcoded RU in monolith.
+Вектор:
+  Column headers, filter chips, empty-state copy → ui.json.
+  workItemStatusTone STATUS_LABELS — locale-aware or catalog keys.
+  Intl.DateTimeFormat for dates where shown.
+Цель:
+  Доска и workflow читаются на EN и RU.
+Проверки:
+  Kanban column EN labels
+  Status tone labels follow locale
+Свидетельства:
+  npm run test:deterministic — 731 tests; kanban/workflow i18n, ADR, /api/backlog-revision, live poll on board/workflow
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-55
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-ui-i18n-best-practices.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-02T16:36:21.437Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-02T16:36:21.437Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: extract-backlog-shell-i18n
+  work.id: extract-kanban-workflow-i18n
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.parent_id: epic-work-graph-ui-i18n-v1
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: medium
+  work.status: done
+  work.target_files: src/workGraphBacklogUiServer.mjs, src/ui/workItemStatusTone.mjs, locales/en/ui.json, locales/ru/ui.json
+  work.title: Вынести подписи kanban и workflow в UI catalog
+]>
+

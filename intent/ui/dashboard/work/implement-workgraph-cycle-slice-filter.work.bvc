@@ -4,7 +4,7 @@
   В пересобрать уже есть phase epics (phase-0…phase-11) и разделение бэклог vs operational statuses; отдельная Scrum-спринт модель пока избыточна.
 Вектор:
   Ввести лёгкий cycle/slice filter без второго источник истины:
-  optional label work.cycle (например phase-7 или 2026-05);
+  опционально label work.cycle (например phase-7 или 2026-05);
   derived cycle из depends_on → ближайший phase-* epic, если label не задан;
   UI: фильтр «Текущий цикл» на доске, operational view (ready/in_progress/verify/blocked) по умолчанию;
   done/verified — в архивной секции или отдельной вкладке с cap/pagination по выбранному cycle.
@@ -35,6 +35,6 @@
   work.risk: low
   work.status: done
   work.target_files: protocols/workgraph-board-cycle-slice-v1.bvc, src/workGraphCycleSlice.mjs, src/workGraphBacklogUiServer.mjs, tests/workGraphCycleSlice.test.mjs, work/backlog.bvc
-  work.title: реализовать cycle/slice-фильтр доски Work Graph
+  work.title: Актуальный срез работы, а не бесконечную колонку завершённых задач; canonical state остаётся work/backlog.bvc.
 ]>
 

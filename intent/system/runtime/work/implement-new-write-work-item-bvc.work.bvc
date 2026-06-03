@@ -9,6 +9,9 @@
 Проверки:
   seed script создаёт .work.bvc файлы
   intent tree lint принимает .work.bvc и .work.bvc
+Свидетельства:
+  src/bvcNewWritePolicy.mjs — intentPathForNewWorkItem → *.work.bvc
+  intentTreeWorkItems, intentHierarchy, intentTreeLint dual suffix
 Анализ:
   Целесообразность:
   Стоит завести «new-write policy: WorkItem → *.work.bvc» в бэклог — по материалам plan: docs/plan-step-to-bvc-migration.md.
@@ -26,10 +29,6 @@
   Вердикт:
   полезно
   Создана по материалам приёма plan: docs/plan-step-to-bvc-migration.md; исполнять после вердикта «полезно» и готовности зависимостей.
-
-Свидетельства:
-  - src/bvcNewWritePolicy.mjs — intentPathForNewWorkItem → *.work.bvc
-  - intentTreeWorkItems, intentHierarchy, intentTreeLint dual suffix
 
 Метки:
   atom.profile: work_item
@@ -53,5 +52,6 @@
   work.risk: low
   work.status: done
   work.target_files: src/bvcNewWritePolicy.mjs, src/intentTreeWorkItems.mjs, src/intentTreeLint.mjs
-  work.title: new-write policy: WorkItem → *.work.bvc
+  work.title: реализовать new write work item BVC
 ]>
+

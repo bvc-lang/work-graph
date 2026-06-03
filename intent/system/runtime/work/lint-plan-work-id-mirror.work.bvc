@@ -11,6 +11,10 @@
 Проверки:
   tests/lint-plan-work-alignment.test.mjs green
   npm run lint:plan-work-alignment без errors на текущих plan-*.md
+Свидетельства:
+  src/lintPlanWorkAlignment.mjs + scripts/lint-plan-work-alignment.mjs
+  tests/lintPlanWorkAlignment.test.mjs — 2 кейса pass
+  npm run lint:plan-work-alignment — в ci:mandatory
 Анализ:
   Целесообразность:
   Стоит завести «lint: plan.md todo ↔ work.id mirror» в бэклог — по материалам AN-25 (work/analytics/agent-bypass-work-graph-dual-backlog.md).
@@ -28,11 +32,6 @@
   Вердикт:
   полезно
   Создана по материалам приёма AN-25 (work/analytics/agent-bypass-work-graph-dual-backlog.md); исполнять после вердикта «полезно» и готовности зависимостей.
-
-Свидетельства:
-  - src/lintPlanWorkAlignment.mjs + scripts/lint-plan-work-alignment.mjs
-  - tests/lintPlanWorkAlignment.test.mjs — 2 кейса pass
-  - npm run lint:plan-work-alignment — в ci:mandatory
 
 Метки:
   atom.profile: work_item
@@ -57,5 +56,6 @@
   work.risk: low
   work.status: done
   work.target_files: scripts/lint-plan-work-alignment.mjs, tests/lint-plan-work-alignment.test.mjs, package.json
-  work.title: lint: plan.md todo ↔ work.id mirror
+  work.title: Планы и бэклог не расходятся silently; drift виден в lint.
 ]>
+

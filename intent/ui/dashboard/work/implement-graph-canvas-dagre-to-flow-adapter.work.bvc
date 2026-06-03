@@ -4,35 +4,17 @@
   Переиспользовать dagreGraphLayout.mjs и layout profile overrides из AN-1.
 Вектор:
   graphCanvasProjectionToFlow(projection) → { nodes, edges, viewport }.
-  LR/TB из layout profile; rejected/upstream edge styles.
-  fitView on mount; сохранять manualOverrides после drag (optional phase).
+  LR/TB из layout profile; отказed/upstream edge styles.
+  fitView on mount; сохранять manualOverrides после drag (опционально phase).
 Цель:
   Любой GraphCanvasProjection автоматически раскладывается и отображается в lit-flow.
-Анализ:
-  Целесообразность:
-  Стоит завести «реализовать adapter dagre layout → lit-flow nodes/edges» в бэклог — по материалам AN-4 (analytics:graph-visualization-engine).
-  Контекст и границы:
-  graphCanvasProjectionToFlow(projection) → { nodes, edges, viewport }.
-  Зависимости и готовность:
-  depends_on=implement-lit-flow-package-and-build, design-graph-canvas-lit-flow-v1; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Любой GraphCanvasProjection автоматически раскладывается и отображается в lit-flow.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-4 (analytics:graph-visualization-engine); исполнять после вердикта «полезно» и готовности зависимостей.
 Проверки:
   tests/graphCanvasLitFlowAdapter.test.mjs покрывает LR intent branch fixture
   layout quality metrics из AN-1 не регрессируют
-
 Свидетельства:
-  - protocols/graph-canvas-lit-flow-v1.bvc + schemas/graph-canvas-lit-flow-projection.v1.json
-  - public/graph-canvas-lit-flow.js (lit-flow client island)
-  - src/graphCanvasLitFlow/* + tests/graphCanvasLitFlow.test.mjs
+  protocols/graph-canvas-lit-flow-v1.bvc + schemas/graph-canvas-lit-flow-projection.v1.json
+  public/graph-canvas-lit-flow.js (lit-flow client island)
+  src/graphCanvasLitFlow/* + tests/graphCanvasLitFlow.test.mjs
 
 Метки:
   atom.profile: work_item
@@ -57,5 +39,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/graphCanvasLitFlow/graphCanvasProjectionToFlow.ts, src/dagreGraphLayout.mjs, src/graphCanvasLayout.mjs, tests/graphCanvasLitFlowAdapter.test.mjs
-  work.title: реализовать adapter dagre layout → lit-flow nodes/edges
+  work.title: Любой GraphCanvasProjection автоматически раскладывается и отображается в lit-flow.
 ]>
+

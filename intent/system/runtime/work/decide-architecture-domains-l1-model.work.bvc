@@ -11,23 +11,8 @@
   ADR опубликован
   Варианты A/C отклонены с rationale
   feeds_epics ссылается на epic-architecture-domains-l1-hierarchy
-Анализ:
-  Целесообразность:
-  Стоит завести «ADR: модель доменов L1 (вариант B+ — group + domain-* peers)» в бэклог — по материалам AN-39 (work/analytics/architecture-domains-l1-hierarchy.md).
-  Контекст и границы:
-  docs/adr-architecture-domains-l1-hierarchy.md: выбор B+, edges, migration notes.
-  Зависимости и готовность:
-  depends_on=epic-architecture-domains-l1-hierarchy; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Решение зафиксировано до правки architecture/main.bvc.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-39 (work/analytics/architecture-domains-l1-hierarchy.md); исполнять после вердикта «полезно» и готовности зависимостей.
+Свидетельства:
+  cascade: reconcile epic epic-architecture-domains-l1-hierarchy already done
 
 Метки:
   atom.profile: work_item
@@ -52,8 +37,6 @@
   work.risk: low
   work.status: done
   work.target_files: work/analytics/architecture-domains-l1-hierarchy.md, docs/plan-architecture-domains-l1-hierarchy.md, docs/adr-architecture-domains-l1-hierarchy.md, protocols/architecture-graph-model-v1.bvc
-  work.title: ADR: модель доменов L1 (вариант B+ — group + domain-* peers)
-
-Свидетельства:
-  - cascade: reconcile epic epic-architecture-domains-l1-hierarchy already done
+  work.title: Решение зафиксировано до правки architecture/main.bvc.
 ]>
+

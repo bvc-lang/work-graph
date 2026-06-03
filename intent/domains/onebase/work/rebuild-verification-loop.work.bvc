@@ -1,11 +1,11 @@
 #Задача_rebuild_verification_loop<[
 Базис:
   Agent-first система должна оставлять evidence на каждый значимый шаг.
-  Задача «спроектировать verification loop новой сборки» относится к контуру Work Graph rebuild и должна быть понятна агенту без чтения всего backlog.
-  Предварительно должны быть закрыты зависимости: design-operator-dashboard, onebase-posting-rule-golden-path.
+  Задача «спроектировать verification loop новой сборки» относится к контуру Work Graph пересобрать и должна быть понятна агенту без чтения всего бэклог.
+  Предварительно должны быть закрыты зависимости: спроектировать dashboard оператора, onebase-posting-rule-golden-path.
 Вектор:
   Описать deterministic tests для formatter и Work Graph runtime.
-  Описать optional real LLM scenario для OneBase golden path.
+  Описать опционально real LLM scenario для OneBase golden path.
   Описать формат записи evidence в Work Graph.
 Цель:
   Рабочий контур проверяется автоматически и вручную понятен оператору.
@@ -16,7 +16,7 @@
   Контекст и границы:
   Описать deterministic tests для formatter и Work Graph runtime.
   Зависимости и готовность:
-  depends_on=design-operator-dashboard, onebase-posting-rule-golden-path; старт после закрытия upstream-зависимостей.
+  depends_on=спроектировать dashboard оператора, onebase-posting-rule-golden-path; старт после закрытия upstream-зависимостей.
   Риски и альтернативы:
   Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
   Критерии успеха:
@@ -47,6 +47,6 @@
   work.risk: medium
   work.status: done
   work.target_files: protocols/rebuild-verification-loop.bvc, src/verificationLoop.mjs, scripts/run-onebase-verification.mjs, src/workGraphBacklogUiServer.mjs, tests/verificationLoop.test.mjs, package.json
-  work.title: спроектировать verification loop новой сборки
+  work.title: Рабочий контур проверяется автоматически и вручную понятен оператору.
 ]>
 

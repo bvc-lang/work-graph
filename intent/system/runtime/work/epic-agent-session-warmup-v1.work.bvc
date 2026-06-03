@@ -1,0 +1,60 @@
+#Задача_epic_agent_session_warmup_v1<[
+Базис:
+  AN-57: declarative enforcement (AN-25/26) не останавливает drift — агент пишет по-английски, не меняет work.status, использует TodoWrite.
+  Few-shot в ioHasC есть, но не про claim→evidence→русский BVC; WG worker auto-inject не доходит до Cursor IDE.
+  .cursor/rules WG лежат локально и в .gitignore — на clone правил может не быть; workspace project не подхватывает WG rules.
+Вектор:
+  Воспроизводимый путь Cursor rules (commit docs/cursor-rules + синхронизировать или селективный un-ignore).
+  Runbook session primer для оператора + ссылка в workgraph-mcp-clients.md.
+  1–2 few-shot примера Work Graph в ioHasC fewShotLibrary (claim, status, evidence, русский prose).
+  Опционально: user-rule шаблон; eval fixture Cursor MCP usefulness (P2).
+Цель:
+  Cursor-агент в сессии WG воспроизводимо следует claim→code→evidence→done и пишет задачи по-русски — не только по soft .mdc без primer.
+Проверки:
+  docs/cursor-rules/*.mdc в git + npm run sync:cursor-rules (или эквivalent)
+  docs/plan-agent-session-warmup-v1.md todo с work.id
+  few-shot workgraph_execute (или hook) в project fewShotLibrary
+  runbook session primer в docs/workgraph-mcp-clients.md
+  AN-58 итоговый разбор опубликован
+Анализ:
+  Зачем:
+  AN-57: declarative enforcement (AN-25/26) не останавливает drift — агент пишет по-английски, не меняет work.status, использует TodoWrite.
+  Контекст: Few-shot в ioHasC есть, но не про claim→evidence→русский BVC; WG worker auto-inject не доходит до Cursor IDE.
+  Когда:
+  После готовности: epic-agent-workgraph-enforcement.
+  Готово, когда:
+  Cursor-агент в сессии WG воспроизводимо следует claim→code→evidence→done и пишет задачи по-русски — не только по soft .mdc без primer.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: epic-agent-workgraph-enforcement.
+
+Свидетельства:
+  5/5 subtasks done; docs/plan-agent-session-warmup-v1.md
+  work/analytics/closing-epic-agent-session-warmup-v1.md
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-57
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/agent-session-warmup-vs-enforcement.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-02T17:42:39.456Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-02T17:42:39.456Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: epic-agent-workgraph-enforcement
+  work.id: epic-agent-session-warmup-v1
+  work.item_kind: epic
+  work.next_action: —
+  work.owner_role: integration_architect
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: work/analytics/agent-session-warmup-vs-enforcement.md, docs/plan-agent-session-warmup-v1.md, docs/cursor-rules/, scripts/sync-cursor-wg-rules.mjs, ../project/src/agent/fewShotLibrary.js, ../project/src/agent/fewShotStrategy.js, docs/workgraph-mcp-clients.md
+  work.title: Прогрев сессии агента: few-shot WG, правила Cursor, primer
+]>
+

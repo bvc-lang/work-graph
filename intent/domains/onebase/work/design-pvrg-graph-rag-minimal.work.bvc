@@ -10,23 +10,6 @@
 Цель:
   Агент получает полезный связанный контекст без полного переноса старого PVRG.
   Готово, когда выполнены проверки: graph/RAG scope ограничен derived context.
-Анализ:
-  Целесообразность:
-  Стоит завести «спроектировать минимальный slice PVRG/Graph RAG» в бэклог.
-  Контекст и границы:
-  Описать минимальный graph/RAG slice: nodes для WorkItem, StepAtom, OneBase artifact, file, evidence.
-  Зависимости и готовность:
-  depends_on=design-language-adapter-layer, design-project-memory-v1; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Агент получает полезный связанный контекст без полного переноса старого PVRG.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -47,6 +30,6 @@
   work.risk: medium
   work.status: done
   work.target_files: protocols/pvrg-graph-rag-minimal.bvc, protocols/language-adapter-layer.bvc, protocols/project-memory-v1.bvc, ui/derived-graph-viewer.bvc, domains/onebase/artifact-mapping.bvc, work/backlog.bvc
-  work.title: спроектировать минимальный slice PVRG/Graph RAG
+  work.title: Получает полезный связанный контекст без полного переноса старого PVRG.
 ]>
 

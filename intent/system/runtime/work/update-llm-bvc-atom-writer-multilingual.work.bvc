@@ -5,9 +5,14 @@
 Вектор:
   Обновить llm-step-atom-writer.bvc: выбор одного dialect; lang в draft/Labels.
   Formatter пишет ключи dialect из registry, не hardcode RU.
-  Примеры EN и RU draft JSON.
+  Примеры EN и RU черновик JSON.
 Цель:
   LLM-контракт согласован с Detect-or-Declare; нет mixed inline aliases.
+Проверки:
+  protocol описывает @lang и Labels.lang для фрагментов
+  npm run eval:mandatory-prompt не регрессит
+Свидетельства:
+  protocols/llm-step-atom-writer.bvc: one-dialect-per-atom, @lang, draft.lang
 Анализ:
   Целесообразность:
   Стоит завести «protocols/llm-step-atom-writer: один dialect на атом» в бэклог — по материалам AN-19 (analytics:bvc-multilingual-keys-design).
@@ -25,12 +30,6 @@
   Вердикт:
   полезно
   Создана по материалам приёма AN-19 (analytics:bvc-multilingual-keys-design); исполнять после вердикта «полезно» и готовности зависимостей.
-Проверки:
-  protocol описывает @lang и Labels.lang для фрагментов
-  npm run eval:mandatory-prompt не регрессит
-
-Свидетельства:
-  - protocols/llm-step-atom-writer.bvc: one-dialect-per-atom, @lang, draft.lang
 
 Метки:
   atom.profile: work_item
@@ -55,5 +54,6 @@
   work.risk: medium
   work.status: done
   work.target_files: protocols/llm-step-atom-writer.bvc, schemas/step-atom-draft.v1.json, docs/adr-bvc-multilingual-keys.md
-  work.title: protocols/llm-step-atom-writer: один dialect на атом
+  work.title: LLM-контракт согласован с Detect-or-Declare; нет mixed inline aliases.
 ]>
+

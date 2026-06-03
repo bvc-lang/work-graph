@@ -1,49 +1,27 @@
 #Задача_implement_prompt_step_rules_editor_mvp<[
 Базис:
   Prompt rules UI read-only; полный editor отложен.
-  Задача «Фаза 9: MVP редактора prompt-step rules» относится к контуру Work Graph rebuild и должна быть понятна агенту без чтения всего backlog.
-  Предварительно должны быть закрыты зависимости: phase-9-ui-operator-shell.
 Вектор:
   Edit + validate + save rules/agent-behavior/*.bvc (bounded).
-  Ближайший шаг исполнения: —
 Цель:
   Оператор правит behavior rules без external IDE.
-  Готово, когда выполнены проверки: Save проходит StepAtomDraft validation.
-Анализ:
-  Целесообразность:
-  Стоит завести «Фаза 9: MVP редактора prompt-step rules» в бэклог.
-  Контекст и границы:
-  Edit + validate + save rules/agent-behavior/*.bvc (bounded).
-  Зависимости и готовность:
-  depends_on=phase-9-ui-operator-shell; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Оператор правит behavior rules без external IDE.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+Проверки:
+  Save проходит StepAtomDraft validation
+  Fallback при ошибке validate
 
 Метки:
   atom.profile: work_item
   migration.strategy: replace
   trace.status: verified
-  work.analysis.at: 2026-05-30T17:22:37.079Z
-  work.analysis.source: backfill
-  work.decision.at: 2026-05-30T17:22:37.086Z
-  work.decision.verdict: useful
   work.department: frontend-ui
   work.depends_on: phase-9-ui-operator-shell
   work.id: implement-prompt-step-rules-editor-mvp
-  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.next_action: просмотреть и перевести в ready
   work.owner_role: frontend_architect
-  work.pipeline_stage: decided
   work.priority: low
   work.risk: medium
   work.status: done
-  work.target_files: rules/agent-behavior/, src/promptRulesEditorApi.mjs, src/workGraphBacklogUiServer.mjs, tests/promptRulesEditorApi.test.mjs
-  work.title: Фаза 9: MVP редактора prompt-step rules
+  work.target_files: rules/agent-behavior/, src/workGraphBacklogUiServer.mjs
+  work.title: реализовать prompt step правила editor MVP
 ]>
+

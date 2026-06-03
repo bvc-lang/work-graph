@@ -12,7 +12,7 @@
   MCP get_architecture_snapshot returns l1Canon
 Анализ:
   Целесообразность:
-  Стоит завести «Migrate architectureSnapshot.mjs to load L1 from canon file» в бэклог — по материалам AN-36 (work/analytics/architecture-main-bvc-canon-hub.md).
+  Стоит завести «Мигрировать architectureSnapshot.mjs to load L1 from canon file» в бэклог — по материалам AN-36 (work/analytics/architecture-main-bvc-canon-hub.md).
   Контекст и границы:
   buildArchitectureSnapshot imports canon loader.
   Зависимости и готовность:
@@ -51,5 +51,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/architectureSnapshot.mjs, src/architectureL1Canon.mjs, schemas/architecture-snapshot.v1.json, work/analytics/architecture-main-bvc-canon-hub.md
-  work.title: Migrate architectureSnapshot.mjs to load L1 from canon file
+  work.title: Мигрировать architectureSnapshot.mjs: загрузка L1 из canon file
 ]>
+

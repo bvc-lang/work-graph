@@ -12,6 +12,9 @@
   Документ или ADR-приложение описывает core vs commercial packs
   Eval corpus не попадает в public release artifacts
   README формулирует open core без обещания всех vertical features
+Свидетельства:
+  docs/publication-inventory-an42.md public/private/experimental
+  experimental/README.md boundary
 Анализ:
   Зачем:
   AN-42: core app/MCP/CLI — Apache-2.0; OneBase/1С vertical pack, eval corpus, enterprise features — commercial.
@@ -24,10 +27,6 @@
   Вердикт:
   полезно
   Брать в работу после закрытия зависимостей: epic-work-graph-open-publication, inventory-public-private-packages-an42.
-
-Свидетельства:
-  - docs/publication-inventory-an42.md public/private/experimental
-  - experimental/README.md boundary
 
 Метки:
   atom.profile: work_item
@@ -52,5 +51,6 @@
   work.risk: medium
   work.status: done
   work.target_files: work/analytics/open-publication-technology-holdback-strategy.md, docs/plan-work-graph-open-publication.md, README.md
-  work.title: Разделить Work Graph core и коммерческие domain packs
+  work.title: Понятно, что скачивает пользователь с GitHub/npm, а что покупает или получает по лицензии.
 ]>
+

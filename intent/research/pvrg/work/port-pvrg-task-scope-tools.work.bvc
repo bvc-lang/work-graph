@@ -1,7 +1,7 @@
 #Задача_port_pvrg_task_scope_tools<[
 Базис:
   PVRG должен помогать выбирать task context вместо принудительного чтения всего repository.
-  Задача «перенести PVRG task-scope tools» относится к контуру графа знаний и retrieval и должна быть понятна агенту без чтения всего backlog.
+  Задача «перенести PVRG task-scope tools» относится к контуру графа знаний и retrieval и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: phase-4-trace-pvrg-semantic-map.
 Вектор:
   Определить PVRG subgraph task-scope tools для WorkItem target_files, OneBase artifacts и trace refs.
@@ -46,6 +46,6 @@
   work.risk: high
   work.status: done
   work.target_files: protocols/pvrg-task-scope-v1.bvc, src/pvrgTaskScope.mjs, tests/workItemTraceEnvelope.test.mjs, work/backlog.bvc
-  work.title: перенести PVRG task-scope tools
+  work.title: перенести PVRG задачи scope tools
 ]>
 

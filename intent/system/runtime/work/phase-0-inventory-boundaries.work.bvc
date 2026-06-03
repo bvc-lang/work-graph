@@ -1,7 +1,7 @@
 #Задача_phase_0_inventory_boundaries<[
 Базис:
   Перед переносом подсистем ioHasC нужно явно отделить port/rebuild/replace/defer, иначе бэклог станет обещанием перенести всё.
-  Задача «Фаза 0: inventory и границы переноса» относится к контуру архитектуры продукта и должна быть понятна агенту без чтения всего backlog.
+  Задача «Фаза 0: inventory и границы переноса» относится к контуру архитектуры продукта и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: iohasc-full-rebuild-roadmap.
 Вектор:
   Сверить inventory старого ioHasC с roadmap-документом и phase atoms в бэклог; зафиксировать границы MVP, post-MVP и deferred R&D.
@@ -45,6 +45,6 @@
   work.risk: medium
   work.status: done
   work.target_files: docs/plan-iohasc-full-rebuild-backlog.md, docs/plan-rebuild-post-mvp.md, work/backlog.bvc
-  work.title: Фаза 0: inventory и границы переноса
+  work.title: Команда получает первую claimable фазовую задачу для управления большим переносом.
 ]>
 

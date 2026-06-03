@@ -8,23 +8,6 @@
   Описать fallback evidence: previous provider, failure class, reason for switching and retry advice.
 Цель:
   Scheduler может выбирать исполнителя объяснимо, не превращая Cursor SDK или OpenAI-compatible provider в единственный путь.
-Анализ:
-  Целесообразность:
-  Стоит завести «спроектировать provider registry и capability selection» в бэклог.
-  Контекст и границы:
-  Спроектировать provider registry v1: capabilities, policy constraints, cost/latency hints, native tool-call support, timeout/cancel support, structured output reliability.
-  Зависимости и готовность:
-  depends_on=reconcile-rebuild-scope-against-original-iohasc-plan; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Scheduler может выбирать исполнителя объяснимо, не превращая Cursor SDK или OpenAI-compatible provider в единственный путь.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -45,6 +28,6 @@
   work.risk: medium
   work.status: done
   work.target_files: protocols/agent-worker-provider-registry-v1.bvc, src/workGraphWorkerProvider.mjs, tests/workGraphWorkerProvider.test.mjs, work/backlog.bvc
-  work.title: спроектировать provider registry и capability selection
+  work.title: Scheduler может выбирать исполнителя объяснимо, не превращая Cursor SDK или OpenAI-compatible provider в ед…
 ]>
 

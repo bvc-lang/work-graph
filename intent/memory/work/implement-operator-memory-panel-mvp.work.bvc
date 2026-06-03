@@ -2,10 +2,10 @@
 Базис:
   Раздел «Память» сейчас disabled в навигации, хотя worker уже получает bounded memory slice.
   Без панели пользователь не может проверить, что именно проект запомнил и откуда это взялось.
-  Предварительно должны быть закрыты зависимости: design-operator-memory-panel-mvp, implement-memory-record-journal-persist.
+  Предварительно должны быть закрыты зависимости: design-operator-memory-panel-mvp, реализовать persist journal MemoryRecord.
 Вектор:
   Реализовать GET /api/memory-projection и вкладку «Память»: type/status summary, список записей, sourceWorkItem, related files/tasks, confidence, reviewRequired.
-  В MVP читать derived candidates из done WorkItems и optional journal, без редактирования записей из UI.
+  В MVP читать derived candidates из done WorkItems и опционально journal, без редактирования записей из UI.
 Цель:
   Пользователь видит Project Memory как reviewable слой знаний проекта.
   Готово, когда выполнены проверки: GET /api/memory-projection.
@@ -15,7 +15,7 @@
   Контекст и границы:
   Реализовать GET /api/memory-projection и вкладку «Память»: type/status summary, список записей, sourceWorkItem, related files/tasks, confidence, reviewRequired.
   Зависимости и готовность:
-  depends_on=design-operator-memory-panel-mvp, implement-memory-record-journal-persist; старт после закрытия upstream-зависимостей.
+  depends_on=design-operator-memory-panel-mvp, реализовать persist journal MemoryRecord; старт после закрытия upstream-зависимостей.
   Риски и альтернативы:
   Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
   Критерии успеха:
@@ -46,6 +46,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/memoryPanelProjection.mjs, src/workGraphBacklogUiServer.mjs, tests/memoryPanelProjection.test.mjs, tests/workGraphBacklogUiServer.test.mjs, work/backlog.bvc
-  work.title: реализовать MVP панели «Память»
+  work.title: Пользователь видит Project Memory как reviewable слой знаний проекта.
 ]>
 

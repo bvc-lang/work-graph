@@ -51,5 +51,6 @@
   work.risk: low
   work.status: done
   work.target_files: src/bvcFileFormat.mjs, packages/bvc-cli/lib/bvcFileFormat.mjs, tests/bvcDualExtension.test.mjs, docs/plan-bvc-open-format-tail-v1.md
-  work.title: Parser: console warning on legacy .step read (not error until v2)
+  work.title: Чтение .step возможно, но явно помечено legacy.
 ]>
+

@@ -1,7 +1,7 @@
 #Задача_design_codegen_evidence_contract<[
 Базис:
   Codegen и compiler-mode steps требуют evidence при использовании в Work Graph tasks.
-  Задача «описать evidence contract для codegen» относится к контуру платформы агента и должна быть понятна агенту без чтения всего backlog.
+  Задача «описать evidence contract для codegen» относится к контуру платформы агента и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: phase-5-ir-codegen-runtime.
 Вектор:
   Определить evidence records для generated code integrity, compiler round-trip и generated tests.
@@ -9,23 +9,6 @@
 Цель:
   Codegen может стать deterministic verify step.
   Готово, когда выполнены проверки: виды evidence для integrity/roundtrip/test определены.
-Анализ:
-  Целесообразность:
-  Стоит завести «описать evidence contract для codegen» в бэклог.
-  Контекст и границы:
-  Определить evidence records для generated code integrity, compiler round-trip и generated tests.
-  Зависимости и готовность:
-  depends_on=phase-5-ir-codegen-runtime; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Codegen может стать deterministic verify step.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -46,6 +29,6 @@
   work.risk: high
   work.status: done
   work.target_files: protocols/codegen-evidence-contract-v1.bvc, src/codegenEvidence.mjs, tests/codegenEvidence.test.mjs, work/backlog.bvc
-  work.title: описать evidence contract для codegen
+  work.title: спроектировать codegen свидетельства контракта
 ]>
 

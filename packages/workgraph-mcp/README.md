@@ -30,3 +30,17 @@ WORKGRAPH_ROOT=/path/to/project npx @work-graph/mcp
 ```
 
 Requires a project with `.work-graph/config.json` (run `npx @work-graph/cli init` first).
+
+## Contract tools (AN-50.1)
+
+| Tool | Description |
+|------|-------------|
+| `get_work_contract` | Returns `work-item-contract.v1` projection (input/output/verification) |
+| `assert_task_ready_for_done` | Dry-run readiness check → `violations[]` |
+| `validate_evidence` | Validate structured evidence JSON vs contract |
+| `add_work_item_evidence` | Append prose and/or `structuredEvidence` (Tier A gates enforce structured command) |
+| `complete_work_item` | Enforces same readiness rules; returns `violations[]` on failure |
+
+Resource: `workgraph://contract/{workId}`
+
+Recommended agent flow: `get_work_contract` → run checks → `validate_evidence` → `assert_task_ready_for_done` → `complete_work_item`.

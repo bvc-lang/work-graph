@@ -45,6 +45,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/workGraphWorkerProvider.mjs, src/agentWorkerLiveLoop.mjs, src/workGraphDaemonTick.mjs, tests/workGraphWorkerProvider.test.mjs, tests/agentWorkerLiveLoop.test.mjs, tests/workGraphDaemonTick.test.mjs, work/backlog.bvc
-  work.title: реализовать provider selection/fallback runtime
+  work.title: Work Graph dispatch выбирает безопасного исполнителя автоматически и объяснимо, а оператор видит причины пе…
 ]>
 

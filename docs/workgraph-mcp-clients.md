@@ -87,3 +87,9 @@ Use the same command and environment:
 Read: `list_work_items`, `get_work_item`, `get_backlog_snapshot`, `get_current_cycle`, `get_promote_ready_queue`, `read_work_item_atom`, `semantic_search`
 
 Write: `create_work_item`, `update_work_item_status`, `add_work_item_evidence`, `claim_work_item`, `complete_work_item`
+
+## Session primer
+
+Перед первой сессией «делай эпики» прочитай **[workgraph-session-primer-runbook.md](./workgraph-session-primer-runbook.md)** — чеклист workspace, MCP, `npm run sync:cursor-rules` и шаблон первого сообщения (без TodoWrite / dual backlog).
+
+При workspace = ioHasC project см. **[cursor-user-rule-wg-backlog.template.md](./cursor-user-rule-wg-backlog.template.md)**.

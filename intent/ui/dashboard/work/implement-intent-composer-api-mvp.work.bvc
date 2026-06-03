@@ -7,23 +7,6 @@
   Proposal строит IntentDraft/StepAtomDraft из сообщения и snapshot context; apply добавляет WorkItem в work/backlog.bvc через server-side validation и duplicate work.id check.
 Цель:
   Conversational приём получает безопасный путь в бэклог без client-side rewrite и без запуска agent worker.
-Анализ:
-  Целесообразность:
-  Стоит завести «реализовать API для раздела «Замысел»» в бэклог.
-  Контекст и границы:
-  Реализовать POST /api/intent-composer/proposal и POST /api/intent-composer/apply.
-  Зависимости и готовность:
-  depends_on=design-draft-store-backlog-intake, design-intent-composer-chat-contract; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Conversational приём получает безопасный путь в бэклог без client-side rewrite и без запуска agent worker.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -44,6 +27,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/intentComposerApi.mjs, src/workGraphBacklogUiServer.mjs, src/stepAtomFormatter.mjs, tests/intentComposerApi.test.mjs, work/backlog.bvc
-  work.title: реализовать API для раздела «Замысел»
+  work.title: Conversational приём получает безопасный путь в бэклог без client-side rewrite и без запуска agent worker.
 ]>
 

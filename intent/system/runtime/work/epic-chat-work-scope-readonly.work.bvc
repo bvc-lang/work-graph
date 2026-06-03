@@ -1,6 +1,6 @@
 #Задача_epic_chat_work_scope_readonly<[
 Базис:
-  AN-28: оператор хочет видеть задачи в чате, но TodoWrite↔kanban sync создаёт dual backlog.
+  AN-28: оператор хочет видеть задачи в чате, но TodoWrite↔kanban синхронизировать создаёт dual бэклог.
   Инцидент T1–T10: chat todo «завис» после summary, хотя эпик в WG уже done.
   AN-25 запретил TodoWrite для trackable work; нужен read-only мост для UX.
 Вектор:
@@ -14,24 +14,9 @@
   MCP get_epic_scope / resource возвращает children с work.status
   agent-behavior step chat-work-scope-readonly в bundle
   canon §Chat read-only scope в decision-pipeline-canon.md
-  AN-29 closing analysis опубликован
-Анализ:
-  Целесообразность:
-  Стоит завести «Chat work scope (read-only): информативность без TodoWrite sync» в бэклог — по материалам AN-28 (work/analytics/chat-work-graph-todo-sync.md).
-  Контекст и границы:
-  MCP/API compact rollup эпика (work.id + status) для scope.
-  Зависимости и готовность:
-  depends_on=epic-agent-workgraph-enforcement, ux-mission-control-p0; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Оператор видит прогресс subtasks в контексте сессии из Work Graph, без ложных pending после reload.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-28 (work/analytics/chat-work-graph-todo-sync.md); исполнять после вердикта «полезно» и готовности зависимостей.
+  AN-29 итоговый разбор опубликован
+Свидетельства:
+  AN-28 epic complete: MCP get_epic_work_scope, agent-behavior chat-work-scope-readonly, canon §Chat read-only scope, UI agent-scope-panel poll, AN-29 closing published
 
 Метки:
   atom.profile: work_item
@@ -55,8 +40,6 @@
   work.risk: medium
   work.status: done
   work.target_files: work/analytics/chat-work-graph-todo-sync.md, docs/plan-chat-work-scope-readonly.md, packages/workgraph-mcp/src/handlers.mjs, rules/agent-behavior/chat-work-scope-readonly.bvc, docs/decision-pipeline-canon.md
-  work.title: Chat work scope (read-only): информативность без TodoWrite sync
-
-Свидетельства:
-  - AN-28 epic complete: MCP get_epic_work_scope, agent-behavior chat-work-scope-readonly, canon §Chat read-only scope, UI agent-scope-panel poll, AN-29 closing published
+  work.title: Scope чата (read-only): информативность без sync TodoWrite
 ]>
+

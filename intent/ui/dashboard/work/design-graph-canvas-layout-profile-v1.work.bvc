@@ -9,26 +9,8 @@
   Определить default auto-layout preset (layered-dag-v1) и правила merge override поверх engine output.
 Цель:
   Канон layout profile v1 согласован с derived snapshot; агент может добавить profile в .bvc без правки UI-кода.
-Анализ:
-  Целесообразность:
-  Стоит завести «спроектировать layout profile v1 для graph canvas (.bvc / snapshot)» в бэклог — по материалам запись аналитики.
-  Контекст и границы:
-  Описать protocols/graph-canvas-layout-profile-v1.bvc и schemas/graph-canvas-layout-profile.v1.json.
-  Зависимости и готовность:
-  depends_on=implement-architecture-map-l1-mvp, implement-schematic-visualization-view-mvp; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Канон layout profile v1 согласован с derived snapshot; агент может добавить profile в .bvc без правки UI-кода.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма запись аналитики; исполнять после вердикта «полезно» и готовности зависимостей.
-
 Свидетельства:
-  - protocols/graph-canvas-layout-profile-v1.bvc + schemas/graph-canvas-layout-profile.v1.json
+  protocols/graph-canvas-layout-profile-v1.bvc + schemas/graph-canvas-layout-profile.v1.json
 
 Метки:
   atom.profile: work_item
@@ -49,5 +31,6 @@
   work.risk: medium
   work.status: done
   work.target_files: protocols/graph-canvas-layout-profile-v1.bvc, schemas/graph-canvas-layout-profile.v1.json, schemas/architecture-snapshot.v1.json, src/schematicView.mjs, src/architectureSnapshot.mjs, work/analytics/graph-canvas-layout-mess.md
-  work.title: спроектировать layout profile v1 для graph canvas (.bvc / snapshot)
+  work.title: Канон layout profile v1 согласован с derived snapshot; агент может добавить profile в .bvc без правки UI-кода.
 ]>
+

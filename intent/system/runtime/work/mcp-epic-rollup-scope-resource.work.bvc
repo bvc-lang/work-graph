@@ -11,9 +11,15 @@
 Проверки:
   tests/mcp-epic-scope.test.mjs green
   MCP prompts ссылаются на get_epic_work_scope при execute эпика
+Свидетельства:
+  src/epicWorkScope.mjs — buildEpicWorkScopeSlice v1
+  packages/workgraph-mcp: get_epic_work_scope tool + workgraph://epic/{id}/scope resource
+  GET /api/epic-scope?epicId=… in workGraphBacklogUiServer.mjs
+  tests/mcp-epic-scope.test.mjs — 4/4 pass
+  npm test tests/mcp-epic-scope.test.mjs green
 Анализ:
   Целесообразность:
-  Стоит завести «MCP: epic scope rollup (read-only JSON для chat/UI)» в бэклог — по материалам AN-28 (work/analytics/chat-work-graph-todo-sync.md).
+  Стоит завести «MCP: rollup scope эпика (read-only JSON для chat/UI)» в бэклог — по материалам AN-28 (work/analytics/chat-work-graph-todo-sync.md).
   Контекст и границы:
   Tool get_epic_work_scope или resource workgraph://epic/{id}/scope.
   Зависимости и готовность:
@@ -52,12 +58,6 @@
   work.risk: low
   work.status: done
   work.target_files: packages/workgraph-mcp/src/handlers.mjs, packages/workgraph-mcp/src/index.mjs, src/intentRoadmapEpicProjection.mjs, tests/mcp-epic-scope.test.mjs
-  work.title: MCP: epic scope rollup (read-only JSON для chat/UI)
-
-Свидетельства:
-  - src/epicWorkScope.mjs — buildEpicWorkScopeSlice v1
-  - packages/workgraph-mcp: get_epic_work_scope tool + workgraph://epic/{id}/scope resource
-  - GET /api/epic-scope?epicId=… in workGraphBacklogUiServer.mjs
-  - tests/mcp-epic-scope.test.mjs — 4/4 pass
-  - npm test tests/mcp-epic-scope.test.mjs green
+  work.title: MCP: rollup scope эпика (read-only JSON)
 ]>
+

@@ -8,23 +8,6 @@
   Описать readers: agent context slice, dashboard, graph viewer, future RAG.
 Цель:
   Агент получает устойчивый контекст проекта без чтения всего transcript или repo.
-Анализ:
-  Целесообразность:
-  Стоит завести «спроектировать Project Memory v1» в бэклог.
-  Контекст и границы:
-  Описать MemoryRecord v1: fact, decision, evidence summary, architecture note, domain artifact, task outcome.
-  Зависимости и готовность:
-  depends_on=design-evidence-model-v1; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Агент получает устойчивый контекст проекта без чтения всего transcript или repo.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -45,6 +28,6 @@
   work.risk: high
   work.status: done
   work.target_files: protocols/project-memory-v1.bvc, work/backlog.bvc
-  work.title: спроектировать Project Memory v1
+  work.title: Получает устойчивый контекст проекта без чтения всего transcript или repo.
 ]>
 

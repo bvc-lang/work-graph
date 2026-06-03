@@ -13,23 +13,6 @@
   default CSS gripe-dark-default; accent amber 245 158 11
   kanban/toolbar/badges через atoms
   AN-33 closing опубликован
-Анализ:
-  Целесообразность:
-  Стоит завести «Gripe visual default + WG UI wave 3 (kanban, toolbar, badges)» в бэклог — по материалам AN-33 (work/analytics/gripe-ds-visual-default-wave3.md).
-  Контекст и границы:
-  Track A: theme gripe-dark-default as single default CSS (no preview toggle).
-  Зависимости и готовность:
-  depends_on=epic-gripe-ds-adoption-phase2; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Backlog UI http://127.0.0.1:4177/ визуально Gripe-by-default; wave 3 atomify завершён.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-33 (work/analytics/gripe-ds-visual-default-wave3.md); исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -53,5 +36,6 @@
   work.risk: medium
   work.status: done
   work.target_files: work/analytics/gripe-ds-visual-default-wave3.md, docs/plan-gripe-ds-visual-default-wave3.md, packages/design-tokens/tokens/themes/gripe-dark-default.json, src/workGraphBacklogUiServer.mjs, src/ui/atoms/badge.mjs, src/ui/atoms/button.mjs
-  work.title: Gripe visual default + WG UI wave 3 (kanban, toolbar, badges)
+  work.title: Gripe visual default + UI WG волна 3 (kanban, toolbar)
 ]>
+

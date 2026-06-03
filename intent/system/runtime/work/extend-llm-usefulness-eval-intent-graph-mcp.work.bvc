@@ -1,7 +1,7 @@
 #Задача_extend_llm_usefulness_eval_intent_graph_mcp<[
 Базис:
   eval:llm-usefulness проверяет mcp-read-surface по WorkItem fields; graph tools не входят в scorecard.
-  Задача «Intent graph: метрика eval для MCP graph tools» относится к контуру платформы агента и должна быть понятна агенту без чтения всего backlog.
+  Задача «Intent graph: метрика eval для MCP graph tools» относится к контуру платформы агента и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: implement-mcp-get-intent-hierarchy, implement-mcp-get-unified-linkage.
 Вектор:
   Добавить fixture intent-graph-mcp-surface в workGraphLlmUsefulnessEval.mjs.
@@ -9,23 +9,6 @@
 Цель:
   Регрессия intent graph MCP ловится в ci:mandatory.
   Готово, когда выполнены проверки: npm run eval:llm-usefulness учитывает graph MCP tools.
-Анализ:
-  Целесообразность:
-  Стоит завести «Intent graph: метрика eval для MCP graph tools» в бэклог.
-  Контекст и границы:
-  Добавить fixture intent-graph-mcp-surface в workGraphLlmUsefulnessEval.mjs.
-  Зависимости и готовность:
-  depends_on=implement-mcp-get-intent-hierarchy, implement-mcp-get-unified-linkage; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Регрессия intent graph MCP ловится в ci:mandatory.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -45,6 +28,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/workGraphLlmUsefulnessEval.mjs, tests/workGraphLlmUsefulnessEval.test.mjs
-  work.title: Intent graph: метрика eval для MCP graph tools
+  work.title: расширить LLM полезности eval intent графа MCP
 ]>
 

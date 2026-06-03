@@ -7,10 +7,14 @@
   Bundling MVP или отдельный @work-graph/runtime publish.
   doctor проверяет node_modules, не только config paths.
 Цель:
-  npm run workgraph:ui поднимает backlog UI без внешнего clone.
+  npm run workgraph:ui поднимает бэклог UI без внешнего clone.
 Проверки:
   Проект с только devDeps WG поднимает UI на 4177
   doctor pass на npm-first install
+Свидетельства:
+  resolveEngineRoot + vendor layout
+  run-ui.mjs / run-mcp.mjs npm-first
+  workGraphInstallLayout asset paths
 Анализ:
   Зачем:
   backlog:ui и MCP handlers сейчас assume monorepo cwd или engineRoot.
@@ -18,16 +22,11 @@
   Когда:
   После готовности: epic-work-graph-npm-first-distribution, implement-engine-root-resolver-npm-first, refactor-init-npm-devdependencies.
   Готово, когда:
-  npm run workgraph:ui поднимает backlog UI без внешнего clone.
+  npm run workgraph:ui поднимает бэклог UI без внешнего clone.
 Решение:
   Вердикт:
   полезно
   Брать в работу после закрытия зависимостей: epic-work-graph-npm-first-distribution, implement-engine-root-resolver-npm-first, refactor-init-npm-devdependencies.
-
-Свидетельства:
-  - resolveEngineRoot + vendor layout
-  - run-ui.mjs / run-mcp.mjs npm-first
-  - workGraphInstallLayout asset paths
 
 Метки:
   atom.profile: work_item
@@ -52,5 +51,6 @@
   work.risk: medium
   work.status: done
   work.target_files: packages/work-graph-cli/, src/workGraphBacklogUiServer.mjs, src/workGraphProjectInit.mjs
-  work.title: run-ui / run-mcp: запуск из node_modules пакетов
+  work.title: Npm run workgraph:ui поднимает бэклог UI без внешнего clone.
 ]>
+

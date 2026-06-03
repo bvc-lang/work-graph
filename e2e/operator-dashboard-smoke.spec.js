@@ -2,11 +2,12 @@
 import { expect, test } from '@playwright/test';
 
 test.describe('operator dashboard smoke', () => {
-  test('renders home by default, board on tab, stubs agent-run API', async ({ page, request }) => {
+  test('renders analytics by default, board on tab, stubs agent-run API', async ({ page, request }) => {
     await page.goto('/');
 
-    await expect(page.locator('[data-testid="home-view"]')).toBeVisible();
-    await expect(page.locator('[data-testid="home-kpi-grid"]')).toBeVisible({ timeout: 15_000 });
+    await expect(page.locator('#analytics-view')).toBeVisible();
+    await expect(page.locator('[data-testid="analytics-panel"]')).toBeVisible({ timeout: 15_000 });
+    await expect(page.locator('#view-title')).toHaveText('Аналитика');
 
     await page.locator('.nav-tab[data-view="board"]').click();
     await expect(page.locator('[data-testid="kanban-board-panel"]')).toBeVisible();

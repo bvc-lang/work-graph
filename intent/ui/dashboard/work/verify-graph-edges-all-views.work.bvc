@@ -3,15 +3,23 @@
   Источник: analytics:graph-edges-n8n-parity (AN-5).
   Regression pass на трёх graph views после cutover.
 Вектор:
-  Manual smoke: full-screen canvas, pan/zoom, rejected/upstream dashed edges.
+  Manual smoke: full-screen canvas, pan/zoom, отказed/upstream dashed edges.
   Обновить plan todo и AN-5 status при закрытии epic.
 Цель:
   Все три view визуально соответствуют n8n edge quality из AN-5.
+Проверки:
+  Architecture pipeline/full toggle edges OK
+  Schematic upstream dashed edges OK
+  Intent roadmap 4 options + work stack edges OK
+Свидетельства:
+  Architecture / Schematic / Intent roadmap wired through lit-flow island + SVG overlay
+  tests/graphCanvasLitFlow.test.mjs — architecture + schematic projections pass
+  tests/intentRoadmapCanvas.test.mjs + intentRoadmapEpicProjection.test.mjs — green
 Анализ:
   Целесообразность:
   Стоит завести «проверить SVG edges на architecture / schematic / intent roadmap» в бэклог — по материалам AN-5 (analytics:graph-edges-n8n-parity).
   Контекст и границы:
-  Manual smoke: full-screen canvas, pan/zoom, rejected/upstream dashed edges.
+  Manual smoke: full-screen canvas, pan/zoom, отказed/upstream dashed edges.
   Зависимости и готовность:
   depends_on=implement-graph-canvas-svg-edge-overlay; старт после закрытия upstream-зависимостей.
   Риски и альтернативы:
@@ -24,15 +32,6 @@
   Вердикт:
   полезно
   Создана по материалам приёма AN-5 (analytics:graph-edges-n8n-parity); исполнять после вердикта «полезно» и готовности зависимостей.
-Проверки:
-  Architecture pipeline/full toggle edges OK
-  Schematic upstream dashed edges OK
-  Intent roadmap 4 options + work stack edges OK
-
-Свидетельства:
-  - Architecture / Schematic / Intent roadmap wired through lit-flow island + SVG overlay
-  - tests/graphCanvasLitFlow.test.mjs — architecture + schematic projections pass
-  - tests/intentRoadmapCanvas.test.mjs + intentRoadmapEpicProjection.test.mjs — green
 
 Метки:
   atom.profile: work_item
@@ -57,5 +56,6 @@
   work.risk: low
   work.status: done
   work.target_files: src/workGraphBacklogUiServer.mjs, docs/plan-graph-edges-n8n-parity.md, work/analytics/graph-edges-n8n-parity.md
-  work.title: проверить SVG edges на architecture / schematic / intent roadmap
+  work.title: Все три view визуально соответствуют n8n edge quality из AN-5.
 ]>
+

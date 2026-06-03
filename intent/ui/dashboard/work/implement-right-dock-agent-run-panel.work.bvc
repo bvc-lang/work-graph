@@ -4,7 +4,7 @@
   Cursor-pattern: persistent right dock — лучшее место для long-running выполнения.
 Вектор:
   Dock виден на всех страницах после toggle; width resizable 320–640px; collapse в иконку.
-  Body: live log + tool calls (poll 5s GET /api/agent-run/journal).
+  Body: live log + вызов tools (poll 5s GET /api/agent-run/journal).
   Footer: retry / cancel / open task / scroll-to-bottom toggle.
   POST /api/agent-run уже есть — используется без правок.
 Цель:
@@ -13,9 +13,13 @@
   dock отображается на Home, Доске, Задачах
   retry / cancel вызывают соответствующие API
   live log обновляется без перезагрузки страницы
+Свидетельства:
+  #agent-run-dock persistent panel
+  journal poll 5s
+  retry/open task actions
 Анализ:
   Целесообразность:
-  Стоит завести «Persistent right dock: Agent Run panel + live log + retry» в бэклог — по материалам work/analytics/ux-current-state-and-vector.md.
+  Стоит завести «Постоянный right dock: панель Agent Run + live log + retry» в бэклог — по материалам work/analytics/ux-current-state-and-vector.md.
   Контекст и границы:
   Dock виден на всех страницах после toggle; width resizable 320–640px; collapse в иконку.
   Зависимости и готовность:
@@ -30,11 +34,6 @@
   Вердикт:
   полезно
   Создана по материалам приёма work/analytics/ux-current-state-and-vector.md; исполнять после вердикта «полезно» и готовности зависимостей.
-
-Свидетельства:
-  - #agent-run-dock persistent panel
-  - journal poll 5s
-  - retry/open task actions
 
 Метки:
   atom.profile: work_item
@@ -58,5 +57,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/workGraphBacklogUiServer.mjs, e2e/right-dock-agent-run-smoke.spec.js
-  work.title: Persistent right dock: Agent Run panel + live log + retry
+  work.title: реализовать правый dock агента прогнать панель
 ]>
+

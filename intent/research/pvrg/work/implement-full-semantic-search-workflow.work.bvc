@@ -7,23 +7,6 @@
   Не дублировать полный ioHasC orchestrator; интеграция через worker provider hints или dashboard view.
 Цель:
   Оператор и agent прогнать получают осмысленный semantic search path, а не только перекрёстная подсветка stub.
-Анализ:
-  Целесообразность:
-  Стоит завести «реализовать полный semantic search workflow» в бэклог.
-  Контекст и границы:
-  Спроектировать и реализовать operator/agent workflow поверх semantic search: bounded query, result list, trace refs в WorkItem context.
-  Зависимости и готовность:
-  depends_on=design-semantic-map-backlog-cross-highlight, implement-pvrg-graph-rag-context-slice; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Оператор и agent прогнать получают осмысленный semantic search path, а не только перекрёстная подсветка stub.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -44,6 +27,6 @@
   work.risk: medium
   work.status: done
   work.target_files: protocols/semantic-map-backlog-cross-highlight-v1.bvc, src/semanticSearchWorkflow.mjs, src/operatorShellProjection.mjs, scripts/semantic-search.mjs, tests/semanticSearchWorkflow.test.mjs, docs/plan-iohasc-rebuild-audit-gap-matrix.md, work/backlog.bvc
-  work.title: реализовать полный semantic search workflow
+  work.title: Оператор и agent прогнать получают осмысленный semantic search path, а не только перекрёстная подсветка stub.
 ]>
 

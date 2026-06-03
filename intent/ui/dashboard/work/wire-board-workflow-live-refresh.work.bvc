@@ -1,0 +1,53 @@
+#Задача_wire_board_workflow_live_refresh<[
+Базис:
+  Оператор на «Доске», пока агент завершает задачи через MCP.
+Вектор:
+  При смене revision: patch kanban на board; обновить workflow epic groups на workflow.
+  интервал 3s при активном view (по ADR).
+  Smoke in workGraphBacklogUiServer.test.mjs.
+Цель:
+  Доска и Задачи отражают внешние изменения status в окне poll.
+Проверки:
+  Poll доски подключён
+  Status badges в workflow list обновляются
+Свидетельства:
+  npm run test:deterministic — 731 tests; kanban/workflow i18n, ADR, /api/backlog-revision, live poll on board/workflow
+Анализ:
+  Зачем:
+  Оператор на «Доске», пока агент завершает задачи через MCP.
+  Контекст: При смене revision: patch kanban на board; обновить workflow epic groups на workflow.
+  Когда:
+  После готовности: implement-kanban-incremental-patch.
+  Готово, когда:
+  Доска и Задачи отражают внешние изменения status в окне poll.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: implement-kanban-incremental-patch.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-56
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-ui-realtime-updates-best-practices.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-02T16:41:23.613Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-02T16:41:23.613Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: implement-kanban-incremental-patch
+  work.id: wire-board-workflow-live-refresh
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.parent_id: epic-work-graph-ui-realtime-v1
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: medium
+  work.status: done
+  work.target_files: src/workGraphBacklogUiServer.mjs, tests/workGraphBacklogUiServer.test.mjs
+  work.title: Подключить доску и workflow к live revision refresh
+]>
+

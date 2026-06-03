@@ -6,22 +6,13 @@
   workGraphBacklogUiServer: активный корень из WG_PROJECT_ROOT, query-параметра или записи в реестре.
   Порт и host — из конфига или переменных окружения, не захардкожены.
 Цель:
-  Один UI-сервер отдаёт backlog и snapshot для того проекта, который выбран сейчас.
+  Один UI-сервер отдаёт бэклог и snapshot для того проекта, который выбран сейчас.
 Проверки:
   API snapshot меняется при смене repoRoot без restart процесса
   tests/workGraphBacklogUiServer.test.mjs обновлены и зелёные
-Анализ:
-  Зачем:
-  Центральный кусок multiproject host — без него переключатель бессмысленен.
-  Когда:
-  После реестра проектов.
-Решение:
-  Вердикт:
-  полезно
-
 Свидетельства:
-  - src/workGraphProjectHost.mjs
-  - GET/POST /api/workspace/* in workGraphBacklogUiServer.mjs
+  src/workGraphProjectHost.mjs
+  GET/POST /api/workspace/* in workGraphBacklogUiServer.mjs
 
 Метки:
   atom.profile: work_item
@@ -46,5 +37,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/workGraphBacklogUiServer.mjs, tests/workGraphBacklogUiServer.test.mjs
-  work.title: Backlog UI: работа с выбранным корнем проекта
+  work.title: Один UI-сервер отдаёт бэклог и snapshot для того проекта, который выбран сейчас.
 ]>
+

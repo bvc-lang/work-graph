@@ -1,7 +1,7 @@
 #Задача_design_operator_dashboard<[
 Базис:
   Человек в новой системе является оператором и reviewer, а не ручным автором графа.
-  Задача «спроектировать панель оператора» относится к контуру Work Graph rebuild и должна быть понятна агенту без чтения всего backlog.
+  Задача «спроектировать панель оператора» относится к контуру Work Graph пересобрать и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: implement-workgraph-minimal-runtime.
 Вектор:
   Спроектировать dashboard: current task, queue, blockers, evidence, action feed.
@@ -9,23 +9,6 @@
   Спроектировать форму atom inspector вместо raw .bvc editing.
 Цель:
   Пользователь понимает действия агента и может вмешаться без React Flow-like редактора.
-Анализ:
-  Целесообразность:
-  Стоит завести «спроектировать панель оператора» в бэклог.
-  Контекст и границы:
-  Спроектировать dashboard: current task, queue, blockers, evidence, action feed.
-  Зависимости и готовность:
-  depends_on=implement-workgraph-minimal-runtime; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Пользователь понимает действия агента и может вмешаться без React Flow-like редактора.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -46,6 +29,6 @@
   work.risk: medium
   work.status: done
   work.target_files: ui/operator-dashboard.bvc, ui/workgraph-backlog-board.bvc, src/workGraphBacklogUiServer.mjs, work/backlog.bvc
-  work.title: спроектировать панель оператора
+  work.title: Пользователь понимает действия агента и может вмешаться без React Flow-like редактора.
 ]>
 

@@ -1,7 +1,7 @@
 #Задача_design_onebase_workitem_template<[
 Базис:
   OneBase golden path был успешен, но будущим OneBase changes нужен reusable task template.
-  Задача «описать reusable OneBase WorkItem template» относится к контуру архитектуры продукта и должна быть понятна агенту без чтения всего backlog.
+  Задача «описать reusable OneBase WorkItem template» относится к контуру архитектуры продукта и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: phase-7-onebase-vertical.
 Вектор:
   Определить OneBase WorkItem template с metadata scan, target YAML/.os files, verification command, REST evidence и rollback notes.
@@ -9,23 +9,6 @@
 Цель:
   OneBase vertical может повторять domain changes без rediscovery.
   Готово, когда выполнены проверки: template покрывает YAML, `.os`, reports/widgets и go verification.
-Анализ:
-  Целесообразность:
-  Стоит завести «описать reusable OneBase WorkItem template» в бэклог.
-  Контекст и границы:
-  Определить OneBase WorkItem template с metadata scan, target YAML/.os files, verification command, REST evidence и rollback notes.
-  Зависимости и готовность:
-  depends_on=phase-7-onebase-vertical; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  OneBase vertical может повторять domain changes без rediscovery.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -46,6 +29,6 @@
   work.risk: medium
   work.status: done
   work.target_files: domains/onebase/workitem-template.bvc, src/onebaseWorkItemTemplate.mjs, tests/onebaseWorkItemTemplate.test.mjs, work/backlog.bvc
-  work.title: описать reusable OneBase WorkItem template
+  work.title: спроектировать OneBase workitem шаблон
 ]>
 

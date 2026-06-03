@@ -9,18 +9,17 @@
 Проверки:
   npm test зелёный
   Покрыты register, switch и snapshot для «чужого» repoRoot
+Свидетельства:
+  tests/workspaceRegistry.test.mjs
+  createBacklogUiServer multiproject host integration test
 Анализ:
   Зачем:
-  Без тестов переключатель сломается при следующем рефакторинге backlog UI.
+  Без тестов переключатель сломается при следующем рефакторинге бэклог UI.
   Когда:
   После переключателя и repoRoot-aware snapshot.
 Решение:
   Вердикт:
   полезно
-
-Свидетельства:
-  - tests/workspaceRegistry.test.mjs
-  - createBacklogUiServer multiproject host integration test
 
 Метки:
   atom.profile: work_item
@@ -45,5 +44,6 @@
   work.risk: low
   work.status: done
   work.target_files: tests/workspaceRegistry.test.mjs, tests/architectureSnapshot.test.mjs, tests/workGraphBacklogUiServer.test.mjs
-  work.title: Тесты: несколько проектов в одной консоли
+  work.title: Регрессии multiproject ловятся в обязательном npm test, а не при ручной проверке.
 ]>
+

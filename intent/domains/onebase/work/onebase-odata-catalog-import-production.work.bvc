@@ -1,9 +1,9 @@
 #Задача_onebase_odata_catalog_import_production<[
 Базис:
-  OneBaseCatalogTreeImporter stub — dry-run log only (AN-21 evidence).
+  OneBaseCatalogTreeImporter заглушка — dry-run log only (AN-21 evidence).
   Pattern: AvitoCatalogTreeImporter → CatalogStructureSynchronizer.
 Вектор:
-  Extend importer: tree normalization, parent/child slug, dryRun=false upsert.
+  Расширить importer: tree normalization, parent/child slug, dryRun=false upsert.
   Artisan catalog:import-onebase {--dry-run} {--project=}.
   Audit log table or marketplace_audit_logs entry.
 Цель:
@@ -15,7 +15,7 @@
   Целесообразность:
   Стоит завести «Gripe: OneBase catalog import production (CatalogStructureSynchronizer)» в бэклог — по материалам AN-32 (work/analytics/gripe-ds-adoption-phase2-post-an21.md).
   Контекст и границы:
-  Extend importer: tree normalization, parent/child slug, dryRun=false upsert.
+  Расширить importer: tree normalization, parent/child slug, dryRun=false upsert.
   Зависимости и готовность:
   depends_on=epic-gripe-ds-adoption-phase2, onebase-odata-catalog-api-client; старт после закрытия upstream-зависимостей.
   Риски и альтернативы:
@@ -52,5 +52,6 @@
   work.risk: high
   work.status: done
   work.target_files: ../../04 Marketplace/app/Catalog/OneBaseCatalogTreeImporter.php, ../../04 Marketplace/app/Console/Commands/ImportOneBaseCatalogCommand.php, ../../04 Marketplace/tests/Unit/OneBaseCatalogTreeImporterTest.php, work/analytics/gripe-ds-adoption-phase2-post-an21.md
-  work.title: Gripe: OneBase catalog import production (CatalogStructureSynchronizer)
+  work.title: OneBase: production-импорт OData catalog
 ]>
+

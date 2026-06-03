@@ -1,0 +1,53 @@
+#Задача_implement_kanban_incremental_patch<[
+Базис:
+  renderKanbanBoard заменяет innerHTML — теряет scroll и вызывает мерцание.
+Вектор:
+  src/kanbanBoardDelta.mjs — diff двух kanban projections → moves/adds/removes.
+  src/ui/kanbanBoardPatcher.mjs — применить к DOM [data-work-id] cards.
+  tests/kanbanBoardDelta.test.mjs.
+Цель:
+  Смена status перемещает карточку между колонками без полной перерисовки доски.
+Проверки:
+  doing→done перемещает карточку
+  При ошибке patch — fallback на render()
+Свидетельства:
+  src/kanbanBoardDelta.mjs + src/ui/kanbanBoardPatcher.mjs wired in pollBacklogRevision; tests/kanbanBoardDelta.test.mjs; 742 tests green
+Анализ:
+  Зачем:
+  renderKanbanBoard заменяет innerHTML — теряет scroll и вызывает мерцание.
+  Контекст: src/kanbanBoardDelta.mjs — diff двух kanban projections → moves/adds/removes.
+  Когда:
+  После готовности: implement-ui-live-sync-coordinator.
+  Готово, когда:
+  Смена status перемещает карточку между колонками без полной перерисовки доски.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: implement-ui-live-sync-coordinator.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-56
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-ui-realtime-updates-best-practices.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-02T16:41:23.597Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-02T16:41:23.597Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: implement-ui-live-sync-coordinator
+  work.id: implement-kanban-incremental-patch
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.parent_id: epic-work-graph-ui-realtime-v1
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: medium
+  work.status: done
+  work.target_files: src/kanbanBoardDelta.mjs, src/ui/kanbanBoardPatcher.mjs, src/kanbanBoardProjection.mjs, tests/kanbanBoardDelta.test.mjs
+  work.title: Kanban: инкрементальный патч (delta → DOM move)
+]>
+

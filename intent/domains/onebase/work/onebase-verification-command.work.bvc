@@ -47,6 +47,6 @@
   work.risk: medium
   work.status: done
   work.target_files: domains/onebase/verification-command.bvc, ../onebase/go.mod, ../onebase/internal/dsl/parser/parser.go, ../onebase/internal/cli/run.go
-  work.title: выбрать verification command для golden path OneBase
+  work.title: OneBase change можно проверить автоматически и записать evidence.
 ]>
 

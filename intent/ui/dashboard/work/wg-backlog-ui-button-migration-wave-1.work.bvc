@@ -4,16 +4,16 @@
   renderUiButton уже в src/ui/atoms/button.mjs и ui-kit; production shell — still raw <button>.
 Вектор:
   Заменить static shell buttons: nav-tab, theme-toggle, detail-close, agent-run-dock.
-  Подключить UI_BUTTON_CSS в backlog page head (если ещё не inline).
+  Подключить UI_BUTTON_CSS в бэклог page head (если ещё не inline).
   Smoke: workGraphBacklogUiServer.test.mjs nav + theme.
 Цель:
-  Видимый shell backlog UI на Gripe DS button variants без регрессий навигации.
+  Видимый shell бэклог UI на Gripe DS button variants без регрессий навигации.
 Проверки:
   nav-tab / theme-toggle / agent dock через renderUiButton или wg-btn classes
   tests/workGraphBacklogUiServer.test.mjs green
 Анализ:
   Целесообразность:
-  Стоит завести «WG backlog UI: renderUiButton wave 1 (shell / nav / agent dock)» в бэклог — по материалам AN-32 (work/analytics/gripe-ds-adoption-phase2-post-an21.md).
+  Стоит завести «WG бэклог UI: renderUiButton wave 1 (shell / nav / agent dock)» в бэклог — по материалам AN-32 (work/analytics/gripe-ds-adoption-phase2-post-an21.md).
   Контекст и границы:
   Заменить static shell buttons: nav-tab, theme-toggle, detail-close, agent-run-dock.
   Зависимости и готовность:
@@ -21,7 +21,7 @@
   Риски и альтернативы:
   Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
   Критерии успеха:
-  Видимый shell backlog UI на Gripe DS button variants без регрессий навигации.; проверки из атома и `target_files`.
+  Видимый shell бэклог UI на Gripe DS button variants без регрессий навигации.; проверки из атома и `target_files`.
   Рекомендация для решения:
   Полезно — задача готова к исполнению после разбора материалов приёма.
 Решение:
@@ -52,5 +52,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/workGraphBacklogUiServer.mjs, src/ui/atoms/button.mjs, tests/workGraphBacklogUiServer.test.mjs, work/analytics/gripe-ds-adoption-phase2-post-an21.md
-  work.title: WG backlog UI: renderUiButton wave 1 (shell / nav / agent dock)
+  work.title: Видимый shell бэклог UI на Gripe DS button variants без регрессий навигации.
 ]>
+

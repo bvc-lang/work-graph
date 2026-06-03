@@ -1,0 +1,48 @@
+#Задача_write_closing_epic_drawer_repo_file_preview_v1<[
+Базис:
+  Эпик требует closing doc.
+Вектор:
+  work/analytics/closing-epic-drawer-repo-file-preview-v1.md
+Цель:
+  Зафиксировать evidence для AN-59.
+Проверки:
+  Closing doc published
+  Epic marked done
+Анализ:
+  Зачем:
+  Эпик требует closing doc.
+  Контекст: work/analytics/closing-epic-drawer-repo-file-preview-v1.md
+  Когда:
+  После готовности: epic-drawer-repo-file-preview-v1, implement-repo-file-stack-frame-renderer, wire-markdown-inline-repo-file-clicks.
+  Готово, когда:
+  Зафиксировать evidence для AN-59.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: epic-drawer-repo-file-preview-v1, implement-repo-file-stack-frame-renderer, wire-markdown-inline-repo-file-clicks.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-59
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/drawer-repo-file-preview.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-02T19:57:33.445Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-02T19:57:33.445Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: epic-drawer-repo-file-preview-v1, implement-repo-file-stack-frame-renderer, wire-markdown-inline-repo-file-clicks
+  work.id: write-closing-epic-drawer-repo-file-preview-v1
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.parent_id: epic-drawer-repo-file-preview-v1
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: low
+  work.status: backlog
+  work.target_files: work/analytics/closing-epic-drawer-repo-file-preview-v1.md
+  work.title: Closing: epic-drawer-repo-file-preview-v1
+]>

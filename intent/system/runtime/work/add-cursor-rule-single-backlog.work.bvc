@@ -1,6 +1,6 @@
 #Задача_add_cursor_rule_single_backlog<[
 Базис:
-  AN-25 R1: TodoWrite для trackable work создаёт shadow backlog вне доски.
+  AN-25 R1: TodoWrite для trackable work создаёт shadow бэклог вне доски.
   Существующие .cursor/rules не запрещают chat todo для проектных задач.
 Вектор:
   .cursor/rules/agent-workgraph-single-backlog.mdc — alwaysApply: true.
@@ -11,27 +11,9 @@
 Проверки:
   файл .cursor/rules/agent-workgraph-single-backlog.mdc с alwaysApply
   npm run audit:agent-behavior-rules или ручная проверка в Cursor
-Анализ:
-  Целесообразность:
-  Стоит завести «Cursor rule: agent-workgraph-single-backlog (alwaysApply)» в бэклог — по материалам AN-25 (work/analytics/agent-bypass-work-graph-dual-backlog.md).
-  Контекст и границы:
-  .cursor/rules/agent-workgraph-single-backlog.mdc — alwaysApply: true.
-  Зависимости и готовность:
-  depends_on=epic-agent-workgraph-enforcement; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Cursor IDE agent получает жёсткое правило: один бэклог = intent/**/work/*.work.bvc.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-25 (work/analytics/agent-bypass-work-graph-dual-backlog.md); исполнять после вердикта «полезно» и готовности зависимостей.
-
 Свидетельства:
-  - .cursor/rules/agent-workgraph-single-backlog.mdc — alwaysApply: true
-  - Запрет TodoWrite для trackable work; plan todo требуют `work.id`
+  .cursor/rules/agent-workgraph-single-backlog.mdc — alwaysApply: true
+  Запрет TodoWrite для trackable work; plan todo требуют `work.id`
 
 Метки:
   atom.profile: work_item
@@ -56,5 +38,6 @@
   work.risk: low
   work.status: done
   work.target_files: .cursor/rules/agent-workgraph-single-backlog.mdc, work/analytics/agent-bypass-work-graph-dual-backlog.md
-  work.title: Cursor rule: agent-workgraph-single-backlog (alwaysApply)
+  work.title: Правило Cursor: единый бэkлог Work Graph (alwaysApply)
 ]>
+

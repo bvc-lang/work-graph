@@ -10,6 +10,8 @@
 Проверки:
   Closing doc опубликован
   Эпик и подзадачи в done/backlog согласно факту
+Свидетельства:
+  work/analytics/closing-epic-work-graph-npm-first-distribution.md
 Анализ:
   Зачем:
   Закрытие эпика с evidence: npm versions, test output, doc links.
@@ -22,9 +24,6 @@
   Вердикт:
   полезно
   Брать в работу после закрытия зависимостей: epic-work-graph-npm-first-distribution, publish-work-graph-cli-npm, publish-work-graph-mcp-npm, update-docs-skill-npm-first, tests-work-graph-npm-first-distribution.
-
-Свидетельства:
-  - work/analytics/closing-epic-work-graph-npm-first-distribution.md
 
 Метки:
   atom.profile: work_item
@@ -49,5 +48,6 @@
   work.risk: low
   work.status: done
   work.target_files: work/analytics/closing-epic-work-graph-npm-first-distribution.md, work/analytics/work-graph-npm-first-distribution.md
-  work.title: Closing: epic-work-graph-npm-first-distribution (AN-43)
+  work.title: AN-43 закрыт с проверяемыми артефактами.
 ]>
+

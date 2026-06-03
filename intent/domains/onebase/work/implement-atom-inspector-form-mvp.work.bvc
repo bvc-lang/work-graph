@@ -10,23 +10,6 @@
 Цель:
   Оператор может безопасно править WorkItem atom без знания синтаксиса .bvc.
   Готово, когда выполнены проверки: detail drawer имеет режим редактирования atom fields.
-Анализ:
-  Целесообразность:
-  Стоит завести «реализовать MVP Atom Inspector Form» в бэклог.
-  Контекст и границы:
-  Реализовать read/write proposal UI для выбранной задачи: поля Базис, Вектор, Цель, status, owner_role, priority, risk, labels, проверки, evidence.
-  Зависимости и готовность:
-  depends_on=design-atom-inspector-form, implement-workgraph-backlog-ui-mvp, reconcile-rebuild-scope-against-original-iohasc-plan; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Оператор может безопасно править WorkItem atom без знания синтаксиса .bvc.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -47,6 +30,6 @@
   work.risk: high
   work.status: done
   work.target_files: src/atomInspector.mjs, src/atomInspectorApi.mjs, src/workGraphBacklogUiServer.mjs, src/stepAtomFormatter.mjs, tests/atomInspector.test.mjs, tests/workGraphBacklogUiServer.test.mjs, work/backlog.bvc
-  work.title: реализовать MVP Atom Inspector Form
+  work.title: Безопасно править WorkItem atom без знания синтаксиса .bvc.
 ]>
 

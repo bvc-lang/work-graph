@@ -1,49 +1,27 @@
 #Задача_implement_playwright_operator_dashboard_e2e<[
 Базис:
   Vitest UI server tests есть; browser E2E через Playwright — нет.
-  Задача «Фаза 10: Playwright E2E smoke dashboard оператора» относится к контуру Work Graph rebuild и должна быть понятна агенту без чтения всего backlog.
-  Предварительно должны быть закрыты зависимости: phase-10-ci-e2e-release-gates.
 Вектор:
-  e2e/operator-dashboard-smoke.spec.js — board, detail drawer, agent run stub.
-  Ближайший шаг исполнения: просмотреть и перевести в ready.
+  e2e/operator-dashboard-smoke.spec.js — board, detail drawer, agent прогнать stub.
 Цель:
-  Browser regression gate для operator shell.
-  Готово, когда выполнены проверки: Playwright spec green локально.
-Анализ:
-  Целесообразность:
-  Стоит завести «Фаза 10: Playwright E2E smoke dashboard оператора» в бэклог.
-  Контекст и границы:
-  e2e/operator-dashboard-smoke.spec.js — board, detail drawer, agent run stub.
-  Зависимости и готовность:
-  depends_on=phase-10-ci-e2e-release-gates; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Browser regression gate для operator shell.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+  Browser regression gate для оболочка оператора.
+Проверки:
+  Playwright spec green локально
+  Опционально vs mandatory описаны
 
 Метки:
   atom.profile: work_item
   migration.strategy: port
   trace.status: verified
-  work.analysis.at: 2026-05-30T17:22:37.060Z
-  work.analysis.source: backfill
-  work.decision.at: 2026-05-30T17:22:37.067Z
-  work.decision.verdict: useful
   work.department: qa
   work.depends_on: phase-10-ci-e2e-release-gates
   work.id: implement-playwright-operator-dashboard-e2e
-  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.next_action: просмотреть и перевести в ready
   work.owner_role: qa_architect
-  work.pipeline_stage: decided
   work.priority: medium
   work.risk: medium
   work.status: done
   work.target_files: e2e/operator-dashboard-smoke.spec.js, playwright.config.js, package.json
-  work.title: Фаза 10: Playwright E2E smoke dashboard оператора
+  work.title: реализовать playwright оператора dashboard e2e
 ]>
+

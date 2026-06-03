@@ -1,7 +1,7 @@
 #Задача_phase_5_ir_codegen_runtime<[
 Базис:
   ioHasC имеет IR, Vector DSL, Bracket IR, compiler codegen и semantic runtime; пересобрать должен подключить их как evidence-producing pipelines.
-  Задача «Фаза 5: IR, codegen и semantic runtime» относится к контуру платформы агента и должна быть понятна агенту без чтения всего backlog.
+  Задача «Фаза 5: IR, codegen и semantic runtime» относится к контуру платформы агента и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: phase-4-trace-pvrg-semantic-map.
 Вектор:
   Перенести IR/codegen/runtime как инструменты verified task: codegen evidence, Bracket IR diff, compiler round-trip, code-gap feeder и Vector DSL branch tests.
@@ -45,6 +45,6 @@
   work.risk: high
   work.status: done
   work.target_files: protocols/codegen-evidence-contract-v1.bvc, src/codegenEvidence.mjs, src/bracketIrTraceSignal.mjs, src/codeGapBacklogFeeder.mjs, tests/codegenEvidence.test.mjs, work/backlog.bvc
-  work.title: Фаза 5: IR, codegen и semantic runtime
+  work.title: Генерация и reverse engineering становятся Work Graph verify steps, а не отдельными CLI-островами.
 ]>
 

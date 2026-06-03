@@ -7,10 +7,12 @@
   Sidebar: список atoms, preview variants.
   data-testid=ui-kit-root.
 Цель:
-  Разработчик видит WG components без полного backlog UI.
+  Разработчик видит WG components без полного бэклог UI.
 Проверки:
   /dev/ui-kit 200 in dev
-  smoke test ui-kit route
+  smoke-тест ui-kit route
+Свидетельства:
+  GET /dev/ui-kit + data-testid=ui-kit-root; workGraphBacklogUiServer.test.mjs ui-kit smoke
 Анализ:
   Целесообразность:
   Стоит завести «Work Graph: /dev/ui-kit story route» в бэклог — по материалам AN-21 (work/analytics/marketplace-integration-and-shared-design-system.md).
@@ -21,7 +23,7 @@
   Риски и альтернативы:
   Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
   Критерии успеха:
-  Разработчик видит WG components без полного backlog UI.; проверки из атома и `target_files`.
+  Разработчик видит WG components без полного бэклог UI.; проверки из атома и `target_files`.
   Рекомендация для решения:
   Полезно — задача готова к исполнению после разбора материалов приёма.
 Решение:
@@ -52,8 +54,6 @@
   work.risk: low
   work.status: done
   work.target_files: src/workGraphBacklogUiServer.mjs, src/ui/pages/ui-kit.mjs, work/analytics/marketplace-integration-and-shared-design-system.md
-  work.title: Work Graph: /dev/ui-kit story route
-
-Свидетельства:
-  - GET /dev/ui-kit + data-testid=ui-kit-root; workGraphBacklogUiServer.test.mjs ui-kit smoke
+  work.title: Разработчик видит WG components без полного бэклог UI.
 ]>
+

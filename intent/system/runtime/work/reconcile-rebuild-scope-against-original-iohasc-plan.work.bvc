@@ -45,6 +45,6 @@
   work.risk: medium
   work.status: done
   work.target_files: docs/plan-iohasc-rebuild-audit-gap-matrix.md, docs/plan-iohasc-full-rebuild-backlog.md, docs/plan-rebuild-post-full-roadmap.md, work/backlog.bvc
-  work.title: сверить пересобрать scope с исходным планом ioHasC
+  work.title: У команды появляется честная карта оставшегося переноса вместо ложного статуса "всё готово".
 ]>
 

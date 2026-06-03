@@ -8,6 +8,16 @@
   В workGraphBacklogUiServer: новый endpoint /api/roadmap/epics возвращает projection с rollup; UI читает оттуда.
 Цель:
   В Intent Roadmap Canvas видна карта эпиков с прогрессом подзадач — без новой вкладки и без новой страницы.
+Проверки:
+  tests/intentRoadmapEpicProjection.test.mjs покрывает rollup для эпика с разными статусами детей
+  e2e: открыть intent roadmap, увидеть epic-узел epic-decision-pipeline-canonization с rollup 0/5, кликнуть expand, увидеть T1..T5
+  visual diff: closed эпик отличается от ready/blocked
+Свидетельства:
+  src/intentRoadmapEpicProjection.mjs: buildEpicRoadmapProjection с rollup closed/total/inProgress/blocked
+  GET /api/roadmap/epics?collapsed=&active=1&withChildren=1
+  intentRoadmapCanvas: kind work_epic, buildEpicRoadmapCanvasModel, collapse через collapsedEpicIds
+  UI «Граф намерений»: секция Эпики с badge N/M closed и toggle свернуть/развернуть
+  tests/intentRoadmapEpicProjection.test.mjs — 6 кейсов, все pass
 Анализ:
   Целесообразность:
   Без epic grouping дорожная карта читается как плоский граф; оператор не видит «что прогрессирует». AN-20 явно требует mission-control vector.
@@ -24,18 +34,7 @@
 Решение:
   Вердикт:
   полезно
-  Создана по материалам приёма AN-22; стартует после T1 и T3 (или ранний draft параллельно с T1).
-Проверки:
-  tests/intentRoadmapEpicProjection.test.mjs покрывает rollup для эпика с разными статусами детей
-  e2e: открыть intent roadmap, увидеть epic-узел epic-decision-pipeline-canonization с rollup 0/5, кликнуть expand, увидеть T1..T5
-  visual diff: closed эпик отличается от ready/blocked
-
-Свидетельства:
-  - src/intentRoadmapEpicProjection.mjs: buildEpicRoadmapProjection с rollup closed/total/inProgress/blocked
-  - GET /api/roadmap/epics?collapsed=&active=1&withChildren=1
-  - intentRoadmapCanvas: kind work_epic, buildEpicRoadmapCanvasModel, collapse через collapsedEpicIds
-  - UI «Граф намерений»: секция Эпики с badge N/M closed и toggle свернуть/развернуть
-  - tests/intentRoadmapEpicProjection.test.mjs — 6 кейсов, все pass
+  Создана по материалам приёма AN-22; стартует после T1 и T3 (или ранний черновик параллельно с T1).
 
 Метки:
   atom.profile: work_item
@@ -60,5 +59,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/intentRoadmapProjection.mjs, src/intentRoadmapCanvas.mjs, src/workGraphBacklogUiServer.mjs, tests/intentRoadmapEpicProjection.test.mjs, e2e/intent-roadmap-epic-grouping.spec.mjs
-  work.title: epic grouping и rollup N/M в Intent Roadmap Canvas
+  work.title: В Intent Roadmap Canvas видна карта эпиков с прогрессом подзадач — без новой вкладки и без новой страницы.
 ]>
+

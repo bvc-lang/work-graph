@@ -1,0 +1,49 @@
+#Задача_epic_work_graph_ui_icons_v1<[
+Базис:
+  Оператор добавил public/assets/icons (Phosphor bold/fill); sidebar и theme toggle используют inline SVG-заглушки.
+  Нет единого модуля iconAssets и статической раздачи /assets/icons/*.
+Вектор:
+  P0: src/ui/iconAssets.mjs — чтение SVG, inline render, mapping view→icon.
+  P0: sidebar nav tabs — иконка + label для analytics/workflow/board/…/settings.
+  P0: header theme toggle — moon/sun из asset pack; applyTheme sync.
+  P1: GET /assets/icons/** для img/src и будущих поверхностей.
+Цель:
+  Sidebar и переключатель темы используют единый набор иконок из public/assets/icons.
+Проверки:
+  Nav tabs render nav-tab-icon inline SVG
+  Theme toggle uses moon-bold / sun-bold
+  /assets/icons/bold/*.svg served with cache
+  tests/iconAssets.test.mjs + workGraphBacklogUiServer smoke
+Анализ:
+  Phosphor stroke icons inherit currentColor — подходят для light/dark без дублирования файлов.
+Решение:
+  Вердикт: полезно
+  Bold variant для nav chrome; fill — позже при необходимости.
+
+Свидетельства:
+  - 4/4 subtasks done; closing-epic-work-graph-ui-icons-v1.md
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-56
+  intake.source_kind: operator-request
+  intake.source_ref: public/assets/icons
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-02T19:00:56.641Z
+  work.analysis.source: operator-request
+  work.decision.at: 2026-06-02T19:00:56.641Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: epic-work-graph-ui-settings-v1
+  work.id: epic-work-graph-ui-icons-v1
+  work.item_kind: epic
+  work.next_action: —
+  work.owner_role: feature_engineer
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: low
+  work.status: done
+  work.target_files: public/assets/icons, src/ui/iconAssets.mjs, src/ui/backlogShellButtons.mjs, src/workGraphBacklogUiServer.mjs, tests/iconAssets.test.mjs, tests/workGraphBacklogUiServer.test.mjs
+  work.title: UI Icons v1: Phosphor pack в sidebar и header theme toggle
+]>

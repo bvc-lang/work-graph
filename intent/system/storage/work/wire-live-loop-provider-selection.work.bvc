@@ -1,13 +1,13 @@
 #Задача_wire_live_loop_provider_selection<[
 Базис:
   Live-loop и daemon tick делегируют в runLocalWorker; post-full rollout требует selectable provider без дублирования transition logic.
-  Задача «подключить provider selection в live-loop» относится к контуру Work Graph rebuild и должна быть понятна агенту без чтения всего backlog.
+  Задача «подключить provider selection в live-loop» относится к контуру Work Graph пересобрать и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: implement-openai-compatible-worker-provider.
 Вектор:
   Добавить --provider local|openai в agentWorkerLiveLoop CLI; async runWorkerWithProvider в live-loop и daemon tick; role handoff в worker input по owner_role.
   Ближайший шаг исполнения: —.
 Цель:
-  Один live-loop контур поддерживает deterministic local и optional openai execution.
+  Один live-loop контур поддерживает deterministic local и опционально openai execution.
 Анализ:
   Целесообразность:
   Стоит завести «подключить provider selection в live-loop» в бэклог.
@@ -18,7 +18,7 @@
   Риски и альтернативы:
   Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
   Критерии успеха:
-  Один live-loop контур поддерживает deterministic local и optional openai execution.; проверки из атома и `target_files`.
+  Один live-loop контур поддерживает deterministic local и опционально openai execution.; проверки из атома и `target_files`.
   Рекомендация для решения:
   Полезно — задача готова к исполнению после разбора материалов приёма.
 Решение:
@@ -45,6 +45,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/agentWorkerLiveLoop.mjs, src/workGraphDaemonTick.mjs, src/workGraphWorkerProvider.mjs, tests/workGraphWorkerProvider.test.mjs, tests/agentWorkerLiveLoop.test.mjs, tests/workGraphDaemonTick.test.mjs, package.json, work/backlog.bvc
-  work.title: подключить provider selection в live-loop
+  work.title: Один live-loop контур поддерживает deterministic local и опционально openai execution.
 ]>
 

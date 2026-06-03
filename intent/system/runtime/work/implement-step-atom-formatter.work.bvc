@@ -47,6 +47,6 @@
   work.risk: medium
   work.status: done
   work.target_files: schemas/step-atom-draft.v1.json, protocols/llm-step-atom-writer.bvc
-  work.title: реализовать formatter для Step Atom
+  work.title: Новые .bvc atom создаются безопасно из структурированной формы.
 ]>
 

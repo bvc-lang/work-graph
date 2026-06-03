@@ -9,23 +9,8 @@
 Проверки:
   classifyWorkItemBlock(marketplace item) === domain-marketplace
   architectureSnapshot.test.mjs green
-Анализ:
-  Целесообразность:
-  Стоит завести «classifyWorkItemBlock: domain-marketplace + snapshot block assignment» в бэклог — по материалам AN-39 (work/analytics/architecture-domains-l1-hierarchy.md).
-  Контекст и границы:
-  src/architectureSnapshot.mjs: department domain-marketplace, path intent/domains/marketplace.
-  Зависимости и готовность:
-  depends_on=epic-architecture-domains-l1-hierarchy, update-architecture-main-bvc-domains-structure; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Matrix и L1 counters включают marketplace tasks в domain-marketplace.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-39 (work/analytics/architecture-domains-l1-hierarchy.md); исполнять после вердикта «полезно» и готовности зависимостей.
+Свидетельства:
+  cascade: reconcile epic epic-architecture-domains-l1-hierarchy already done
 
 Метки:
   atom.profile: work_item
@@ -50,8 +35,6 @@
   work.risk: low
   work.status: done
   work.target_files: src/architectureSnapshot.mjs, tests/architectureSnapshot.test.mjs, intent/domains/marketplace/work, work/analytics/architecture-domains-l1-hierarchy.md
-  work.title: classifyWorkItemBlock: domain-marketplace + snapshot block assignment
-
-Свидетельства:
-  - cascade: reconcile epic epic-architecture-domains-l1-hierarchy already done
+  work.title: расширить classify work item block домены
 ]>
+

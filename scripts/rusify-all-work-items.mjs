@@ -9,7 +9,13 @@ import { BACKLOG_ITEMS, DEFAULT_NEXT_ACTION } from './all-phases-backlog-items.m
 import { readWorkItemAtomFromRepo, readWorkItemsFromRepo } from '../src/intentTreeWorkItems.mjs';
 import { parseWorkItems } from '../src/workGraphRuntime.mjs';
 import { formatStepAtomDraft } from '../src/stepAtomFormatter.mjs';
-import { rusifyLine, rusifyNextAction, rusifyStringList, rusifyTitle } from '../src/workItemTextRusify.mjs';
+import { getRussianWorkItemTitle } from '../src/workItemTitleRuCatalog.mjs';
+import {
+  rusifyLine,
+  rusifyNextAction,
+  rusifyStringList,
+  rusifyTitle,
+} from '../src/workItemTextRusify.mjs';
 
 const CATALOG_BY_ID = new Map(BACKLOG_ITEMS.map((item) => [item.workId, item]));
 
@@ -39,10 +45,10 @@ function buildDraftFromCatalog(seed, existingItem) {
   return {
     name: atomNameFromWorkId(seed.workId),
     profile: 'work_item',
-    basis: normalizeTextList(seed.basis),
-    vector: normalizeTextList(seed.vector),
-    goal: normalizeTextList(seed.goal),
-    checks,
+    basis: rusifyStringList(normalizeTextList(seed.basis)),
+    vector: rusifyStringList(normalizeTextList(seed.vector)),
+    goal: rusifyStringList(normalizeTextList(seed.goal)),
+    checks: rusifyStringList(checks),
     ...(existingItem?.evidence?.length ? { evidence: existingItem.evidence } : {}),
     labels: buildLabels(seed, existingItem, dependsOn, targetFiles),
   };
@@ -52,7 +58,7 @@ function buildLabels(seed, existingItem, dependsOn, targetFiles) {
   return {
     'atom.profile': 'work_item',
     'work.id': seed.workId,
-    'work.title': seed.title,
+    'work.title': getRussianWorkItemTitle(seed.workId, rusifyTitle(seed.title, seed.workId)),
     'work.status': existingItem?.status ?? 'backlog',
     'work.owner_role': seed.ownerRole ?? existingItem?.ownerRole ?? 'integration_architect',
     'work.department': seed.department ?? existingItem?.department ?? 'agent-platform',
@@ -77,18 +83,35 @@ function copyExtraLabels(labels = {}) {
   return extra;
 }
 
+function resolveNextAction(existingItem) {
+  const raw = existingItem.nextAction || existingItem.labels?.['work.next_action'] || '';
+  const rusified = rusifyNextAction(raw, existingItem.id);
+  return String(rusified ?? '').trim() || DEFAULT_NEXT_ACTION;
+}
+
+function rusifySection(value) {
+  const lines = toLines(value).flatMap((line) => String(line).split(/\n+/u).map((part) => part.trim()).filter(Boolean));
+  if (!lines.length) {
+    return [];
+  }
+  const rusified = rusifyStringList(lines);
+  return rusified.length > 0 ? rusified : lines;
+}
+
 function buildDraftFromRusify(existingItem) {
-  const basis = rusifyStringList(toLines(existingItem.basis));
-  const vector = rusifyStringList(toLines(existingItem.vector));
-  const goal = rusifyStringList(toLines(existingItem.goal));
+  const basis = rusifySection(existingItem.basis);
+  const vector = rusifySection(existingItem.vector);
+  const goal = rusifySection(existingItem.goal);
   const checks = existingItem.checks?.length
     ? rusifyStringList(existingItem.checks)
     : undefined;
+  const analysisLines = toLines(existingItem.analysis);
+  const decisionLines = toLines(existingItem.decision);
 
   const labels = {
     ...(existingItem.labels ?? {}),
-    'work.title': rusifyTitle(existingItem.title, existingItem.id),
-    'work.next_action': rusifyNextAction(existingItem.nextAction, existingItem.id),
+    'work.title': getRussianWorkItemTitle(existingItem.id, rusifyTitle(existingItem.title, existingItem.id)),
+    'work.next_action': resolveNextAction(existingItem),
   };
 
   return {
@@ -98,7 +121,9 @@ function buildDraftFromRusify(existingItem) {
     vector,
     goal,
     ...(checks ? { checks } : {}),
-    ...(existingItem.evidence?.length ? { evidence: rusifyStringList(existingItem.evidence) } : {}),
+    ...(analysisLines.length ? { analysis: rusifyStringList(analysisLines) } : {}),
+    ...(decisionLines.length ? { decision: rusifyStringList(decisionLines) } : {}),
+    ...(existingItem.evidence?.length ? { evidence: existingItem.evidence } : {}),
     labels,
   };
 }
@@ -128,6 +153,11 @@ async function main() {
     const [existingItem] = parseWorkItems(source.text);
     if (!existingItem) {
       console.warn(`skip ${summary.id}: parse failed`);
+      continue;
+    }
+
+    if (!String(existingItem.basis ?? '').trim() || !String(existingItem.goal ?? '').trim()) {
+      console.warn(`skip ${summary.id}: missing basis/goal after parse`);
       continue;
     }
 

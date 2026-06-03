@@ -8,30 +8,12 @@
   Kanban/tree grouping по parent_id: collapse/expand эпиков, без дублирования children[] в атомах.
 Цель:
   В UI понятна иерархия: эпик с общей задумкой, подзадачи, прогресс и причина блокировки закрытия parent.
-Анализ:
-  Целесообразность:
-  Стоит завести «реализовать UI дерева задач: родитель, подзадачи, rollup и навигация» в бэклог — по материалам AN-2 (analytics:parent-subtask-hierarchy).
-  Контекст и границы:
-  Detail drawer: секция «Подзадачи» (derived children), ссылка «Родитель» у child.
-  Зависимости и готовность:
-  depends_on=implement-work-item-parent-id-runtime; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  В UI понятна иерархия: эпик с общей задумкой, подзадачи, прогресс и причина блокировки закрытия parent.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-2 (analytics:parent-subtask-hierarchy); исполнять после вердикта «полезно» и готовности зависимостей.
 Проверки:
   workGraphBacklogUiServer тест или e2e smoke на parent/child panel
   rollup отображается для эпика с ≥1 child
   клик parent/child сохраняет навигацию назад в drawer
-
 Свидетельства:
-  - renderParentChildHierarchy в workGraphBacklogUiServer; npm test pass
+  renderParentChildHierarchy в workGraphBacklogUiServer; npm test pass
 
 Метки:
   atom.profile: work_item
@@ -54,5 +36,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/workGraphBacklogUiServer.mjs, tests/workGraphBacklogUiServer.test.mjs, work/analytics/parent-subtask-hierarchy.md
-  work.title: реализовать UI дерева задач: родитель, подзадачи, rollup и навигация
+  work.title: В UI понятна иерархия: эпик с общей задумкой, подзадачи, прогресс и причина блокировки закрытия parent.
 ]>
+

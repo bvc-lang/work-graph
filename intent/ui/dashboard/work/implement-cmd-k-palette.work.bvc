@@ -12,27 +12,9 @@
 Проверки:
   e2e: Cmd+K → ввод workId → Enter → задача открыта
   e2e: Cmd+K → run: → выбор → Enter → POST /api/agent-run
-Анализ:
-  Целесообразность:
-  Стоит завести «Cmd+K палитра: tasks/AN/commands + fuzzy + semantic» в бэклог — по материалам work/analytics/ux-current-state-and-vector.md.
-  Контекст и границы:
-  Глобальный keybinding Ctrl+K/Cmd+K — overlay-палитра.
-  Зависимости и готовность:
-  depends_on=ux-mission-control-p0, implement-home-snapshot-api; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Запуск worker и переход к задаче за 2 keystrokes (Cmd+K → Enter).; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма work/analytics/ux-current-state-and-vector.md; исполнять после вердикта «полезно» и готовности зависимостей.
-
 Свидетельства:
-  - Ctrl/Cmd+K overlay #cmd-k-overlay
-  - task/an/cmd/run scopes fuzzy filter
+  Ctrl/Cmd+K overlay #cmd-k-overlay
+  task/an/cmd/run scopes fuzzy filter
 
 Метки:
   atom.profile: work_item
@@ -56,5 +38,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/workGraphBacklogUiServer.mjs, e2e/cmd-k-palette-smoke.spec.js
-  work.title: Cmd+K палитра: tasks/AN/commands + fuzzy + semantic
+  work.title: Запуск worker и переход к задаче за 2 keystrokes (Cmd+K → Enter).
 ]>
+

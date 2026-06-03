@@ -10,18 +10,9 @@
 Проверки:
   Runbook опубликован и проходим от начала до конца
   README содержит ссылку на runbook
-Анализ:
-  Зачем:
-  Эпик считается готовым для оператора, а не только для разработчика.
-  Когда:
-  После рабочего CLI init/register.
-Решение:
-  Вердикт:
-  полезно
-
 Свидетельства:
-  - docs/runbook-deploy-work-graph-on-project.md
-  - skills/install-work-graph/SKILL.md
+  docs/runbook-deploy-work-graph-on-project.md
+  skills/install-work-graph/SKILL.md
 
 Метки:
   atom.profile: work_item
@@ -46,5 +37,6 @@
   work.risk: low
   work.status: done
   work.target_files: docs/runbook-deploy-work-graph-on-project.md, README.md, docs/plan-work-graph-multiproject-host.md
-  work.title: Инструкция: подключить Work Graph к новому проекту
+  work.title: Человек, не писавший код WG, подключает новый проект по инструкции без созвона с автором.
 ]>
+

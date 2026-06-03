@@ -1,0 +1,50 @@
+#Задача_implement_sidebar_resize_handle<[
+Базис:
+  Нет resize handle и is-sidebar-compact стилей.
+Вектор:
+  .sidebar-resize-handle на правом краю aside.
+  html.is-sidebar-compact — icon rail (скрыть labels, logo).
+  --sidebar-width-min/max/default CSS tokens.
+Цель:
+  Визуальный handle и compact styling по классу, не media query.
+Проверки:
+  sidebar-resize-handle
+  is-sidebar-compact
+Анализ:
+  Зачем:
+  Нет resize handle и is-sidebar-compact стилей.
+  Контекст: .sidebar-resize-handle на правом краю aside.
+  Когда:
+  После готовности: epic-work-graph-ui-sidebar-resize-v1.
+  Готово, когда:
+  Визуальный handle и compact styling по классу, не media query.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: epic-work-graph-ui-sidebar-resize-v1.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-62
+  intake.source_kind: operator-request
+  intake.source_ref: src/workGraphBacklogUiServer.mjs
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-02T21:43:00.683Z
+  work.analysis.source: operator-request
+  work.decision.at: 2026-06-02T21:43:00.683Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: epic-work-graph-ui-sidebar-resize-v1
+  work.id: implement-sidebar-resize-handle
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.parent_id: epic-work-graph-ui-sidebar-resize-v1
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: low
+  work.status: backlog
+  work.target_files: src/workGraphBacklogUiServer.mjs
+  work.title: UI: sidebar-resize-handle + CSS + compact class
+]>

@@ -537,6 +537,18 @@ function isInlineSectionHeading(line) {
     || /^[A-Za-zА-Яа-яЁё0-9][^:\n]{0,40}\s\/\s[^:\n]{0,40}:$/u.test(line);
 }
 
+function isProseLineWithTrailingColon(line) {
+  if (!/:\s*$/u.test(line)) {
+    return false;
+  }
+  const before = line.slice(0, -1).trim();
+  return before.length > 42 || (/\s/u.test(before) && before.length > 24);
+}
+
+function isSectionBoundaryInSemanticBlock(line) {
+  return isInlineSectionHeading(line) && !isProseLineWithTrailingColon(line);
+}
+
 function parseSections(body) {
   const result = {
     labels: {},
@@ -615,7 +627,7 @@ function parseSections(body) {
     }
 
     if (section === 'basis' || section === 'vector' || section === 'goal') {
-      if (isInlineSectionHeading(line)) {
+      if (isSectionBoundaryInSemanticBlock(line)) {
         section = '';
         continue;
       }

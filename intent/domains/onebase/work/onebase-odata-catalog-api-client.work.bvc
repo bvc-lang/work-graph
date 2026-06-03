@@ -11,7 +11,7 @@
   Fetch layer отделён от import/sync logic.
 Проверки:
   OneBaseCatalogApiClientTest green
-  documented env vars in Marketplace .env.example
+  задокументировано env vars in Marketplace .env.example
 Анализ:
   Целесообразность:
   Стоит завести «Gripe: OneBaseCatalogApiClient (REST/OData fetch + fixtures)» в бэклог — по материалам AN-32 (work/analytics/gripe-ds-adoption-phase2-post-an21.md).
@@ -53,5 +53,6 @@
   work.risk: high
   work.status: done
   work.target_files: ../../04 Marketplace/app/Catalog/OneBaseCatalogApiClient.php, ../../04 Marketplace/tests/Unit/OneBaseCatalogApiClientTest.php, work/analytics/onebase-integration-vertical-stack.md, work/analytics/gripe-ds-adoption-phase2-post-an21.md
-  work.title: Gripe: OneBaseCatalogApiClient (REST/OData fetch + fixtures)
+  work.title: Fetch layer отделён от import/sync logic.
 ]>
+

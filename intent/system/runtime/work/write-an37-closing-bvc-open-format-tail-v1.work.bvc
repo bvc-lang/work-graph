@@ -10,7 +10,7 @@
   closing doc published
 Анализ:
   Целесообразность:
-  Стоит завести «AN-37 closing analysis: epic-bvc-open-format-tail-v1» в бэклог — по материалам AN-37 (work/analytics/bvc-open-format-tail-v1.md).
+  Стоит завести «AN-37 итоговый разбор: epic-bvc-open-format-tail-v1» в бэклог — по материалам AN-37 (work/analytics/bvc-open-format-tail-v1.md).
   Контекст и границы:
   work/analytics/closing-epic-bvc-open-format-tail-v1.md
   Зависимости и готовность:
@@ -48,5 +48,6 @@
   work.risk: low
   work.status: done
   work.target_files: work/analytics/closing-epic-bvc-open-format-tail-v1.md, work/analytics-records.jsonl, work/analytics/bvc-open-format-tail-v1.md
-  work.title: AN-37 closing analysis: epic-bvc-open-format-tail-v1
+  work.title: закрытие: an37 закрытие BVC open формата tail v1
 ]>
+

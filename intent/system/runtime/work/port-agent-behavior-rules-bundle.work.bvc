@@ -46,6 +46,6 @@
   work.risk: low
   work.status: done
   work.target_files: rules/agent-behavior/, src/agentBehaviorRulesBundle.mjs, src/agentWorkerLiveLoop.mjs, src/agentWorkerOpenAiProvider.mjs, tests/agentBehaviorRulesBundle.test.mjs, protocols/prompt-step-lowcode-replacement-scope-v1.bvc, work/backlog.bvc
-  work.title: перенести agent behavior rules bundle
+  work.title: Agent worker получает согласованные prompt_rule atoms без возврата к старому agent panel.
 ]>
 

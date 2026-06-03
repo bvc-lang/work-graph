@@ -1,7 +1,7 @@
 #Задача_phase_6_project_memory_evidence<[
 Базис:
   Rebuild уже имеет memory/evidence protocols, но ещё не имеет durable writers и projections уровня ioHasC memory/glue layer.
-  Задача «Фаза 6: Project Memory и Evidence» относится к контуру графа знаний и retrieval и должна быть понятна агенту без чтения всего backlog.
+  Задача «Фаза 6: Project Memory и Evidence» относится к контуру графа знаний и retrieval и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: phase-4-trace-pvrg-semantic-map.
 Вектор:
   Построить MemoryRecord writer, structured Evidence v1 read model, извлечение из worker-output и dashboard projections для memory/evidence.
@@ -45,6 +45,6 @@
   work.risk: high
   work.status: done
   work.target_files: src/memoryRecordWriter.mjs, src/evidenceReadModel.mjs, tests/memoryRecordWriter.test.mjs, protocols/project-memory-v1.bvc, protocols/evidence-model-v1.bvc, work/backlog.bvc
-  work.title: Фаза 6: Project Memory и Evidence
+  work.title: Done-задачи становятся устойчивым project knowledge, а не только строками evidence в бэклог.
 ]>
 

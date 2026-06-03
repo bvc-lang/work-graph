@@ -1,7 +1,7 @@
 #Задача_implement_mcp_get_architecture_snapshot<[
 Базис:
   GET /api/architecture-snapshot есть в dashboard; MCP клиент не может запросить L1 blocks и edges.
-  Задача «Intent graph: MCP tool get_architecture_snapshot» относится к контуру графа знаний и retrieval и должна быть понятна агенту без чтения всего backlog.
+  Задача «Intent graph: MCP tool get_architecture_snapshot» относится к контуру графа знаний и retrieval и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: phase-4-trace-pvrg-semantic-map.
 Вектор:
   Добавить get_architecture_snapshot с опциональным focusBlockId.
@@ -45,6 +45,6 @@
   work.risk: medium
   work.status: done
   work.target_files: packages/workgraph-mcp/src/handlers.mjs, src/architectureSnapshot.mjs, tests/workgraph-mcp.test.mjs
-  work.title: Intent graph: MCP tool get_architecture_snapshot
+  work.title: реализовать MCP get архитектуры snapshot
 ]>
 

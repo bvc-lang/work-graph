@@ -12,23 +12,6 @@
   adr-architecture-views-v1.md в docs/
   profiles: List, Tree, Pipeline, Full, Export
   anti-patterns явно перечислены
-Анализ:
-  Целесообразность:
-  Стоит завести «ADR: Architecture views v1 (List / Tree / Pipeline / Full / Export)» в бэклог — по материалам AN-34 (work/analytics/architecture-visualization-patterns-comparison.md).
-  Контекст и границы:
-  docs/adr-architecture-views-v1.md: matrix view × use case.
-  Зависимости и готовность:
-  depends_on=epic-architecture-views-v1; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Единый канон view profiles для UI и агента.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-34 (work/analytics/architecture-visualization-patterns-comparison.md); исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -53,5 +36,6 @@
   work.risk: low
   work.status: done
   work.target_files: docs/adr-architecture-views-v1.md, work/analytics/architecture-visualization-patterns-comparison.md, work/analytics/graph-canvas-layout-mess.md, work/analytics/parent-subtask-hierarchy.md
-  work.title: ADR: Architecture views v1 (List / Tree / Pipeline / Full / Export)
+  work.title: ADR: профили представлений архитектуры v1 (List / Tree / Pipeline / Full / Export)
 ]>
+

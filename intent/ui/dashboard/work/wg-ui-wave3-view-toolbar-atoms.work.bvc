@@ -49,5 +49,6 @@
   work.risk: low
   work.status: done
   work.target_files: src/workGraphBacklogUiServer.mjs, src/ui/backlogShellButtons.mjs, work/analytics/gripe-ds-visual-default-wave3.md
-  work.title: Wave 3: view toolbar → wg-btn (filters, domain clear)
+  work.title: Toolbar использует Gripe semantic control tokens + buttons.
 ]>
+

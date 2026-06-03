@@ -16,23 +16,6 @@
   @bvc-lang/spec/cli версии согласованы
   plan-iohasc-project-bvc-bridge.md
   AN-37 closing
-Анализ:
-  Целесообразность:
-  Стоит завести «BVC open format tail v1: deprecation, tests, npm sync, ioHasC bridge plan» в бэклог — по материалам AN-37 (work/analytics/bvc-open-format-tail-v1.md).
-  Контекст и границы:
-  Track A: parser deprecation warning для legacy .step read.
-  Зависимости и готовность:
-  depends_on=epic-architecture-main-bvc-canon, epic-architecture-views-v1, epic-gripe-ds-visual-default-wave3; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Открытый BVC контур стабилен: CI green, npm/docs актуальны, ioHasC bridge спланирован.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-37 (work/analytics/bvc-open-format-tail-v1.md); исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -56,5 +39,6 @@
   work.risk: low
   work.status: done
   work.target_files: work/analytics/bvc-open-format-tail-v1.md, docs/plan-bvc-open-format-tail-v1.md, src/bvcFileFormat.mjs, docs/plan-step-to-bvc-migration.md, packages/bvc-spec/, packages/bvc-cli/
-  work.title: BVC open format tail v1: deprecation, tests, npm sync, ioHasC bridge plan
+  work.title: BVC open format tail v1: deprecation, тесты, npm sync, мост ioHasC
 ]>
+

@@ -16,6 +16,7 @@ export function renderClientUiBadge(props = {}) {
   const TONE_CLASS = {
     default: 'wg-badge--default',
     accent: 'wg-badge--accent',
+    warning: 'wg-badge--warning',
     muted: 'wg-badge--muted',
     danger: 'wg-badge--danger',
     ok: 'wg-badge--ok',

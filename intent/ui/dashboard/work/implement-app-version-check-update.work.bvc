@@ -1,0 +1,43 @@
+#Задача_implement_app_version_check_update<[
+Базис:
+  Оператор не видит версию бэклог UI / @work-graph/cli.
+  npm-first distribution (AN-46): обновление через npm, не auto-install из UI v1.
+Вектор:
+  GET /api/app-version → { schema, version, buildAt, npmPackage: @work-graph/cli }.
+  Optional: server npm view (cache 1h) → latestVersion, updateAvailable.
+  Settings UI: текущая версия, кнопка «Проверить обновления», copyable `npm i -g @work-graph/cli`.
+  tests/appVersionApi.test.mjs.
+Цель:
+  Секция «О приложении» показывает версию и есть ли более новая на npm.
+Проверки:
+  Version string visible
+  Check update shows latest or error gracefully
+Свидетельства:
+  npm run test:deterministic — uiCatalog, appVersionApi, workGraphBacklogUiServer тесты проходят (726)
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-55
+  intake.source_kind: operator-request
+  intake.source_ref: docs/plan-work-graph-ui-settings-v1.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-02T16:45:45.835Z
+  work.analysis.source: operator-request
+  work.decision.at: 2026-06-02T16:45:45.835Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: implement-settings-view-shell
+  work.id: implement-app-version-check-update
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.parent_id: epic-work-graph-ui-settings-v1
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: medium
+  work.status: done
+  work.target_files: src/appVersionApi.mjs, src/workGraphBacklogUiServer.mjs, tests/appVersionApi.test.mjs, package.json
+  work.title: Секция «О приложении» показывает версию и есть ли более новая на npm.
+]>
+

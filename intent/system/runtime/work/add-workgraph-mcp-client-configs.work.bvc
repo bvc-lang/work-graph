@@ -2,7 +2,7 @@
 Базис:
   Один WorkGraph MCP server должен подключаться в разные клиенты: Cursor, Claude Desktop, Claude Code.
   Пользователю нужен простой путь включения без чтения исходников MCP server.
-  Предварительно должны быть закрыты зависимости: implement-workgraph-mcp-server-mvp.
+  Предварительно должны быть закрыты зависимости: реализовать MVP MCP-сервера Work Graph.
 Вектор:
   Добавить пример .iohasc/mcp.json для локального WorkGraph MCP alongside OneBase.
   Добавить docs/workgraph-mcp-clients.md с конфигами для Cursor, Claude Desktop и Claude Code.
@@ -11,23 +11,6 @@
 Цель:
   Пользователь может подключить WorkGraph к Cursor или Claude за несколько шагов.
   Готово, когда выполнены проверки: есть пример Cursor/ioHasC MCP config.
-Анализ:
-  Целесообразность:
-  Стоит завести «добавить конфиги Cursor и Claude для WorkGraph MCP» в бэклог.
-  Контекст и границы:
-  Добавить пример .iohasc/mcp.json для локального WorkGraph MCP alongside OneBase.
-  Зависимости и готовность:
-  depends_on=implement-workgraph-mcp-server-mvp; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Пользователь может подключить WorkGraph к Cursor или Claude за несколько шагов.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -48,6 +31,6 @@
   work.risk: medium
   work.status: done
   work.target_files: .iohasc/mcp.json.example, docs/workgraph-mcp-clients.md, packages/workgraph-mcp/README.md
-  work.title: добавить конфиги Cursor и Claude для WorkGraph MCP
+  work.title: Добавить конфиги MCP-клиента Work Graph
 ]>
 

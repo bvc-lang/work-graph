@@ -1,0 +1,56 @@
+#Задача_wire_verification_panel_contract_summary<[
+Базис:
+  AN-50: панель read-only; оператор должен видеть tier + required evidence без открытия .bvc.
+Вектор:
+  buildVerificationSummary: contractSummary per selected work item from projection + last assert.
+  UI compact strip: tier, matrixRowId, violation count; expand → text list violations[] (lint-style).
+  Подсветка matrixRowId в существующей matrix; не строить вторую heatmap.
+  contractHealth.v1 metrics in snapshot (P1): structured evidence %, assert first-pass %.
+  tests/workGraphBacklogUiServer.test.mjs or verification summary test.
+Цель:
+  «Проверки» показывает contract-at-a-glance и список нарушений для выбранной задачи.
+Проверки:
+  Contract strip + violations list render for fixture task
+  Read-only — no прогнать buttons added
+  contractHealth опционально block in snapshot (P1)
+Свидетельства:
+  verification.contractSummaries + UI contract panel
+Анализ:
+  Зачем:
+  AN-50: панель read-only; оператор должен видеть tier + required evidence без открытия .bvc.
+  Контекст: buildVerificationSummary: опционально contractSummary per selected work item.
+  Когда:
+  После готовности: implement-work-item-contract-projection.
+  Готово, когда:
+  «Проверки» показывает contract-at-a-glance для выбранной задачи.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: implement-work-item-contract-projection.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-50.1
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-bvc-contract-verification.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-02T14:12:30.464Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-02T14:12:30.464Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: implement-work-item-contract-projection
+  work.id: wire-verification-panel-contract-summary
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: agent_platform_architect
+  work.parent_id: epic-work-graph-bvc-contract-verification-v1
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: src/verificationLoop.mjs, src/workGraphBacklogUiServer.mjs, src/workItemContractProjection.mjs
+  work.title: «Проверки» показывает contract-at-a-glance и список нарушений для выбранной задачи.
+]>
+

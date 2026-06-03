@@ -8,26 +8,8 @@
   Единый graphCanvasLayout.mjs: rank → place → route hooks; Схема и Дорожная карта используют один profile pipeline.
 Цель:
   UI рендерит graph canvas из snapshot с layoutProfile; override col/row сохраняется в каноне, не в localStorage.
-Анализ:
-  Целесообразность:
-  Стоит завести «реализовать layout profile v1 в snapshot и graph canvas engine» в бэклог — по материалам запись аналитики.
-  Контекст и границы:
-  Расширить buildArchitectureSnapshot / buildSchematicViewModel: читать layoutProfile из step labels или snapshot extension.
-  Зависимости и готовность:
-  depends_on=design-graph-canvas-layout-profile-v1; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  UI рендерит graph canvas из snapshot с layoutProfile; override col/row сохраняется в каноне, не в localStorage.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма запись аналитики; исполнять после вердикта «полезно» и готовности зависимостей.
-
 Свидетельства:
-  - src/graphCanvasLayout.mjs + architecture/schematic integration
+  src/graphCanvasLayout.mjs + architecture/schematic integration
 
 Метки:
   atom.profile: work_item
@@ -48,5 +30,6 @@
   work.risk: high
   work.status: done
   work.target_files: src/graphCanvasLayout.mjs, src/architectureSnapshot.mjs, src/architectureLayout.mjs, src/schematicView.mjs, src/workGraphBacklogUiServer.mjs, tests/graphCanvasLayout.test.mjs, protocols/graph-canvas-layout-profile-v1.bvc
-  work.title: реализовать layout profile v1 в snapshot и graph canvas engine
+  work.title: реализовать графа canvas layout profile v1
 ]>
+

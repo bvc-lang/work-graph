@@ -4,38 +4,20 @@
   PIPELINE_STAGES и PIPELINE_VERDICTS живут только в коде (src/workItemDecisionPipeline.mjs); их семантика, переходы и связь с work.parent_id/work.item_kind/Intent Roadmap Canvas нигде не зафиксированы как единый канон.
 Вектор:
   Создать protocols/decision-pipeline-canon-v1.bvc с явной таблицей переходов (intake → analyzed → decided → ready → executing → closed), словарём verdict (useful|harmful|defer), правилами эпик/подзадача (work.item_kind, work.parent_id), N:M связью с analytics (intake.analytics_keys, analytics.feeds_epics), bypass-категорией (work.intake.bypass: operational) и charter-выходом для AN.
-  Создать docs/decision-pipeline-canon.md — человеческое объяснение со ссылкой на protocol и на код.
+  Создать docs/decision-pipeline-canon.md — человеческое объяснение со ссылкой на протокол и на код.
   Привязать к charter/main.bvc как зависимый протокол.
 Цель:
   Один источник правды по пайплайну, на который опираются T2..T5, backlogSchemaLint, MCP create_work_item и Intent Roadmap Canvas.
-Анализ:
-  Целесообразность:
-  Без canon T3 (gates) не имеет основания, а T4 (bypass) выглядит как ad-hoc исключение; protocol-первое решение даёт всем подсистемам общий словарь.
-  Контекст и границы:
-  Только документирование уже существующего поведения + новые опциональные метки (intake.analytics_keys, analytics.feeds_epics, work.intake.bypass). Никакого breaking change в parseWorkItems.
-  Зависимости и готовность:
-  Готово; работает поверх существующего workItemDecisionPipeline.mjs и workItemHierarchy.mjs.
-  Риски и альтернативы:
-  Риск «протокол ради протокола» — закрывается требованием: каждое поле в protocol должно ссылаться на функцию/файл, который его читает.
-  Критерии успеха:
-  protocols/decision-pipeline-canon-v1.bvc проходит charter-проверку; в docs/decision-pipeline-canon.md есть mermaid-схема переходов и таблица меток.
-  Рекомендация для решения:
-  Полезно — стартовая задача эпика.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-22; стартует первой в рамках epic-decision-pipeline-canonization.
 Проверки:
   protocols/decision-pipeline-canon-v1.bvc существует и линкует на src/workItemDecisionPipeline.mjs, src/workItemHierarchy.mjs, src/backlogSchemaLint.mjs
   docs/decision-pipeline-canon.md содержит mermaid-схему всех переходов из §2 AN-22
-  В charter/main.bvc есть ссылка на новый protocol (или ADR об отказе)
-  Все новые опциональные метки описаны: intake.analytics_keys, analytics.feeds_epics, work.intake.bypass
-
+  В charter/main.bvc есть ссылка на новый протокол (или ADR об отказе)
+  Все новые опциональные метки описаны: приём.analytics_keys, analytics.feeds_epics, work.intake.bypass
 Свидетельства:
-  - protocols/decision-pipeline-canon-v1.bvc опубликован
-  - docs/decision-pipeline-canon.md опубликован с mermaid и таблицами меток
-  - charter/main.bvc §Слои_Ядра ссылается на decision-pipeline-canon
-  - docs/plan-workgraph-intent-to-verified-flow.md cross-link добавлен
+  protocols/decision-pipeline-canon-v1.bvc опубликован
+  docs/decision-pipeline-canon.md опубликован с mermaid и таблицами меток
+  charter/main.bvc §Слои_Ядра ссылается на decision-pipeline-canon
+  docs/plan-workgraph-intent-to-verified-flow.md cross-link добавлен
 
 Метки:
   atom.profile: work_item
@@ -59,5 +41,6 @@
   work.risk: low
   work.status: done
   work.target_files: protocols/decision-pipeline-canon-v1.bvc, docs/decision-pipeline-canon.md, charter/main.bvc, work/analytics/pipeline-analysis-to-board.md
-  work.title: формализовать decision pipeline как protocol и docs canon
+  work.title: Один источник правды по пайплайну, на который опираются T2..T5, backlogSchemaLint, MCP create_work_item и I…
 ]>
+

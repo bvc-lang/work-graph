@@ -1,7 +1,7 @@
 #Задача_define_migration_strategy_labels<[
 Базис:
   Для большого бэклог нужны machine labels, чтобы отличать port/rebuild/replace/defer.
-  Задача «определить labels migration strategy для backlog» относится к контуру архитектуры продукта и должна быть понятна агенту без чтения всего backlog.
+  Задача «определить labels migration strategy для backlog» относится к контуру архитектуры продукта и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: phase-0-inventory-boundaries.
 Вектор:
   Зафиксировать conventions для `migration.strategy`, `migration.source_repo`, `migration.source_paths` и phase ids.
@@ -9,23 +9,6 @@
 Цель:
   Leaf-задачи можно фильтровать и проверять по стратегии переноса.
   Готово, когда выполнены проверки: словарь labels задокументирован.
-Анализ:
-  Целесообразность:
-  Стоит завести «определить labels migration strategy для backlog» в бэклог.
-  Контекст и границы:
-  Зафиксировать conventions для `migration.strategy`, `migration.source_repo`, `migration.source_paths` и phase ids.
-  Зависимости и готовность:
-  depends_on=phase-0-inventory-boundaries; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Leaf-задачи можно фильтровать и проверять по стратегии переноса.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -46,6 +29,6 @@
   work.risk: medium
   work.status: done
   work.target_files: docs/plan-iohasc-full-rebuild-backlog.md, work/backlog.bvc
-  work.title: определить labels migration strategy для backlog
+  work.title: Leaf-задачи можно фильтровать и проверять по стратегии переноса
 ]>
 

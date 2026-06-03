@@ -9,18 +9,21 @@
   Cmd+K палитра со скоупами task:/an:/mem:/evidence:/run:/cmd: + fuzzy + опциональный semantic.
   Inbox events stream с unread badge на сайдбаре.
 Цель:
-  Operator видит «что делать сейчас» с первого экрана и запускает agent run одной командной нажатие.
+  Operator видит «что делать сейчас» с первого экрана и запускает agent прогнать одной командной нажатие.
   Кликов до запуска worker = 1; кликов до My ready next task = 0; time-to-first-action < 5s.
 Проверки:
   / открывает Home по умолчанию (KPI + Inbox + My queue + Active runs)
-  Cmd+K палитра запускает run за 1 Enter
+  Cmd+K палитра запускает прогнать за 1 Enter
   Right dock виден после toggle и показывает live log
   Inbox badge корректен по unread count
   npm run lint:backlog без новых errors
-  AN-24 closing analysis опубликован
+  AN-24 итоговый разбор опубликован
+Свидетельства:
+  P0 Home + inbox + cmd+k + agent dock shipped
+  AN-24 closing published
 Анализ:
   Целесообразность:
-  Стоит завести «UX Mission Control P0: Home + Right dock + Cmd+K + Inbox» в бэклог — по материалам AN-20 (work/analytics/ux-current-state-and-vector.md).
+  Стоит завести «UX Mission Control P0: Home + правый dock + Cmd+K + Inbox» в бэклог — по материалам AN-20 (work/analytics/ux-current-state-and-vector.md).
   Контекст и границы:
   Home view как default landing с HERMES-pattern: KPI tiles + Inbox + My queue + Active runs.
   Зависимости и готовность:
@@ -28,17 +31,13 @@
   Риски и альтернативы:
   Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
   Критерии успеха:
-  Operator видит «что делать сейчас» с первого экрана и запускает agent run одной командной нажатие.; проверки из атома и `target_files`.
+  Operator видит «что делать сейчас» с первого экрана и запускает agent прогнать одной командной нажатие.; проверки из атома и `target_files`.
   Рекомендация для решения:
   Полезно — задача готова к исполнению после разбора материалов приёма.
 Решение:
   Вердикт:
   полезно
   Создана по материалам приёма AN-20 (work/analytics/ux-current-state-and-vector.md); исполнять после вердикта «полезно» и готовности зависимостей.
-
-Свидетельства:
-  - P0 Home + inbox + cmd+k + agent dock shipped
-  - AN-24 closing published
 
 Метки:
   atom.profile: work_item
@@ -61,5 +60,6 @@
   work.risk: medium
   work.status: done
   work.target_files: docs/plan-ux-mission-control-p0.md, work/analytics/ux-current-state-and-vector.md, src/operatorShellProjection.mjs, src/workGraphBacklogUiServer.mjs, ui/operator-dashboard-v2.bvc, protocols/operator-agent-run-panel-v1.bvc
-  work.title: UX Mission Control P0: Home + Right dock + Cmd+K + Inbox
+  work.title: UX Mission Control P0: Home + правый dock + Cmd+K + Inbox
 ]>
+

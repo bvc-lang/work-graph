@@ -9,18 +9,9 @@
 Проверки:
   architecture:l1-check работает с --cwd на чужой корень (или опцией repoRoot)
   tests/architectureSnapshot.test.mjs покрывают foreign repoRoot
-Анализ:
-  Зачем:
-  Без этого при переключении проекта backlog обновится, а architecture map — нет.
-  Когда:
-  После repoRoot-aware backlog UI.
-Решение:
-  Вердикт:
-  полезно
-
 Свидетельства:
-  - buildArchitectureSnapshot({ repoRoot })
-  - tests/architectureSnapshot.test.mjs foreign repoRoot
+  buildArchitectureSnapshot({ repoRoot })
+  tests/architectureSnapshot.test.mjs foreign repoRoot
 
 Метки:
   atom.profile: work_item
@@ -45,5 +36,6 @@
   work.risk: low
   work.status: done
   work.target_files: src/architectureSnapshot.mjs, tests/architectureSnapshot.test.mjs
-  work.title: Снимок архитектуры по выбранному корню проекта
+  work.title: Карта архитектуры в UI соответствует активному проекту, а не каталогу, из которого запустили npm run backlo…
 ]>
+

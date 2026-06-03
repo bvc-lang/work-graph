@@ -1,0 +1,59 @@
+#Задача_add_workgraph_few_shot_examples<[
+Базис:
+  AN-57 D3: ioHasC fewShotLibrary не содержит workgraph/claim/evidence — модель не видит эталонный trace.
+  Enforcement .mdc soft; few-shot per-turn даёт конкретный успешный паттерн (adr-agent-few-shot-dynamics).
+Вектор:
+  Добавить FEW_SHOT_WORKGRAPH_CLAIM_EXECUTE и FEW_SHOT_WORKGRAPH_NO_TODOWRITE в ../project/src/agent/fewShotLibrary.js.
+  fewShotStrategy: task type workgraph_execute при WG_PROJECT_ROOT / user preview «work graph» / MCP workgraph.
+  Тесты: tests/agent-few-shot-selection.test.js — ids и порядок для workgraph_execute.
+  Опционально: compile hook если agent embedded в WG UI (AN-47).
+Цель:
+  System prompt ioHasC/Cursor с few-shot показывает правильный WG pipeline и русский prose в work item.
+Проверки:
+  fewShotLibrary содержит workgraph claim→evidence example
+  selectFewShotExampleIds(workgraph_execute) возвращает WG ids первыми
+  npm run test:agent-behavior или vitest few-shot green в project
+Анализ:
+  Зачем:
+  AN-57 D3: ioHasC fewShotLibrary не содержит workgraph/claim/evidence — модель не видит эталонный trace.
+  Контекст: Enforcement .mdc soft; few-shot per-turn даёт конкретный успешный паттерн (adr-agent-few-shot-dynamics).
+  Когда:
+  После готовности: epic-agent-session-warmup-v1.
+  Готово, когда:
+  System prompt ioHasC/Cursor с few-shot показывает правильный WG pipeline и русский prose в work item.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: epic-agent-session-warmup-v1.
+
+Свидетельства:
+  ../project/src/agent/fewShotLibrary.js — workgraph_claim_execute, workgraph_no_todowrite
+  ../project/src/agent/fewShotStrategy.js — workgraph_execute task type
+  ../project/tests/agent-few-shot-selection.test.js
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-57
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/agent-session-warmup-vs-enforcement.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-02T17:42:39.500Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-02T17:42:39.500Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: epic-agent-session-warmup-v1
+  work.id: add-workgraph-few-shot-examples
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: integration_architect
+  work.parent_id: epic-agent-session-warmup-v1
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: ../project/src/agent/fewShotLibrary.js, ../project/src/agent/fewShotStrategy.js, ../project/tests/agent-few-shot-selection.test.js, ../project/docs/adr-agent-few-shot-dynamics.md, work/analytics/agent-session-warmup-vs-enforcement.md
+  work.title: Few-shot Work Graph в ioHasC: claim → evidence, русский
+]>
+

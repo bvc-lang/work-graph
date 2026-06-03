@@ -8,23 +8,6 @@
   POST /api/agent-run перезагружает snapshot в UI и перерисовывает board.
 Цель:
   Work Graph остаётся источник истины: worker прогнать оставляет след в бэклог, intent graph и оператор board.
-Анализ:
-  Целесообразность:
-  Стоит завести «сохранять transitions Agent Run в бэклог» в бэклог.
-  Контекст и границы:
-  Server-side persist одного WorkItem atom в work/backlog.bvc после успешного agent прогнать с appliedTransition.
-  Зависимости и готовность:
-  depends_on=implement-operator-agent-run-panel-mvp; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Work Graph остаётся источник истины: worker прогнать оставляет след в бэклог, intent graph и оператор board.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -46,6 +29,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/workGraphBacklogPersist.mjs, src/agentRunApi.mjs, src/workGraphBacklogUiServer.mjs, tests/workGraphBacklogPersist.test.mjs, work/backlog.bvc, intent/index.bvc
-  work.title: сохранять transitions Agent Run в бэклог
+  work.title: Work Graph остаётся источник истины: worker прогнать оставляет след в бэклог, intent graph и оператор board.
 ]>
 

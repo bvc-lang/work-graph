@@ -12,6 +12,11 @@
   Spec BVC имеет явную лицензию CC BY 4.0
   Пакеты @bvc/* помечены Apache-2.0
   Conformance suite описан в PUBLIC_API или spec README
+Свидетельства:
+  packages/bvc-spec/ + LICENSE-SPEC (CC BY 4.0)
+  @bvc-lang/cli Apache-2.0
+  tests/bvcConformance.test.mjs
+  PUBLIC_API.md
 Анализ:
   Зачем:
   AN-42: BVC — единственный универсальный человекочитаемый формат; без открытой spec он не станет стандартом.
@@ -24,12 +29,6 @@
   Вердикт:
   полезно
   Брать в работу после закрытия зависимостей: epic-work-graph-open-publication, inventory-public-private-packages-an42.
-
-Свидетельства:
-  - packages/bvc-spec/ + LICENSE-SPEC (CC BY 4.0)
-  - @bvc-lang/cli Apache-2.0
-  - tests/bvcConformance.test.mjs
-  - PUBLIC_API.md
 
 Метки:
   atom.profile: work_item
@@ -54,5 +53,6 @@
   work.risk: medium
   work.status: done
   work.target_files: work/analytics/open-publication-technology-holdback-strategy.md, work/analytics/step-as-open-canon-standard.md, packages/bvc-spec/, packages/bvc-cli/
-  work.title: BVC как открытый стандарт: spec CC BY + пакеты Apache-2.0
+  work.title: BVC можно цитировать, реализовать и проверить совместимость без доступа к закрытым packs.
 ]>
+

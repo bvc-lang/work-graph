@@ -10,23 +10,6 @@
   Зафиксировать UX pattern: top map -> focus block -> inner detail через drawer/panel, без ручного graph editor.
 Цель:
   Есть единый контракт architecture graph, который отделяет проектирование системы от очереди задач и готов к snapshot/UI реализации.
-Анализ:
-  Целесообразность:
-  Стоит завести «спроектировать architecture graph model v1 (L1/L2/L3)» в бэклог.
-  Контекст и границы:
-  Зафиксировать architecture graph model v1 с уровнями L1 system blocks, L2 containers/modules и L3 artifacts/files/symbols.
-  Зависимости и готовность:
-  depends_on=choose-runtime-substrate, design-derived-graph-viewer, design-intent-tree-workgraph-layout; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Есть единый контракт architecture graph, который отделяет проектирование системы от очереди задач и готов к snapshot/UI реализации.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -47,6 +30,6 @@
   work.risk: medium
   work.status: done
   work.target_files: protocols/architecture-graph-model-v1.bvc, charter/main.bvc, protocols/intent-tree-workgraph-layout.bvc, ui/derived-graph-viewer.bvc, protocols/pvrg-graph-rag-minimal.bvc, work/backlog.bvc
-  work.title: спроектировать architecture graph model v1 (L1/L2/L3)
+  work.title: Есть единый контракт architecture graph, который отделяет проектирование системы от очереди задач и готов к…
 ]>
 

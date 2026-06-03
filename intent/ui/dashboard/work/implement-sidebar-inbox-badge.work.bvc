@@ -9,6 +9,9 @@
 Проверки:
   badge показывает корректное число unread
   после mark-read badge скрывается
+Свидетельства:
+  #inbox-nav-badge on Home nav tab
+  unread from /api/inbox-events
 Анализ:
   Целесообразность:
   Стоит завести «badge unread count на сайдбаре» в бэклог — по материалам work/analytics/ux-current-state-and-vector.md.
@@ -26,10 +29,6 @@
   Вердикт:
   полезно
   Создана по материалам приёма work/analytics/ux-current-state-and-vector.md; исполнять после вердикта «полезно» и готовности зависимостей.
-
-Свидетельства:
-  - #inbox-nav-badge on Home nav tab
-  - unread from /api/inbox-events
 
 Метки:
   atom.profile: work_item
@@ -53,5 +52,6 @@
   work.risk: low
   work.status: done
   work.target_files: src/workGraphBacklogUiServer.mjs
-  work.title: badge unread count на сайдбаре
+  work.title: реализовать sidebar Inbox badge
 ]>
+

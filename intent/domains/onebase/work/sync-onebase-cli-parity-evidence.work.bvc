@@ -1,7 +1,7 @@
 #Задача_sync_onebase_cli_parity_evidence<[
 Базис:
   После обновления OneBase CLI parity matrix должна отражать доступность check/describe/ai-guide через probe artifact.
-  Задача «синхронизировать parity matrix evidence с OneBase CLI probe» относится к контуру Work Graph rebuild и должна быть понятна агенту без чтения всего backlog.
+  Задача «синхронизировать parity matrix evidence с OneBase CLI probe» относится к контуру Work Graph пересобрать и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: wire-onebase-cli-tools-parity.
 Вектор:
   CLI probe → work/onebase-cli-capabilities.v1.json → parity rows cliAvailable + evidence line для WorkItems.
@@ -44,6 +44,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/onebaseCliCapabilityProbe.mjs, src/onebaseParityEvidenceSync.mjs, work/onebase-cli-capabilities.v1.json, scripts/probe-onebase-cli.mjs, tests/onebaseCliCapabilityProbe.test.mjs
-  work.title: синхронизировать parity matrix evidence с OneBase CLI probe
+  work.title: синхронизировать OneBase CLI parity свидетельства
 ]>
 

@@ -8,6 +8,10 @@
 Проверки:
   npm view @bvc-lang/cli version
   npm pack --dry-run в packages/bvc-cli
+Свидетельства:
+  @bvc-lang/cli@0.1.3 published (npm dist-tag latest; bin bvc)
+  scripts/sync-bvc-cli-lib.mjs + verify-bvc-cli-publish-ready.mjs
+  npm pkg fix: bin path bin/bvc.mjs (not ./bin/...)
 Анализ:
   Целесообразность:
   Стоит завести «опубликовать @bvc-lang/cli на npm» в бэклог — по материалам plan: docs/plan-step-to-bvc-migration.md.
@@ -25,11 +29,6 @@
   Вердикт:
   полезно
   Создана по материалам приёма plan: docs/plan-step-to-bvc-migration.md; исполнять после вердикта «полезно» и готовности зависимостей.
-
-Свидетельства:
-  - @bvc-lang/cli@0.1.3 published (npm dist-tag latest; bin bvc)
-  - scripts/sync-bvc-cli-lib.mjs + verify-bvc-cli-publish-ready.mjs
-  - npm pkg fix: bin path bin/bvc.mjs (not ./bin/...)
 
 Метки:
   atom.profile: work_item
@@ -55,3 +54,4 @@
   work.target_files: packages/bvc-cli/package.json, scripts/verify-bvc-cli-publish-ready.mjs
   work.title: опубликовать @bvc-lang/cli на npm
 ]>
+

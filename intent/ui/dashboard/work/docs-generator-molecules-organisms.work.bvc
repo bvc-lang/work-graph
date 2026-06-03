@@ -4,29 +4,12 @@
 Вектор:
   Scan packages/atomic-spec/{molecules,organisms}/.
   Group sections in docs/ui/components.md by layer.
-  npm run docs:components in CI optional step.
+  npm run docs:components in CI опционально step.
 Цель:
-  Unified catalog mirrors Gripe docs/ui/components.md structure.
+  Единый catalog повторяет структуру Gripe docs/ui/components.md.
 Проверки:
   docs/ui/components.md lists molecules and organisms
   tests or snapshot for generator output
-Анализ:
-  Целесообразность:
-  Стоит завести «docs-generator v2: molecules + organisms in components.md» в бэклог — по материалам AN-32 (work/analytics/gripe-ds-adoption-phase2-post-an21.md).
-  Контекст и границы:
-  Scan packages/atomic-spec/{molecules,organisms}/.
-  Зависимости и готовность:
-  depends_on=epic-gripe-ds-adoption-phase2, atomic-spec-molecules-rating-tabs, atomic-spec-organism-modal-gripe-parity; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Unified catalog mirrors Gripe docs/ui/components.md structure.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-32 (work/analytics/gripe-ds-adoption-phase2-post-an21.md); исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -51,5 +34,6 @@
   work.risk: low
   work.status: done
   work.target_files: packages/docs-generator/generateComponentCatalog.mjs, docs/ui/components.md, work/analytics/gripe-ds-adoption-phase2-post-an21.md
-  work.title: docs-generator v2: molecules + organisms in components.md
+  work.title: Docs generator: molecules и organisms
 ]>
+

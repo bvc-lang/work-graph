@@ -12,23 +12,8 @@
   schema design-tokens.v1 валидирует base.json
   builder генерит CSS идентичный текущему Marketplace brand-tokens
   unit test на tokens-to-css
-Анализ:
-  Целесообразность:
-  Стоит завести «Пакет @iohasc/design-tokens (JSON Schema + builders)» в бэклог — по материалам AN-21 (work/analytics/marketplace-integration-and-shared-design-system.md).
-  Контекст и границы:
-  packages/design-tokens: tokens/base.json, themes/*.json, schema/*.schema.json.
-  Зависимости и готовность:
-  depends_on=epic-marketplace-shared-design-system; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Один JSON → CSS/Tailwind/Filament для обоих проектов без визуальных регрессий.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-21 (work/analytics/marketplace-integration-and-shared-design-system.md); исполнять после вердикта «полезно» и готовности зависимостей.
+Свидетельства:
+  packages/design-tokens: base.json, themes, tokens-to-css.mjs, applyTheme.mjs; tests/design-tokens.test.mjs 3/3 green
 
 Метки:
   atom.profile: work_item
@@ -53,8 +38,6 @@
   work.risk: low
   work.status: done
   work.target_files: packages/design-tokens/tokens/base.json, packages/design-tokens/build/tokens-to-css.mjs, work/analytics/marketplace-integration-and-shared-design-system.md
-  work.title: Пакет @iohasc/design-tokens (JSON Schema + builders)
-
-Свидетельства:
-  - packages/design-tokens: base.json, themes, tokens-to-css.mjs, applyTheme.mjs; tests/design-tokens.test.mjs 3/3 green
+  work.title: Один JSON → CSS/Tailwind/Filament для обоих проектов без визуальных регрессий.
 ]>
+

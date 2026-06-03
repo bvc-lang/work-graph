@@ -1,0 +1,45 @@
+#Задача_decide_work_item_contract_projection_adr<[
+Базис:
+  Предложен YAML contract: input/output/verification дублирует Базис, Проверки, work.depends_on, VERIFICATION_MATRIX.
+  AN-50.1: канон — projection-слой; явный contract: только для overrides.
+Вектор:
+  docs/adr-work-item-contract-projection-v1.md — принять proposed ADR из AN-50.1 §5 (риски и канон).
+  Зафиксировать: pure projection (workItemContractProjection.mjs), shared evaluate (workItemReadyForDone.mjs).
+  Tier: gateTaskIds match, A > B > C, matrixRowIds[]; violations[] schema work-item-ready-for-done.v1.
+  assert recommended / complete enforces; structured evidence P0/P1 phases; Contract Health P1.
+  Согласовать с protocols/evidence-model-v1.bvc и пересобрать verification loop.bvc.
+Цель:
+  ADR status accepted; команда не переписывает атомы под второй формат контракта.
+Проверки:
+  ADR в docs/ с trace на AN-50.1 §5
+  ADR покрывает tier rule, assert vs complete, evidence phases, UI P1 scope
+  lint:plan-work-alignment не ругается
+Свидетельства:
+  docs/adr-work-item-contract-projection-v1.md accepted (AN-50.1)
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-50.1
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-bvc-contract-verification.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-02T14:12:30.346Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-02T14:12:30.346Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: epic-work-graph-bvc-contract-verification-v1
+  work.id: decide-work-item-contract-projection-adr
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: agent_platform_architect
+  work.parent_id: epic-work-graph-bvc-contract-verification-v1
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: low
+  work.status: done
+  work.target_files: work/analytics/work-graph-bvc-contract-verification.md, docs/plan-work-graph-bvc-contract-verification.md, docs/adr-work-item-contract-projection-v1.md
+  work.title: ADR: контракт work-item — projection vs duplicate contract YAML
+]>
+

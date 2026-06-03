@@ -7,28 +7,11 @@
   View toggle list | graph; row click → drawer L2.
   Reuse wg-list-row / pagination patterns из workflow.
 Цель:
-  Architecture blocks browsable as dense list without opening full graph.
+  Блоки architecture доступны плотным списком без открытия полного графа.
 Проверки:
   Architecture tab показывает list mode
   click row открывает block detail drawer
   workGraphBacklogUiServer.test.mjs покрывает list mount
-Анализ:
-  Целесообразность:
-  Стоит завести «Architecture tab: blocks list (list-rows) alongside canvas» в бэклог — по материалам AN-34 (work/analytics/architecture-visualization-patterns-comparison.md).
-  Контекст и границы:
-  renderArchitectureBlocksList из architectureSnapshot.
-  Зависимости и готовность:
-  depends_on=epic-architecture-views-v1, adr-architecture-views-v1-profiles; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Architecture blocks browsable as dense list without opening full graph.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-34 (work/analytics/architecture-visualization-patterns-comparison.md); исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -53,5 +36,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/workGraphBacklogUiServer.mjs, src/architectureSnapshot.mjs, work/analytics/architecture-visualization-patterns-comparison.md
-  work.title: Architecture tab: blocks list (list-rows) alongside canvas
+  work.title: Вкладка Architecture: список blocks (list-rows) рядом с canvas
 ]>
+

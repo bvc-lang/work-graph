@@ -11,6 +11,8 @@
   Decision doc опубликован
   Указана связь с датами публикации BVC/IR/PVRG specs
   Явно: документ не заменяет юриста
+Свидетельства:
+  work/analytics/patent-defensive-publication-decision-an42.md
 Анализ:
   Зачем:
   AN-42: до широкого релиза нужно решить — patent, defensive publication или только copyright+trademark.
@@ -23,9 +25,6 @@
   Вердикт:
   полезно
   Брать в работу после закрытия зависимостей: epic-work-graph-open-publication, decide-work-graph-open-publication-adr.
-
-Свидетельства:
-  - work/analytics/patent-defensive-publication-decision-an42.md
 
 Метки:
   atom.profile: work_item
@@ -50,5 +49,6 @@
   work.risk: low
   work.status: done
   work.target_files: work/analytics/open-publication-technology-holdback-strategy.md, work/analytics/patent-defensive-publication-decision-an42.md
-  work.title: Review: patent strategy и defensive publication для BVC/IR/PVRG
+  work.title: Команда знает, зачем датируем specs и не публикуем «случайно» до patent review при необходимости.
 ]>
+

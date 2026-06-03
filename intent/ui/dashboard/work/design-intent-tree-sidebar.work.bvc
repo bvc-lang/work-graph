@@ -1,7 +1,7 @@
 #Задача_design_intent_tree_sidebar<[
 Базис:
   Intent tree должен стать видимым для оператор, а не оставаться скрытым только в файлах.
-  Задача «спроектировать UI intent tree sidebar» относится к контуру Work Graph rebuild и должна быть понятна агенту без чтения всего backlog.
+  Задача «спроектировать UI intent tree sidebar» относится к контуру Work Graph пересобрать и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: phase-9-ui-operator-shell.
 Вектор:
   Спроектировать sidebar view для domains/features/plans и связать его с tasks и architecture map.
@@ -9,23 +9,6 @@
 Цель:
   User может перемещаться по semantic project structure отдельно от task status.
   Готово, когда выполнены проверки: intent navigation отделена от kanban.
-Анализ:
-  Целесообразность:
-  Стоит завести «спроектировать UI intent tree sidebar» в бэклог.
-  Контекст и границы:
-  Спроектировать sidebar view для domains/features/plans и связать его с tasks и architecture map.
-  Зависимости и готовность:
-  depends_on=phase-9-ui-operator-shell; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  User может перемещаться по semantic project structure отдельно от task status.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -46,6 +29,6 @@
   work.risk: medium
   work.status: done
   work.target_files: protocols/intent-tree-sidebar-v1.bvc, src/operatorShellProjection.mjs, src/workGraphBacklogUiServer.mjs, work/backlog.bvc
-  work.title: спроектировать UI intent tree sidebar
+  work.title: User может перемещаться по semantic project structure отдельно от task status.
 ]>
 

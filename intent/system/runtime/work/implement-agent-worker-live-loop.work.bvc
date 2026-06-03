@@ -8,23 +8,6 @@
   UI и вкладка проверок должны видеть summary запуска через dashboard snapshot или явные evidence lines.
 Цель:
   Work Graph получает первый автономный execution loop после MVP, где оператор запускает один цикл и видит результат в бэклог/UI без ручного редактирования `.bvc`.
-Анализ:
-  Целесообразность:
-  Стоит завести «реализовать live-loop для локального agent worker» в бэклог.
-  Контекст и границы:
-  Спроектировать и реализовать минимальный live-loop поверх текущих контрактов: прочитать snapshot, выбрать следующую ready-задачу, собрать Worker Input v1-like payload, запустить локальный worker, записать evidence из Worker Output и предложить запрос transition.
-  Зависимости и готовность:
-  depends_on=implement-agent-worker-local-runner-mvp, rebuild-verification-loop; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Work Graph получает первый автономный execution loop после MVP, где оператор запускает один цикл и видит результат в бэклог/UI без ручного редактирования `.bvc`.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -45,6 +28,6 @@
   work.risk: high
   work.status: done
   work.target_files: src/agentWorkerLiveLoop.mjs, src/agentWorkerLocalRunner.mjs, src/workGraphBacklogUiServer.mjs, tests/agentWorkerLiveLoop.test.mjs, package.json, work/worker-runs.jsonl, work/backlog.bvc, docs/plan-rebuild-post-mvp.md
-  work.title: реализовать live-loop для локального agent worker
+  work.title: Work Graph получает первый автономный execution loop после MVP, где оператор запускает один цикл и видит ре…
 ]>
 

@@ -5,9 +5,9 @@
 Вектор:
   Map OneBase catalog field defs → CatalogFacetsToListingFormConverter input.
   Unit test on sample Номенклатура attributes.
-  Document in onebase-integration-vertical-stack cross-ref.
+  Документировать in onebase-integration-vertical-stack cross-ref.
 Цель:
-  Imported categories get listing_form_schema where OneBase defines attributes.
+  Импортированные категории получают listing_form_schema, где OneBase задаёт атрибуты.
 Проверки:
   PHPUnit facet mapping test
   AN-17 cross-ref updated
@@ -52,5 +52,6 @@
   work.risk: medium
   work.status: done
   work.target_files: ../../04 Marketplace/app/Catalog/CatalogFacetsToListingFormConverter.php, ../../04 Marketplace/app/Catalog/OneBaseCatalogTreeImporter.php, work/analytics/onebase-integration-vertical-stack.md, work/analytics/gripe-ds-adoption-phase2-post-an21.md
-  work.title: Gripe: OneBase attributes → listing_form_schema (facets bridge)
+  work.title: OneBase: мост catalog facets → listing form
 ]>
+

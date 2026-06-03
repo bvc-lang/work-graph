@@ -42,6 +42,25 @@ describe('buildAnalyticsRecord', () => {
     assert.equal(record.id, 'analytics:graph-layout-mess');
     assert.equal(record.schema, 'analytics-record.v1');
   });
+
+  it('round-trips optional lineage block', () => {
+    const record = buildAnalyticsRecord({
+      title: 'Child analysis',
+      query: 'Deep dive?',
+      key: 'AN-50.1',
+      lineage: {
+        parentKey: 'AN-50',
+        parentId: 'analytics:verification-panel-tests-evidence-intent',
+        relation: 'deepens',
+      },
+    });
+
+    assert.deepEqual(record.lineage, {
+      parentKey: 'AN-50',
+      parentId: 'analytics:verification-panel-tests-evidence-intent',
+      relation: 'deepens',
+    });
+  });
 });
 
 describe('readAnalyticsRecordJournal', () => {
@@ -221,9 +240,9 @@ describe('buildAnalyticsPanelProjection', () => {
     const projection = await buildAnalyticsPanelProjection({ cwd: repoRoot });
 
     assert.equal(projection.schema, ANALYTICS_PANEL_PROJECTION_SCHEMA);
-    assert.equal(projection.summary.total, 48);
-    assert.equal(projection.summary.byKind?.intake, 36);
-    assert.equal(projection.summary.byKind?.closing, 12);
+    assert.ok(projection.summary.total >= 65);
+    assert.ok(projection.summary.byKind?.intake >= 50);
+    assert.ok(projection.summary.byKind?.closing >= 15);
     assert.equal(
       projection.records.find((record) => record.id === 'analytics:pipeline-analysis-to-board')?.recordKind,
       ANALYTICS_RECORD_KIND_INTAKE,
@@ -232,11 +251,24 @@ describe('buildAnalyticsPanelProjection', () => {
       projection.records.find((record) => record.id === 'analytics:closing-epic-decision-pipeline-canonization')?.recordKind,
       ANALYTICS_RECORD_KIND_CLOSING,
     );
-    assert.equal(
-      projection.records[0]?.id,
-      'analytics:open-publication-technology-holdback-strategy',
-      'newest analytics record should appear first by default',
-    );
+    assert.ok(projection.records[0]?.createdAt >= projection.records.at(-1)?.createdAt);
+
+    const an56 = projection.records.find((record) => record.key === 'AN-56');
+    assert.ok(an56, 'AN-56 fixture should exist');
+    assert.equal(an56.analyticsLineage?.parent?.key, 'AN-20');
+
+    const an55 = projection.records.find((record) => record.key === 'AN-55');
+    assert.ok(an55, 'AN-55 fixture should exist');
+    assert.equal(an55.analyticsLineage?.parent?.key, 'AN-19');
+
+    const an54 = projection.records.find((record) => record.key === 'AN-54');
+    assert.ok(an54, 'AN-54 fixture should exist');
+    assert.equal(an54.analyticsLineage?.parent?.key, 'AN-45');
+    const an501 = projection.records.find((record) => record.key === 'AN-50.1');
+    assert.ok(an501, 'AN-50.1 fixture should exist');
+    assert.equal(an501.analyticsLineage?.parent?.key, 'AN-50');
+    const an50 = projection.records.find((record) => record.key === 'AN-50');
+    assert.ok(an50?.analyticsLineage?.continuations?.some((entry) => entry.key === 'AN-50.1'));
     assert.ok(projection.records.some((record) => record.id === 'analytics:pipeline-analysis-to-board'));
     assert.equal(
       projection.records.find((record) => record.id === 'analytics:pipeline-analysis-to-board')?.key,

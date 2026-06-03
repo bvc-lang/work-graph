@@ -3,7 +3,7 @@
   renderKanbanBoard → renderTaskAtomCard inline HTML.
   Kanban — главный экран «Доска».
 Вектор:
-  renderTaskAtomCard: status badge atom, optional promote btn wg-btn--sm.
+  renderTaskAtomCard: status badge atom, опционально promote btn wg-btn--sm.
   Column headers: count badge atom.
   Preserve data-task-id / kanban-card hooks for tests.
 Цель:
@@ -15,7 +15,7 @@
   Целесообразность:
   Стоит завести «Wave 3: kanban cards → atoms (badge + card actions)» в бэклог — по материалам AN-33 (work/analytics/gripe-ds-visual-default-wave3.md).
   Контекст и границы:
-  renderTaskAtomCard: status badge atom, optional promote btn wg-btn--sm.
+  renderTaskAtomCard: status badge atom, опционально promote btn wg-btn--sm.
   Зависимости и готовность:
   depends_on=epic-gripe-ds-visual-default-wave3, wg-ui-wave3-status-badges-atoms; старт после закрытия upstream-зависимостей.
   Риски и альтернативы:
@@ -52,5 +52,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/workGraphBacklogUiServer.mjs, src/ui/atoms/badge.mjs, src/ui/atoms/button.mjs, work/analytics/gripe-ds-visual-default-wave3.md
-  work.title: Wave 3: kanban cards → atoms (badge + card actions)
+  work.title: Kanban визуально aligned с Gripe DS cards.
 ]>
+

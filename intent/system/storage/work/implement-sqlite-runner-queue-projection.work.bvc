@@ -1,18 +1,18 @@
 #Задача_implement_sqlite_runner_queue_projection<[
 Базис:
-  PromptPilot patterns и runtime-substrate-decision: SQLite — optional derived queue; canonical state остаётся в .bvc.
-  Задача «реализовать optional runner queue projection» относится к контуру Work Graph rebuild и должна быть понятна агенту без чтения всего backlog.
+  PromptPilot patterns и runtime-substrate-decision: SQLite — опционально derived queue; canonical state остаётся в .bvc.
+  Задача «реализовать опционально runner queue projection» относится к контуру Work Graph пересобрать и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: wire-live-loop-provider-selection.
 Вектор:
-  Построить workgraph.runner.queue.projection.v1 из snapshot + worker-runs journal; экспортировать DDL и optional syncRunnerQueueProjectionToSqlite (skip-safe без node:sqlite).
+  Построить workgraph.runner.queue.projection.v1 из snapshot + worker-runs journal; экспортировать DDL и опционально syncRunnerQueueProjectionToSqlite (skip-safe без node:sqlite).
   Показать runnerQueue в operator-shell.snapshot.v2.
 Цель:
   Scheduler/operator видят rebuildable dispatch projection без ownership task semantics в DB.
 Анализ:
   Целесообразность:
-  Стоит завести «реализовать optional runner queue projection» в бэклог.
+  Стоит завести «реализовать опционально runner queue projection» в бэклог.
   Контекст и границы:
-  Построить workgraph.runner.queue.projection.v1 из snapshot + worker-runs journal; экспортировать DDL и optional syncRunnerQueueProjectionToSqlite (skip-safe без node:sqlite).
+  Построить workgraph.runner.queue.projection.v1 из snapshot + worker-runs journal; экспортировать DDL и опционально syncRunnerQueueProjectionToSqlite (skip-safe без node:sqlite).
   Зависимости и готовность:
   depends_on=wire-live-loop-provider-selection; старт после закрытия upstream-зависимостей.
   Риски и альтернативы:
@@ -45,6 +45,6 @@
   work.risk: medium
   work.status: done
   work.target_files: protocols/runner-queue-projection-v1.bvc, src/workGraphRunnerQueueProjection.mjs, src/operatorShellProjection.mjs, tests/workGraphRunnerQueueProjection.test.mjs, tests/operatorShellProjection.test.mjs, work/backlog.bvc
-  work.title: реализовать optional runner queue projection
+  work.title: реализовать sqlite runner очередь projection
 ]>
 

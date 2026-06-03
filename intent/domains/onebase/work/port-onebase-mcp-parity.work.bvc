@@ -1,7 +1,7 @@
 #Задача_port_onebase_mcp_parity<[
 Базис:
   Старый ioHasC имеет built-in OneBase tools и MCP package; пересобрать не должен зависеть только от одного access path.
-  Задача «спроектировать parity OneBase MCP и built-in tools» относится к контуру архитектуры продукта и должна быть понятна агенту без чтения всего backlog.
+  Задача «спроектировать parity OneBase MCP и built-in tools» относится к контуру архитектуры продукта и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: phase-7-onebase-vertical.
 Вектор:
   Определить parity matrix для built-in OneBase tools, MCP package и local verification script.
@@ -45,6 +45,6 @@
   work.risk: medium
   work.status: done
   work.target_files: protocols/onebase-mcp-parity-v1.bvc, src/onebaseWorkItemTemplate.mjs, tests/onebaseWorkItemTemplate.test.mjs, work/backlog.bvc
-  work.title: спроектировать parity OneBase MCP и built-in tools
+  work.title: OneBase workflows могут работать в agent UI, daemon или external MCP environment.
 ]>
 

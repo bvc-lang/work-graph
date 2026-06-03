@@ -10,22 +10,9 @@
 Проверки:
   ADR в docs/
   Ссылается на AN-40, AN-43, epic
-Анализ:
-  Зачем:
-  Без ADR команда продолжит документировать engineRoot для всех.
-  Контекст: Нужно зафиксировать приоритет резолвера и целевые npm-пакеты.
-  Когда:
-  После готовности: epic-work-graph-npm-first-distribution.
-  Готово, когда:
-  Стратегия npm-first зафиксирована до рефакторинга init и publish.
-Решение:
-  Вердикт:
-  полезно
-  Брать в работу после закрытия зависимостей: epic-work-graph-npm-first-distribution.
-
 Свидетельства:
-  - docs/adr-work-graph-npm-first-distribution.md
-  - docs/plan-work-graph-npm-first-distribution.md
+  docs/adr-work-graph-npm-first-distribution.md
+  docs/plan-work-graph-npm-first-distribution.md
 
 Метки:
   atom.profile: work_item
@@ -52,3 +39,4 @@
   work.target_files: work/analytics/work-graph-npm-first-distribution.md, docs/plan-work-graph-npm-first-distribution.md, docs/adr-work-graph-npm-first-distribution.md
   work.title: ADR: npm-first distribution — user-first vs dev-first
 ]>
+

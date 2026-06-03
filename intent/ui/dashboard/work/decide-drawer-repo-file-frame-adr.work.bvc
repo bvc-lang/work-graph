@@ -1,0 +1,49 @@
+#Задача_decide_drawer_repo_file_frame_adr<[
+Базис:
+  AN-59 §2: frame payload, push rules, language map, security.
+Вектор:
+  docs/adr-detail-drawer-repo-file-frame-v1.md — type repo-file, payload.repoPath.
+  Push from #detail-body / #detail-sub-body only; back = pop.
+Цель:
+  Команда не добавляет ad hoc file modal; только stack frame.
+Проверки:
+  ADR accepted
+  Frame table updated in adr-detail-drawer-stack-v1 or cross-ref
+Анализ:
+  Зачем:
+  AN-59 §2: frame payload, push rules, language map, security.
+  Контекст: docs/adr-detail-drawer-repo-file-frame-v1.md — type repo-file, payload.repoPath.
+  Когда:
+  После готовности: epic-drawer-repo-file-preview-v1.
+  Готово, когда:
+  Команда не добавляет ad hoc file modal; только stack frame.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: epic-drawer-repo-file-preview-v1.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-59
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/drawer-repo-file-preview.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-02T19:57:33.366Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-02T19:57:33.366Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: epic-drawer-repo-file-preview-v1
+  work.id: decide-drawer-repo-file-frame-adr
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.parent_id: epic-drawer-repo-file-preview-v1
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: low
+  work.status: backlog
+  work.target_files: docs/adr-detail-drawer-repo-file-frame-v1.md, docs/adr-detail-drawer-stack-v1.md, work/analytics/drawer-repo-file-preview.md
+  work.title: ADR: detail stack frame repo-file + preview API contract
+]>

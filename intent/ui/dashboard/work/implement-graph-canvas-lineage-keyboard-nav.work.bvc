@@ -7,31 +7,13 @@
   Arrow keys + Enter → drawer; highlight lineage path на edges.
 Цель:
   Operator navigates graph with keyboard как на n8n canvas.
-Анализ:
-  Целесообразность:
-  Стоит завести «реализовать keyboard lineage nav и highlight (n8n parity)» в бэклог — по материалам AN-4 (analytics:graph-visualization-engine).
-  Контекст и границы:
-  graphCanvasTraversal.ts: getIncoming/Outgoing/Upstream/Downstream от selected node.
-  Зависимости и готовность:
-  depends_on=migrate-intent-roadmap-lit-flow; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Operator navigates graph with keyboard как на n8n canvas.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-4 (analytics:graph-visualization-engine); исполнять после вердикта «полезно» и готовности зависимостей.
 Проверки:
   unit tests traversal на fixture graph
   focused node visible after pan (fitView partial)
-
 Свидетельства:
-  - protocols/graph-canvas-lit-flow-v1.bvc + schemas/graph-canvas-lit-flow-projection.v1.json
-  - public/graph-canvas-lit-flow.js (lit-flow client island)
-  - src/graphCanvasLitFlow/* + tests/graphCanvasLitFlow.test.mjs
+  protocols/graph-canvas-lit-flow-v1.bvc + schemas/graph-canvas-lit-flow-projection.v1.json
+  public/graph-canvas-lit-flow.js (lit-flow client island)
+  src/graphCanvasLitFlow/* + tests/graphCanvasLitFlow.test.mjs
 
 Метки:
   atom.profile: work_item
@@ -56,5 +38,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/graphCanvasLitFlow/graphCanvasTraversal.ts, tests/graphCanvasTraversal.test.mjs
-  work.title: реализовать keyboard lineage nav и highlight (n8n parity)
+  work.title: реализовать графа canvas lineage keyboard nav
 ]>
+

@@ -8,23 +8,6 @@
   Описать filters by node kind и safe click-through targets: open task detail, open file path, open протокол atom, show orphan/broken trace diagnostics.
 Цель:
   Оператор может понять состав блока и его связи без перехода в огромный task dependency graph.
-Анализ:
-  Целесообразность:
-  Стоит завести «спроектировать block detail panel для architecture view» в бэклог.
-  Контекст и границы:
-  Спроектировать block detail panel/drawer для architecture view: breadcrumb, focus mode, cross-block links.
-  Зависимости и готовность:
-  depends_on=design-architecture-graph-model-v1; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Оператор может понять состав блока и его связи без перехода в огромный task dependency graph.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -45,6 +28,6 @@
   work.risk: medium
   work.status: done
   work.target_files: protocols/architecture-graph-model-v1.bvc, ui/derived-graph-viewer.bvc, src/workGraphBacklogUiServer.mjs, work/backlog.bvc
-  work.title: спроектировать block detail panel для architecture view
+  work.title: Понять состав блока и его связи без перехода в огромный task dependency graph.
 ]>
 

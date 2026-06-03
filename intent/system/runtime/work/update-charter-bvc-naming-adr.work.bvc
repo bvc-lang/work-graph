@@ -6,7 +6,12 @@
   Ссылка на ADR и AN-18 в relatedFiles / basis.
   .bvc остаётся internal legacy — явно указать.
 Цель:
-  Charter — source of truth для naming; агент не продвигает .bvc наружу.
+  Charter — источник истины для naming; агент не продвигает .bvc наружу.
+Проверки:
+  charter/main.bvc содержит bvc и ссылку на adr-bvc-format-naming.md
+  npm run lint:backlog green
+Свидетельства:
+  charter/main.bvc: canon.public_format=bvc, canon.public_extension=.bvc, adr links
 Анализ:
   Целесообразность:
   Стоит завести «charter/main.bvc: public format BVC .bvc + ссылка на ADR» в бэклог — по материалам AN-18 (analytics:bvc-naming-branding-review).
@@ -17,19 +22,13 @@
   Риски и альтернативы:
   Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
   Критерии успеха:
-  Charter — source of truth для naming; агент не продвигает .bvc наружу.; проверки из атома и `target_files`.
+  Charter — источник истины для naming; агент не продвигает .bvc наружу.; проверки из атома и `target_files`.
   Рекомендация для решения:
   Полезно — задача готова к исполнению после разбора материалов приёма.
 Решение:
   Вердикт:
   полезно
   Создана по материалам приёма AN-18 (analytics:bvc-naming-branding-review); исполнять после вердикта «полезно» и готовности зависимостей.
-Проверки:
-  charter/main.bvc содержит bvc и ссылку на adr-bvc-format-naming.md
-  npm run lint:backlog green
-
-Свидетельства:
-  - charter/main.bvc: canon.public_format=bvc, canon.public_extension=.bvc, adr links
 
 Метки:
   atom.profile: work_item
@@ -54,5 +53,6 @@
   work.risk: low
   work.status: done
   work.target_files: charter/main.bvc, docs/adr-bvc-format-naming.md
-  work.title: charter/main.bvc: public format BVC .bvc + ссылка на ADR
+  work.title: Charter — источник истины для naming; агент не продвигает .bvc наружу.
 ]>
+

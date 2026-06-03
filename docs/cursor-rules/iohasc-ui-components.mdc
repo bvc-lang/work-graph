@@ -1,0 +1,12 @@
+---
+description: Перед версткой UI Work Graph проверь каталог компонентов и переиспользуй atoms.
+alwaysApply: true
+---
+
+# Work Graph UI components
+
+- Перед новой вёрсткой в backlog UI (`workGraphBacklogUiServer.mjs`, `src/ui/**`) открой [`docs/ui/components.md`](docs/ui/components.md) и [`/dev/ui-kit`](/dev/ui-kit).
+- Новые кнопки/бейджи/инпуты — через `src/ui/atoms/*`, не inline `<button class="...">` в monolith.
+- Новый вариант — **prop** (`variant`, `size`, `tone`), не ad-hoc CSS с `!important`.
+- Design tokens: `@iohasc/design-tokens` (`packages/design-tokens`); semantic слой `--ui-*`, brand `--brand-*`.
+- Спека компонента — `packages/atomic-spec/atoms/*.bvc`; после изменения прогони `npm run docs:components`.

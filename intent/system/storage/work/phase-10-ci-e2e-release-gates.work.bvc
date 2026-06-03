@@ -1,19 +1,19 @@
 #Задача_phase_10_ci_e2e_release_gates<[
 Базис:
-  Старый ioHasC имеет Vitest, Playwright, integrity, traceability, prompt eval и optional LLM matrix; пересобрать нужны эквивалентные release gates.
-  Задача «Фаза 10: CI, E2E и release gates» относится к контуру Work Graph rebuild и должна быть понятна агенту без чтения всего backlog.
+  Старый ioHasC имеет Vitest, Playwright, integrity, traceability, prompt eval и опционально LLM matrix; пересобрать нужны эквивалентные release gates.
+  Задача «Фаза 10: CI, E2E и release gates» относится к контуру Work Graph пересобрать и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: phase-9-ui-operator-shell.
 Вектор:
-  Сформировать задачи фазы CI/E2E: Work Graph Vitest suite, daemon integration, scheduler tick E2E, бэклог schema lint и optional LLM matrix.
+  Сформировать задачи фазы CI/E2E: Work Graph Vitest suite, daemon integration, scheduler tick E2E, бэклог schema lint и опционально LLM matrix.
   Ближайший шаг исполнения: выполнить фазу 11 deferred GBC/GFS/GVM track.
 Цель:
   Full пересобрать остаётся regression-safe по мере переноса слоёв.
-  Готово, когда выполнены проверки: mandatory и optional gates разделены.
+  Готово, когда выполнены проверки: mandatory и опционально gates разделены.
 Анализ:
   Целесообразность:
   Стоит завести «Фаза 10: CI, E2E и release gates» в бэклог.
   Контекст и границы:
-  Сформировать задачи фазы CI/E2E: Work Graph Vitest suite, daemon integration, scheduler tick E2E, бэклог schema lint и optional LLM matrix.
+  Сформировать задачи фазы CI/E2E: Work Graph Vitest suite, daemon integration, scheduler tick E2E, бэклог schema lint и опционально LLM matrix.
   Зависимости и готовность:
   depends_on=phase-9-ui-operator-shell; старт после закрытия upstream-зависимостей.
   Риски и альтернативы:
@@ -46,6 +46,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/releaseGateMatrix.mjs, src/backlogSchemaLint.mjs, scripts/lint-backlog.mjs, tests/workGraphDaemonIntegration.test.mjs, tests/backlogSchemaLint.test.mjs, package.json, work/backlog.bvc
-  work.title: Фаза 10: CI, E2E и release gates
+  work.title: Full пересобрать остаётся regression-safe по мере переноса слоёв.
 ]>
 

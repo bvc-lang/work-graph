@@ -12,6 +12,12 @@
   У public packages есть LICENSE с правильным SPDX identifier
   SECURITY.md и PRIVACY.md опубликованы
   CONTRIBUTING или ADR описывает contributor terms
+Свидетельства:
+  LICENSE
+  SECURITY.md
+  PRIVACY.md
+  CONTRIBUTING.md
+  workgraph-mcp license field
 Анализ:
   Зачем:
   Публичный релиз без LICENSE в каждом пакете и SECURITY.md вызывает вопросы у компаний и блокирует adoption.
@@ -24,13 +30,6 @@
   Вердикт:
   полезно
   Брать в работу после закрытия зависимостей: epic-work-graph-open-publication, decide-work-graph-open-publication-adr.
-
-Свидетельства:
-  - LICENSE
-  - SECURITY.md
-  - PRIVACY.md
-  - CONTRIBUTING.md
-  - workgraph-mcp license field
 
 Метки:
   atom.profile: work_item
@@ -55,5 +54,6 @@
   work.risk: low
   work.status: done
   work.target_files: work/analytics/open-publication-technology-holdback-strategy.md, LICENSE, SECURITY.md, PRIVACY.md
-  work.title: Legal hygiene: LICENSE, SECURITY, PRIVACY по пакетам
+  work.title: Юрист или security reviewer может за 10 минут понять условия использования public release.
 ]>
+

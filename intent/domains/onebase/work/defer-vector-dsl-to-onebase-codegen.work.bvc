@@ -1,7 +1,7 @@
 #Задача_defer_vector_dsl_to_onebase_codegen<[
 Базис:
   OneBase bridge полезен уже сейчас, но VectorDSL to OneBase codegen добавит риск до стабилизации bridge workflows.
-  Задача «отложить VectorDSL to OneBase codegen» относится к контуру архитектуры продукта и должна быть понятна агенту без чтения всего backlog.
+  Задача «отложить VectorDSL to OneBase codegen» относится к контуру архитектуры продукта и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: phase-7-onebase-vertical.
 Вектор:
   Зафиксировать явную deferral boundary и return triggers для OneBase codegen.
@@ -9,23 +9,6 @@
 Цель:
   Product scope ясен: сначала bridge, codegen позже.
   Готово, когда выполнены проверки: причина deferral и return triggers задокументированы.
-Анализ:
-  Целесообразность:
-  Стоит завести «отложить VectorDSL to OneBase codegen» в бэклог.
-  Контекст и границы:
-  Зафиксировать явную deferral boundary и return triggers для OneBase codegen.
-  Зависимости и готовность:
-  depends_on=phase-7-onebase-vertical; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Product scope ясен: сначала bridge, codegen позже.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -46,6 +29,6 @@
   work.risk: high
   work.status: done
   work.target_files: domains/onebase/defer-vector-dsl-codegen.bvc, work/backlog.bvc
-  work.title: отложить VectorDSL to OneBase codegen
+  work.title: Product scope ясен: сначала bridge, codegen позже.
 ]>
 

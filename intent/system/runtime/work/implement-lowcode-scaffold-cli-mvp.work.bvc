@@ -5,7 +5,7 @@
   Предварительно должны быть закрыты зависимости: design-prompt-step-and-lowcode-replacement-scope.
 Вектор:
   Добавить npm run scaffold:arch-rules — минимальный CLI: читает arch-rules.bvc (или path), пишет skeleton output dir, возвращает structured summary для evidence.
-  Добавить npm run verify:lowcode как optional gate (не ci:mandatory): lint arch-rules presence + scaffold dry-run или заглушка check.
+  Добавить npm run verify:lowcode как опционально gate (не ci:mandatory): lint arch-rules presence + scaffold dry-run или заглушка check.
   Не переносить полный template engine и sidecar generateFromCharter в пересобрать MVP.
 Цель:
   Low-code replacement path исполним через CLI/evidence без visual editor.
@@ -49,6 +49,6 @@
   work.risk: medium
   work.status: done
   work.target_files: scripts/scaffold-arch-rules.mjs, src/lowcodeScaffoldCli.mjs, tests/lowcodeScaffoldCli.test.mjs, package.json, protocols/prompt-step-lowcode-replacement-scope-v1.bvc, work/backlog.bvc
-  work.title: реализовать MVP low-code scaffold CLI
+  work.title: реализовать low-code scaffold CLI MVP
 ]>
 

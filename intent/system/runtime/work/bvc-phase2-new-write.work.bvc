@@ -6,7 +6,7 @@
 Вектор:
   CLI bvc format — canonical writer с сохранением atom.lang.
   Новые WorkItem → intent/**/work/*.work.bvc; legacy .work.bvc readable.
-  MCP create_work_item и protocol bvc-new-write-policy-v1.bvc.
+  MCP create_work_item и протокол bvc-new-write-policy-v1.bvc.
   Тесты round-trip + intent-tree lint dual suffix.
 Цель:
   Фаза 2 MVP в Work Graph: format CLI работает; новые атомы пишутся в .bvc; MCP рекомендует канон.
@@ -15,27 +15,9 @@
   create_work_item создаёт *.work.bvc
   lint:backlog без ошибок после seed
   docs/plan-step-to-bvc-migration.md §2 отмечен done для MVP пунктов
-Анализ:
-  Целесообразность:
-  Стоит завести «BVC phase 2: new-write .bvc (format CLI + work item policy)» в бэклог — по материалам plan: docs/plan-step-to-bvc-migration.md.
-  Контекст и границы:
-  CLI bvc format — canonical writer с сохранением atom.lang.
-  Зависимости и готовность:
-  depends_on=bvc-open-canon-naming; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Фаза 2 MVP в Work Graph: format CLI работает; новые атомы пишутся в .bvc; MCP рекомендует канон.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма plan: docs/plan-step-to-bvc-migration.md; исполнять после вердикта «полезно» и готовности зависимостей.
-
 Свидетельства:
-  - Phase 2 MVP: bvc format CLI, new-write *.work.bvc, MCP/protocol policy
-  - docs/plan-step-to-bvc-migration.md §2 updated
+  Phase 2 MVP: bvc format CLI, new-write *.work.bvc, MCP/protocol policy
+  docs/plan-step-to-bvc-migration.md §2 updated
 
 Метки:
   atom.profile: work_item
@@ -59,5 +41,6 @@
   work.risk: medium
   work.status: done
   work.target_files: docs/plan-step-to-bvc-migration.md, docs/adr-bvc-format-naming.md, src/bvcFormatCli.mjs, src/bvcNewWritePolicy.mjs, packages/bvc-cli/bin/bvc.mjs, protocols/bvc-new-write-policy-v1.bvc
-  work.title: BVC phase 2: new-write .bvc (format CLI + work item policy)
+  work.title: BVC фаза 2: new-write .bvc (CLI + политика work item)
 ]>
+

@@ -1,15 +1,15 @@
 #Задача_reconcile_audit_gap_matrix_post_provider_rollout<[
 Базис:
   Audit-gap track закрыт (116 WorkItems done, provider catalog 5/5), но docs/plan-iohasc-rebuild-audit-gap-matrix.md и связанные планы всё ещё показывали missing/заглушка для уже реализованных slices (cursor/claude/local-cli, atom inspector, OneBase tools, agent прогнать panel, sidecar boundary design).
-  Без post-rollout reconcile оператор и ассистент видят устаревшую «in progress» картину.
+  Без post-rollout согласовать оператор и ассистент видят устаревшую «in progress» картину.
 Вектор:
   Обновить audit-gap matrix, plan-iohasc-full-rebuild-backlog и plan-rebuild-post-full-roadmap: honest delivery по фазам, provider table 5/5, audit-gap track = done.
-  Явно выделить post-rollout optional/deferred: memory slice wiring, code-gap оператор UX, полный semantic search, optional live LLM eval.
+  Явно выделить post-rollout optional/deferred: memory slice wiring, code-gap оператор UX, полный semantic search, опционально live LLM eval.
 Цель:
   Документация честно отражает факт после provider rollout; не остаётся ложных missing для закрытых WorkItems.
 Анализ:
   Целесообразность:
-  Стоит завести «reconcile audit-gap matrix post-provider-rollout» в бэклог.
+  Стоит завести «согласовать audit-gap matrix post-provider-rollout» в бэклог.
   Контекст и границы:
   Обновить audit-gap matrix, plan-iohasc-full-rebuild-backlog и plan-rebuild-post-full-roadmap: honest delivery по фазам, provider table 5/5, audit-gap track = done.
   Зависимости и готовность:
@@ -44,6 +44,6 @@
   work.risk: low
   work.status: done
   work.target_files: docs/plan-iohasc-rebuild-audit-gap-matrix.md, docs/plan-iohasc-full-rebuild-backlog.md, docs/plan-rebuild-post-full-roadmap.md, work/backlog.bvc
-  work.title: reconcile audit-gap matrix post-provider-rollout
+  work.title: Документация честно отражает факт после provider rollout; не остаётся ложных missing для закрытых WorkItems.
 ]>
 

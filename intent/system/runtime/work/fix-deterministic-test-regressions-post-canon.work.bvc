@@ -5,26 +5,9 @@
   Прогон npm run test:deterministic; triage failures.
   Минимальные фиксы без scope creep.
 Цель:
-  ci:mandatory test:deterministic green.
+  ci:mandatory и test:deterministic зелёные.
 Проверки:
   npm run test:deterministic exit 0
-Анализ:
-  Целесообразность:
-  Стоит завести «Fix deterministic test regressions after canon trilogy» в бэклог — по материалам AN-37 (work/analytics/bvc-open-format-tail-v1.md).
-  Контекст и границы:
-  Прогон npm run test:deterministic; triage failures.
-  Зависимости и готовность:
-  depends_on=epic-bvc-open-format-tail-v1, parser-legacy-step-read-deprecation-warning; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  ci:mandatory test:deterministic green.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-37 (work/analytics/bvc-open-format-tail-v1.md); исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -49,5 +32,6 @@
   work.risk: low
   work.status: done
   work.target_files: tests/, src/workGraphBacklogUiServer.mjs, docs/plan-bvc-open-format-tail-v1.md
-  work.title: Fix deterministic test regressions after canon trilogy
+  work.title: Исправить регрессии deterministic tests после canon trilogy
 ]>
+

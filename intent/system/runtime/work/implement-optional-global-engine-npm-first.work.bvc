@@ -5,12 +5,14 @@
 Вектор:
   Флаг init --use-global-engine → config.useGlobalEngine.
   Резолвер: global install path после ENV, до node_modules.
-  Документировать как optional в runbook.
+  Документировать как опционально в runbook.
 Цель:
   Global engine доступен opt-in, не default.
 Проверки:
   Без флага — node_modules default
   С флагом и global install — ui стартует
+Свидетельства:
+  Deferred phase 2 — ADR optional global engine; MVP npm-first complete without it
 Анализ:
   Зачем:
   Power users могут хотеть один global engine на машину — не блокер MVP.
@@ -23,9 +25,6 @@
   Вердикт:
   полезно
   Брать в работу после закрытия зависимостей: epic-work-graph-npm-first-distribution, refactor-run-ui-mcp-from-node-modules.
-
-Свидетельства:
-  - Deferred phase 2 — ADR optional global engine; MVP npm-first complete without it
 
 Метки:
   atom.profile: work_item
@@ -50,5 +49,6 @@
   work.risk: low
   work.status: done
   work.target_files: packages/work-graph-cli/, src/workGraphProjectInit.mjs
-  work.title: Optional: --use-global-engine / npm install -g @work-graph/engine
+  work.title: реализовать опционально global engine npm first
 ]>
+

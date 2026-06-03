@@ -6,6 +6,7 @@ import { z } from 'zod';
 
 import {
   addWorkItemEvidence,
+  assertTaskReadyForDone,
   attachWorkItemUiReference,
   claimWorkItem,
   completeWorkItem,
@@ -24,6 +25,8 @@ import {
   getStepGraphProjection,
   getStepGraphSlice,
   getUnifiedLinkage,
+  getWorkContract,
+  getAnalyticsLineage,
   getWorkItem,
   getWorkItemPipeline,
   listEvidenceRecords,
@@ -37,6 +40,7 @@ import {
   resolveWorkGraphRoot,
   semanticSearch,
   updateWorkItemStatus,
+  validateEvidence,
 } from './handlers.mjs';
 import { toMcpPromptResult, workgraphPrompts } from './prompts.mjs';
 
@@ -228,10 +232,12 @@ server.tool(
 
 server.tool(
   'add_work_item_evidence',
-  'Append one evidence line to a WorkItem',
+  'Append evidence to a WorkItem (prose and/or structured evidence-record.v1 JSON)',
   {
     workId: z.string().describe('WorkItem id'),
-    evidence: z.string().describe('Evidence line to append'),
+    evidence: z.string().optional().describe('Prose evidence line to append'),
+    structuredEvidence: z.union([z.record(z.unknown()), z.string()]).optional()
+      .describe('Optional evidence-record.v1 object or JSON string (type, command, exitCode, status)'),
   },
   async (args) => jsonText(await addWorkItemEvidence(args, rootOptions())),
 );
@@ -254,6 +260,40 @@ server.tool(
     evidence: z.string().describe('Required evidence line'),
   },
   async (args) => jsonText(await completeWorkItem(args, rootOptions())),
+);
+
+server.tool(
+  'get_work_contract',
+  'Return work-item-contract.v1 projection for a WorkItem (input/output/verification)',
+  { workId: z.string().describe('WorkItem id') },
+  async (args) => jsonText(await getWorkContract(args, rootOptions())),
+);
+
+server.tool(
+  'assert_task_ready_for_done',
+  'Dry-run readiness check before complete_work_item; returns violations[]',
+  { workId: z.string().describe('WorkItem id') },
+  async (args) => jsonText(await assertTaskReadyForDone(args, rootOptions())),
+);
+
+server.tool(
+  'validate_evidence',
+  'Validate structured evidence JSON against task contract and evidence-record-v1',
+  {
+    workId: z.string().describe('WorkItem id'),
+    evidenceJson: z.union([z.string(), z.record(z.unknown())]).describe('Structured evidence JSON or JSON string'),
+  },
+  async (args) => jsonText(await validateEvidence(args, rootOptions())),
+);
+
+server.tool(
+  'get_analytics_lineage',
+  'Return analytics-lineage.projection.v1 for an analytics record (parent, continuations, related)',
+  {
+    recordKey: z.string().optional().describe('Analytics key e.g. AN-50.1'),
+    recordId: z.string().optional().describe('Analytics record id e.g. analytics:work-graph-bvc-contract-verification'),
+  },
+  async (args) => jsonText(await getAnalyticsLineage(args, rootOptions())),
 );
 
 server.tool(
@@ -557,6 +597,41 @@ server.resource(
       uri: uri.href,
       mimeType: 'application/json',
       text: JSON.stringify(await getWorkItem({ workId: variables.workId }, rootOptions()), null, 2),
+    }],
+  }),
+);
+
+server.resource(
+  'workgraph-contract',
+  new ResourceTemplate('workgraph://contract/{workId}', {
+    list: async () => {
+      const items = await listWorkItems({ limit: 200 }, rootOptions());
+      return {
+        resources: items.map((item) => ({
+          name: item.id,
+          uri: `workgraph://contract/${encodeURIComponent(item.id)}`,
+          description: `Work contract: ${item.title}`,
+          mimeType: 'application/json',
+        })),
+      };
+    },
+    complete: {
+      workId: async (value) => {
+        const query = String(value ?? '').toLowerCase();
+        const items = await listWorkItems({ limit: 200 }, rootOptions());
+        return items
+          .map((item) => item.id)
+          .filter((id) => id.toLowerCase().includes(query))
+          .slice(0, 50);
+      },
+    },
+  }),
+  { description: 'work-item-contract.v1 projection by WorkItem id', mimeType: 'application/json' },
+  async (uri, variables) => ({
+    contents: [{
+      uri: uri.href,
+      mimeType: 'application/json',
+      text: JSON.stringify(await getWorkContract({ workId: variables.workId }, rootOptions()), null, 2),
     }],
   }),
 );

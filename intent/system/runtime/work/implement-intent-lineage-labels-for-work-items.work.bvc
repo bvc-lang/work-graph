@@ -8,42 +8,23 @@
   Seed-скрипты AN-2/AN-3 создают parent/child и decision lineage labels.
 Цель:
   Любая задача, созданная из AN-n, имеет machine-readable lineage до вопроса и выбранного решения.
-Анализ:
-  Целесообразность:
-  Стоит завести «добавить lineage labels на WorkItem из выбранного решения» в бэклог — по материалам AN-3 (analytics:intent-graph-storage-roadmap).
-  Контекст и границы:
-  MCP create_work_item принимает intentQuestionId, intentOptionId, intentDecisionId и пишет labels.
-  Зависимости и готовность:
-  depends_on=implement-intent-node-atom-profile, implement-work-item-parent-id-runtime; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Любая задача, созданная из AN-n, имеет machine-readable lineage до вопроса и выбранного решения.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-3 (analytics:intent-graph-storage-roadmap); исполнять после вердикта «полезно» и готовности зависимостей.
 Проверки:
   create_work_item пишет intent.question_id / intent.option_id / intent.decision_id
-  related analytics tasks находятся по intake и intent labels
+  related analytics tasks находятся по приём и intent labels
   lint ловит work_ref на несуществующее decision_id
-
 Свидетельства:
-  - MCP intentQuestionId/OptionId/DecisionId + workItemCreateAnalysis lineage
+  MCP intentQuestionId/OptionId/DecisionId + workItemCreateAnalysis lineage
 
 Метки:
   atom.profile: work_item
   intake.analytics_key: AN-3
   intake.source_kind: analytics-record
   intake.source_ref: analytics:intent-graph-storage-roadmap
+  intent.decision_id: decision:intent-graph-storage-v1
+  intent.option_id: option-c-intent-node-canon
+  intent.question_id: iq:intent-graph-storage
   migration.strategy: rebuild
   trace.status: verified
-  intent.question_id: iq:intent-graph-storage
-  intent.option_id: option-c-intent-node-canon
-  intent.decision_id: decision:intent-graph-storage-v1
-  work.parent_id: design-intent-graph-storage-v1
   work.analysis.at: 2026-05-30T18:13:05.437Z
   work.analysis.source: analytics-record
   work.decision.at: 2026-05-30T18:13:05.437Z
@@ -53,10 +34,12 @@
   work.id: implement-intent-lineage-labels-for-work-items
   work.next_action: —
   work.owner_role: feature_engineer
+  work.parent_id: design-intent-graph-storage-v1
   work.pipeline_stage: decided
   work.priority: high
   work.risk: medium
   work.status: done
   work.target_files: packages/workgraph-mcp/src/handlers.mjs, src/workItemCreateAnalysis.mjs, src/analyticsRecordWorkItems.mjs, tests/workItemCreateAnalysis.test.mjs, work/analytics/intent-graph-storage-roadmap.md
-  work.title: добавить lineage labels на WorkItem из выбранного решения
+  work.title: Любая задача, созданная из AN-n, имеет machine-readable lineage до вопроса и выбранного решения.
 ]>
+

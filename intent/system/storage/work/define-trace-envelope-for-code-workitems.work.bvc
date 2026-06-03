@@ -1,7 +1,7 @@
 #Задача_define_trace_envelope_for_code_workitems<[
 Базис:
   Code-facing tasks нужен stable trace envelope до безопасного переноса PVRG/linkage layers.
-  Задача «определить trace envelope для code-facing WorkItems» относится к контуру платформы агента и должна быть понятна агенту без чтения всего backlog.
+  Задача «определить trace envelope для code-facing WorkItems» относится к контуру платформы агента и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: phase-4-trace-pvrg-semantic-map.
 Вектор:
   Определить обязательные поля WorkItem для source step, target files, trace refs, evidence refs и trace status gate.
@@ -9,23 +9,6 @@
 Цель:
   Каждая code task может проверяться через step/code linkage.
   Готово, когда выполнены проверки: обязательные trace fields задокументированы.
-Анализ:
-  Целесообразность:
-  Стоит завести «определить trace envelope для code-facing WorkItems» в бэклог.
-  Контекст и границы:
-  Определить обязательные поля WorkItem для source step, target files, trace refs, evidence refs и trace status gate.
-  Зависимости и готовность:
-  depends_on=phase-4-trace-pvrg-semantic-map; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Каждая code task может проверяться через step/code linkage.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -46,6 +29,6 @@
   work.risk: high
   work.status: done
   work.target_files: protocols/workitem-trace-envelope-v1.bvc, src/workItemTraceEnvelope.mjs, tests/workItemTraceEnvelope.test.mjs, work/backlog.bvc
-  work.title: определить trace envelope для code-facing WorkItems
+  work.title: Каждая code task может проверяться через step/code linkage.
 ]>
 

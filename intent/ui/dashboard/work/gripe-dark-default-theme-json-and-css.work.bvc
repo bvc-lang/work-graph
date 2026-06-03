@@ -12,23 +12,6 @@
   gripe-dark-default.json валиден по schema
   generated CSS содержит --brand-primary-rgb: 245 158 11
   tests/design-tokens.test.mjs покрывает theme id
-Анализ:
-  Целесообразность:
-  Стоит завести «Theme gripe-dark-default: Gripe brand + WG dark shell (JSON + CSS)» в бэклог — по материалам AN-33 (work/analytics/gripe-ds-visual-default-wave3.md).
-  Контекст и границы:
-  packages/design-tokens/tokens/themes/gripe-dark-default.json
-  Зависимости и готовность:
-  depends_on=epic-gripe-ds-visual-default-wave3; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Один канонический Gripe-dark theme file в monorepo.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-33 (work/analytics/gripe-ds-visual-default-wave3.md); исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -53,5 +36,6 @@
   work.risk: low
   work.status: done
   work.target_files: packages/design-tokens/tokens/themes/gripe-dark-default.json, packages/design-tokens/generated/gripe-dark-default.css, packages/design-tokens/build/tokens-to-css.mjs, work/analytics/gripe-ds-visual-default-wave3.md
-  work.title: Theme gripe-dark-default: Gripe brand + WG dark shell (JSON + CSS)
+  work.title: Тема gripe-dark-default: бренд Gripe + тёмный shell WG (JSON + CSS)
 ]>
+

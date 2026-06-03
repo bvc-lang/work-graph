@@ -53,3 +53,4 @@
   work.target_files: src/workGraphBacklogUiServer.mjs, src/architectureSnapshot.mjs, work/analytics/architecture-main-bvc-canon-hub.md
   work.title: UI: L1 block drawer shows BVC (Базис / Вектор / Цель) + canon source link
 ]>
+

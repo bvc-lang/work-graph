@@ -43,6 +43,6 @@
   work.risk: high
   work.status: done
   work.target_files: docs/plan-iohasc-full-rebuild-backlog.md, work/backlog.bvc, intent/index.bvc
-  work.title: полный roadmap переноса ioHasC в Work Graph rebuild
+  work.title: Backlog становится управляемой картой полного ioHasC rebuild, а не списком случайных следующих задач.
 ]>
 

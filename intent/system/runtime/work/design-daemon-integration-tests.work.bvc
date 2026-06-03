@@ -1,7 +1,7 @@
 #Задача_design_daemon_integration_tests<[
 Базис:
   Daemon/scheduler behavior нужно проверять через fixture бэклог files, а не только unit pure functions.
-  Задача «спроектировать integration tests для daemon/live-loop» относится к контуру Work Graph rebuild и должна быть понятна агенту без чтения всего backlog.
+  Задача «спроектировать integration tests для daemon/live-loop» относится к контуру Work Graph пересобрать и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: phase-10-ci-e2e-release-gates.
 Вектор:
   Спроектировать integration test fixtures для daemon --once, live-loop run, evidence write и blocked path.
@@ -9,23 +9,6 @@
 Цель:
   WorkGraph OS можно regression-test как workflow.
   Готово, когда выполнены проверки: daemon fixture и expected outputs определены.
-Анализ:
-  Целесообразность:
-  Стоит завести «спроектировать integration tests для daemon/live-loop» в бэклог.
-  Контекст и границы:
-  Спроектировать integration test fixtures для daemon --once, live-loop run, evidence write и blocked path.
-  Зависимости и готовность:
-  depends_on=phase-10-ci-e2e-release-gates; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  WorkGraph OS можно regression-test как workflow.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -46,6 +29,6 @@
   work.risk: medium
   work.status: done
   work.target_files: protocols/daemon-integration-tests-v1.bvc, tests/workGraphDaemonIntegration.test.mjs, tests/fixtures/daemon-integration/backlog.bvc, work/backlog.bvc
-  work.title: спроектировать integration tests для daemon/live-loop
+  work.title: спроектировать daemon integration тесты
 ]>
 

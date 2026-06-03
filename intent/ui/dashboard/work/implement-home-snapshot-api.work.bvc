@@ -11,28 +11,10 @@
 Проверки:
   tests/homeSnapshotProjection.test.mjs зелёный
   curl /api/home-snapshot возвращает home.snapshot.v1
-Анализ:
-  Целесообразность:
-  Стоит завести «/api/home-snapshot — агрегатор KPI + my queue + active runs» в бэклог — по материалам work/analytics/ux-current-state-and-vector.md.
-  Контекст и границы:
-  src/homeSnapshotProjection.mjs: schema home.snapshot.v1 (kpi, myQueue, activeRuns, inboxPreview).
-  Зависимости и готовность:
-  depends_on=ux-mission-control-p0, design-home-mission-control-view; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Клиент Home рендерится из одного fetch ≤ 200ms на тестовых данных.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма work/analytics/ux-current-state-and-vector.md; исполнять после вердикта «полезно» и готовности зависимостей.
-
 Свидетельства:
-  - src/homeSnapshotProjection.mjs
-  - src/homeSnapshotApi.mjs
-  - GET /api/home-snapshot → home.snapshot.v1
+  src/homeSnapshotProjection.mjs
+  src/homeSnapshotApi.mjs
+  GET /api/home-snapshot → home.snapshot.v1
 
 Метки:
   atom.profile: work_item
@@ -56,5 +38,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/homeSnapshotProjection.mjs, src/workGraphBacklogUiServer.mjs, tests/homeSnapshotProjection.test.mjs
-  work.title: /api/home-snapshot — агрегатор KPI + my queue + active runs
+  work.title: Клиент Home рендерится из одного fetch ≤ 200ms на тестовых данных.
 ]>
+

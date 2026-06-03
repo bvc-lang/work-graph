@@ -1,0 +1,54 @@
+#Задача_wire_sidebar_settings_nav_bottom<[
+Базис:
+  sidebar-footer сейчас только theme-toggle; нет settings nav.
+  AN-45: sidebar 7 вкладок + advanced; settings — отдельный footer item (не смешать с канон-навигацией).
+Вектор:
+  renderNavTab({ view: settings, label }) в sidebar-footer над или вместо текстовой theme-кнопки.
+  applyView(settings) → #settings-view; aria-selected на nav.
+  data-testid=sidebar-settings-nav.
+Цель:
+  Клик «Настройки» внизу sidebar открывает страницу настроек.
+Проверки:
+  Settings nav visible in footer
+  Переключение view без полной перезагрузки
+Свидетельства:
+  npm run test:deterministic — uiCatalog, appVersionApi, workGraphBacklogUiServer tests pass (726)
+Анализ:
+  Зачем:
+  sidebar-footer сейчас только theme-toggle; нет settings nav.
+  Контекст: AN-45: sidebar 7 вкладок + advanced; settings — отдельный footer item (не смешать с канон-навигацией).
+  Когда:
+  После готовности: epic-work-graph-ui-settings-v1.
+  Готово, когда:
+  Клик «Настройки» внизу sidebar открывает страницу настроек.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: epic-work-graph-ui-settings-v1.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-55
+  intake.source_kind: operator-request
+  intake.source_ref: docs/plan-work-graph-ui-settings-v1.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-02T16:45:45.777Z
+  work.analysis.source: operator-request
+  work.decision.at: 2026-06-02T16:45:45.777Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: epic-work-graph-ui-settings-v1
+  work.id: wire-sidebar-settings-nav-bottom
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.parent_id: epic-work-graph-ui-settings-v1
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: low
+  work.status: done
+  work.target_files: src/workGraphBacklogUiServer.mjs, src/ui/backlogShellButtons.mjs, tests/workGraphBacklogUiServer.test.mjs
+  work.title: Клик «Настройки» внизу sidebar открывает страницу настроек.
+]>
+

@@ -10,6 +10,14 @@
   Удалить legacy HTML+SVG renderers после миграции всех трёх view.
 Цель:
   Operator получает n8n-class canvas: pan/zoom, fitView, кликабельные карточки, keyboard lineage — один engine на все graph views.
+Проверки:
+  Architecture / Schematic / Intent roadmap рендерятся через lit-flow island
+  npm test и UI smoke проходят без legacy static canvas
+  AN-4 relatedWorkItems показывает epic и подзадачи
+Свидетельства:
+  protocols/graph-canvas-lit-flow-v1.bvc + schemas/graph-canvas-lit-flow-projection.v1.json
+  public/graph-canvas-lit-flow.js (lit-flow client island)
+  src/graphCanvasLitFlow/* + tests/graphCanvasLitFlow.test.mjs
 Анализ:
   Целесообразность:
   Стоит завести «внедрить lit-flow graph canvas (UX как n8n)» в бэклог — по материалам AN-4 (analytics:graph-visualization-engine).
@@ -27,15 +35,6 @@
   Вердикт:
   полезно
   Создана по материалам приёма AN-4 (analytics:graph-visualization-engine); исполнять после вердикта «полезно» и готовности зависимостей.
-Проверки:
-  Architecture / Schematic / Intent roadmap рендерятся через lit-flow island
-  npm test и UI smoke проходят без legacy static canvas
-  AN-4 relatedWorkItems показывает epic и подзадачи
-
-Свидетельства:
-  - protocols/graph-canvas-lit-flow-v1.bvc + schemas/graph-canvas-lit-flow-projection.v1.json
-  - public/graph-canvas-lit-flow.js (lit-flow client island)
-  - src/graphCanvasLitFlow/* + tests/graphCanvasLitFlow.test.mjs
 
 Метки:
   atom.profile: work_item
@@ -59,5 +58,6 @@
   work.risk: high
   work.status: done
   work.target_files: work/analytics/graph-visualization-engine.md, protocols/graph-canvas-lit-flow-v1.bvc, src/graphCanvasLitFlow/, src/workGraphBacklogUiServer.mjs, package.json
-  work.title: внедрить lit-flow graph canvas (UX как n8n)
+  work.title: Реализовать graph canvas на lit-flow (UX как n8n)
 ]>
+

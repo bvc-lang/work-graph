@@ -1,6 +1,6 @@
 #Задача_implement_schematic_visualization_view_mvp<[
 Базис:
-  После design schematic view можно добавить в UI отдельный пункт sidebar "Схема".
+  После спроектировать schematic view можно добавить в UI отдельный пункт sidebar "Схема".
   MVP должен быть простым SVG/HTML без React Flow и без ручного редактирования.
   Предварительно должны быть закрыты зависимости: implement-architecture-map-l1-mvp.
 Вектор:
@@ -47,6 +47,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/schematicView.mjs, src/workGraphBacklogUiServer.mjs, tests/schematicView.test.mjs, tests/workGraphBacklogUiServer.test.mjs, ui/operator-dashboard.bvc
-  work.title: реализовать MVP sidebar view Схема
+  work.title: Открыть в UI отдельную схематичную визуализацию архитектуры проекта.
 ]>
 

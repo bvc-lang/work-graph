@@ -1,0 +1,44 @@
+#Задача_epic_work_graph_ui_realtime_v1<[
+Базис:
+  Kanban/board загружается один раз; MCP/agent пишет .bvc — карточки не двигаются без F5.
+  Poll есть только Home 30s, Agent dock 5s — не board/workflow.
+  AN-20: polling preferred over WS for RAM; AN-28: read-only mirror WG, not TodoWrite sync.
+Вектор:
+  P0: ADR + бэклог revision API + client live-sync coordinator.
+  P1: incremental kanban patch, board/workflow poll, new item highlight, drawer reconcile.
+  P2: опционально SSE from fs watch; unify home/inbox/agent intervals.
+Цель:
+  Статус карточки и колонка kanban обновляются ≤3s после изменения бэклог извне UI.
+Проверки:
+  ADR work-graph-ui-realtime-v1 принят
+  Карточка меняет колонку без полной перезагрузки страницы
+  Новый work item появляется на доске с подсветкой
+  AN-56 closing doc опубликован
+
+Свидетельства:
+  - P0-P1 + unify poll done; SSE P2 deferred in closing doc
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-56
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-ui-realtime-updates-best-practices.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-02T16:41:23.534Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-02T16:41:23.534Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.id: epic-work-graph-ui-realtime-v1
+  work.item_kind: epic
+  work.next_action: —
+  work.owner_role: feature_engineer
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: work/analytics/work-graph-ui-realtime-updates-best-practices.md, docs/plan-work-graph-ui-realtime-v1.md, docs/adr-work-graph-ui-realtime-v1.md, src/backlogRevision.mjs, src/ui/liveSyncCoordinator.mjs, src/ui/kanbanBoardPatcher.mjs, src/workGraphBacklogUiServer.mjs, src/kanbanBoardProjection.mjs, tests/kanbanBoardDelta.test.mjs
+  work.title: Realtime UI Work Graph v1: live kanban + sync revision (AN-56)
+]>
+

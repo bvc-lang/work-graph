@@ -7,27 +7,10 @@
   packages/atomic-spec/molecules/tabs-group.bvc + tabs-trigger.bvc.
   ui.marketplace.blade pointers to Gripe paths.
 Цель:
-  Headless contract для molecules без копирования Blade в WG.
+  Headless-контракт для molecules без копирования Blade в WG.
 Проверки:
   ≥3 molecule BVC files
   docs/ui/components.md generator picks up molecules/
-Анализ:
-  Целесообразность:
-  Стоит завести «atomic-spec: BVC molecules rating + tabs (Gripe reference)» в бэклог — по материалам AN-32 (work/analytics/gripe-ds-adoption-phase2-post-an21.md).
-  Контекст и границы:
-  packages/atomic-spec/molecules/rating.bvc — value, size, color, interactive.
-  Зависимости и готовность:
-  depends_on=epic-gripe-ds-adoption-phase2; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Headless contract для molecules без копирования Blade в WG.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-32 (work/analytics/gripe-ds-adoption-phase2-post-an21.md); исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -52,5 +35,6 @@
   work.risk: low
   work.status: done
   work.target_files: packages/atomic-spec/molecules/rating.bvc, packages/atomic-spec/molecules/tabs-group.bvc, ../../04 Marketplace/resources/views/components/ui/molecules/rating.blade.php, work/analytics/gripe-ds-adoption-phase2-post-an21.md
-  work.title: atomic-spec: BVC molecules rating + tabs (Gripe reference)
+  work.title: Atomic spec: molecules rating + tabs (референс Gripe)
 ]>
+

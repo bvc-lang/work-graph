@@ -1,49 +1,27 @@
 #Задача_pilot_gfs_overlay_passport_read_path<[
 Базис:
-  GFS overlay protocol с disk-first fallback не проверен на real slice.
-  Задача «Фаза 11: pilot read path GFS overlay passport» относится к контуру Work Graph rebuild и должна быть понятна агенту без чтения всего backlog.
-  Предварительно должны быть закрыты зависимости: phase-11-gbc-gfs-gvm-deferred.
+  GFS overlay протокол с disk-first fallback не проверен на real slice.
 Вектор:
-  Optional read path при GFS mount; тест JSON fallback.
-  Ближайший шаг исполнения: просмотреть и перевести в ready.
+  Опционально read path при GFS mount; тест JSON fallback.
 Цель:
   Проверить gfsOverlayProjectPassport на sample passport.
-  Готово, когда выполнены проверки: Тест fallback без GFS mount.
-Анализ:
-  Целесообразность:
-  Стоит завести «Фаза 11: pilot read path GFS overlay passport» в бэклог.
-  Контекст и границы:
-  Optional read path при GFS mount; тест JSON fallback.
-  Зависимости и готовность:
-  depends_on=phase-11-gbc-gfs-gvm-deferred; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Проверить gfsOverlayProjectPassport на sample passport.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+Проверки:
+  Тест fallback без GFS mount
+  Pilot doc с prerequisites
 
 Метки:
   atom.profile: work_item
   migration.strategy: defer
   trace.status: verified
-  work.analysis.at: 2026-05-30T17:22:37.538Z
-  work.analysis.source: backfill
-  work.decision.at: 2026-05-30T17:22:37.546Z
-  work.decision.verdict: useful
   work.department: devops-runtime
   work.depends_on: phase-11-gbc-gfs-gvm-deferred
   work.id: pilot-gfs-overlay-passport-read-path
-  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.next_action: просмотреть и перевести в ready
   work.owner_role: system_architect
-  work.pipeline_stage: decided
   work.priority: low
   work.risk: medium
   work.status: done
   work.target_files: src/gfsOverlayProjectPassport.mjs, protocols/gfs-overlay-project-passport-v1.bvc
-  work.title: Фаза 11: pilot read path GFS overlay passport
+  work.title: Фаза 11: пилот read path GFS overlay passport
 ]>
+

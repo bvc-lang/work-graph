@@ -1,13 +1,13 @@
 #Задача_implement_mcp_get_pvrg_task_scope<[
 Базис:
-  buildPvrgTaskScopeSlice есть; UI panel wire-pvrg-task-scope-dashboard-panel ещё в backlog.
-  Задача «Intent graph: MCP tool get_pvrg_task_scope» относится к контуру графа знаний и retrieval и должна быть понятна агенту без чтения всего backlog.
+  buildPvrgTaskScopeSlice есть; UI panel wire-pvrg-task-scope-dashboard-panel ещё в бэклог.
+  Задача «Intent graph: MCP tool get_pvrg_task_scope» относится к контуру графа знаний и retrieval и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: implement-mcp-get-unified-linkage.
 Вектор:
   MCP tool get_pvrg_task_scope(workId, maxNodes?, maxDepth?) → pvrg.task-scope.slice.v1.
   Ближайший шаг исполнения: просмотреть и перевести в ready.
 Цель:
-  Агент получает bounded subgraph задачи как getPvrgSubgraph в ioHasC.
+  Агент получает ограниченный subgraph задачи как getPvrgSubgraph в ioHasC.
   Готово, когда выполнены проверки: Tool требует workId.
 Анализ:
   Целесообразность:
@@ -19,7 +19,7 @@
   Риски и альтернативы:
   Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
   Критерии успеха:
-  Агент получает bounded subgraph задачи как getPvrgSubgraph в ioHasC.; проверки из атома и `target_files`.
+  Агент получает ограниченный subgraph задачи как getPvrgSubgraph в ioHasC.; проверки из атома и `target_files`.
   Рекомендация для решения:
   Полезно — задача готова к исполнению после разбора материалов приёма.
 Решение:
@@ -45,6 +45,6 @@
   work.risk: medium
   work.status: done
   work.target_files: packages/workgraph-mcp/src/handlers.mjs, src/pvrgTaskScope.mjs, tests/workgraph-mcp.test.mjs
-  work.title: Intent graph: MCP tool get_pvrg_task_scope
+  work.title: Получает ограниченный subgraph задачи как getPvrgSubgraph в ioHasC.
 ]>
 

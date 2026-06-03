@@ -1,0 +1,51 @@
+#Задача_write_closing_epic_work_graph_ui_icons_v1<[
+Базис:
+  Эпик требует closing doc в work/analytics.
+Вектор:
+  work/analytics/closing-epic-work-graph-ui-icons-v1.md
+Цель:
+  Зафиксировать mapping и evidence для AN-56.
+Проверки:
+  Closing doc published
+  Epic marked done
+Анализ:
+  Зачем:
+  Эпик требует closing doc в work/analytics.
+  Контекст: work/analytics/closing-epic-work-graph-ui-icons-v1.md
+  Когда:
+  После готовности: epic-work-graph-ui-icons-v1, wire-icon-asset-pipeline, wire-sidebar-nav-icons, wire-header-theme-toggle-phosphor-icons.
+  Готово, когда:
+  Зафиксировать mapping и evidence для AN-56.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: epic-work-graph-ui-icons-v1, wire-icon-asset-pipeline, wire-sidebar-nav-icons, wire-header-theme-toggle-phosphor-icons.
+
+Свидетельства:
+  - work/analytics/closing-epic-work-graph-ui-icons-v1.md
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-56
+  intake.source_kind: operator-request
+  intake.source_ref: public/assets/icons
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-02T19:00:56.731Z
+  work.analysis.source: operator-request
+  work.decision.at: 2026-06-02T19:00:56.731Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: epic-work-graph-ui-icons-v1, wire-icon-asset-pipeline, wire-sidebar-nav-icons, wire-header-theme-toggle-phosphor-icons
+  work.id: write-closing-epic-work-graph-ui-icons-v1
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: feature_engineer
+  work.parent_id: epic-work-graph-ui-icons-v1
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: work/analytics/closing-epic-work-graph-ui-icons-v1.md
+  work.title: Closing: epic-work-graph-ui-icons-v1
+]>

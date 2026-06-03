@@ -108,7 +108,7 @@ export function buildCommandPaletteIndex(snapshot, analyticsProjection) {
       keywords: `${record.key ?? ''} ${record.title ?? ''}`,
     });
   }
-  rows.push({ id: 'cmd:home', scope: 'cmd', label: 'Открыть «Главная»', view: 'home', keywords: 'home mission control главная центр управления' });
+  rows.push({ id: 'cmd:analytics', scope: 'cmd', label: 'Открыть «Аналитика»', view: 'analytics', keywords: 'analytics an разбор аналитика' });
   rows.push({ id: 'cmd:board', scope: 'cmd', label: 'Открыть «Доска»', view: 'board', keywords: 'board kanban доска' });
   rows.push({ id: 'cmd:run-ready', scope: 'run', label: 'Запустить первую ready-задачу', keywords: 'run agent worker запуск агент' });
   return rows;

@@ -1,0 +1,52 @@
+#Задача_wire_header_theme_toggle_phosphor_icons<[
+Базис:
+  Theme toggle использует ad hoc inline SVG paths.
+Вектор:
+  renderHeaderThemeToggleButton — renderThemeIcon(moon).
+  Client applyTheme — THEME_ICON_MOON/SUN из SSR JSON.stringify.
+Цель:
+  Переключатель темы использует те же asset icons, что и остальной chrome.
+Проверки:
+  header-theme-toggle-icon in HTML
+  applyTheme swaps moon/sun
+Анализ:
+  Зачем:
+  Theme toggle использует ad hoc inline SVG paths.
+  Контекст: renderHeaderThemeToggleButton — renderThemeIcon(moon).
+  Когда:
+  После готовности: epic-work-graph-ui-icons-v1, wire-icon-asset-pipeline.
+  Готово, когда:
+  Переключатель темы использует те же asset icons, что и остальной chrome.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: epic-work-graph-ui-icons-v1, wire-icon-asset-pipeline.
+
+Свидетельства:
+  - renderThemeIcon moon/sun + applyTheme THEME_ICON_* from SSR
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-56
+  intake.source_kind: operator-request
+  intake.source_ref: public/assets/icons
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-02T19:00:56.710Z
+  work.analysis.source: operator-request
+  work.decision.at: 2026-06-02T19:00:56.710Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: epic-work-graph-ui-icons-v1, wire-icon-asset-pipeline
+  work.id: wire-header-theme-toggle-phosphor-icons
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: feature_engineer
+  work.parent_id: epic-work-graph-ui-icons-v1
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: low
+  work.status: done
+  work.target_files: src/ui/backlogShellButtons.mjs, src/ui/iconAssets.mjs, src/workGraphBacklogUiServer.mjs, tests/workGraphBacklogUiServer.test.mjs
+  work.title: UI: Phosphor moon/sun в header theme toggle
+]>

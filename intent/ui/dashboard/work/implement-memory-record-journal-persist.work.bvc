@@ -3,7 +3,7 @@
   implement-memory-record-worker-slice-mvp подаёт memory records в worker input из done WorkItems.
   appendMemoryRecordJournal() в memoryRecordWriter.mjs — contract заглушка без persist path на disk.
 Вектор:
-  Реализовать optional journal (JSONL или .bvc shard) для active memory records после done/verified transition.
+  Реализовать опционально journal (JSONL или .bvc shard) для active memory records после done/verified transition.
   Read path для worker slice может мержить journal + derived candidates; rebuildable from Work Graph canon.
 Цель:
   Project memory накапливается с provenance beyond ephemeral worker slice, без chat transcript storage.
@@ -11,7 +11,7 @@
   Целесообразность:
   Стоит завести «реализовать persist journal для MemoryRecord» в бэклог.
   Контекст и границы:
-  Реализовать optional journal (JSONL или .bvc shard) для active memory records после done/verified transition.
+  Реализовать опционально journal (JSONL или .bvc shard) для active memory records после done/verified transition.
   Зависимости и готовность:
   depends_on=define-memory-contract, implement-memory-record-worker-slice-mvp; старт после закрытия upstream-зависимостей.
   Риски и альтернативы:
@@ -44,6 +44,6 @@
   work.risk: low
   work.status: done
   work.target_files: src/memoryRecordWriter.mjs, protocols/memory-contract-v1.bvc, protocols/project-memory-v1.bvc, work/backlog.bvc
-  work.title: реализовать persist journal для MemoryRecord
+  work.title: реализовать memory записи journal persist
 ]>
 

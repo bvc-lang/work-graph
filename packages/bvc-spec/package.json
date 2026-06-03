@@ -1,6 +1,6 @@
 {
   "name": "@bvc-lang/spec",
-  "version": "0.0.4",
+  "version": "0.0.6",
   "description": "BVC (Basis·Vector·Goal) open format — specification artifacts, dialect registry, JSON schemas",
   "license": "Apache-2.0",
   "type": "module",

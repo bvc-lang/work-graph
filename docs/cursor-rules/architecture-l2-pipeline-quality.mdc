@@ -1,0 +1,70 @@
+---
+description: Architecture L1/L2 — развёрнутые секции Анализ и Решение в canon и L2-контейнерах
+alwaysApply: true
+---
+
+# Architecture Analysis & Decision Quality
+
+Секции **Анализ** и **Решение** — обязательный контекст для оператора и агента в UI «Архитектура» (L1-блоки и L2-контейнеры). Не пиши их одной короткой фразой.
+
+## L1-блоки (`architecture/main.bvc`, atom.profile: architecture_l1_block)
+
+Секции **Анализ** и **Решение** — в теле атома (не в метках), как у существующих блоков.
+
+**Анализ** — минимум два подраздела:
+- `Целесообразность:` — 2+ предложения: зачем выделять блок, что ломается без него;
+- `Контекст и границы:` — 2+ предложения: соседи, типы связей, что блок не делает.
+
+**Решение** — минимум:
+- строка `Вердикт: полезно` (или `вредно` / `отложить`);
+- 1–2 предложения с итогом для rebuild (что принято, куда смотреть при изменениях).
+
+Суммарно **Анализ ≥ 200** символов, **Решение ≥ 80** символов.
+
+## L2-контейнеры (метки `architecture.container.{id}.*`)
+
+Контейнеры описываются в **Метках** L1-блока. Обязательные ключи:
+
+| Ключ | Содержание |
+|------|------------|
+| `basis`, `vector`, `goal` | как у BVC (см. `work-item-bvc-quality`) |
+| `analysis` | одна строка; подразделы «Целесообразность:» и «Контекст и границы:» в той же строке |
+| `decision` | одна строка с итогом; вердикт — только в `decision.verdict` |
+| `decision.verdict` | machine: `useful` \| `harmful` \| `defer` |
+
+Формат `analysis` в метке (без `\n` — одна строка):
+
+```
+architecture.container.{id}.analysis: Целесообразность: … Контекст и границы: …
+architecture.container.{id}.decision: L2-контейнер … принят; …
+architecture.container.{id}.decision.verdict: useful
+```
+
+UI (`renderPipelineProse`) сам разбивает подзаголовки на строке; escape `\n` в метках **не использовать**.
+
+## Проверка
+
+- `npm run architecture:l1-check` — валидирует все L2-контейнеры (длина, подразделы, verdict).
+- После правки `architecture/main.bvc` прогоняй `npm test -- tests/architectureL1Canon.test.mjs`.
+
+## Плохо vs хорошо (L2)
+
+Плохо:
+```
+architecture.container.worker-adapter.analysis: Нужен адаптер.
+architecture.container.worker-adapter.decision: Принять.
+```
+
+Хорошо:
+```
+architecture.container.worker-adapter.analysis: Целесообразность: Без протокола claim/execute агент и worker сходятся на ad-hoc JSON и ломают trace-evidence после исполнения. \n Контекст и границы: protocol-контейнер agent-runtime; path protocols/agent-worker-adapter.bvc; не заменяет локальный раннер и не тащит domain-onebase внутрь протокола.
+architecture.container.worker-adapter.decision: Вердикт: полезно \n L2-контейнер worker-adapter принят; изменения контракта — только через diff протокола и architecture:l1-check.
+architecture.container.worker-adapter.decision.verdict: useful
+```
+
+## При правке canon
+
+- Не сокращай существующие развёрнутые Анализ/Решение до одной строки.
+- Новые L2-контейнеры добавляй с полным набором BVC + pipeline меток.
+- Человекочитаемый текст — **на русском** (см. `work-items-russian.mdc`); пути и machine labels — ASCII.
+- **Запрещены** англоязычные фразы в «Анализ»/«Решение»/«Базис»/«Цель» L2 (типа `read-only`, `design artifact`, `complements`, `server code`). Допустимы только закреплённые термины продукта (`Work Graph`, `MCP`, `JSON`, `BVC`, `PVRG`, `E2E`, `ADR`, `AN-*`, `feeds`/`uses`/`maps_to` как типы связей, имена блоков kebab-case).

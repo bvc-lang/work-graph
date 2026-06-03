@@ -1,0 +1,56 @@
+#Задача_eval_cursor_mcp_usefulness_fixture<[
+Базис:
+  AN-57 D7: worker usefulness замерен (workGraphLlmUsefulnessEval); Cursor IDE — только UAT.
+  llm-pvrg audit P3: нет E2E «агент с rules+few-shot vs без».
+Вектор:
+  Расширить PROMPT_EVAL_WORKGRAPH_FIXTURES_V1 или отдельный catalog: cursor-mcp-primer-v1.
+  Fixture: agent must call claim before write; must not invent work id; Russian create_work_item fields.
+  npm run eval:mandatory-prompt или eval:llm-usefulness включает tier optional-llm fixture (документировать env).
+Цель:
+  Регрессия «прогрев + rules» измерима одной командой; не замена live Cursor E2E, но baseline.
+Проверки:
+  src/workGraphToolSurfaceAudit.mjs содержит cursor-mcp-primer fixture
+  scripts/run-mandatory-prompt-eval-fixtures.mjs не регрессит
+  docs/plan-workgraph-llm-usefulness.md обновлён
+Анализ:
+  Зачем:
+  AN-57 D7: worker usefulness замерен (workGraphLlmUsefulnessEval); Cursor IDE — только UAT.
+  Контекст: llm-pvrg audit P3: нет E2E «агент с rules+few-shot vs без».
+  Когда:
+  После готовности: epic-agent-session-warmup-v1, add-workgraph-few-shot-examples, document-session-primer-runbook.
+  Готово, когда:
+  Регрессия «прогрев + rules» измерима одной командой; не замена live Cursor E2E, но baseline.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: epic-agent-session-warmup-v1, add-workgraph-few-shot-examples, document-session-primer-runbook.
+
+Свидетельства:
+  src/workGraphToolSurfaceAudit.mjs — cursor-mcp-primer-v1 fixture
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-57
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/agent-session-warmup-vs-enforcement.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-02T17:42:39.527Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-02T17:42:39.527Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: epic-agent-session-warmup-v1, add-workgraph-few-shot-examples, document-session-primer-runbook
+  work.id: eval-cursor-mcp-usefulness-fixture
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: integration_architect
+  work.parent_id: epic-agent-session-warmup-v1
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: src/workGraphToolSurfaceAudit.mjs, src/workGraphLlmUsefulnessEval.mjs, scripts/run-mandatory-prompt-eval-fixtures.mjs, docs/plan-workgraph-llm-usefulness.md, work/analytics/agent-session-warmup-vs-enforcement.md
+  work.title: Eval-фикстура полезности Cursor MCP (rules + primer)
+]>
+

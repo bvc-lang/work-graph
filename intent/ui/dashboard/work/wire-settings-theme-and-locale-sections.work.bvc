@@ -1,0 +1,54 @@
+#Задача_wire_settings_theme_and_locale_sections<[
+Базис:
+  Тема: дублировать control в секции «Оформление» — синхронизировать с header icon.
+  Язык: AN-55 — select en/ru → cookie wg_locale → reload или client t() refresh.
+Вектор:
+  Секция тема: radio/toggle light|dark — тот же storage key что header.
+  Секция язык: select «English» / «Русский»; POST /api/ui-locale или Set-Cookie + location.reload.
+  Labels из locales/ui.json (settings.theme, settings.language).
+Цель:
+  Тема и язык меняются из Настроек; header theme остаётся в sync.
+Проверки:
+  Locale cookie set on change
+  Theme change reflects in header icon state
+Свидетельства:
+  npm run test:deterministic — uiCatalog, appVersionApi, workGraphBacklogUiServer tests pass (726)
+Анализ:
+  Зачем:
+  Тема: дублировать control в секции «Оформление» — синхронизировать с header icon.
+  Контекст: Язык: AN-55 — select en/ru → cookie wg_locale → reload или client t() refresh.
+  Когда:
+  После готовности: implement-settings-view-shell, wire-header-theme-toggle-icon, implement-ui-locale-resolution, implement-ui-message-catalog-v1.
+  Готово, когда:
+  Тема и язык меняются из Настроек; header theme остаётся в sync.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: implement-settings-view-shell, wire-header-theme-toggle-icon, implement-ui-locale-resolution, implement-ui-message-catalog-v1.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-55
+  intake.source_kind: operator-request
+  intake.source_ref: docs/plan-work-graph-ui-settings-v1.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-02T16:45:45.821Z
+  work.analysis.source: operator-request
+  work.decision.at: 2026-06-02T16:45:45.821Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: implement-settings-view-shell, wire-header-theme-toggle-icon, implement-ui-locale-resolution, implement-ui-message-catalog-v1
+  work.id: wire-settings-theme-and-locale-sections
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.parent_id: epic-work-graph-ui-settings-v1
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: medium
+  work.status: done
+  work.target_files: src/workGraphBacklogUiServer.mjs, src/ui/i18n/resolveUiLocale.mjs, locales/en/ui.json, locales/ru/ui.json
+  work.title: Настройки: переключение темы и выбор языка (en | ru)
+]>
+

@@ -1,0 +1,55 @@
+#Задача_wire_analytics_drawer_lineage_sections<[
+Базис:
+  AN-3 drawer имеет intent graph sections; нет «Родительский разбор» / «Продолжения».
+Вектор:
+  workGraphBacklogUiServer.mjs: render lineage blocks in analytics detail drawer.
+  Click parent/child → navigate to that AN record in same panel.
+  Coexist with existing intentQuestion/intentOptions/selectedDecision sections.
+  tests/workGraphBacklogUiServer.test.mjs smoke.
+Цель:
+  Оператор углубляется AN-50 → AN-50.1 из drawer без поиска по списку.
+Проверки:
+  Drawer shows parent when lineage.parentKey set
+  Drawer lists continuations when children exist
+  Navigation does not break intake/closing tabs
+Свидетельства:
+  renderAnalyticsLineageSections + lineage nav in drawer
+Анализ:
+  Зачем:
+  AN-3 drawer имеет intent graph sections; нет «Родительский разбор» / «Продолжения».
+  Контекст: workGraphBacklogUiServer.mjs: render lineage blocks in analytics detail drawer.
+  Когда:
+  После готовности: implement-analytics-lineage-projection.
+  Готово, когда:
+  Оператор углубляется AN-50 → AN-50.1 из drawer без поиска по списку.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: implement-analytics-lineage-projection.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-51
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/analytics-record-lineage-flat-list-graph-storage.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-02T15:02:00.007Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-02T15:02:00.007Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: implement-analytics-lineage-projection
+  work.id: wire-analytics-drawer-lineage-sections
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: feature_engineer
+  work.parent_id: epic-analytics-record-lineage-v1
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: src/workGraphBacklogUiServer.mjs, tests/workGraphBacklogUiServer.test.mjs
+  work.title: Оператор углубляется AN-50 → AN-50.1 из drawer без поиска по списку.
+]>
+

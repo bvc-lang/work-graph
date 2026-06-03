@@ -10,6 +10,13 @@ WorkItems:
   - add-cursor-rule-proactive-pvrg-context: intent/research/pvrg/work/add-cursor-rule-proactive-pvrg-context.work.bvc
   - add-cursor-rule-single-backlog: intent/system/runtime/work/add-cursor-rule-single-backlog.work.bvc
   - add-home-mission-control-tests: intent/ui/dashboard/work/add-home-mission-control-tests.work.bvc
+  - add-llms-markdown-docs-projections: intent/ui/dashboard/work/add-llms-markdown-docs-projections.work.bvc
+  - add-mcp-discovery-and-doc-context-endpoints: intent/system/runtime/work/add-mcp-discovery-and-doc-context-endpoints.work.bvc
+  - add-public-site-theme-and-locale: intent/ui/dashboard/work/add-public-site-theme-and-locale.work.bvc
+  - add-public-site-verification-tests: intent/ui/dashboard/work/add-public-site-verification-tests.work.bvc
+  - add-schema-org-jsonld-and-semantic-html: intent/ui/dashboard/work/add-schema-org-jsonld-and-semantic-html.work.bvc
+  - add-ui-i18n-pseudolocalization-ci: intent/ui/dashboard/work/add-ui-i18n-pseudolocalization-ci.work.bvc
+  - add-workgraph-few-shot-examples: intent/system/runtime/work/add-workgraph-few-shot-examples.work.bvc
   - add-workgraph-mcp-client-configs: intent/system/runtime/work/add-workgraph-mcp-client-configs.work.bvc
   - adr-architecture-views-v1-profiles: intent/ui/dashboard/work/adr-architecture-views-v1-profiles.work.bvc
   - adr-bvc-multilingual-keys: intent/system/runtime/work/adr-bvc-multilingual-keys.work.bvc
@@ -42,11 +49,17 @@ WorkItems:
   - cli-architecture-l1-check: intent/system/runtime/work/cli-architecture-l1-check.work.bvc
   - cursor-rules-shared-ds-discipline: intent/system/runtime/work/cursor-rules-shared-ds-discipline.work.bvc
   - decide-an9-rich-ir-runtime-or-deferred: intent/system/runtime/work/decide-an9-rich-ir-runtime-or-deferred.work.bvc
+  - decide-analytics-lineage-storage-adr: intent/ui/dashboard/work/decide-analytics-lineage-storage-adr.work.bvc
   - decide-architecture-domains-l1-model: intent/system/runtime/work/decide-architecture-domains-l1-model.work.bvc
+  - decide-detail-drawer-stack-adr: intent/ui/dashboard/work/decide-detail-drawer-stack-adr.work.bvc
+  - decide-drawer-repo-file-frame-adr: intent/ui/dashboard/work/decide-drawer-repo-file-frame-adr.work.bvc
   - decide-positioning-from-an7: intent/system/runtime/work/decide-positioning-from-an7.work.bvc
   - decide-work-graph-multiproject-deployment-model: intent/system/runtime/work/decide-work-graph-multiproject-deployment-model.work.bvc
   - decide-work-graph-npm-first-distribution-adr: intent/system/runtime/work/decide-work-graph-npm-first-distribution-adr.work.bvc
   - decide-work-graph-open-publication-adr: intent/system/runtime/work/decide-work-graph-open-publication-adr.work.bvc
+  - decide-work-graph-ui-i18n-adr: intent/ui/dashboard/work/decide-work-graph-ui-i18n-adr.work.bvc
+  - decide-work-graph-ui-realtime-adr: intent/ui/dashboard/work/decide-work-graph-ui-realtime-adr.work.bvc
+  - decide-work-item-contract-projection-adr: intent/system/runtime/work/decide-work-item-contract-projection-adr.work.bvc
   - defer-gbc-gvm-zig-scope: intent/system/storage/work/defer-gbc-gvm-zig-scope.work.bvc
   - defer-vector-dsl-to-onebase-codegen: intent/domains/onebase/work/defer-vector-dsl-to-onebase-codegen.work.bvc
   - define-architecture-snapshot-v1: intent/ui/dashboard/work/define-architecture-snapshot-v1.work.bvc
@@ -95,6 +108,7 @@ WorkItems:
   - design-role-chain-handoff: intent/system/runtime/work/design-role-chain-handoff.work.bvc
   - design-runner-queue-ui-and-cli: intent/ui/dashboard/work/design-runner-queue-ui-and-cli.work.bvc
   - design-schematic-visualization-view: intent/ui/dashboard/work/design-schematic-visualization-view.work.bvc
+  - design-sdk-contract-wrapper-v1: intent/system/runtime/work/design-sdk-contract-wrapper-v1.work.bvc
   - design-semantic-map-backlog-cross-highlight: intent/ui/dashboard/work/design-semantic-map-backlog-cross-highlight.work.bvc
   - design-serialization-boundary: intent/system/storage/work/design-serialization-boundary.work.bvc
   - design-sidecar-mcp-execution-boundary: intent/system/runtime/work/design-sidecar-mcp-execution-boundary.work.bvc
@@ -116,13 +130,17 @@ WorkItems:
   - document-agent-intake-vs-execute-policy: intent/system/runtime/work/document-agent-intake-vs-execute-policy.work.bvc
   - document-bvc-new-write-mcp-policy: intent/system/runtime/work/document-bvc-new-write-mcp-policy.work.bvc
   - document-chat-scope-readonly-canon: intent/system/runtime/work/document-chat-scope-readonly-canon.work.bvc
+  - document-cursor-user-rule-wg-template: intent/system/runtime/work/document-cursor-user-rule-wg-template.work.bvc
   - document-decision-pipeline-canon: intent/system/runtime/work/document-decision-pipeline-canon.work.bvc
   - document-headless-intent-backend-scope: intent/system/runtime/work/document-headless-intent-backend-scope.work.bvc
   - document-intent-graph-mcp-agent-workflow: intent/system/runtime/work/document-intent-graph-mcp-agent-workflow.work.bvc
   - document-operational-bypass-and-epic-policy: intent/system/runtime/work/document-operational-bypass-and-epic-policy.work.bvc
   - document-rebuild-scope-replace-decisions: intent/system/runtime/work/document-rebuild-scope-replace-decisions.work.bvc
+  - document-session-primer-runbook: intent/system/runtime/work/document-session-primer-runbook.work.bvc
   - document-worker-orchestrator-boundary: intent/system/runtime/work/document-worker-orchestrator-boundary.work.bvc
+  - epic-agent-session-warmup-v1: intent/system/runtime/work/epic-agent-session-warmup-v1.work.bvc
   - epic-agent-workgraph-enforcement: intent/system/runtime/work/epic-agent-workgraph-enforcement.work.bvc
+  - epic-analytics-record-lineage-v1: intent/ui/dashboard/work/epic-analytics-record-lineage-v1.work.bvc
   - epic-architecture-domains-l1-hierarchy: intent/system/runtime/work/epic-architecture-domains-l1-hierarchy.work.bvc
   - epic-architecture-main-bvc-canon: intent/system/runtime/work/epic-architecture-main-bvc-canon.work.bvc
   - epic-architecture-views-v1: intent/ui/dashboard/work/epic-architecture-views-v1.work.bvc
@@ -130,22 +148,41 @@ WorkItems:
   - epic-chat-work-scope-readonly: intent/system/runtime/work/epic-chat-work-scope-readonly.work.bvc
   - epic-cursor-mcp-context-surface-v1: intent/system/runtime/work/epic-cursor-mcp-context-surface-v1.work.bvc
   - epic-decision-pipeline-canonization: intent/system/runtime/work/epic-decision-pipeline-canonization.work.bvc
+  - epic-detail-drawer-stack-v1: intent/ui/dashboard/work/epic-detail-drawer-stack-v1.work.bvc
+  - epic-drawer-repo-file-preview-v1: intent/ui/dashboard/work/epic-drawer-repo-file-preview-v1.work.bvc
   - epic-gripe-ds-adoption-phase2: intent/system/runtime/work/epic-gripe-ds-adoption-phase2.work.bvc
   - epic-gripe-ds-visual-default-wave3: intent/ui/dashboard/work/epic-gripe-ds-visual-default-wave3.work.bvc
   - epic-marketplace-shared-design-system: intent/system/runtime/work/epic-marketplace-shared-design-system.work.bvc
+  - epic-work-graph-bvc-contract-verification-v1: intent/system/runtime/work/epic-work-graph-bvc-contract-verification-v1.work.bvc
   - epic-work-graph-multiproject-host: intent/system/runtime/work/epic-work-graph-multiproject-host.work.bvc
   - epic-work-graph-npm-first-distribution: intent/system/runtime/work/epic-work-graph-npm-first-distribution.work.bvc
   - epic-work-graph-open-publication: intent/system/runtime/work/epic-work-graph-open-publication.work.bvc
+  - epic-work-graph-public-site-v1: intent/ui/dashboard/work/epic-work-graph-public-site-v1.work.bvc
+  - epic-work-graph-ui-avatars-v1: intent/ui/dashboard/work/epic-work-graph-ui-avatars-v1.work.bvc
+  - epic-work-graph-ui-classifier-badges-v1: intent/ui/dashboard/work/epic-work-graph-ui-classifier-badges-v1.work.bvc
+  - epic-work-graph-ui-i18n-v1: intent/ui/dashboard/work/epic-work-graph-ui-i18n-v1.work.bvc
+  - epic-work-graph-ui-icons-v1: intent/ui/dashboard/work/epic-work-graph-ui-icons-v1.work.bvc
+  - epic-work-graph-ui-realtime-v1: intent/ui/dashboard/work/epic-work-graph-ui-realtime-v1.work.bvc
+  - epic-work-graph-ui-settings-v1: intent/ui/dashboard/work/epic-work-graph-ui-settings-v1.work.bvc
+  - epic-work-graph-ui-sidebar-resize-v1: intent/ui/dashboard/work/epic-work-graph-ui-sidebar-resize-v1.work.bvc
+  - eval-cursor-mcp-usefulness-fixture: intent/system/runtime/work/eval-cursor-mcp-usefulness-fixture.work.bvc
   - evaluate-flatbuffers-gbc-slice: intent/system/storage/work/evaluate-flatbuffers-gbc-slice.work.bvc
   - evaluate-onebase-vector-dsl-codegen-readiness: intent/domains/onebase/work/evaluate-onebase-vector-dsl-codegen-readiness.work.bvc
   - export-bvc-cli-github: intent/system/runtime/work/export-bvc-cli-github.work.bvc
+  - extend-analytics-record-schema-lineage-v1: intent/system/runtime/work/extend-analytics-record-schema-lineage-v1.work.bvc
   - extend-bvc-atom-draft-lang-field: intent/system/runtime/work/extend-bvc-atom-draft-lang-field.work.bvc
+  - extend-bvc-schema-structured-evidence-fields: intent/system/runtime/work/extend-bvc-schema-structured-evidence-fields.work.bvc
   - extend-classify-work-item-block-domains: intent/system/runtime/work/extend-classify-work-item-block-domains.work.bvc
   - extend-llm-usefulness-eval-cursor-mcp-surface: intent/system/runtime/work/extend-llm-usefulness-eval-cursor-mcp-surface.work.bvc
   - extend-llm-usefulness-eval-intent-graph-mcp: intent/system/runtime/work/extend-llm-usefulness-eval-intent-graph-mcp.work.bvc
   - extend-mcp-prompts-bvc-new-write: intent/system/runtime/work/extend-mcp-prompts-bvc-new-write.work.bvc
   - extend-promote-ready-queue-all-phases: intent/system/runtime/work/extend-promote-ready-queue-all-phases.work.bvc
+  - extend-runtime-structured-evidence-validation: intent/system/runtime/work/extend-runtime-structured-evidence-validation.work.bvc
+  - extract-backlog-shell-i18n: intent/ui/dashboard/work/extract-backlog-shell-i18n.work.bvc
+  - extract-detail-drawer-i18n: intent/ui/dashboard/work/extract-detail-drawer-i18n.work.bvc
   - extract-iohasc-design-tokens-package: intent/ui/dashboard/work/extract-iohasc-design-tokens-package.work.bvc
+  - extract-kanban-workflow-i18n: intent/ui/dashboard/work/extract-kanban-workflow-i18n.work.bvc
+  - extract-work-item-block-classifier: intent/ui/dashboard/work/extract-work-item-block-classifier.work.bvc
   - finalize-step-to-bvc-migration-plan: intent/system/runtime/work/finalize-step-to-bvc-migration-plan.work.bvc
   - fix-deterministic-test-regressions-post-canon: intent/system/runtime/work/fix-deterministic-test-regressions-post-canon.work.bvc
   - fix-seed-default-status-backlog: intent/system/runtime/work/fix-seed-default-status-backlog.work.bvc
@@ -158,12 +195,16 @@ WorkItems:
   - implement-agent-worker-live-loop: intent/system/runtime/work/implement-agent-worker-live-loop.work.bvc
   - implement-agent-worker-local-runner-mvp: intent/system/runtime/work/implement-agent-worker-local-runner-mvp.work.bvc
   - implement-analytics-decision-structure: intent/system/runtime/work/implement-analytics-decision-structure.work.bvc
+  - implement-analytics-lineage-projection: intent/system/runtime/work/implement-analytics-lineage-projection.work.bvc
+  - implement-app-version-check-update: intent/ui/dashboard/work/implement-app-version-check-update.work.bvc
   - implement-architecture-block-detail-mvp: intent/ui/dashboard/work/implement-architecture-block-detail-mvp.work.bvc
   - implement-architecture-inner-graph-l2-mvp: intent/ui/dashboard/work/implement-architecture-inner-graph-l2-mvp.work.bvc
   - implement-architecture-l1-canon-loader: intent/system/runtime/work/implement-architecture-l1-canon-loader.work.bvc
   - implement-architecture-map-l1-mvp: intent/ui/dashboard/work/implement-architecture-map-l1-mvp.work.bvc
   - implement-architecture-snapshot-reporoot-aware: intent/system/runtime/work/implement-architecture-snapshot-reporoot-aware.work.bvc
   - implement-atom-inspector-form-mvp: intent/domains/onebase/work/implement-atom-inspector-form-mvp.work.bvc
+  - implement-backlog-snapshot-revision-api: intent/ui/dashboard/work/implement-backlog-snapshot-revision-api.work.bvc
+  - implement-backlog-sse-push-optional: intent/ui/dashboard/work/implement-backlog-sse-push-optional.work.bvc
   - implement-backlog-ui-parent-child-tree: intent/ui/dashboard/work/implement-backlog-ui-parent-child-tree.work.bvc
   - implement-backlog-ui-reporoot-multiproject: intent/system/runtime/work/implement-backlog-ui-reporoot-multiproject.work.bvc
   - implement-bounded-target-file-read: intent/system/storage/work/implement-bounded-target-file-read.work.bvc
@@ -177,6 +218,7 @@ WorkItems:
   - implement-cursor-sdk-worker-provider: intent/system/runtime/work/implement-cursor-sdk-worker-provider.work.bvc
   - implement-daemon-watch-mode-smoke: intent/system/runtime/work/implement-daemon-watch-mode-smoke.work.bvc
   - implement-derived-graph-viewer-mvp: intent/ui/dashboard/work/implement-derived-graph-viewer-mvp.work.bvc
+  - implement-detail-drawer-stack-core: intent/ui/dashboard/work/implement-detail-drawer-stack-core.work.bvc
   - implement-draft-intake-promotion-rules: intent/system/runtime/work/implement-draft-intake-promotion-rules.work.bvc
   - implement-engine-root-resolver-npm-first: intent/system/runtime/work/implement-engine-root-resolver-npm-first.work.bvc
   - implement-epic-close-cascade-subtasks: intent/system/runtime/work/implement-epic-close-cascade-subtasks.work.bvc
@@ -204,6 +246,7 @@ WorkItems:
   - implement-intent-tree-orphan-detection: intent/system/runtime/work/implement-intent-tree-orphan-detection.work.bvc
   - implement-iohasc-onebase-cli-agent-tools: intent/system/runtime/work/implement-iohasc-onebase-cli-agent-tools.work.bvc
   - implement-kanban-board-projection-ui: intent/ui/dashboard/work/implement-kanban-board-projection-ui.work.bvc
+  - implement-kanban-incremental-patch: intent/ui/dashboard/work/implement-kanban-incremental-patch.work.bvc
   - implement-language-adapter-layer-mvp: intent/research/pvrg/work/implement-language-adapter-layer-mvp.work.bvc
   - implement-linkage-parent-of-edges: intent/system/runtime/work/implement-linkage-parent-of-edges.work.bvc
   - implement-lit-flow-custom-node-cards: intent/ui/dashboard/work/implement-lit-flow-custom-node-cards.work.bvc
@@ -211,17 +254,21 @@ WorkItems:
   - implement-lit-flow-package-and-build: intent/ui/dashboard/work/implement-lit-flow-package-and-build.work.bvc
   - implement-local-cli-worker-provider: intent/system/runtime/work/implement-local-cli-worker-provider.work.bvc
   - implement-lowcode-scaffold-cli-mvp: intent/system/runtime/work/implement-lowcode-scaffold-cli-mvp.work.bvc
+  - implement-mcp-assert-task-ready-for-done: intent/system/runtime/work/implement-mcp-assert-task-ready-for-done.work.bvc
   - implement-mcp-evidence-records-tools: intent/system/runtime/work/implement-mcp-evidence-records-tools.work.bvc
+  - implement-mcp-get-analytics-lineage: intent/system/runtime/work/implement-mcp-get-analytics-lineage.work.bvc
   - implement-mcp-get-architecture-snapshot: intent/system/runtime/work/implement-mcp-get-architecture-snapshot.work.bvc
   - implement-mcp-get-graph-rag-context: intent/system/runtime/work/implement-mcp-get-graph-rag-context.work.bvc
   - implement-mcp-get-intent-hierarchy: intent/system/runtime/work/implement-mcp-get-intent-hierarchy.work.bvc
   - implement-mcp-get-operator-shell-snapshot: intent/ui/dashboard/work/implement-mcp-get-operator-shell-snapshot.work.bvc
   - implement-mcp-get-pvrg-task-scope: intent/research/pvrg/work/implement-mcp-get-pvrg-task-scope.work.bvc
   - implement-mcp-get-unified-linkage: intent/system/runtime/work/implement-mcp-get-unified-linkage.work.bvc
+  - implement-mcp-get-work-contract: intent/system/runtime/work/implement-mcp-get-work-contract.work.bvc
   - implement-mcp-intent-graph-resources: intent/system/runtime/work/implement-mcp-intent-graph-resources.work.bvc
   - implement-mcp-memory-records-tools: intent/system/runtime/work/implement-mcp-memory-records-tools.work.bvc
   - implement-mcp-stdio-integration-test: intent/system/runtime/work/implement-mcp-stdio-integration-test.work.bvc
   - implement-mcp-step-graph-slice: intent/system/runtime/work/implement-mcp-step-graph-slice.work.bvc
+  - implement-mcp-validate-evidence: intent/system/runtime/work/implement-mcp-validate-evidence.work.bvc
   - implement-memory-record-dashboard-projection: intent/system/runtime/work/implement-memory-record-dashboard-projection.work.bvc
   - implement-memory-record-journal-persist: intent/ui/dashboard/work/implement-memory-record-journal-persist.work.bvc
   - implement-memory-record-worker-slice-mvp: intent/memory/work/implement-memory-record-worker-slice-mvp.work.bvc
@@ -241,20 +288,31 @@ WorkItems:
   - implement-prompt-step-review-ui-mvp: intent/ui/dashboard/work/implement-prompt-step-review-ui-mvp.work.bvc
   - implement-prompt-step-rules-editor-mvp: intent/ui/dashboard/work/implement-prompt-step-rules-editor-mvp.work.bvc
   - implement-provider-selection-fallback-runtime: intent/system/storage/work/implement-provider-selection-fallback-runtime.work.bvc
+  - implement-public-site-static-shell: intent/ui/dashboard/work/implement-public-site-static-shell.work.bvc
   - implement-pvrg-graph-rag-context-slice: intent/research/pvrg/work/implement-pvrg-graph-rag-context-slice.work.bvc
+  - implement-repo-file-preview-api: intent/ui/dashboard/work/implement-repo-file-preview-api.work.bvc
+  - implement-repo-file-stack-frame-renderer: intent/ui/dashboard/work/implement-repo-file-stack-frame-renderer.work.bvc
   - implement-right-dock-agent-run-panel: intent/ui/dashboard/work/implement-right-dock-agent-run-panel.work.bvc
   - implement-roadmap-from-intent-graph-view: intent/ui/dashboard/work/implement-roadmap-from-intent-graph-view.work.bvc
   - implement-schematic-visualization-view-mvp: intent/ui/dashboard/work/implement-schematic-visualization-view-mvp.work.bvc
   - implement-semantic-map-ui-cross-highlight: intent/ui/dashboard/work/implement-semantic-map-ui-cross-highlight.work.bvc
   - implement-semantic-search-hybrid-llm-retrieval: intent/system/runtime/work/implement-semantic-search-hybrid-llm-retrieval.work.bvc
   - implement-semantic-search-vector-ann-phase2: intent/system/runtime/work/implement-semantic-search-vector-ann-phase2.work.bvc
+  - implement-settings-view-shell: intent/ui/dashboard/work/implement-settings-view-shell.work.bvc
   - implement-sidebar-inbox-badge: intent/ui/dashboard/work/implement-sidebar-inbox-badge.work.bvc
+  - implement-sidebar-resize-handle: intent/ui/dashboard/work/implement-sidebar-resize-handle.work.bvc
   - implement-sidecar-mcp-transport-runtime: intent/system/runtime/work/implement-sidecar-mcp-transport-runtime.work.bvc
   - implement-sqlite-runner-queue-projection: intent/system/storage/work/implement-sqlite-runner-queue-projection.work.bvc
   - implement-step-atom-formatter: intent/system/runtime/work/implement-step-atom-formatter.work.bvc
   - implement-step-code-trace-link-validator: intent/system/runtime/work/implement-step-code-trace-link-validator.work.bvc
+  - implement-ui-live-sync-coordinator: intent/ui/dashboard/work/implement-ui-live-sync-coordinator.work.bvc
+  - implement-ui-locale-resolution: intent/ui/dashboard/work/implement-ui-locale-resolution.work.bvc
+  - implement-ui-message-catalog-v1: intent/ui/dashboard/work/implement-ui-message-catalog-v1.work.bvc
   - implement-ui-project-switcher-multiproject: intent/ui/dashboard/work/implement-ui-project-switcher-multiproject.work.bvc
+  - implement-user-avatar-renderer: intent/ui/dashboard/work/implement-user-avatar-renderer.work.bvc
   - implement-work-graph-cli-multiproject: intent/system/runtime/work/implement-work-graph-cli-multiproject.work.bvc
+  - implement-work-item-classifier-badge: intent/ui/dashboard/work/implement-work-item-classifier-badge.work.bvc
+  - implement-work-item-contract-projection: intent/system/runtime/work/implement-work-item-contract-projection.work.bvc
   - implement-work-item-parent-id-runtime: intent/system/runtime/work/implement-work-item-parent-id-runtime.work.bvc
   - implement-work-item-promote-ready-mvp: intent/ui/dashboard/work/implement-work-item-promote-ready-mvp.work.bvc
   - implement-worker-claim-idempotency-guard: intent/system/runtime/work/implement-worker-claim-idempotency-guard.work.bvc
@@ -280,6 +338,9 @@ WorkItems:
   - marketplace-plan-edinaya-avtorizaciya: intent/domains/marketplace/work/marketplace-plan-edinaya-avtorizaciya.work.bvc
   - marketplace-plan-etap-4-geo-url: intent/domains/marketplace/work/marketplace-plan-etap-4-geo-url.work.bvc
   - mcp-epic-rollup-scope-resource: intent/system/runtime/work/mcp-epic-rollup-scope-resource.work.bvc
+  - migrate-analytics-drilldown-to-drawer-stack: intent/ui/dashboard/work/migrate-analytics-drilldown-to-drawer-stack.work.bvc
+  - migrate-analytics-lineage-seed-examples: intent/system/runtime/work/migrate-analytics-lineage-seed-examples.work.bvc
+  - migrate-architecture-l2-to-drawer-stack: intent/ui/dashboard/work/migrate-architecture-l2-to-drawer-stack.work.bvc
   - migrate-architecture-map-lit-flow: intent/ui/dashboard/work/migrate-architecture-map-lit-flow.work.bvc
   - migrate-architecture-snapshot-from-canon: intent/system/runtime/work/migrate-architecture-snapshot-from-canon.work.bvc
   - migrate-backlog-to-intent-tree-files: intent/system/storage/work/migrate-backlog-to-intent-tree-files.work.bvc
@@ -333,6 +394,7 @@ WorkItems:
   - pvrg-blade-adapter-marketplace: intent/domains/marketplace/work/pvrg-blade-adapter-marketplace.work.bvc
   - rebuild-verification-loop: intent/domains/onebase/work/rebuild-verification-loop.work.bvc
   - reconcile-audit-gap-matrix-post-provider-rollout: intent/system/runtime/work/reconcile-audit-gap-matrix-post-provider-rollout.work.bvc
+  - reconcile-detail-drawer-on-remote-patch: intent/ui/dashboard/work/reconcile-detail-drawer-on-remote-patch.work.bvc
   - reconcile-rebuild-scope-against-original-iohasc-plan: intent/system/runtime/work/reconcile-rebuild-scope-against-original-iohasc-plan.work.bvc
   - refactor-init-npm-devdependencies: intent/system/runtime/work/refactor-init-npm-devdependencies.work.bvc
   - refactor-run-ui-mcp-from-node-modules: intent/system/runtime/work/refactor-run-ui-mcp-from-node-modules.work.bvc
@@ -344,6 +406,7 @@ WorkItems:
   - review-patent-defensive-publication-an42: intent/system/runtime/work/review-patent-defensive-publication-an42.work.bvc
   - rewrite-charter-for-1c-vertical: intent/system/runtime/work/rewrite-charter-for-1c-vertical.work.bvc
   - rewrite-readme-for-1c-vertical: intent/system/runtime/work/rewrite-readme-for-1c-vertical.work.bvc
+  - rollout-ui-multilingual-en-ru: intent/ui/dashboard/work/rollout-ui-multilingual-en-ru.work.bvc
   - run-first-non-author-golden-path: intent/system/runtime/work/run-first-non-author-golden-path.work.bvc
   - run-mandatory-prompt-eval-fixtures: intent/system/runtime/work/run-mandatory-prompt-eval-fixtures.work.bvc
   - schema-architecture-block-group-field: intent/system/runtime/work/schema-architecture-block-group-field.work.bvc
@@ -354,6 +417,7 @@ WorkItems:
   - switch-runtime-ui-to-intent-tree-workitems: intent/ui/dashboard/work/switch-runtime-ui-to-intent-tree-workitems.work.bvc
   - sync-an14-ir-open-canon-multilingual: intent/system/runtime/work/sync-an14-ir-open-canon-multilingual.work.bvc
   - sync-bvc-lang-npm-github-publishables: intent/system/runtime/work/sync-bvc-lang-npm-github-publishables.work.bvc
+  - sync-cursor-wg-rules-to-repo: intent/system/runtime/work/sync-cursor-wg-rules-to-repo.work.bvc
   - sync-onebase-cli-parity-evidence: intent/domains/onebase/work/sync-onebase-cli-parity-evidence.work.bvc
   - sync-plan-docs-with-workgraph-backlog: intent/system/runtime/work/sync-plan-docs-with-workgraph-backlog.work.bvc
   - tests-architecture-domains-l1-hierarchy: intent/system/runtime/work/tests-architecture-domains-l1-hierarchy.work.bvc
@@ -367,6 +431,7 @@ WorkItems:
   - ui-architecture-block-drawer-bvc: intent/ui/dashboard/work/ui-architecture-block-drawer-bvc.work.bvc
   - ui-architecture-domains-breadcrumb-group: intent/system/runtime/work/ui-architecture-domains-breadcrumb-group.work.bvc
   - ui-architecture-l1-canon-badge: intent/ui/dashboard/work/ui-architecture-l1-canon-badge.work.bvc
+  - unify-home-inbox-agent-live-poll: intent/ui/dashboard/work/unify-home-inbox-agent-live-poll.work.bvc
   - update-architecture-main-bvc-domains-structure: intent/system/runtime/work/update-architecture-main-bvc-domains-structure.work.bvc
   - update-charter-bvc-naming-adr: intent/system/runtime/work/update-charter-bvc-naming-adr.work.bvc
   - update-docs-skill-npm-first: intent/system/runtime/work/update-docs-skill-npm-first.work.bvc
@@ -386,20 +451,41 @@ WorkItems:
   - wg-ui-wave3-kanban-cards-atoms: intent/ui/dashboard/work/wg-ui-wave3-kanban-cards-atoms.work.bvc
   - wg-ui-wave3-status-badges-atoms: intent/ui/dashboard/work/wg-ui-wave3-status-badges-atoms.work.bvc
   - wg-ui-wave3-view-toolbar-atoms: intent/ui/dashboard/work/wg-ui-wave3-view-toolbar-atoms.work.bvc
+  - wire-analytics-drawer-lineage-sections: intent/ui/dashboard/work/wire-analytics-drawer-lineage-sections.work.bvc
+  - wire-analytics-list-lineage-badges: intent/ui/dashboard/work/wire-analytics-list-lineage-badges.work.bvc
+  - wire-analytics-related-task-sub-drawer: intent/ui/dashboard/work/wire-analytics-related-task-sub-drawer.work.bvc
   - wire-audit-journal-operator-dashboard: intent/ui/dashboard/work/wire-audit-journal-operator-dashboard.work.bvc
+  - wire-board-workflow-live-refresh: intent/ui/dashboard/work/wire-board-workflow-live-refresh.work.bvc
+  - wire-bvc-dialect-atom-inspector-b11: intent/ui/dashboard/work/wire-bvc-dialect-atom-inspector-b11.work.bvc
   - wire-catalog-passport-alignment-cli: intent/system/runtime/work/wire-catalog-passport-alignment-cli.work.bvc
+  - wire-classifier-badge-on-board-cards: intent/ui/dashboard/work/wire-classifier-badge-on-board-cards.work.bvc
+  - wire-clickable-repo-file-links-in-drawers: intent/ui/dashboard/work/wire-clickable-repo-file-links-in-drawers.work.bvc
   - wire-codegen-evidence-verification-panel: intent/ui/dashboard/work/wire-codegen-evidence-verification-panel.work.bvc
   - wire-dashboard-hybrid-semantic-search-api: intent/ui/dashboard/work/wire-dashboard-hybrid-semantic-search-api.work.bvc
+  - wire-drawer-stack-uniform-back-esc: intent/ui/dashboard/work/wire-drawer-stack-uniform-back-esc.work.bvc
   - wire-eval-llm-usefulness-ci-gate: intent/system/runtime/work/wire-eval-llm-usefulness-ci-gate.work.bvc
   - wire-graph-rag-memory-slice-fusion: intent/system/runtime/work/wire-graph-rag-memory-slice-fusion.work.bvc
+  - wire-header-theme-toggle-icon: intent/ui/dashboard/work/wire-header-theme-toggle-icon.work.bvc
+  - wire-header-theme-toggle-phosphor-icons: intent/ui/dashboard/work/wire-header-theme-toggle-phosphor-icons.work.bvc
+  - wire-icon-asset-pipeline: intent/ui/dashboard/work/wire-icon-asset-pipeline.work.bvc
   - wire-live-loop-provider-selection: intent/system/storage/work/wire-live-loop-provider-selection.work.bvc
+  - wire-markdown-inline-repo-file-clicks: intent/ui/dashboard/work/wire-markdown-inline-repo-file-clicks.work.bvc
+  - wire-new-work-item-live-appearance: intent/ui/dashboard/work/wire-new-work-item-live-appearance.work.bvc
   - wire-onebase-cli-tools-parity: intent/domains/onebase/work/wire-onebase-cli-tools-parity.work.bvc
   - wire-onebase-live-check-gates: intent/domains/onebase/work/wire-onebase-live-check-gates.work.bvc
   - wire-onebase-pvrg-domain-graph-nodes: intent/domains/onebase/work/wire-onebase-pvrg-domain-graph-nodes.work.bvc
   - wire-optional-llm-eval-release-matrix: intent/system/runtime/work/wire-optional-llm-eval-release-matrix.work.bvc
+  - wire-owner-avatar-in-task-cards: intent/ui/dashboard/work/wire-owner-avatar-in-task-cards.work.bvc
   - wire-pvrg-task-scope-dashboard-panel: intent/research/pvrg/work/wire-pvrg-task-scope-dashboard-panel.work.bvc
   - wire-roadmap-canvas-epic-grouping-rollup: intent/ui/dashboard/work/wire-roadmap-canvas-epic-grouping-rollup.work.bvc
+  - wire-settings-theme-and-locale-sections: intent/ui/dashboard/work/wire-settings-theme-and-locale-sections.work.bvc
+  - wire-sidebar-nav-icons: intent/ui/dashboard/work/wire-sidebar-nav-icons.work.bvc
+  - wire-sidebar-settings-nav-bottom: intent/ui/dashboard/work/wire-sidebar-settings-nav-bottom.work.bvc
+  - wire-sidebar-width-persist: intent/ui/dashboard/work/wire-sidebar-width-persist.work.bvc
+  - wire-task-hierarchy-stack-navigation: intent/ui/dashboard/work/wire-task-hierarchy-stack-navigation.work.bvc
   - wire-unified-linkage-operator-drilldown: intent/system/runtime/work/wire-unified-linkage-operator-drilldown.work.bvc
+  - wire-user-avatar-asset-pack: intent/ui/dashboard/work/wire-user-avatar-asset-pack.work.bvc
+  - wire-verification-panel-contract-summary: intent/system/runtime/work/wire-verification-panel-contract-summary.work.bvc
   - workflow-tree-mode-parent-id: intent/ui/dashboard/work/workflow-tree-mode-parent-id.work.bvc
   - workgraph-dev-ui-kit-route: intent/ui/dashboard/work/workgraph-dev-ui-kit-route.work.bvc
   - workgraph-dual-layer-semantic-tokens: intent/ui/dashboard/work/workgraph-dual-layer-semantic-tokens.work.bvc
@@ -416,7 +502,17 @@ WorkItems:
   - write-an39-closing-architecture-domains-l1-hierarchy: intent/system/runtime/work/write-an39-closing-architecture-domains-l1-hierarchy.work.bvc
   - write-an40-closing-work-graph-multiproject-host: intent/system/runtime/work/write-an40-closing-work-graph-multiproject-host.work.bvc
   - write-an42-closing-work-graph-open-publication: intent/system/runtime/work/write-an42-closing-work-graph-open-publication.work.bvc
+  - write-an58-closing-agent-session-warmup-v1: intent/system/runtime/work/write-an58-closing-agent-session-warmup-v1.work.bvc
+  - write-closing-epic-analytics-record-lineage-v1: intent/ui/dashboard/work/write-closing-epic-analytics-record-lineage-v1.work.bvc
+  - write-closing-epic-detail-drawer-stack-v1: intent/ui/dashboard/work/write-closing-epic-detail-drawer-stack-v1.work.bvc
+  - write-closing-epic-drawer-repo-file-preview-v1: intent/ui/dashboard/work/write-closing-epic-drawer-repo-file-preview-v1.work.bvc
+  - write-closing-epic-work-graph-bvc-contract-verification-v1: intent/system/runtime/work/write-closing-epic-work-graph-bvc-contract-verification-v1.work.bvc
+  - write-closing-epic-work-graph-ui-i18n-v1: intent/ui/dashboard/work/write-closing-epic-work-graph-ui-i18n-v1.work.bvc
+  - write-closing-epic-work-graph-ui-icons-v1: intent/ui/dashboard/work/write-closing-epic-work-graph-ui-icons-v1.work.bvc
+  - write-closing-epic-work-graph-ui-realtime-v1: intent/ui/dashboard/work/write-closing-epic-work-graph-ui-realtime-v1.work.bvc
+  - write-closing-epic-work-graph-ui-settings-v1: intent/ui/dashboard/work/write-closing-epic-work-graph-ui-settings-v1.work.bvc
   - write-closing-work-graph-npm-first-distribution: intent/system/runtime/work/write-closing-work-graph-npm-first-distribution.work.bvc
+  - write-public-site-information-architecture: intent/ui/dashboard/work/write-public-site-information-architecture.work.bvc
 
 Метки:
   atom.profile: trace

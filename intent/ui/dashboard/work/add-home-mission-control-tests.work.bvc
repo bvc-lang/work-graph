@@ -10,27 +10,9 @@
 Проверки:
   npm test зелёный
   npm run test:e2e — smoke specs зелёные
-Анализ:
-  Целесообразность:
-  Стоит завести «тесты: home snapshot + inbox stream + e2e Home/Cmd+K/dock» в бэклог — по материалам work/analytics/ux-current-state-and-vector.md.
-  Контекст и границы:
-  Unit: homeSnapshotProjection, inboxEventStream.
-  Зависимости и готовность:
-  depends_on=ux-mission-control-p0, implement-home-snapshot-api, implement-inbox-event-stream, implement-cmd-k-palette, implement-right-dock-agent-run-panel; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Гарантия повторяемости P0 на чистой машине.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма work/analytics/ux-current-state-and-vector.md; исполнять после вердикта «полезно» и готовности зависимостей.
-
 Свидетельства:
-  - tests/homeSnapshotProjection.test.mjs
-  - tests/inboxEventStream.test.mjs pass
+  tests/homeSnapshotProjection.test.mjs
+  tests/inboxEventStream.test.mjs pass
 
 Метки:
   atom.profile: work_item
@@ -54,5 +36,6 @@
   work.risk: low
   work.status: done
   work.target_files: tests/homeSnapshotProjection.test.mjs, tests/inboxEventStream.test.mjs, e2e/home-mission-control-smoke.spec.js, e2e/cmd-k-palette-smoke.spec.js, e2e/right-dock-agent-run-smoke.spec.js
-  work.title: тесты: home snapshot + inbox stream + e2e Home/Cmd+K/dock
+  work.title: Тестирование Mission Control: snapshot Home, inbox stream, e2e Cmd+K/dock
 ]>
+

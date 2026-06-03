@@ -1,6 +1,6 @@
 #Задача_ui_architecture_l1_canon_badge<[
 Базис:
-  AN-35: operator visibility of canon freshness.
+  AN-35: оператор visibility of canon freshness.
 Вектор:
   Badge in architecture list panel header from snapshot.l1Canon.
   Tooltip: source path + digest short.
@@ -50,5 +50,6 @@
   work.risk: low
   work.status: done
   work.target_files: src/workGraphBacklogUiServer.mjs, work/analytics/architecture-main-bvc-canon-hub.md
-  work.title: UI: Architecture list header canon version/digest badge
+  work.title: Версию L1 канона без открытия файла.
 ]>
+

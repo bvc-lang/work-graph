@@ -1,37 +1,19 @@
 #Задача_bvc_multilingual_conformance_tests<[
 Базис:
   Источник: analytics:bvc-multilingual-keys-design §7 — conformance suite дублируется для EN и RU.
-  AN-8 §6 #6 conformance tests — часть артефактного набора.
+  AN-8 §6 #6 conformance-тесты — часть артефактного набора.
 Вектор:
   tests/conformance/*.en.bvc и *.ru.bvc с expected AST JSON.
   Round-trip test: parse → format → parse identical dialect.
   CI gate в npm test или lint:backlog hook.
 Цель:
   Регрессии multilingual ловятся автоматически.
-Анализ:
-  Целесообразность:
-  Стоит завести «conformance: EN/RU .bvc → identical AST + dialect preserve» в бэклог — по материалам AN-19 (analytics:bvc-multilingual-keys-design).
-  Контекст и границы:
-  tests/conformance/*.en.bvc и *.ru.bvc с expected AST JSON.
-  Зависимости и готовность:
-  depends_on=implement-parser-detect-or-declare; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Регрессии multilingual ловятся автоматически.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-19 (analytics:bvc-multilingual-keys-design); исполнять после вердикта «полезно» и готовности зависимостей.
 Проверки:
   ≥2 EN и ≥2 RU conformance fixtures green
   dialect-preserve round-trip test green
-
 Свидетельства:
-  - tests/conformance/*.bvc + tests/bvcConformance.test.mjs — 4 кейса pass
-  - EN/RU identical AST + dialect round-trip
+  tests/conformance/*.bvc + tests/bvcConformance.test.mjs — 4 кейса pass
+  EN/RU identical AST + dialect round-trip
 
 Метки:
   atom.profile: work_item
@@ -56,5 +38,6 @@
   work.risk: low
   work.status: done
   work.target_files: tests/conformance/, docs/adr-bvc-multilingual-keys.md
-  work.title: conformance: EN/RU .bvc → identical AST + dialect preserve
+  work.title: BVC: conformance-тесты мультиязычности
 ]>
+

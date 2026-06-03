@@ -8,6 +8,11 @@
   Cross-link AN-19 и adr-bvc-multilingual-keys.
 Цель:
   Migration plan согласован с AN-19; исполнители не следуют старому §.
+Проверки:
+  docs/plan-step-to-bvc-migration.md не содержит «bilingual canon без изменений»
+  todo multilingual tasks перечислены
+Свидетельства:
+  docs/plan-step-to-bvc-migration.md: multilingual ADR + todo фазы 1
 Анализ:
   Целесообразность:
   Стоит завести «plan-step-to-bvc-migration: секция multilingual (AN-19)» в бэклог — по материалам AN-19 (analytics:bvc-multilingual-keys-design).
@@ -25,12 +30,6 @@
   Вердикт:
   полезно
   Создана по материалам приёма AN-19 (analytics:bvc-multilingual-keys-design); исполнять после вердикта «полезно» и готовности зависимостей.
-Проверки:
-  docs/plan-step-to-bvc-migration.md не содержит «bilingual canon без изменений»
-  todo multilingual tasks перечислены
-
-Свидетельства:
-  - docs/plan-step-to-bvc-migration.md: multilingual ADR + todo фазы 1
 
 Метки:
   atom.profile: work_item
@@ -55,5 +54,6 @@
   work.risk: low
   work.status: done
   work.target_files: docs/plan-step-to-bvc-migration.md, docs/adr-bvc-multilingual-keys.md, work/analytics/bvc-multilingual-keys-design.md
-  work.title: plan-step-to-bvc-migration: секция multilingual (AN-19)
+  work.title: Migration plan согласован с AN-19; исполнители не следуют старому §.
 ]>
+

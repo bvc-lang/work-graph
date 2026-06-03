@@ -1,0 +1,51 @@
+#Задача_write_closing_epic_work_graph_ui_settings_v1<[
+Базис:
+  Closing с smoke: settings nav, header theme, locale, version.
+Вектор:
+  work/analytics/closing-epic-work-graph-ui-settings-v1.md
+Цель:
+  Эпик settings закрыт с проверяемым UX.
+Проверки:
+  Closing doc published
+Анализ:
+  Зачем:
+  Closing с smoke: settings nav, header theme, locale, version.
+  Контекст: work/analytics/closing-epic-work-graph-ui-settings-v1.md
+  Когда:
+  После готовности: epic-work-graph-ui-settings-v1, wire-settings-theme-and-locale-sections, implement-app-version-check-update, rollout-ui-multilingual-en-ru.
+  Готово, когда:
+  Эпик settings закрыт с проверяемым UX.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: epic-work-graph-ui-settings-v1, wire-settings-theme-and-locale-sections, implement-app-version-check-update, rollout-ui-multilingual-en-ru.
+
+Свидетельства:
+  - work/analytics/closing-epic-work-graph-ui-settings-v1.md
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-55
+  intake.source_kind: operator-request
+  intake.source_ref: docs/plan-work-graph-ui-settings-v1.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-02T16:45:45.864Z
+  work.analysis.source: operator-request
+  work.decision.at: 2026-06-02T16:45:45.864Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: epic-work-graph-ui-settings-v1, wire-settings-theme-and-locale-sections, implement-app-version-check-update, rollout-ui-multilingual-en-ru
+  work.id: write-closing-epic-work-graph-ui-settings-v1
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: feature_engineer
+  work.parent_id: epic-work-graph-ui-settings-v1
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: work/analytics/closing-epic-work-graph-ui-settings-v1.md, docs/plan-work-graph-ui-settings-v1.md
+  work.title: Закрытие: epic-work-graph-ui-settings-v1
+]>
+

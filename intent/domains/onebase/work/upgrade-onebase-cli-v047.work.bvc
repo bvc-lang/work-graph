@@ -1,7 +1,7 @@
 #Задача_upgrade_onebase_cli_v047<[
 Базис:
   Локальный onebase.exe на effb379 без check/describe/ai-guide; wire-onebase-live-check-gates в ready, но gate skip.
-  Задача «обновить OneBase CLI до v0.4.7 (release zip)» относится к контуру Work Graph rebuild и должна быть понятна агенту без чтения всего backlog.
+  Задача «обновить OneBase CLI до v0.4.7 (release zip)» относится к контуру Work Graph пересобрать и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: phase-7-onebase-vertical.
 Вектор:
   Скачать onebase-windows-amd64.zip v0.4.7, backup текущего exe, заменить; опционально git pull origin/main для исходников.
@@ -45,6 +45,6 @@
   work.risk: medium
   work.status: done
   work.target_files: ../onebase/onebase.exe, work/onebase-cli-capabilities.v1.json
-  work.title: обновить OneBase CLI до v0.4.7 (release zip)
+  work.title: обновить OneBase CLI v047
 ]>
 

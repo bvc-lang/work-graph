@@ -1,0 +1,47 @@
+#Задача_epic_detail_drawer_stack_v1<[
+Базис:
+  L1 detail-drawer + L2 detail-sub-drawer — два ad hoc слоя; каждый drill-down добавляет хак.
+  Клик «Родитель (эпик)» в task drawer заменяет контент вместо push поверх.
+  AN-54: единый shell + очередь detail-stack.frame.v1 с типами task/analytics/architecture-l2/…
+Вектор:
+  P0: ADR frame types + stack API.
+  P0: task hierarchy parent/child → stack.push.
+  P1: мигрировать analytics related task + lineage to stack.
+  P1: мигрировать architecture L2 to stack; deprecate #detail-sub-drawer.
+  P2: uniform Esc/back/overlay.
+Цель:
+  Drill-down task → epic → subtask без потери контекста; один паттерн на всех страницах WG UI.
+Проверки:
+  ADR detail-drawer-stack-v1 принят
+  Parent epic opens on stack push from task drawer
+  Analytics + architecture migrated or wrapped
+  AN-54 closing doc опубликован
+
+Свидетельства:
+  - 7/7 subtasks done; closing-epic-detail-drawer-stack-v1.md
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-54
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/detail-drawer-stack-modal-queue.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-02T15:55:13.508Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-02T15:55:13.508Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: wire-analytics-related-task-sub-drawer
+  work.id: epic-detail-drawer-stack-v1
+  work.item_kind: epic
+  work.next_action: —
+  work.owner_role: feature_engineer
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: work/analytics/detail-drawer-stack-modal-queue.md, docs/plan-detail-drawer-stack-v1.md, docs/adr-detail-drawer-stack-v1.md, src/detailDrawerStack.mjs, src/workGraphBacklogUiServer.mjs, tests/workGraphBacklogUiServer.test.mjs
+  work.title: Стек detail drawer v1: типизированные frames + очередь push/pop (AN-54)
+]>
+

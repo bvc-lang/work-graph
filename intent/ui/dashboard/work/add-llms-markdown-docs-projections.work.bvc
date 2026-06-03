@@ -1,0 +1,54 @@
+#Задача_add_llms_markdown_docs_projections<[
+Базис:
+  AN-63 требует agent-readable /llms.txt и markdown routes.
+Вектор:
+  Add /llms.txt with key pages, preferred interactions, data accuracy.
+  Expose /docs/*.md or ?format=markdown for P0 docs.
+  Add .bvc.example files for BVC/work-item examples.
+Цель:
+  Cursor/Claude/MCP client может понять сайт без HTML scraping.
+Проверки:
+  GET /llms.txt text/plain
+  GET /docs/bvc-spec.md text/markdown
+  BVC examples exist
+Анализ:
+  Зачем:
+  AN-63 требует agent-readable /llms.txt и markdown routes.
+  Контекст: Add /llms.txt with key pages, preferred interactions, data accuracy.
+  Когда:
+  После готовности: write-public-site-information-architecture.
+  Готово, когда:
+  Cursor/Claude/MCP client может понять сайт без HTML scraping.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: write-public-site-information-architecture.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-64
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-public-site-competitive-tz.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-02T22:20:53.068Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-02T22:20:53.068Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: write-public-site-information-architecture
+  work.id: add-llms-markdown-docs-projections
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: docs_engineer
+  work.parent_id: epic-work-graph-public-site-v1
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: low
+  work.status: done
+  work.target_files: public/llms.txt, docs/public-site/*.md, docs/public-site/*.bvc.example, tests/publicSite.test.mjs
+  work.title: Site: llms.txt and markdown docs projections
+
+Свидетельства:
+  - Implemented public site v1 in src/publicSiteContent.mjs + src/publicSiteServer.mjs; verified by node --test tests/publicSite.test.mjs tests/workGraphBacklogUiServer.test.mjs (22/22 pass).
+]>

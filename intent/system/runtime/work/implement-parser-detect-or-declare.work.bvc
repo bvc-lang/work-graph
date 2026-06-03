@@ -9,6 +9,13 @@
   Загрузка dialect registry из packages/bvc-dialects.
 Цель:
   Фаза 1 open canon включает multilingual parser, не только dual extension.
+Проверки:
+  unit tests: EN atom, RU atom, mixed-file auto-detect
+  mixed keys → lint error
+  round-trip сохраняет dialect
+Свидетельства:
+  src/bvcAtomParser.mjs: Detect-or-Declare, E_BVC_DIALECT_MIX, registry load
+  tests/bvcAtomParser.test.mjs — 5 кейсов pass
 Анализ:
   Целесообразность:
   Стоит завести «parser: Detect-or-Declare (pragma, @lang, auto-detect, E_BVC_DIALECT_MIX)» в бэклог — по материалам AN-19 (analytics:bvc-multilingual-keys-design).
@@ -26,14 +33,6 @@
   Вердикт:
   полезно
   Создана по материалам приёма AN-19 (analytics:bvc-multilingual-keys-design); исполнять после вердикта «полезно» и готовности зависимостей.
-Проверки:
-  unit tests: EN atom, RU atom, mixed-file auto-detect
-  mixed keys → lint error
-  round-trip сохраняет dialect
-
-Свидетельства:
-  - src/bvcAtomParser.mjs: Detect-or-Declare, E_BVC_DIALECT_MIX, registry load
-  - tests/bvcAtomParser.test.mjs — 5 кейсов pass
 
 Метки:
   atom.profile: work_item
@@ -58,5 +57,6 @@
   work.risk: high
   work.status: done
   work.target_files: src/, tests/, packages/bvc-dialects, docs/adr-bvc-multilingual-keys.md
-  work.title: parser: Detect-or-Declare (pragma, @lang, auto-detect, E_BVC_DIALECT_MIX)
+  work.title: Фаза 1 open canon включает multilingual parser, не только dual extension.
 ]>
+

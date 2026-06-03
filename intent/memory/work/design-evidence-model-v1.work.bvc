@@ -8,23 +8,6 @@
   Описать status gates: done требует evidence, blocked требует reason, verified требует successful verification evidence.
 Цель:
   Work Graph может объяснить, почему задача завершена, и передать это в memory/dashboard.
-Анализ:
-  Целесообразность:
-  Стоит завести «спроектировать модель Evidence v1» в бэклог.
-  Контекст и границы:
-  Спроектировать Evidence v1: kind, source, command, file refs, result, timestamp, summary, artifacts, decision refs.
-  Зависимости и готовность:
-  depends_on=design-serialization-boundary; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Work Graph может объяснить, почему задача завершена, и передать это в memory/dashboard.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -45,6 +28,6 @@
   work.risk: medium
   work.status: done
   work.target_files: protocols/evidence-model-v1.bvc, work/backlog.bvc
-  work.title: спроектировать модель Evidence v1
+  work.title: Work Graph может объяснить, почему задача завершена, и передать это в memory/dashboard.
 ]>
 

@@ -45,6 +45,6 @@
   work.risk: high
   work.status: done
   work.target_files: ../onebase/examples/trade/registers/валовая_прибыль.yaml, ../onebase/examples/trade/src/реализациятоваров.posting.os, ../onebase/examples/trade/reports/валовая_прибыль.yaml, ../onebase/examples/trade/widgets/валовая_прибыль_kpi.yaml, ../onebase/internal/project/trade_gross_profit_test.go
-  work.title: реализовать Склад в ВаловаяПрибыль для РеализацияТоваров
+  work.title: Первый реальный патч OneBase доказывает сценарий gross-profit-by-warehouse с deterministic evidence.
 ]>
 

@@ -8,26 +8,8 @@
   Full graph: все блоки + upstream/dashed edges, profile layered-dag-v1 из layout profile.
 Цель:
   Operator переключает режим без смены вкладки; каждый режим использует свой layout profile preset.
-Анализ:
-  Целесообразность:
-  Стоит завести «реализовать режимы Pipeline и Full graph на вкладке схемы/архитектуры» в бэклог — по материалам запись аналитики.
-  Контекст и границы:
-  Добавить переключатель Pipeline / Full graph в UI (Дорожная карта и/или Схема).
-  Зависимости и готовность:
-  depends_on=implement-graph-canvas-layout-profile-v1; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Operator переключает режим без смены вкладки; каждый режим использует свой layout profile preset.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма запись аналитики; исполнять после вердикта «полезно» и готовности зависимостей.
-
 Свидетельства:
-  - Pipeline/Full graph toggle in architecture + schematic UI
+  Pipeline/Full graph toggle in architecture + schematic UI
 
 Метки:
   atom.profile: work_item
@@ -48,5 +30,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/workGraphBacklogUiServer.mjs, src/architectureSnapshot.mjs, src/schematicView.mjs, src/graphCanvasLayout.mjs, tests/workGraphBacklogUiServer.test.mjs, work/analytics/graph-canvas-layout-mess.md
-  work.title: реализовать режимы Pipeline и Full graph на вкладке схемы/архитектуры
+  work.title: Operator переключает режим без смены вкладки; каждый режим использует свой layout profile preset.
 ]>
+

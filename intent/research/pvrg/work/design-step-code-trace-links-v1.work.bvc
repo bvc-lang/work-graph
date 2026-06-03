@@ -8,26 +8,9 @@
   Описать связи atom -> file, atom -> symbol/range, evidence -> command/test/diff, code -> atom через обратный marker.
   Зафиксировать минимальный формат labels: trace.code_refs, trace.artifact_refs, trace.evidence_refs и relation types.
   Описать validator broken links и UI-переходы: atom detail -> file/symbol, code marker -> atom.
-  Отдельно оценить, что брать из текущего ioHasC: iohasc-ref, trace-link diagnostics, PVRG edges, GBC trace-link slice как optional derived artifact.
+  Отдельно оценить, что брать из текущего ioHasC: iohasc-ref, trace-link diagnostics, PVRG edges, GBC trace-link slice как опционально derived artifact.
 Цель:
   Получить стабильную связку .bvc и кода по id, чтобы intent tree, graph viewer, evidence и будущий agent worker не теряли trace при изменениях.
-Анализ:
-  Целесообразность:
-  Стоит завести «спроектировать Trace Links v1 между .bvc и кодом» в бэклог.
-  Контекст и границы:
-  Спроектировать Trace Links v1 для связи Step Atom, WorkItem, evidence и code artifact.
-  Зависимости и готовность:
-  depends_on=design-intent-tree-workgraph-layout, design-language-adapter-layer, design-pvrg-graph-rag-minimal; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Получить стабильную связку .bvc и кода по id, чтобы intent tree, graph viewer, evidence и будущий agent worker не теряли trace при изменениях.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -48,6 +31,6 @@
   work.risk: high
   work.status: done
   work.target_files: protocols/step-code-trace-links-v1.bvc, protocols/intent-tree-workgraph-layout.bvc, protocols/pvrg-graph-rag-minimal.bvc, protocols/language-adapter-layer.bvc, work/backlog.bvc
-  work.title: спроектировать Trace Links v1 между .bvc и кодом
+  work.title: Получить стабильную связку .bvc и кода по id, чтобы intent tree, graph viewer, evidence и будущий agent wor…
 ]>
 

@@ -8,26 +8,8 @@
   Сохранять golden metrics или threshold gate; при изменении profile — explicit snapshot update.
 Цель:
   CI падает при деградации layout quality; изменения POSITIONS/profile сопровождаются осознанным обновлением gate.
-Анализ:
-  Целесообразность:
-  Стоит завести «добавить snapshot-тест качества layout graph canvas в CI» в бэклог — по материалам запись аналитики.
-  Контекст и границы:
-  Вычислять метрики на fixture snapshot (architecture + schematic): edge_crossings ≤ N, min_gap ≥ 24px, labels не под nodes.
-  Зависимости и готовность:
-  depends_on=implement-graph-canvas-layout-profile-v1; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  CI падает при деградации layout quality; изменения POSITIONS/profile сопровождаются осознанным обновлением gate.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма запись аналитики; исполнять после вердикта «полезно» и готовности зависимостей.
-
 Свидетельства:
-  - tests/graphCanvasLayoutQuality.test.mjs
+  tests/graphCanvasLayoutQuality.test.mjs
 
 Метки:
   atom.profile: work_item
@@ -48,5 +30,6 @@
   work.risk: low
   work.status: done
   work.target_files: tests/graphCanvasLayoutQuality.test.mjs, tests/fixtures/graph-canvas-layout/, src/graphCanvasLayout.mjs, package.json, work/analytics/graph-canvas-layout-mess.md
-  work.title: добавить snapshot-тест качества layout graph canvas в CI
+  work.title: CI падает при деградации layout quality; изменения POSITIONS/profile сопровождаются осознанным обновлением…
 ]>
+

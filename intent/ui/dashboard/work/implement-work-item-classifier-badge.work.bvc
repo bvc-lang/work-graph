@@ -1,0 +1,49 @@
+#Задача_implement_work_item_classifier_badge<[
+Базис:
+  Нет resolveWorkItemClassifierBadge и ARCHITECTURE_BLOCK_BADGES map.
+Вектор:
+  ARCHITECTURE_BLOCK_BADGES + DEPARTMENT_BADGES maps.
+  resolveWorkItemClassifierBadge: block_id → classify → department → itemKind.
+  renderWorkItemClassifierBadge via renderClientUiBadge.
+Цель:
+  Детерминированный lozenge label/tone для любой work item.
+Проверки:
+  tests/workItemClassifierBadge.test.mjs
+Анализ:
+  Зачем:
+  Нет resolveWorkItemClassifierBadge и ARCHITECTURE_BLOCK_BADGES map.
+  Контекст: ARCHITECTURE_BLOCK_BADGES + DEPARTMENT_BADGES maps.
+  Когда:
+  После готовности: extract-work-item-block-classifier.
+  Готово, когда:
+  Детерминированный lozenge label/tone для любой work item.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: extract-work-item-block-classifier.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-61
+  intake.source_kind: operator-request
+  intake.source_ref: src/ui/workItemClassifierBadge.mjs
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-02T21:40:16.520Z
+  work.analysis.source: operator-request
+  work.decision.at: 2026-06-02T21:40:16.520Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: extract-work-item-block-classifier
+  work.id: implement-work-item-classifier-badge
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.parent_id: epic-work-graph-ui-classifier-badges-v1
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: low
+  work.status: backlog
+  work.target_files: src/ui/workItemClassifierBadge.mjs, tests/workItemClassifierBadge.test.mjs
+  work.title: UI: workItemClassifierBadge.mjs — resolve + render lozenge
+]>

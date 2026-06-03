@@ -11,23 +11,8 @@
 Проверки:
   5 atom .bvc files pass StepAtomDraft validation
   props parity checklist vs Marketplace button.blade.php
-Анализ:
-  Целесообразность:
-  Стоит завести «atomic-spec: BVC для 5 base atoms» в бэклог — по материалам AN-21 (work/analytics/marketplace-integration-and-shared-design-system.md).
-  Контекст и границы:
-  packages/atomic-spec/atoms/*.bvc — props, variants, sizes, a11y.
-  Зависимости и готовность:
-  depends_on=epic-marketplace-shared-design-system, extract-iohasc-design-tokens-package; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Одна спека → две реализации (Blade + vanilla WG).; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-21 (work/analytics/marketplace-integration-and-shared-design-system.md); исполнять после вердикта «полезно» и готовности зависимостей.
+Свидетельства:
+  packages/atomic-spec/atoms/*.bvc ×5 (button, badge, text-input, icon, modal)
 
 Метки:
   atom.profile: work_item
@@ -52,8 +37,6 @@
   work.risk: medium
   work.status: done
   work.target_files: packages/atomic-spec/atoms/button.bvc, packages/atomic-spec/atoms/badge.bvc, work/analytics/marketplace-integration-and-shared-design-system.md
-  work.title: atomic-spec: BVC для 5 base atoms
-
-Свидетельства:
-  - packages/atomic-spec/atoms/*.bvc ×5 (button, badge, text-input, icon, modal)
+  work.title: Atomic spec: BVC для 5 базовых atoms
 ]>
+

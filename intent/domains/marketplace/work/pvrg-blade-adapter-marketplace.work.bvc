@@ -10,6 +10,8 @@
 Проверки:
   bladeAdapter registered
   get_pvrg_task_scope smoke on marketplace fixture
+Свидетельства:
+  src/pvrg/bladeAdapter.mjs + tests/bladeAdapter.test.mjs 3/3 green
 Анализ:
   Целесообразность:
   Стоит завести «PVRG bladeAdapter для Marketplace trace (P2)» в бэклог — по материалам AN-21 (work/analytics/marketplace-integration-and-shared-design-system.md).
@@ -51,8 +53,6 @@
   work.risk: medium
   work.status: done
   work.target_files: ../../04 Marketplace/packages/marketplace-core/, src/pvrg/, work/analytics/marketplace-integration-and-shared-design-system.md
-  work.title: PVRG bladeAdapter для Marketplace trace (P2)
-
-Свидетельства:
-  - src/pvrg/bladeAdapter.mjs + tests/bladeAdapter.test.mjs 3/3 green
+  work.title: PVRG bladeAdapter для trace Marketplace (P2)
 ]>
+

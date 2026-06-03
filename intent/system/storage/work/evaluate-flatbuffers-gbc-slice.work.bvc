@@ -8,23 +8,6 @@
   Если FlatBuffers выбран, описать минимальную схему work_graph_slice_v1.fbs и миграционную политику.
 Цель:
   Принять отдельное архитектурное решение по FlatBuffers/GBC на основании требований, а не по ассоциации со словом binary.
-Анализ:
-  Целесообразность:
-  Стоит завести «оценить slice FlatBuffers/GBC для Work Graph» в бэклог.
-  Контекст и границы:
-  Сравнить FlatBuffers/GBC с JSON/NDJSON/SQLite cache для Work Graph snapshot.
-  Зависимости и готовность:
-  depends_on=design-serialization-boundary; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Принять отдельное архитектурное решение по FlatBuffers/GBC на основании требований, а не по ассоциации со словом binary.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -45,6 +28,6 @@
   work.risk: medium
   work.status: done
   work.target_files: plans/rebuild-start-plan.bvc, work/backlog.bvc, protocols/flatbuffers-gbc-slice-evaluation.bvc
-  work.title: оценить slice FlatBuffers/GBC для Work Graph
+  work.title: Принять отдельное архитектурное решение по FlatBuffers/GBC на основании требований, а не по ассоциации со с…
 ]>
 

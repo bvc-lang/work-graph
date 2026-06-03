@@ -1,7 +1,7 @@
 #Задача_define_backlog_schema_lint<[
 Базис:
   Большому бэклог нужен linting для duplicate ids, missing deps, invalid statuses и missing next_action.
-  Задача «определить бэклог schema lint» относится к контуру Work Graph rebuild и должна быть понятна агенту без чтения всего backlog.
+  Задача «определить бэклог schema lint» относится к контуру Work Graph пересобрать и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: phase-10-ci-e2e-release-gates.
 Вектор:
   Спроектировать бэклог schema lint command/test на текущем parser и transition rules.
@@ -9,23 +9,6 @@
 Цель:
   Bad roadmap edits падают рано, до autonomous execution.
   Готово, когда выполнены проверки: lint проверяет duplicate ids, missing deps и invalid status.
-Анализ:
-  Целесообразность:
-  Стоит завести «определить бэклог schema lint» в бэклог.
-  Контекст и границы:
-  Спроектировать бэклог schema lint command/test на текущем parser и transition rules.
-  Зависимости и готовность:
-  depends_on=phase-10-ci-e2e-release-gates; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Bad roadmap edits падают рано, до autonomous execution.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item

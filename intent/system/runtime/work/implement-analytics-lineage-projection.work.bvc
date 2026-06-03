@@ -1,0 +1,42 @@
+#Задача_implement_analytics_lineage_projection<[
+Базис:
+  buildAnalyticsPanelProjection должен обогащать records parent/continuations/related.
+Вектор:
+  src/analyticsLineageProjection.mjs — buildAnalyticsLineageProjection(records).
+  attachAnalyticsLineageToRecords в analyticsPanelProjection.mjs.
+  Derive childKeys from parentKey index; support related edges when present.
+  tests/analyticsLineageProjection.test.mjs.
+Цель:
+  Каждая запись с lineage получает parent + continuations в API projection.
+Проверки:
+  AN-50.1 fixture resolves parent AN-50
+  analyticsPanelProjection tests зелёные
+Свидетельства:
+  src/analyticsLineageProjection.mjs + tests/analyticsLineageProjection.test.mjs
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-51
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/analytics-record-lineage-flat-list-graph-storage.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-02T15:01:59.989Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-02T15:01:59.989Z
+  work.decision.verdict: useful
+  work.department: system-runtime
+  work.depends_on: extend-analytics-record-schema-lineage-v1
+  work.id: implement-analytics-lineage-projection
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: feature_engineer
+  work.parent_id: epic-analytics-record-lineage-v1
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: src/analyticsLineageProjection.mjs, src/analyticsPanelProjection.mjs, tests/analyticsLineageProjection.test.mjs
+  work.title: реализовать аналитики lineage projection
+]>
+

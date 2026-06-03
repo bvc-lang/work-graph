@@ -1,49 +1,27 @@
 #Задача_wire_codegen_evidence_verification_panel<[
 Базис:
   Codegen gates есть; UI verification не показывает блок codegen.
-  Задача «Фаза 5: codegen evidence на панели «Проверки»» относится к контуру Work Graph rebuild и должна быть понятна агенту без чтения всего backlog.
-  Предварительно должны быть закрыты зависимости: phase-5-ir-codegen-runtime.
 Вектор:
-  Показать evaluateCodegenVerifyGate в detail/verification UI.
-  Ближайший шаг исполнения: просмотреть и перевести в ready.
+  Показать evaluateCodegenVerifyGate в detail/UI verification.
 Цель:
   Оператор видит codegen рядом с onebase/static gates.
-  Готово, когда выполнены проверки: Панель показывает pass/fail codegen gate.
-Анализ:
-  Целесообразность:
-  Стоит завести «Фаза 5: codegen evidence на панели «Проверки»» в бэклог.
-  Контекст и границы:
-  Показать evaluateCodegenVerifyGate в detail/verification UI.
-  Зависимости и готовность:
-  depends_on=phase-5-ir-codegen-runtime; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Оператор видит codegen рядом с onebase/static gates.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+Проверки:
+  Панель показывает pass/fail codegen gate
+  API отдаёт codegen в snapshot
 
 Метки:
   atom.profile: work_item
   migration.strategy: port
   trace.status: verified
-  work.analysis.at: 2026-05-30T17:22:37.794Z
-  work.analysis.source: backfill
-  work.decision.at: 2026-05-30T17:22:37.803Z
-  work.decision.verdict: useful
   work.department: frontend-ui
   work.depends_on: phase-5-ir-codegen-runtime
   work.id: wire-codegen-evidence-verification-panel
-  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.next_action: просмотреть и перевести в ready
   work.owner_role: frontend_architect
-  work.pipeline_stage: decided
   work.priority: low
   work.risk: medium
   work.status: done
   work.target_files: src/codegenEvidence.mjs, src/verificationLoop.mjs, src/workGraphBacklogUiServer.mjs
-  work.title: Фаза 5: codegen evidence на панели «Проверки»
+  work.title: подключить codegen свидетельства проверки панель
 ]>
+

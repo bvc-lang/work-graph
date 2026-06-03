@@ -53,5 +53,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/workGraphBacklogUiServer.mjs, src/workItemHierarchy.mjs, work/analytics/parent-subtask-hierarchy.md, work/analytics/architecture-visualization-patterns-comparison.md
-  work.title: Workflow: tree mode по work.parent_id (epic / subtask hierarchy)
+  work.title: Epic/subtask composition видна без manual grouping filters.
 ]>
+

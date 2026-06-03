@@ -1,6 +1,6 @@
 #Задача_write_an39_closing_architecture_domains_l1_hierarchy<[
 Базис:
-  Canon: closing analysis после done эпика по AN-39.
+  Canon: итоговый разбор после done эпика по AN-39.
 Вектор:
   work/analytics/closing-epic-architecture-domains-l1-hierarchy.md
   analytics-records.jsonl closing entry
@@ -10,9 +10,11 @@
   closing doc published
   journal entry appended
   epic closed with evidence
+Свидетельства:
+  cascade: reconcile epic epic-architecture-domains-l1-hierarchy already done
 Анализ:
   Целесообразность:
-  Стоит завести «AN-39 closing analysis: epic-architecture-domains-l1-hierarchy» в бэклог — по материалам AN-39 (work/analytics/architecture-domains-l1-hierarchy.md).
+  Стоит завести «AN-39 итоговый разбор: epic-architecture-domains-l1-hierarchy» в бэклог — по материалам AN-39 (work/analytics/architecture-domains-l1-hierarchy.md).
   Контекст и границы:
   work/analytics/closing-epic-architecture-domains-l1-hierarchy.md
   Зависимости и готовность:
@@ -51,8 +53,6 @@
   work.risk: low
   work.status: done
   work.target_files: work/analytics/closing-epic-architecture-domains-l1-hierarchy.md, work/analytics-records.jsonl, work/analytics/architecture-domains-l1-hierarchy.md
-  work.title: AN-39 closing analysis: epic-architecture-domains-l1-hierarchy
-
-Свидетельства:
-  - cascade: reconcile epic epic-architecture-domains-l1-hierarchy already done
+  work.title: закрытие: an39 закрытие архитектуры домены l1 иерархия
 ]>
+

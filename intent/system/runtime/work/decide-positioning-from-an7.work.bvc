@@ -7,30 +7,12 @@
   Записать risks/assumptions, критерий разворота на A/B/D.
 Цель:
   Позиция C закреплена в intent graph; видна на дорожной карте намерений.
-Анализ:
-  Целесообразность:
-  Стоит завести «зафиксировать выбор позиции C (1С vertical) как decision record» в бэклог — по материалам AN-7 (analytics:product-self-audit-user).
-  Контекст и границы:
-  Decision record в intent graph: question «какая позиция продукта?», options A/B/C/D, selected C.
-  Зависимости и готовность:
-  depends_on=pivot-to-1c-onebase-vertical; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Позиция C закреплена в intent graph; видна на дорожной карте намерений.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-7 (analytics:product-self-audit-user); исполнять после вердикта «полезно» и готовности зависимостей.
 Проверки:
   intent question + 4 option nodes + decision node на C существуют
   AN-7 связан с decision через intakeSourceRef
-
 Свидетельства:
-  - intent/product/positioning/decision-position-c-onebase-vertical.bvc
-  - AN-7 position C recorded
+  intent/product/positioning/decision-position-c-onebase-vertical.bvc
+  AN-7 position C recorded
 
 Метки:
   atom.profile: work_item
@@ -55,5 +37,6 @@
   work.risk: low
   work.status: done
   work.target_files: intent/product/positioning/, work/analytics/product-self-audit-user.md
-  work.title: зафиксировать выбор позиции C (1С vertical) как decision record
+  work.title: Позиция C закреплена в intent graph; видна на дорожной карте намерений.
 ]>
+

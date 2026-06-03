@@ -1,5 +1,6 @@
 import { readAnalyticsRecordJournal } from './analyticsRecordStore.mjs';
 import { attachRelatedWorkItemsToAnalyticsRecords } from './analyticsRecordWorkItems.mjs';
+import { attachAnalyticsLineageToRecords } from './analyticsLineageProjection.mjs';
 import { readWorkItemsFromRepo } from './intentTreeWorkItems.mjs';
 import { buildIntentGraphProjection, attachIntentGraphToAnalyticsRecords } from './intentGraphProjection.mjs';
 import { readIntentNodesFromRepo } from './intentNodeRuntime.mjs';
@@ -204,9 +205,10 @@ export async function buildAnalyticsPanelProjection(options = {}) {
   const intentNodes = await readIntentNodesFromRepo(options);
   const intentGraph = buildIntentGraphProjection(intentNodes, workItems, options);
   const withWorkItems = attachRelatedWorkItemsToAnalyticsRecords(projection.records, workItems);
+  const withLineage = attachAnalyticsLineageToRecords(withWorkItems);
   return {
     ...projection,
     intentGraphSchema: intentGraph.schema,
-    records: attachIntentGraphToAnalyticsRecords(withWorkItems, intentGraph),
+    records: attachIntentGraphToAnalyticsRecords(withLineage, intentGraph),
   };
 }

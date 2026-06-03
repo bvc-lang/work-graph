@@ -12,6 +12,8 @@
   PVRG schema spec опубликован
   Lite scanner/package имеет Apache-2.0 LICENSE
   Advanced language adapters не обещаны в public MVP
+Свидетельства:
+  packages/pvrg-spec/ draft schema pvrg.v1
 Анализ:
   Зачем:
   PVRG — deterministic project graph для AI-agent context; AN-42: открыть schema + lite scanner, advanced adapters — commercial.
@@ -24,9 +26,6 @@
   Вердикт:
   полезно
   Брать в работу после закрытия зависимостей: epic-work-graph-open-publication, publish-bvc-open-standard-pack-an42.
-
-Свидетельства:
-  - packages/pvrg-spec/ draft schema pvrg.v1
 
 Метки:
   atom.profile: work_item
@@ -51,5 +50,6 @@
   work.risk: medium
   work.status: done
   work.target_files: work/analytics/open-publication-technology-holdback-strategy.md, work/analytics/pvrg-verified-reference-graph.md, pvrg-core/
-  work.title: PVRG: публичная schema spec и lite scanner под Apache-2.0
+  work.title: PVRG можно использовать как открытый project graph без закрытых ranking policies.
 ]>
+

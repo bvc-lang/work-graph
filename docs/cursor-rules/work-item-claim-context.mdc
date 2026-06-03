@@ -1,0 +1,23 @@
+---
+description: Before claim/execute on a Work Graph task, read PVRG + graph RAG + memory via MCP
+alwaysApply: true
+---
+
+# Work Item Claim Context (MCP)
+
+When working in the **Work Graph** repository with the `workgraph` MCP server enabled, **before claim, status change to doing, or substantive edits for a WorkItem**:
+
+1. `get_work_item` — full atom fields (status, dependsOn, targetFiles, checks, evidence).
+2. `get_pvrg_task_scope` — bounded `depends_on` + `target_files` subgraph for the task.
+3. `get_graph_rag_context` — same derived bundle as WG worker prompt (related WorkItems, files, evidence, memory).
+4. `list_memory_records` with `workId` — durable project memory linked to the task.
+5. `list_evidence_records` with `workId` — structured evidence for the task.
+
+Optional for architecture-heavy tasks:
+
+- `get_architecture_snapshot` with `focusBlockId` when `target_files` or task title reference an L1 block.
+- `get_unified_linkage` when trace/planning edges matter.
+
+Do **not** read dozens of `.work.bvc` files manually when these MCP tools answer the scope question in one or two calls.
+
+After `complete_work_item` or marking `done`, append evidence via `add_work_item_evidence` or `complete_work_item` — memory candidates derive from done WorkItems.

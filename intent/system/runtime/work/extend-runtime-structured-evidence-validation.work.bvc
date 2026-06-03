@@ -1,0 +1,41 @@
+#Задача_extend_runtime_structured_evidence_validation<[
+Базис:
+  MCP validate_evidence и runtime добавить должны использовать одну validation функцию.
+Вектор:
+  Shared validateEvidenceForWorkItem in src/workGraphRuntime.mjs or evidence module.
+  add_work_item_evidence: опционально strict mode for Tier A gate tasks.
+  tests/workGraphRuntime.test.mjs.
+Цель:
+  Structured evidence enforced там, где контракт требует command/test proof.
+Проверки:
+  Runtime tests for strict/loose modes
+  Prose-only evidence still works for non-gated tasks
+Свидетельства:
+  src/structuredEvidenceV1.mjs + add_work_item_evidence Tier A validation
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-50.1
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-bvc-contract-verification.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-02T14:12:30.445Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-02T14:12:30.445Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: extend-bvc-schema-structured-evidence-fields, implement-mcp-validate-evidence
+  work.id: extend-runtime-structured-evidence-validation
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: agent_platform_architect
+  work.parent_id: epic-work-graph-bvc-contract-verification-v1
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: medium
+  work.status: done
+  work.target_files: src/workGraphRuntime.mjs, tests/workGraphRuntime.test.mjs
+  work.title: расширить runtime структурированные свидетельства validation
+]>
+

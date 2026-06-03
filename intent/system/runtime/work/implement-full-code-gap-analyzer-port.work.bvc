@@ -1,49 +1,27 @@
 #Задача_implement_full_code_gap_analyzer_port<[
 Базис:
   codeGapBacklogFeeder — MVP; codeGapAnalyzer.ts в ioHasC глубже.
-  Задача «Фаза 5: port полного анализатора code-gap» относится к контуру платформы агента и должна быть понятна агенту без чтения всего backlog.
-  Предварительно должны быть закрыты зависимости: phase-5-ir-codegen-runtime.
 Вектор:
-  Port structural diff и taxonomy gap в Work Graph CLI.
-  Ближайший шаг исполнения: просмотреть и перевести в ready.
+  Перенести structural diff и taxonomy gap в Work Graph CLI.
 Цель:
   Отчёт сопоставим с npm run iohasc -- code-gap.
-  Готово, когда выполнены проверки: CLI/report на фикстурном repo.
-Анализ:
-  Целесообразность:
-  Стоит завести «Фаза 5: port полного анализатора code-gap» в бэклог.
-  Контекст и границы:
-  Port structural diff и taxonomy gap в Work Graph CLI.
-  Зависимости и готовность:
-  depends_on=phase-5-ir-codegen-runtime; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Отчёт сопоставим с npm run iohasc -- code-gap.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+Проверки:
+  CLI/report на фикстурном repo
+  Тест vs образец ioHasC
 
 Метки:
   atom.profile: work_item
   migration.strategy: port
   trace.status: verified
-  work.analysis.at: 2026-05-30T17:22:36.684Z
-  work.analysis.source: backfill
-  work.decision.at: 2026-05-30T17:22:36.691Z
-  work.decision.verdict: useful
   work.department: agent-platform
   work.depends_on: phase-5-ir-codegen-runtime
   work.id: implement-full-code-gap-analyzer-port
-  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.next_action: просмотреть и перевести в ready
   work.owner_role: compiler_engineer
-  work.pipeline_stage: decided
   work.priority: medium
   work.risk: medium
   work.status: done
-  work.target_files: src/codeGapAnalyzer.mjs, scripts/code-gap-analyze.mjs, src/codeGapOperatorProjection.mjs
+  work.target_files: src/codeGapBacklogFeeder.mjs, src/codeGapOperatorProjection.mjs
   work.title: Фаза 5: port полного анализатора code-gap
 ]>
+

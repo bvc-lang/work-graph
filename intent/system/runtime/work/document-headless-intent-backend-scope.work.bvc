@@ -1,7 +1,7 @@
 #Задача_document_headless_intent_backend_scope<[
 Базис:
-  Решение «без UI» не зафиксировано; wire-pvrg-* и kanban остаются в backlog без явного wont-do.
-  Задача «Headless: ADR — scope intent backend без dashboard UI» относится к контуру архитектуры продукта и должна быть понятна агенту без чтения всего backlog.
+  Решение «без UI» не зафиксировано; wire-pvrg-* и kanban остаются в бэклог без явного wont-do.
+  Задача «Headless: ADR — scope intent backend без dashboard UI» относится к контуру архитектуры продукта и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: implement-mcp-step-graph-slice.
 Вектор:
   docs/adr-workgraph-headless-intent-backend.md — MCP-only surface, UI tasks deferred/wont-do.
@@ -9,23 +9,6 @@
 Цель:
   Не reopen dashboard semantic map без явного запроса.
   Готово, когда выполнены проверки: ADR перечисляет MCP tools и non-goals UI.
-Анализ:
-  Целесообразность:
-  Стоит завести «Headless: ADR — scope intent backend без dashboard UI» в бэклог.
-  Контекст и границы:
-  docs/adr-workgraph-headless-intent-backend.md — MCP-only surface, UI tasks deferred/wont-do.
-  Зависимости и готовность:
-  depends_on=implement-mcp-step-graph-slice; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Не reopen dashboard semantic map без явного запроса.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -45,5 +28,6 @@
   work.risk: medium
   work.status: done
   work.target_files: docs/adr-workgraph-headless-intent-backend.md, docs/workgraph-intent-graph-mcp.md
-  work.title: Headless: ADR — scope intent backend без dashboard UI
+  work.title: документировать headless intent backend scope
 ]>
+

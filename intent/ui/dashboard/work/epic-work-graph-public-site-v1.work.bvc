@@ -1,0 +1,58 @@
+#Задача_epic_work_graph_public_site_v1<[
+Базис:
+  AN-44: WG должен позиционироваться как слой обязательств/доказательств, не IDE/PM/memory.
+  AN-45: разделы продукта уже образуют workflow Аналитика → Задачи → Доска → Проверки → Память.
+  AN-63: сайт должен быть инструментом для агентов: llms.txt, markdown docs, MCP discovery.
+  Конкуренты (Cursor, Claude Code, Devin, Linear, Mem0) уже используют agent-first docs, MCP/API quickstarts и lifecycle messaging.
+Вектор:
+  P0: static public site routes: /, /product, /evidence-ledger, /onebase, /compare, /docs.
+  P0: /llms.txt, /docs/*.md, /.well-known/mcp.json.
+  P0: semantic HTML + JSON-LD for home/docs.
+  P0: light/dark theme and RU/EN locale for human-facing pages.
+  P0: tests for routes and machine-readable artifacts.
+  P1: docs context JSON endpoints + copyable MCP configs.
+Цель:
+  Human visitor понимает WG как local evidence ledger for AI agents.
+  Agent может открыть /llms.txt и получить docs/MCP/tool контекст без скрейпинга JS.
+Проверки:
+  GET / returns semantic landing with AN→work→evidence flow
+  GET /llms.txt returns text/plain with key pages and preferred interactions
+  GET /.well-known/mcp.json returns valid JSON
+  Theme toggle supports light/dark and persists selected theme
+  Locale switch supports ru/en for navigation, hero, product pages and docs index
+  docs/tz-public-site-v1.md accepted as implementation spec
+  public-site route tests green
+Анализ:
+  Сайт должен занимать пустое место между Cursor/Claude execution, Linear/Jira PM, Mem0 memory: доказуемое обязательство.
+  Не копировать visual style конкурентов; взять паттерн short positioning + lifecycle diagram + quickstart + agent docs.
+Решение:
+  Вердикт: делать.
+  P0 scope: сайт как статическая витрина + machine-readable docs/discovery, без интерактивного демо.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-64
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-public-site-competitive-tz.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-02T22:20:52.994Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-02T22:20:52.994Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: epic-work-graph-ui-sidebar-resize-v1
+  work.id: epic-work-graph-public-site-v1
+  work.item_kind: epic
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: docs/tz-public-site-v1.md, work/analytics/work-graph-public-site-competitive-tz.md, src/publicSiteServer.mjs, src/publicSiteContent.mjs, public/llms.txt, public/.well-known/mcp.json, docs/public-site/*.md, tests/publicSite.test.mjs
+  work.title: Public Site v1: лендинг WG + agent-readable docs
+
+Свидетельства:
+  - Public Site v1 epic completed: landing routes, /app operator route, /llms.txt, /.well-known/mcp.json, docs markdown/BVC examples, docs context endpoints, RU/EN locale, light/dark theme, JSON-LD and publicSite tests (22/22 pass).
+]>

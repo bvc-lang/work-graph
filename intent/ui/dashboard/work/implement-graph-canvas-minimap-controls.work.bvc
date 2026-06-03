@@ -7,31 +7,13 @@
   Единый компонент для всех graph views.
 Цель:
   Большие графы navigable через minimap и controls.
-Анализ:
-  Целесообразность:
-  Стоит завести «добавить minimap и canvas controls (fitView, zoom)» в бэклог — по материалам AN-4 (analytics:graph-visualization-engine).
-  Контекст и границы:
-  flow-background dots; flow-minimap; zoom in/out/fit buttons.
-  Зависимости и готовность:
-  depends_on=migrate-architecture-map-lit-flow; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Большие графы navigable через minimap и controls.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-4 (analytics:graph-visualization-engine); исполнять после вердикта «полезно» и готовности зависимостей.
 Проверки:
   minimap отображается на architecture и intent roadmap
   fitView центрирует выбранную ветку
-
 Свидетельства:
-  - protocols/graph-canvas-lit-flow-v1.bvc + schemas/graph-canvas-lit-flow-projection.v1.json
-  - public/graph-canvas-lit-flow.js (lit-flow client island)
-  - src/graphCanvasLitFlow/* + tests/graphCanvasLitFlow.test.mjs
+  protocols/graph-canvas-lit-flow-v1.bvc + schemas/graph-canvas-lit-flow-projection.v1.json
+  public/graph-canvas-lit-flow.js (lit-flow client island)
+  src/graphCanvasLitFlow/* + tests/graphCanvasLitFlow.test.mjs
 
 Метки:
   atom.profile: work_item
@@ -56,5 +38,6 @@
   work.risk: low
   work.status: done
   work.target_files: src/graphCanvasLitFlow/GraphCanvasControls.ts, src/workGraphBacklogUiServer.mjs
-  work.title: добавить minimap и canvas controls (fitView, zoom)
+  work.title: реализовать графа canvas minimap controls
 ]>
+

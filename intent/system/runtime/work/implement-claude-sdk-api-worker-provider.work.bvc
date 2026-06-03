@@ -7,23 +7,6 @@
   Добавить capability metadata в provider registry: long-context, tool-use support, structured output reliability, cost/latency hints.
 Цель:
   Work Graph может переключаться на Claude-compatible исполнителя без изменения runtime, dashboard и evidence gates.
-Анализ:
-  Целесообразность:
-  Стоит завести «реализовать Claude SDK/API worker provider» в бэклог.
-  Контекст и границы:
-  Реализовать claude-sdk-api provider behind Worker Input/Output v1: env-gated, mock-fetch/mock-client tests, structured output validation, timeout/failure mapping.
-  Зависимости и готовность:
-  depends_on=design-provider-registry-and-capability-selection, implement-cursor-sdk-worker-provider; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Work Graph может переключаться на Claude-compatible исполнителя без изменения runtime, dashboard и evidence gates.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -44,6 +27,6 @@
   work.risk: high
   work.status: done
   work.target_files: src/agentWorkerClaudeProvider.mjs, src/workGraphWorkerProvider.mjs, tests/agentWorkerClaudeProvider.test.mjs, tests/workGraphWorkerProvider.test.mjs, work/backlog.bvc
-  work.title: реализовать Claude SDK/API worker provider
+  work.title: Work Graph может переключаться на Claude-compatible исполнителя без изменения runtime, dashboard и evidence…
 ]>
 

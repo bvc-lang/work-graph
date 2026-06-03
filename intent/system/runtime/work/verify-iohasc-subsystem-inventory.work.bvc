@@ -1,7 +1,7 @@
 #Задача_verify_iohasc_subsystem_inventory<[
 Базис:
   Фаза 0 требует сверить полный список подсистем старого ioHasC с пересобрать roadmap.
-  Задача «сверить inventory подсистем ioHasC» относится к контуру архитектуры продукта и должна быть понятна агенту без чтения всего backlog.
+  Задача «сверить inventory подсистем ioHasC» относится к контуру архитектуры продукта и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: phase-0-inventory-boundaries.
 Вектор:
   Составить проверяемую таблицу подсистем, source docs/files, migration.strategy и first target phase.
@@ -48,6 +48,6 @@
   work.risk: medium
   work.status: done
   work.target_files: docs/plan-iohasc-full-rebuild-backlog.md, work/backlog.bvc
-  work.title: сверить inventory подсистем ioHasC
+  work.title: Roadmap не теряет крупные подсистемы ioHasC и не обещает перенос без стратегии.
 ]>
 

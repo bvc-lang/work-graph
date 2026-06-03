@@ -1,7 +1,7 @@
 #Задача_port_unified_linkage_serialization<[
 Базис:
   Старый ioHasC имеет unified linkage serialization; пересобрать нужен стабильный read model для step-code relations.
-  Задача «перенести unified linkage serialization как derived projection» относится к контуру графа знаний и retrieval и должна быть понятна агенту без чтения всего backlog.
+  Задача «перенести unified linkage serialization как derived projection» относится к контуру графа знаний и retrieval и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: phase-4-trace-pvrg-semantic-map.
 Вектор:
   Спроектировать перенос артефакта в стиле `.iohasc/unified-linkage.v1.json` в derived projections Work Graph rebuild.
@@ -45,6 +45,6 @@
   work.risk: medium
   work.status: done
   work.target_files: protocols/unified-linkage-projection-v1.bvc, src/unifiedLinkageProjection.mjs, src/architectureSnapshot.mjs, work/backlog.bvc
-  work.title: перенести unified linkage serialization как derived projection
+  work.title: Linkage может питать architecture map, task scope и verification, не становясь canonical state.
 ]>
 

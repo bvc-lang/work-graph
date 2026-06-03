@@ -3,29 +3,12 @@
   Один большой work/backlog.bvc удобен для seed/MVP, но создаёт конфликты параллельных агентов и плохо отражает домены проекта.
   Идея графа намерений предлагает хранить атомы по папкам, доменам и потокам, а backlog/status board строить как projection.
 Вектор:
-  Спроектировать layout: intent tree как canonical source, work/backlog.bvc как индекс/очередь, JSON snapshot как UI/cache, SQLite только как optional runtime index/queue.
+  Спроектировать layout: intent tree как canonical source, work/backlog.bvc как индекс/очередь, JSON snapshot как UI/cache, SQLite только как опционально runtime index/queue.
   Описать структуру папок для system, ui, domains/onebase, research, evidence и memory.
   Зафиксировать migration path из текущего monolithic бэклог без потери work.id, depends_on, evidence и статусов.
   Отдельно описать, почему NoSQL не нужен в MVP и какие условия могут вернуть этот выбор позже.
 Цель:
   Перейти от одного растущего backlog-файла к структуре намерений, где хранение, граф, UI и агенты меньше конфликтуют.
-Анализ:
-  Целесообразность:
-  Стоит завести «спроектировать intent tree layout для Work Graph» в бэклог.
-  Контекст и границы:
-  Спроектировать layout: intent tree как canonical source, work/backlog.bvc как индекс/очередь, JSON snapshot как UI/cache, SQLite только как optional runtime index/queue.
-  Зависимости и готовность:
-  depends_on=design-workgraph-os-integration-model; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Перейти от одного растущего backlog-файла к структуре намерений, где хранение, граф, UI и агенты меньше конфликтуют.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -46,6 +29,6 @@
   work.risk: high
   work.status: done
   work.target_files: work/backlog.bvc, protocols/project-memory-v1.bvc, ui/operator-dashboard-snapshot.bvc, protocols/workgraph-os-integration-model.bvc, protocols/intent-tree-workgraph-layout.bvc
-  work.title: спроектировать intent tree layout для Work Graph
+  work.title: Перейти от одного растущего backlog-файла к структуре намерений, где хранение, граф, UI и агенты меньше кон…
 ]>
 

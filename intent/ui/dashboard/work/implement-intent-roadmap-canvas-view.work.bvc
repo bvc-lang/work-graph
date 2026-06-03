@@ -15,7 +15,9 @@
   trace.status: verified
   work.department: frontend-ui
   work.id: implement-intent-roadmap-canvas-view
+  work.next_action: просмотреть и перевести в ready
   work.status: done
   work.target_files: src/intentRoadmapCanvas.mjs, src/dagreGraphLayout.mjs, src/intentRoadmapProjection.mjs, src/workGraphBacklogUiServer.mjs, tests/intentRoadmapCanvas.test.mjs, tests/dagreGraphLayout.test.mjs
-  work.title: реализовать интерактивную dagre-схему intent roadmap
+  work.title: «Дорожная карта» = интерактивная схема как в референсе, без Mermaid в DOM.
 ]>
+

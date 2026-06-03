@@ -1,0 +1,53 @@
+#Задача_write_closing_epic_work_graph_ui_i18n_v1<[
+Базис:
+  Закрытие с ADR, smoke локали, заметкой о покрытии catalog.
+Вектор:
+  work/analytics/closing-epic-work-graph-ui-i18n-v1.md
+  Запись closing в journal при необходимости.
+Цель:
+  Эпик реализации AN-55 закрыт с проверяемыми артефактами.
+Проверки:
+  Closing doc опубликован
+  Задачи P0–P1 done или явно отложены в closing
+Анализ:
+  Зачем:
+  Закрытие с ADR, smoke локали, заметкой о покрытии catalog.
+  Контекст: work/analytics/closing-epic-work-graph-ui-i18n-v1.md
+  Когда:
+  После готовности: epic-work-graph-ui-i18n-v1, extract-backlog-shell-i18n, extract-kanban-workflow-i18n, wire-bvc-dialect-atom-inspector-b11.
+  Готово, когда:
+  Эпик реализации AN-55 закрыт с проверяемыми артефактами.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: epic-work-graph-ui-i18n-v1, extract-backlog-shell-i18n, extract-kanban-workflow-i18n, wire-bvc-dialect-atom-inspector-b11.
+
+Свидетельства:
+  - work/analytics/closing-epic-work-graph-ui-i18n-v1.md
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-55
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-ui-i18n-best-practices.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-02T16:36:21.501Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-02T16:36:21.501Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: epic-work-graph-ui-i18n-v1, extract-backlog-shell-i18n, extract-kanban-workflow-i18n, wire-bvc-dialect-atom-inspector-b11
+  work.id: write-closing-epic-work-graph-ui-i18n-v1
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: feature_engineer
+  work.parent_id: epic-work-graph-ui-i18n-v1
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: work/analytics/closing-epic-work-graph-ui-i18n-v1.md, work/analytics/work-graph-ui-i18n-best-practices.md
+  work.title: Закрытие эпика work-graph-ui-i18n-v1 (AN-55)
+]>
+

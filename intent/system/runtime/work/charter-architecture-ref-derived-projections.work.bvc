@@ -9,23 +9,6 @@
 Проверки:
   charter содержит architecture.ref
   derived-projections упомянут в §Слои_Ядра или cross-ref
-Анализ:
-  Целесообразность:
-  Стоит завести «Charter: architecture.ref + derived-projections footnote in §Слои_Ядра» в бэклог — по материалам AN-36 (work/analytics/architecture-main-bvc-canon-hub.md).
-  Контекст и границы:
-  charter/main.bvc: architecture.ref → architecture/main.bvc.
-  Зависимости и готовность:
-  depends_on=epic-architecture-main-bvc-canon, author-architecture-main-bvc-v1; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Устав явно указывает на architecture canon, без слияния артефактов.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-36 (work/analytics/architecture-main-bvc-canon-hub.md); исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -50,5 +33,6 @@
   work.risk: low
   work.status: done
   work.target_files: charter/main.bvc, architecture/main.bvc, work/analytics/architecture-main-bvc-canon-hub.md
-  work.title: Charter: architecture.ref + derived-projections footnote in §Слои_Ядра
+  work.title: Устав явно указывает на architecture canon, без слияния артефактов.
 ]>
+

@@ -1,7 +1,7 @@
 #Задача_define_intent_graph_gbc_slice_boundary<[
 Базис:
   GBC/GFS/GVM отложены, но должны иметь measurable return triggers.
-  Задача «определить boundary intent graph GBC slice» относится к контуру Work Graph rebuild и должна быть понятна агенту без чтения всего backlog.
+  Задача «определить boundary intent graph GBC slice» относится к контуру Work Graph пересобрать и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: phase-11-gbc-gfs-gvm-deferred.
 Вектор:
   Определить intent graph GBC slice boundary, source inputs, consumers и причины optional-статуса.
@@ -9,23 +9,6 @@
 Цель:
   Deferred runtime track остаётся видимым и управляемым.
   Готово, когда выполнены проверки: inputs и consumers для GBC slice определены.
-Анализ:
-  Целесообразность:
-  Стоит завести «определить boundary intent graph GBC slice» в бэклог.
-  Контекст и границы:
-  Определить intent graph GBC slice boundary, source inputs, consumers и причины optional-статуса.
-  Зависимости и готовность:
-  depends_on=phase-11-gbc-gfs-gvm-deferred; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Deferred runtime track остаётся видимым и управляемым.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -46,6 +29,6 @@
   work.risk: high
   work.status: done
   work.target_files: protocols/intent-graph-gbc-slice-boundary-v1.bvc, src/intentGraphGbcSliceBoundary.mjs, tests/intentGraphGbcSliceBoundary.test.mjs, protocols/gbc-gvm-zig-deferral-boundary.bvc, docs/plan-iohasc-full-rebuild-backlog.md, work/backlog.bvc
-  work.title: определить boundary intent graph GBC slice
+  work.title: Deferred runtime track остаётся видимым и управляемым.
 ]>
 

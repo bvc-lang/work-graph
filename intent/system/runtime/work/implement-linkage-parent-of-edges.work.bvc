@@ -7,6 +7,11 @@
   Trace/drilldown показывает parent_of рядом с depends_on, чтобы агент понимал композицию и порядок исполнения отдельно.
 Цель:
   Linkage graph отражает иерархию рядом с depends_on.
+Проверки:
+  тест unifiedLinkageProjection на parent_of edges
+  Graph RAG slice содержит parent/children для выбранного work.id
+Свидетельства:
+  parent_of edges в unifiedLinkageProjection.mjs; tests/workItemHierarchy.test.mjs
 Анализ:
   Целесообразность:
   Стоит завести «добавить parent_of / child_of в linkage, Graph RAG и trace» в бэклог — по материалам AN-2 (analytics:parent-subtask-hierarchy).
@@ -24,12 +29,6 @@
   Вердикт:
   полезно
   Создана по материалам приёма AN-2 (analytics:parent-subtask-hierarchy); исполнять после вердикта «полезно» и готовности зависимостей.
-Проверки:
-  тест unifiedLinkageProjection на parent_of edges
-  Graph RAG slice содержит parent/children для выбранного work.id
-
-Свидетельства:
-  - parent_of edges в unifiedLinkageProjection.mjs; tests/workItemHierarchy.test.mjs
 
 Метки:
   atom.profile: work_item
@@ -52,5 +51,6 @@
   work.risk: low
   work.status: done
   work.target_files: src/unifiedLinkageProjection.mjs, tests/unifiedLinkageProjection.test.mjs, work/analytics/parent-subtask-hierarchy.md
-  work.title: добавить parent_of / child_of в linkage, Graph RAG и trace
+  work.title: Linkage graph отражает иерархию рядом с depends_on.
 ]>
+

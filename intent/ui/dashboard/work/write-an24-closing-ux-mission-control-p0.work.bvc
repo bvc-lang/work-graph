@@ -10,9 +10,12 @@
 Проверки:
   analytics-records.jsonl содержит AN-24 запись
   эпик ux-mission-control-p0 закрыт через close-script с verified evidence
+Свидетельства:
+  work/analytics/closing-epic-ux-mission-control-p0.md
+  AN-24 in analytics-records.jsonl
 Анализ:
   Целесообразность:
-  Стоит завести «AN-24 closing analysis: UX Mission Control P0 (post-done)» в бэклог — по материалам work/analytics/ux-current-state-and-vector.md.
+  Стоит завести «AN-24 итоговый разбор: UX Mission Control P0 (post-done)» в бэклог — по материалам work/analytics/ux-current-state-and-vector.md.
   Контекст и границы:
   work/analytics/closing-ux-mission-control-p0.md + запись в analytics-records.jsonl (AN-24).
   Зависимости и готовность:
@@ -27,10 +30,6 @@
   Вердикт:
   полезно
   Создана по материалам приёма work/analytics/ux-current-state-and-vector.md; исполнять после вердикта «полезно» и готовности зависимостей.
-
-Свидетельства:
-  - work/analytics/closing-epic-ux-mission-control-p0.md
-  - AN-24 in analytics-records.jsonl
 
 Метки:
   atom.profile: work_item
@@ -54,5 +53,6 @@
   work.risk: low
   work.status: done
   work.target_files: work/analytics/closing-ux-mission-control-p0.md, work/analytics-records.jsonl
-  work.title: AN-24 closing analysis: UX Mission Control P0 (post-done)
+  work.title: Закрытие эпика с зафиксированными outcomes и метриками; основа для P1.
 ]>
+

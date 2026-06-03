@@ -9,23 +9,6 @@
 Проверки:
   plan file in docs/
   charter cross-ref if needed
-Анализ:
-  Целесообразность:
-  Стоит завести «Author plan: ioHasC project (.step) → .bvc bridge» в бэклог — по материалам AN-37 (work/analytics/bvc-open-format-tail-v1.md).
-  Контекст и границы:
-  docs/plan-iohasc-project-bvc-bridge.md: scope, phases, rollback.
-  Зависимости и готовность:
-  depends_on=epic-bvc-open-format-tail-v1; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Ясный отдельный трек для ioHasC без смешения с WG done.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-37 (work/analytics/bvc-open-format-tail-v1.md); исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -49,5 +32,6 @@
   work.risk: medium
   work.status: done
   work.target_files: docs/plan-iohasc-project-bvc-bridge.md, docs/plan-step-to-bvc-migration.md, docs/plan-bvc-open-format-tail-v1.md
-  work.title: Author plan: ioHasC project (.step) → .bvc bridge
+  work.title: Ясный отдельный трек для ioHasC без смешения с WG done.
 ]>
+

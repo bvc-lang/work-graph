@@ -1,7 +1,7 @@
 #Задача_design_intent_hierarchy_pilot<[
 Базис:
   Full пересобрать нужна canonical intent hierarchy для domains/features/plans, а не только flat бэклог projection.
-  Задача «спроектировать пилот intent hierarchy для ioHasC rebuild» относится к контуру Work Graph rebuild и должна быть понятна агенту без чтения всего backlog.
+  Задача «спроектировать пилот intent hierarchy для ioHasC rebuild» относится к контуру Work Graph пересобрать и должна быть понятна агенту без чтения всего бэклог.
   Предварительно должны быть закрыты зависимости: phase-3-step-canon-intent-graph.
 Вектор:
   Спроектировать пилот folders и labels для domains, features и plan atoms на текущем intent tree layout.
@@ -9,23 +9,6 @@
 Цель:
   Step canon migration получает конкретный первый slice.
   Готово, когда выполнены проверки: layout domain/feature/plan определён.
-Анализ:
-  Целесообразность:
-  Стоит завести «спроектировать пилот intent hierarchy для ioHasC rebuild» в бэклог.
-  Контекст и границы:
-  Спроектировать пилот folders и labels для domains, features и plan atoms на текущем intent tree layout.
-  Зависимости и готовность:
-  depends_on=phase-3-step-canon-intent-graph; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Step canon migration получает конкретный первый slice.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -46,6 +29,6 @@
   work.risk: medium
   work.status: done
   work.target_files: protocols/intent-hierarchy-pilot.bvc, src/intentHierarchy.mjs, tests/intentHierarchy.test.mjs, intent/index.bvc, work/backlog.bvc
-  work.title: спроектировать пилот intent hierarchy для ioHasC rebuild
+  work.title: спроектировать intent иерархия pilot
 ]>
 

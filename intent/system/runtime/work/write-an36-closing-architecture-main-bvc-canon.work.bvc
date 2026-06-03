@@ -1,18 +1,18 @@
 #Задача_write_an36_closing_architecture_main_bvc_canon<[
 Базис:
-  Canon: closing analysis после done эпика по AN-36.
+  Canon: итоговый разбор после done эпика по AN-36.
 Вектор:
   work/analytics/closing-epic-architecture-main-bvc-canon.md
   analytics-records.jsonl closing entry
 Цель:
-  AN-36 закрыт с evidence architecture/main.bvc hub live.
+  AN-36 закрыт со свидетельствами: architecture/main.bvc hub live.
 Проверки:
   closing doc published
   journal entry appended
   epic closed with evidence
 Анализ:
   Целесообразность:
-  Стоит завести «AN-36 closing analysis: epic-architecture-main-bvc-canon» в бэклог — по материалам AN-36 (work/analytics/architecture-main-bvc-canon-hub.md).
+  Стоит завести «AN-36 итоговый разбор: epic-architecture-main-bvc-canon» в бэклог — по материалам AN-36 (work/analytics/architecture-main-bvc-canon-hub.md).
   Контекст и границы:
   work/analytics/closing-epic-architecture-main-bvc-canon.md
   Зависимости и готовность:
@@ -51,5 +51,6 @@
   work.risk: low
   work.status: done
   work.target_files: work/analytics/closing-epic-architecture-main-bvc-canon.md, work/analytics-records.jsonl, work/analytics/architecture-main-bvc-canon-hub.md
-  work.title: AN-36 closing analysis: epic-architecture-main-bvc-canon
+  work.title: закрытие: an36 закрытие архитектуры main BVC канон
 ]>
+

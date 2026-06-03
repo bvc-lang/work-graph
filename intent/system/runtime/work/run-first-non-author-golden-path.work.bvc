@@ -8,9 +8,15 @@
   Результат → retro analytics record AN-8.
 Цель:
   Один verified work item, выполненный не-автором, с письменным фидбеком и retro-аналитикой.
+Проверки:
+  work item pilot-задачи в статусе verified с evidence
+  pilot-фидбек сохранён как work/analytics/pilot-1c-feedback-v1.md
+  AN-8 retro создан с выводами для следующей итерации
+Свидетельства:
+  docs/golden-path-pilot-runbook.md — runbook for external pilot
 Анализ:
   Целесообразность:
-  Стоит завести «провести pilot 1С-задачи через golden path и собрать evidence» в бэклог — по материалам AN-7 (analytics:product-self-audit-user).
+  Стоит завести «провести пилот 1С-задачи через golden path и собрать evidence» в бэклог — по материалам AN-7 (analytics:product-self-audit-user).
   Контекст и границы:
   Pilot выполняет задачу: charter → work item → agent → code/конфигурация → trace → verified.
   Зависимости и готовность:
@@ -25,13 +31,6 @@
   Вердикт:
   полезно
   Создана по материалам приёма AN-7 (analytics:product-self-audit-user); исполнять после вердикта «полезно» и готовности зависимостей.
-Проверки:
-  work item pilot-задачи в статусе verified с evidence
-  pilot-фидбек сохранён как work/analytics/pilot-1c-feedback-v1.md
-  AN-8 retro создан с выводами для следующей итерации
-
-Свидетельства:
-  - docs/golden-path-pilot-runbook.md — runbook for external pilot
 
 Метки:
   atom.profile: work_item
@@ -56,5 +55,6 @@
   work.risk: high
   work.status: done
   work.target_files: work/analytics/pilot-1c-feedback-v1.md, work/analytics-records.jsonl
-  work.title: провести pilot 1С-задачи через golden path и собрать evidence
+  work.title: Один verified work item, выполненный не-автором, с письменным фидбеком и retro-аналитикой.
 ]>
+

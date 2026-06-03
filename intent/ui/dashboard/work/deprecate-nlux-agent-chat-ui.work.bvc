@@ -10,23 +10,6 @@
   Обновить тесты так, чтобы они проверяли MCP-first/secondary UI boundary, а не наличие NLUX.
 Цель:
   Не тащить неподходящую chat library и не расходовать продуктовые усилия на имитацию Cursor внутри WorkGraph dashboard.
-Анализ:
-  Целесообразность:
-  Стоит завести «вывести NLUX из роли основного Agent UI» в бэклог.
-  Контекст и границы:
-  Убрать NLUX как стратегическую зависимость и отменить follow-up tune-nlux-theme-and-real-streaming.
-  Зависимости и готовность:
-  depends_on=design-workgraph-mcp-client-strategy; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Не тащить неподходящую chat library и не расходовать продуктовые усилия на имитацию Cursor внутри WorkGraph dashboard.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -47,6 +30,6 @@
   work.risk: medium
   work.status: done
   work.target_files: package.json, package-lock.json, src/workGraphBacklogUiServer.mjs, tests/workGraphBacklogUiServer.test.mjs, work/backlog.bvc
-  work.title: вывести NLUX из роли основного Agent UI
+  work.title: Не тащить неподходящую chat library и не расходовать продуктовые усилия на имитацию Cursor внутри WorkGraph…
 ]>
 

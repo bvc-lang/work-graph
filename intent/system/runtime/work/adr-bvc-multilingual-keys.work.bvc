@@ -8,30 +8,12 @@
   Cross-link: docs/adr-bvc-format-naming.md, AN-8, AN-19.
 Цель:
   Governance-слой для multilingual совпадает с AN-19; команда может ссылаться на ADR.
-Анализ:
-  Целесообразность:
-  Стоит завести «принять ADR docs/adr-bvc-multilingual-keys.md (Detect-or-Declare)» в бэклог — по материалам AN-19 (analytics:bvc-multilingual-keys-design).
-  Контекст и границы:
-  Создать docs/adr-bvc-multilingual-keys.md: EN canonical, Detect-or-Declare, bvc-lang/dialects.
-  Зависимости и готовность:
-  depends_on=bvc-multilingual-detect-or-declare; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Governance-слой для multilingual совпадает с AN-19; команда может ссылаться на ADR.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-19 (analytics:bvc-multilingual-keys-design); исполнять после вердикта «полезно» и готовности зависимостей.
 Проверки:
   docs/adr-bvc-multilingual-keys.md status Accepted
   AN-8 и AN-19 ссылаются на ADR
-
 Свидетельства:
-  - docs/adr-bvc-multilingual-keys.md принят (status Принято 2026-05-31)
-  - AN-19 и migration plan ссылаются на ADR
+  docs/adr-bvc-multilingual-keys.md принят (status Принято 2026-05-31)
+  AN-19 и migration plan ссылаются на ADR
 
 Метки:
   atom.profile: work_item
@@ -56,5 +38,6 @@
   work.risk: low
   work.status: done
   work.target_files: docs/adr-bvc-multilingual-keys.md, docs/adr-bvc-format-naming.md, work/analytics/step-as-open-canon-standard.md, work/analytics/bvc-multilingual-keys-design.md
-  work.title: принять ADR docs/adr-bvc-multilingual-keys.md (Detect-or-Declare)
+  work.title: Governance: multilingual совпадает с AN-19; команда может ссылаться на ADR.
 ]>
+

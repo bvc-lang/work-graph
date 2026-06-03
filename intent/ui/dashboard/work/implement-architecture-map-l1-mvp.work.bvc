@@ -8,23 +8,6 @@
   Добавить click handler: focus block and open block detail shell even if inner tabs are partially stubbed.
 Цель:
   Пользователь видит architecture map верхнего уровня и может выбрать блок для детализации.
-Анализ:
-  Целесообразность:
-  Стоит завести «реализовать MVP L1 architecture map в UI» в бэклог.
-  Контекст и границы:
-  Реализовать buildArchitectureSnapshotL1 в runtime/server и endpoint /api/architecture-snapshot.
-  Зависимости и готовность:
-  depends_on=define-architecture-snapshot-v1, separate-architecture-and-work-deps-ui; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Пользователь видит architecture map верхнего уровня и может выбрать блок для детализации.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -45,6 +28,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/workGraphBacklogUiServer.mjs, src/architectureSnapshot.mjs, schemas/architecture-snapshot.v1.json, tests/workGraphBacklogUiServer.test.mjs, work/backlog.bvc
-  work.title: реализовать MVP L1 architecture map в UI
+  work.title: Пользователь видит architecture map верхнего уровня и может выбрать блок для детализации.
 ]>
 

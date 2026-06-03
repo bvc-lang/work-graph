@@ -1,39 +1,21 @@
 #Задача_implement_graph_canvas_svg_edge_overlay<[
 Базис:
   Источник: analytics:graph-edges-n8n-parity (AN-5), C2–C3.
-  Overlay под flow-canvas (z-index), sync viewport via FlowInstance.subscribe.
+  Overlay под flow-canvas (z-index), синхронизировать viewport via FlowInstance.subscribe.
 Вектор:
   graphCanvasSvgEdges.ts: mount/unmount/repaint, marker-end arrows, edge labels.
   injectFlowCanvasNativeEdgeHide — скрыть flow-edges-layer и flow-labels-overlay.
   canvas.setEdges([]) — lit-flow только nodes.
 Цель:
   Все graph views рендерят рёбра через SVG overlay, не через lit-flow flow-edge.
-Анализ:
-  Целесообразность:
-  Стоит завести «реализовать SVG edge overlay в mountGraphCanvasLitFlow» в бэклог — по материалам AN-5 (analytics:graph-edges-n8n-parity).
-  Контекст и границы:
-  graphCanvasSvgEdges.ts: mount/unmount/repaint, marker-end arrows, edge labels.
-  Зависимости и готовность:
-  depends_on=implement-graph-canvas-edge-router; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Все graph views рендерят рёбра через SVG overlay, не через lit-flow flow-edge.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-5 (analytics:graph-edges-n8n-parity); исполнять после вердикта «полезно» и готовности зависимостей.
 Проверки:
   data-testid graph-canvas-svg-edges присутствует в DOM
   npm run build:graph-canvas-lit-flow без ошибок
   manual: intent roadmap edges readable
-
 Свидетельства:
-  - src/graphCanvasLitFlow/client/graphCanvasSvgEdges.ts — mount/repaint/labels
-  - mountGraphCanvasLitFlow.ts: setEdges([]), injectFlowCanvasNativeEdgeHide, mountGraphCanvasSvgEdges
-  - npm run build:graph-canvas-lit-flow — green
+  src/graphCanvasLitFlow/client/graphCanvasSvgEdges.ts — mount/repaint/labels
+  mountGraphCanvasLitFlow.ts: setEdges([]), injectFlowCanvasNativeEdgeHide, mountGraphCanvasSvgEdges
+  npm run build:graph-canvas-lit-flow — green
 
 Метки:
   atom.profile: work_item
@@ -58,5 +40,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/graphCanvasLitFlow/client/graphCanvasSvgEdges.ts, src/graphCanvasLitFlow/client/mountGraphCanvasLitFlow.ts, src/graphCanvasLitFlow/client/graphCanvasTheme.css, public/graph-canvas-lit-flow.js
-  work.title: реализовать SVG edge overlay в mountGraphCanvasLitFlow
+  work.title: Все graph views рендерят рёбра через SVG overlay, не через lit-flow flow-edge.
 ]>
+

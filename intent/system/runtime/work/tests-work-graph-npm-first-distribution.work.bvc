@@ -10,6 +10,9 @@
 Проверки:
   npm run test:deterministic включает npm-first cases
   Legacy engineRoot path всё ещё покрыт
+Свидетельства:
+  tests/workGraphEngineRoot.test.mjs
+  tests/workGraphProjectInit.test.mjs
 Анализ:
   Зачем:
   Без тестов npm path регрессирует к engineRoot UX.
@@ -22,10 +25,6 @@
   Вердикт:
   полезно
   Брать в работу после закрытия зависимостей: epic-work-graph-npm-first-distribution, implement-engine-root-resolver-npm-first, refactor-init-npm-devdependencies.
-
-Свидетельства:
-  - tests/workGraphEngineRoot.test.mjs
-  - tests/workGraphProjectInit.test.mjs
 
 Метки:
   atom.profile: work_item
@@ -50,5 +49,6 @@
   work.risk: low
   work.status: done
   work.target_files: tests/, scripts/seed-epic-work-graph-npm-first-distribution.mjs
-  work.title: Тесты: npm-first init, resolveEngineRoot, smoke без clone
+  work.title: CI ловит поломку user-first install.
 ]>
+

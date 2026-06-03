@@ -1,19 +1,19 @@
 #Задача_write_an34_closing_architecture_views_v1<[
 Базис:
-  Canon: closing analysis после done эпика по AN-34.
+  Canon: итоговый разбор после done эпика по AN-34.
 Вектор:
   work/analytics/closing-epic-architecture-views-v1.md
   analytics-records.jsonl closing entry
   feeds_epics link back to epic
 Цель:
-  AN-34 закрыт с evidence multi-view delivery.
+  AN-34 закрыт со свидетельствами multi-view delivery.
 Проверки:
   closing doc published
   journal entry appended
   epic closed with evidence
 Анализ:
   Целесообразность:
-  Стоит завести «AN-34 closing analysis: epic-architecture-views-v1» в бэклог — по материалам AN-34 (work/analytics/architecture-visualization-patterns-comparison.md).
+  Стоит завести «AN-34 итоговый разбор: epic-architecture-views-v1» в бэклог — по материалам AN-34 (work/analytics/architecture-visualization-patterns-comparison.md).
   Контекст и границы:
   work/analytics/closing-epic-architecture-views-v1.md
   Зависимости и готовность:
@@ -52,5 +52,6 @@
   work.risk: low
   work.status: done
   work.target_files: work/analytics/closing-epic-architecture-views-v1.md, work/analytics-records.jsonl, work/analytics/architecture-visualization-patterns-comparison.md
-  work.title: AN-34 closing analysis: epic-architecture-views-v1
+  work.title: закрытие: an34 закрытие архитектуры представления v1
 ]>
+

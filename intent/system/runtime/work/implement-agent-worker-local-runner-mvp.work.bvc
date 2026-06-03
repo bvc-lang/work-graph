@@ -8,23 +8,6 @@
   Покрыть happy path и сценарий ошибки тестами без реального LLM.
 Цель:
   Получить первый проверяемый execution loop для Agent Worker Adapter до подключения Cursor SDK, Claude или OpenAI-compatible providers.
-Анализ:
-  Целесообразность:
-  Стоит завести «реализовать MVP локального runner для adapter agent worker» в бэклог.
-  Контекст и границы:
-  Реализовать минимальный local runner, который читает WorkItem snapshot, применяет bounded policy, запускает deterministic command или заглушка provider и возвращает Worker Output v1.
-  Зависимости и готовность:
-  depends_on=design-agent-worker-adapter; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Получить первый проверяемый execution loop для Agent Worker Adapter до подключения Cursor SDK, Claude или OpenAI-compatible providers.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -45,6 +28,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/agentWorkerLocalRunner.mjs, tests/agentWorkerLocalRunner.test.mjs, package.json, work/backlog.bvc
-  work.title: реализовать MVP локального runner для adapter agent worker
+  work.title: Получить первый проверяемый execution loop для Agent Worker Adapter до подключения Cursor SDK, Claude или O…
 ]>
 

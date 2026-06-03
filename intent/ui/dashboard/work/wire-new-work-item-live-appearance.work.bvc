@@ -1,0 +1,53 @@
+#Задача_wire_new_work_item_live_appearance<[
+Базис:
+  Seed epic создаёт items — оператор ожидает карточки без reload.
+Вектор:
+  delta item.added → вставить карточку в колонку бэклога.
+  CSS .kanban-card.is-new flash 3s; update column counts.
+  Same path for workflow list prepend.
+Цель:
+  Новый work.id виден на доске вскоре после появления файла в intent tree.
+Проверки:
+  Added id отображает карточку
+  Счётчик колонки увеличивается
+Свидетельства:
+  applyKanbanBoardPatch inserts cards with .is-new animation; data-work-id on kanban cards; 742 tests green
+Анализ:
+  Зачем:
+  Seed epic создаёт items — оператор ожидает карточки без reload.
+  Контекст: delta item.added → вставить карточку в колонку бэклога.
+  Когда:
+  После готовности: implement-kanban-incremental-patch.
+  Готово, когда:
+  Новый work.id виден на доске вскоре после появления файла в intent tree.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: implement-kanban-incremental-patch.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-56
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-ui-realtime-updates-best-practices.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-02T16:41:23.628Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-02T16:41:23.628Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: implement-kanban-incremental-patch
+  work.id: wire-new-work-item-live-appearance
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.parent_id: epic-work-graph-ui-realtime-v1
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: src/ui/kanbanBoardPatcher.mjs, src/workGraphBacklogUiServer.mjs, src/style.css
+  work.title: Live-появление новых work item на доске
+]>
+

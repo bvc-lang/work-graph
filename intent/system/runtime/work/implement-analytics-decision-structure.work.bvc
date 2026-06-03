@@ -4,46 +4,27 @@
   AN-n должен показывать не только markdown, но и machine-readable options/selected decision/tasks.
 Вектор:
   Расширить analytics projection: question, options[], selectedDecision, relatedWorkItems, relatedIntentNodes.
-  Связать AN-n с intent_node через intake.source_ref и intent.question_id/decision_id.
+  Связать AN-n с intent_node через приём.source_ref и intent.question_id/decision_id.
   В drawer Analytics показать «Варианты решений», «Выбранное решение», «Задачи из решения».
 Цель:
   Аналитика становится входной точкой графа намерений: варианты и решение доступны UI/agent без парсинга markdown.
-Анализ:
-  Целесообразность:
-  Стоит завести «структурировать варианты и выбранное решение в analytics projection» в бэклог — по материалам AN-3 (analytics:intent-graph-storage-roadmap).
-  Контекст и границы:
-  Расширить analytics projection: question, options[], selectedDecision, relatedWorkItems, relatedIntentNodes.
-  Зависимости и готовность:
-  depends_on=implement-intent-node-atom-profile; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Аналитика становится входной точкой графа намерений: варианты и решение доступны UI/agent без парсинга markdown.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-3 (analytics:intent-graph-storage-roadmap); исполнять после вердикта «полезно» и готовности зависимостей.
 Проверки:
   analyticsPanelProjection test покрывает selectedDecision и relatedIntentNodes
   analytics drawer показывает варианты и выбранное решение
   AN-3 отображает задачи из решения после seed
-
 Свидетельства:
-  - analyticsPanelProjection intentGraph enrichment + UI sections
+  analyticsPanelProjection intentGraph enrichment + UI sections
 
 Метки:
   atom.profile: work_item
   intake.analytics_key: AN-3
   intake.source_kind: analytics-record
   intake.source_ref: analytics:intent-graph-storage-roadmap
+  intent.decision_id: decision:intent-graph-storage-v1
+  intent.option_id: option-c-intent-node-canon
+  intent.question_id: iq:intent-graph-storage
   migration.strategy: rebuild
   trace.status: verified
-  intent.question_id: iq:intent-graph-storage
-  intent.option_id: option-c-intent-node-canon
-  intent.decision_id: decision:intent-graph-storage-v1
-  work.parent_id: design-intent-graph-storage-v1
   work.analysis.at: 2026-05-30T18:13:05.426Z
   work.analysis.source: analytics-record
   work.decision.at: 2026-05-30T18:13:05.426Z
@@ -53,10 +34,12 @@
   work.id: implement-analytics-decision-structure
   work.next_action: —
   work.owner_role: feature_engineer
+  work.parent_id: design-intent-graph-storage-v1
   work.pipeline_stage: decided
   work.priority: high
   work.risk: medium
   work.status: done
   work.target_files: src/analyticsPanelProjection.mjs, src/analyticsRecordWorkItems.mjs, src/workGraphBacklogUiServer.mjs, tests/analyticsPanelProjection.test.mjs, work/analytics/intent-graph-storage-roadmap.md
-  work.title: структурировать варианты и выбранное решение в analytics projection
+  work.title: Аналитика становится входной точкой графа намерений: варианты и решение доступны UI/agent без парсинга mark…
 ]>
+

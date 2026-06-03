@@ -3,35 +3,17 @@
   Draft: docs/plan-step-to-bvc-migration.md создан вместе с ADR.
   Нужны owners и даты для фаз 1–2.
 Вектор:
-  Review фаз dual-read / new-write / optional rename с командой.
+  Review фаз dual-read / new-write / опционально rename с командой.
   Добавить таблицу затронутых путей (protocols/, work/, charter/).
   Ссылка из AN-8 и ADR на финальную версию плана.
 Цель:
-  Migration plan — executable checklist, не draft.
-Анализ:
-  Целесообразность:
-  Стоит завести «утвердить и дополнить plan-step-to-bvc-migration.md» в бэклог — по материалам AN-18 (analytics:bvc-naming-branding-review).
-  Контекст и границы:
-  Review фаз dual-read / new-write / optional rename с командой.
-  Зависимости и готовность:
-  depends_on=bvc-open-canon-naming; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Migration plan — executable checklist, не draft.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-18 (analytics:bvc-naming-branding-review); исполнять после вердикта «полезно» и готовности зависимостей.
+  Migration plan — executable checklist, не черновик.
 Проверки:
   docs/plan-step-to-bvc-migration.md имеет owners/dates на каждую фазу
   lint:backlog проходит после добавления work items
-
 Свидетельства:
-  - docs/plan-step-to-bvc-migration.md: статус исполняется, таблица owners/dates, затронутые пути, актуальные чеклисты фаз 0–1
-  - packages/bvc-spec/PUBLISH.md + npm run export:bvc-spec-github
+  docs/plan-step-to-bvc-migration.md: статус исполняется, таблица owners/dates, затронутые пути, актуальные чеклисты фаз 0–1
+  packages/bvc-spec/PUBLISH.md + npm run export:bvc-spec-github
 
 Метки:
   atom.profile: work_item
@@ -56,5 +38,6 @@
   work.risk: low
   work.status: done
   work.target_files: docs/plan-step-to-bvc-migration.md, docs/adr-bvc-format-naming.md
-  work.title: утвердить и дополнить plan-step-to-bvc-migration.md
+  work.title: Завершить: step to BVC миграция план
 ]>
+

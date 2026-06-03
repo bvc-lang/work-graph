@@ -241,4 +241,4 @@ Work Graph остаётся **единственным** бэклогом с `wo
 
 ---
 
-**См. также:** [AN-17](onebase-integration-vertical-stack.md), [AN-25](agent-bypass-work-graph-dual-backlog.md), [decision-pipeline-canon.md](../docs/decision-pipeline-canon.md), [Infostart OneBase](https://infostart.ru/1c/articles/2694204/).
+**См. также:** [AN-17](onebase-integration-vertical-stack.md), [AN-25](agent-bypass-work-graph-dual-backlog.md), [AN-44: аналитика конкурентов (рынок 2026)](competitor-analysis-vs-work-graph.md), [decision-pipeline-canon.md](../docs/decision-pipeline-canon.md), [Infostart OneBase](https://infostart.ru/1c/articles/2694204/).

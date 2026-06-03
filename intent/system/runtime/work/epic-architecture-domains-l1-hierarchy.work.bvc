@@ -8,29 +8,16 @@
   Track B: classifyWorkItemBlock + snapshot schema group field.
   Track C: UI breadcrumb «Домены › …»; Track D: tests + AN-39 closing.
 Цель:
-  Оператор и агент видят согласованную модель прикладных доменов на L1, intent и backlog.
+  Оператор и агент видят согласованную модель прикладных доменов на L1, intent и бэклог.
 Проверки:
   architecture/main.bvc: domain-onebase + domain-marketplace с architecture.group: domains
   classifyWorkItemBlock(marketplace) → domain-marketplace
   Architecture UI: группа Домены с двумя блоками
   architecture:l1-check green; AN-39 closing
-Анализ:
-  Целесообразность:
-  Стоит завести «Architecture domains L1: группа «Домены › OneBase / Marketplace»» в бэклог — по материалам AN-39 (work/analytics/architecture-domains-l1-hierarchy.md).
-  Контекст и границы:
-  Track A: ADR + architecture/main.bvc (group domains, block domain-marketplace).
-  Зависимости и готовность:
-  depends_on=epic-architecture-main-bvc-canon; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Оператор и агент видят согласованную модель прикладных доменов на L1, intent и backlog.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-39 (work/analytics/architecture-domains-l1-hierarchy.md); исполнять после вердикта «полезно» и готовности зависимостей.
+Свидетельства:
+  architecture/main.bvc digest 765dc062 — 8 L1 blocks, domain-marketplace + group domains
+  npm run architecture:l1-check green; npm test 657 pass
+  work/analytics/closing-epic-architecture-domains-l1-hierarchy.md
 
 Метки:
   atom.profile: work_item
@@ -54,10 +41,6 @@
   work.risk: medium
   work.status: done
   work.target_files: work/analytics/architecture-domains-l1-hierarchy.md, docs/plan-architecture-domains-l1-hierarchy.md, docs/adr-architecture-domains-l1-hierarchy.md, architecture/main.bvc, src/architectureSnapshot.mjs, src/architectureL1Canon.mjs, src/intentHierarchy.mjs, src/workGraphBacklogUiServer.mjs, schemas/architecture-snapshot.v1.json
-  work.title: Architecture domains L1: группа «Домены › OneBase / Marketplace»
-
-Свидетельства:
-  - architecture/main.bvc digest 765dc062 — 8 L1 blocks, domain-marketplace + group domains
-  - npm run architecture:l1-check green; npm test 657 pass
-  - work/analytics/closing-epic-architecture-domains-l1-hierarchy.md
+  work.title: Домены архитектуры L1: OneBase / Marketplace
 ]>
+

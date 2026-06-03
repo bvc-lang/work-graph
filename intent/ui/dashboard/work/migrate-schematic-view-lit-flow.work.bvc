@@ -7,6 +7,13 @@
   Upstream/dashed edges и storage layer через edge type mapping.
 Цель:
   Вкладка «Схема» на lit-flow; клик по блоку → drawer L2.
+Проверки:
+  schematic panel рендерит lit-flow host
+  npm test schematic/layout не регрессируют на fixture
+Свидетельства:
+  protocols/graph-canvas-lit-flow-v1.bvc + schemas/graph-canvas-lit-flow-projection.v1.json
+  public/graph-canvas-lit-flow.js (lit-flow client island)
+  src/graphCanvasLitFlow/* + tests/graphCanvasLitFlow.test.mjs
 Анализ:
   Целесообразность:
   Стоит завести «мигрировать схему (schematic) на lit-flow canvas» в бэклог — по материалам AN-4 (analytics:graph-visualization-engine).
@@ -24,14 +31,6 @@
   Вердикт:
   полезно
   Создана по материалам приёма AN-4 (analytics:graph-visualization-engine); исполнять после вердикта «полезно» и готовности зависимостей.
-Проверки:
-  schematic panel рендерит lit-flow host
-  npm test schematic/layout не регрессируют на fixture
-
-Свидетельства:
-  - protocols/graph-canvas-lit-flow-v1.bvc + schemas/graph-canvas-lit-flow-projection.v1.json
-  - public/graph-canvas-lit-flow.js (lit-flow client island)
-  - src/graphCanvasLitFlow/* + tests/graphCanvasLitFlow.test.mjs
 
 Метки:
   atom.profile: work_item
@@ -56,5 +55,6 @@
   work.risk: high
   work.status: done
   work.target_files: src/schematicView.mjs, src/workGraphBacklogUiServer.mjs, tests/workGraphBacklogUiServer.test.mjs
-  work.title: мигрировать схему (schematic) на lit-flow canvas
+  work.title: Вкладка «Схема» на lit-flow; клик по блоку → drawer L2.
 ]>
+

@@ -14,11 +14,12 @@ describe('design-tokens', () => {
 
   it('generates CSS with --brand-* and --ui-* variables', () => {
     const css = themeFileToCss('themes/workgraph-dark.json');
-    assert.match(css, /--brand-primary-rgb: 0 102 255/);
+    assert.match(css, /--brand-primary-rgb: 29 122 252/);
     assert.match(css, /--brand-font-sans: 'Graphik LCG'/);
     assert.match(css, /--text-base: 0\.9375rem/);
     assert.match(css, /--text-sm: 0\.8125rem/);
-    assert.match(css, /--ui-accent-rgb: 0 102 255/);
+    assert.match(css, /--ui-accent-rgb: 133 184 255/);
+    assert.match(css, /--brand-bg-rgb: 29 33 37/);
   });
 
   it('generates gripe-dark-default CSS with Gripe amber accent', () => {

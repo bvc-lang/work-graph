@@ -5,9 +5,15 @@
   parseWorkItems: поля parentId, itemKind и derived children из label work.parent_id / work.item_kind.
   backlogSchemaLint: missing parent, self-parent, parent cycle, parent depends_on child, invalid item_kind.
   Promote/complete gates: parent close блокируется, пока children не done/verified; child claim уважает обычные depends_on.
-  MCP create_work_item: параметры parentId/itemKind → labels + intake в analysis.
+  MCP create_work_item: параметры parentId/itemKind → labels + приём в analysis.
 Цель:
   Подзадача создаётся с parentId; runtime, lint и execution gates поддерживают иерархию как канон, не как UI-группировку.
+Проверки:
+  npm test покрывает parse parent_id и lint errors
+  create_work_item с parentId пишет work.parent_id в атом
+  complete/promote gate не даёт закрыть parent с незавершёнными children
+Свидетельства:
+  parseWorkItems parentId/itemKind; lint hierarchy; MCP parentId; npm test pass
 Анализ:
   Целесообразность:
   Стоит завести «реализовать work.parent_id в runtime, lint, gates и MCP create_work_item» в бэклог — по материалам AN-2 (analytics:parent-subtask-hierarchy).
@@ -25,13 +31,6 @@
   Вердикт:
   полезно
   Создана по материалам приёма AN-2 (analytics:parent-subtask-hierarchy); исполнять после вердикта «полезно» и готовности зависимостей.
-Проверки:
-  npm test покрывает parse parent_id и lint errors
-  create_work_item с parentId пишет work.parent_id в атом
-  complete/promote gate не даёт закрыть parent с незавершёнными children
-
-Свидетельства:
-  - parseWorkItems parentId/itemKind; lint hierarchy; MCP parentId; npm test pass
 
 Метки:
   atom.profile: work_item
@@ -54,5 +53,6 @@
   work.risk: medium
   work.status: done
   work.target_files: src/workGraphRuntime.mjs, src/backlogSchemaLint.mjs, src/workItemExecutionGate.mjs, packages/workgraph-mcp/src/handlers.mjs, work/analytics/parent-subtask-hierarchy.md
-  work.title: реализовать work.parent_id в runtime, lint, gates и MCP create_work_item
+  work.title: Подзадача создаётся с parentId; runtime, lint и execution gates поддерживают иерархию как канон, не как UI-…
 ]>
+

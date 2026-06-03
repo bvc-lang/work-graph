@@ -1,0 +1,53 @@
+#Задача_implement_settings_view_shell<[
+Базис:
+  Нет #settings-view — только analytics, workflow, board, …
+Вектор:
+  #settings-view с карточками: «Оформление», «Язык», «О приложении».
+  Gripe DS panel/card pattern как verification-panel.
+  view-title «Настройки»; breadcrumbs Work Graph › Настройки.
+Цель:
+  Settings view рендерится с тремя секциями-контейнерами.
+Проверки:
+  settings-view visible when nav selected
+  Other views hidden
+Свидетельства:
+  npm run test:deterministic — uiCatalog, appVersionApi, workGraphBacklogUiServer tests pass (726)
+Анализ:
+  Зачем:
+  Нет #settings-view — только analytics, workflow, board, …
+  Контекст: #settings-view с карточками: «Оформление», «Язык», «О приложении».
+  Когда:
+  После готовности: wire-sidebar-settings-nav-bottom.
+  Готово, когда:
+  Settings view рендерится с тремя секциями-контейнерами.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: wire-sidebar-settings-nav-bottom.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-55
+  intake.source_kind: operator-request
+  intake.source_ref: docs/plan-work-graph-ui-settings-v1.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-02T16:45:45.807Z
+  work.analysis.source: operator-request
+  work.decision.at: 2026-06-02T16:45:45.807Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: wire-sidebar-settings-nav-bottom
+  work.id: implement-settings-view-shell
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.parent_id: epic-work-graph-ui-settings-v1
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: low
+  work.status: done
+  work.target_files: src/workGraphBacklogUiServer.mjs, tests/workGraphBacklogUiServer.test.mjs
+  work.title: Settings view рендерится с тремя секциями-контейнерами.
+]>
+

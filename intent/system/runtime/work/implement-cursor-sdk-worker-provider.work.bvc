@@ -8,23 +8,6 @@
   Вход строится из Work Graph snapshot, memorySlice, targetFiles и policy; выход нормализуется в Worker Output v1: patchSummary, evidence, transitionRequest, logs, failureReason.
 Цель:
   Work Graph может запускать реального Cursor agent как одного из исполнителей, сохраняя .bvc/Work Graph источник истины.
-Анализ:
-  Целесообразность:
-  Стоит завести «реализовать Cursor SDK worker provider» в бэклог.
-  Контекст и границы:
-  Реализовать cursor-sdk worker provider за provider-neutral Worker Input/Output v1 boundary.
-  Зависимости и готовность:
-  depends_on=design-provider-registry-and-capability-selection, design-sidecar-mcp-execution-boundary; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Work Graph может запускать реального Cursor agent как одного из исполнителей, сохраняя .bvc/Work Graph источник истины.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -45,6 +28,6 @@
   work.risk: high
   work.status: done
   work.target_files: src/agentWorkerCursorSdkProvider.mjs, src/workGraphWorkerProvider.mjs, tests/agentWorkerCursorSdkProvider.test.mjs, tests/workGraphWorkerProvider.test.mjs, work/backlog.bvc
-  work.title: реализовать Cursor SDK worker provider
+  work.title: Work Graph может запускать реального Cursor agent как одного из исполнителей, сохраняя .bvc/Work Graph исто…
 ]>
 

@@ -124,7 +124,31 @@ describe('renderBacklogHtml', () => {
     assert.match(html, /::-webkit-scrollbar-thumb:active/);
     assert.match(html, /document\.documentElement\.dataset\.theme = theme/);
     assert.match(html, /id="theme-toggle"/);
+    assert.match(html, /data-testid="header-theme-toggle"/);
+    assert.match(html, /data-testid="sidebar-settings-nav"/);
+    assert.match(html, /id="settings-view"/);
+    assert.match(html, /data-testid="settings-panel"/);
+    assert.match(html, /data-testid="settings-locale-options"/);
+    assert.match(html, /data-settings-locale="ru"/);
+    assert.match(html, /data-settings-locale="en"/);
+    assert.match(html, /id="settings-locale-ru"/);
+    assert.match(html, /page-header-actions/);
+    assert.match(html, /body:not\(\[data-theme="dark"\]\) \.wg-btn--secondary/);
     assert.match(html, /class="nav-tab"/);
+    assert.match(html, /class="nav-tab-icon"/);
+    assert.match(html, /--sidebar-width-min: 56px/);
+    assert.match(html, /--sidebar-width-max: 360px/);
+    assert.match(html, /html\.is-sidebar-compact[\s\S]*\.nav-tab-label/);
+    assert.match(html, /id="sidebar-resize-handle"/);
+    assert.match(html, /data-testid="sidebar-resize-handle"/);
+    assert.match(html, /sidebarWidthStorageKey = 'workGraphSidebarWidth'/);
+    assert.match(html, /function applySidebarWidth\(/);
+    assert.match(html, /function startSidebarResize\(/);
+    assert.match(html, /localStorage\.getItem\(key\)/);
+    assert.match(html, /aria-label="Аналитика"/);
+    assert.match(html, /class="header-theme-toggle-icon"/);
+    assert.match(html, /viewBox="0 0 256 256"/);
+    assert.match(html, /class="nav-tab-icon" width="22"/);
     assert.match(html, /wg-btn/);
     assert.match(html, /renderClientUiButton/);
     assert.match(html, /data-testid="intent-composer-propose"/);
@@ -140,6 +164,7 @@ describe('renderBacklogHtml', () => {
     assert.match(html, /id="view-toolbar" class="toolbar" hidden/);
     assert.match(html, /\.toolbar\[hidden\]/);
     assert.match(html, /--column-bg: #f4f5f7/);
+    assert.match(html, /--column-bg: rgb\(22 26 29\)/);
     assert.match(html, /id="workflow-filters"/);
     assert.match(html, /data-testid="kanban-board-panel"/);
     assert.match(html, /data-testid="semantic-search-mode"/);
@@ -154,8 +179,13 @@ describe('renderBacklogHtml', () => {
     assert.match(html, /id="intent-domain-clear"/);
     assert.doesNotMatch(html, /eyebrow/);
     assert.match(html, /class="issue-footer"/);
-    assert.match(html, /class="owner-avatar"/);
-    assert.match(html, /renderIssueFooter\(item, \{ queueKind \}\)/);
+    assert.match(html, /\.owner-avatar \{/);
+    assert.match(html, /function renderOwnerAvatar\(/);
+    assert.match(html, /\/assets\/avatars\//);
+    assert.match(html, /renderIssueFooter\(item, \{ queueKind, surface \}\)/);
+    assert.match(html, /renderWorkItemClassifierBadge\(item\)/);
+    assert.match(html, /function renderWorkItemClassifierBadge\(/);
+    assert.match(html, /function classifyWorkItemBlock\(/);
     assert.match(html, /function renderStatusBadge\(status, queueKind = null\)/);
     assert.match(html, /renderClientUiBadge/);
     assert.match(html, /statusToBadgeTone/);
@@ -163,6 +193,9 @@ describe('renderBacklogHtml', () => {
     assert.match(html, /\/api\/atom-inspector\/draft/);
     assert.match(html, /testId: 'detail-mode-edit'/);
     assert.match(html, /data-testid="atom-inspector-form"/);
+    assert.match(html, /BVC_DIALECT_SECTION_TITLES/);
+    assert.match(html, /atomSectionTitle\(lang, 'basis'\)/);
+    assert.match(html, /data-testid="atom-inspector-lang-badge"/);
     assert.match(html, /wg-badge/);
     assert.doesNotMatch(html, /status-badge is-/);
     assert.match(html, /done: 'Завершено'/);
@@ -192,8 +225,10 @@ describe('renderBacklogHtml', () => {
     assert.match(html, /operationalBoardGroups\.map/);
     assert.doesNotMatch(html, /column-archive/);
     assert.doesNotMatch(html, /statusGroups\.map\(\(group\) => \{\s*const count = group\.statuses\.reduce/);
-    assert.match(html, /function renderIssueFooter\(item, \{ queueKind = null \} = \{\}\)/);
-    assert.match(html, /item\.key \|\| issueKey\(item\.id\)/);
+    assert.match(html, /function renderIssueFooter\(item, \{ queueKind = null, surface = 'default' \} = \{\}\)/);
+    assert.match(html, /function renderWorkItemIssueKeyChip\(/);
+    assert.match(html, /\.issue-type-icon\.is-task/);
+    assert.match(html, /\.issue-key-chip/);
     assert.doesNotMatch(html, /class="card-key"/);
     assert.doesNotMatch(html, /<strong>Вектор:<\/strong>/);
     assert.match(html, /Светлая тема/);
@@ -224,13 +259,15 @@ describe('renderBacklogHtml', () => {
     assert.doesNotMatch(html, /Центр управления/);
     assert.doesNotMatch(html, />Планирование</);
     assert.doesNotMatch(html, />Инструменты</);
-    assert.match(html, /data-view="home"[^>]*>Главная/);
-    assert.match(html, /data-view="board"[^>]*>Доска/);
-    assert.match(html, /data-view="workflow"[^>]*>Задачи/);
-    assert.match(html, /data-view="verification"[^>]*>Проверки/);
-    assert.match(html, /data-view="prompts"[^>]*>Промпты/);
-    assert.match(html, /data-view="memory"[^>]*>Память/);
-    assert.match(html, /data-view="analytics"[^>]*>Аналитика/);
+    assert.doesNotMatch(html, /data-view="home"/);
+    assert.match(html, /data-view="analytics"[\s\S]*?nav-tab-label">Аналитика</);
+    assert.match(html, /data-view="workflow"[\s\S]*?nav-tab-label">Задачи</);
+    assert.match(html, /data-view="board"[\s\S]*?nav-tab-label">Доска</);
+    assert.match(html, /data-view="verification"[\s\S]*?nav-tab-label">Проверки</);
+    assert.match(html, /data-view="memory"[\s\S]*?nav-tab-label">Память</);
+    assert.match(html, /sidebar-nav-advanced[\s\S]*data-view="architecture"/);
+    assert.match(html, /sidebar-nav-advanced[\s\S]*data-view="prompts"/);
+    assert.doesNotMatch(html, /id="home-view"/);
     assert.doesNotMatch(html, /data-view="backlog"[^>]*>Бэклог/);
     assert.doesNotMatch(html, /data-view="archive"[^>]*>Архив/);
     assert.match(html, /id="workflow-view"/);
@@ -247,6 +284,50 @@ describe('renderBacklogHtml', () => {
     assert.match(html, /const backlogGroup = \{"id":"backlog","title":"Бэклог","statuses":\["backlog"\]\}/);
     assert.doesNotMatch(html, /const statusGroups = \[\{"id":"backlog"/);
     assert.ok(html.indexOf('"title":"Доступно агенту"') < html.indexOf('"title":"В работе"'));
+  });
+
+  it('renders EN nav labels when locale is en', () => {
+    const html = renderBacklogHtml({ locale: 'en' });
+    assert.match(html, /data-view="workflow"[\s\S]*?nav-tab-label">Tasks</);
+    assert.match(html, /data-view="board"[\s\S]*?nav-tab-label">Board</);
+    assert.match(html, /placeholder="Search tasks/);
+  });
+
+  it('renders EN verification panel header when locale is en', () => {
+    const html = renderBacklogHtml({ locale: 'en' });
+    assert.match(html, /Verification cycle/);
+    assert.match(html, /Deterministic tier-A tests/);
+  });
+
+  it('exposes backlog revision poll client hook', () => {
+    const html = renderBacklogHtml();
+    assert.match(html, /fetch\('\/api\/backlog-revision'\)/);
+    assert.match(html, /syncLivePollInterval/);
+    assert.match(html, /createLiveSyncCoordinator/);
+    assert.match(html, /connectLiveSyncRevisionSse/);
+    assert.match(html, /\/api\/ui-events\/stream/);
+    assert.match(html, /registerScope\('backlog-revision'/);
+    assert.match(html, /registerScope\('home'/);
+    assert.match(html, /registerScope\('agent-dock'/);
+    assert.match(html, /computeKanbanBoardDelta/);
+    assert.match(html, /applyKanbanBoardPatch/);
+    assert.match(html, /patchKanbanBoardIncremental/);
+    assert.match(html, /reconcileDetailDrawerOnRemotePatch/);
+  });
+
+  it('exposes detail drawer stack for hierarchy navigation', () => {
+    const html = renderBacklogHtml();
+    assert.match(html, /createDetailDrawerStack/);
+    assert.match(html, /openTaskHierarchyStackDrawer/);
+    assert.match(html, /task-hierarchy-sub-drawer/);
+    assert.match(html, /detail-stack-breadcrumb/);
+    assert.match(html, /popDetailStackNavigation/);
+  });
+
+  it('renders backlog html with pseudolocale without throw', () => {
+    const html = renderBacklogHtml({ locale: 'ps' });
+    assert.match(html, /\[!! ~~/);
+    assert.match(html, /<html lang="ps"/);
   });
 
   it('renders a Jira-like task detail drawer and card click hooks', () => {
@@ -277,10 +358,10 @@ describe('renderBacklogHtml', () => {
     assert.match(html, /document\.documentElement\.classList\.add\('detail-drawer-open'\)/);
     assert.match(html, /document\.documentElement\.classList\.remove\('detail-drawer-open'\)/);
     assert.match(html, /event\.key !== 'Escape'/);
-    assert.match(html, /renderDetailText\('Базис', item\.basis\)/);
-    assert.match(html, /renderDetailText\('Вектор', item\.vector\)/);
-    assert.match(html, /renderDetailText\('Цель', item\.goal\)/);
-    assert.match(html, /renderOptionalDetailAccordion\('Трасса файлов', item\.targetFiles, 'list'\)/);
+    assert.match(html, /renderDetailText\(t\('drawer\.section\.basis'\), item\.basis\)/);
+    assert.match(html, /renderDetailText\(t\('drawer\.section\.vector'\), item\.vector\)/);
+    assert.match(html, /renderDetailText\(t\('drawer\.section\.goal'\), item\.goal\)/);
+    assert.match(html, /renderOptionalDetailAccordion\(t\('drawer\.section\.targetFiles'\), item\.targetFiles, 'list'\)/);
     assert.match(html, /function renderParentChildHierarchy\(item\)/);
     assert.match(html, /data-testid="hierarchy-children"/);
     assert.match(html, /data-testid="hierarchy-parent"/);
@@ -296,12 +377,11 @@ describe('renderBacklogHtml', () => {
     assert.match(html, /data-testid="intent-graph-drilldown"/);
   });
 
-  it('renders home mission control and graph canvas hooks', () => {
+  it('renders graph canvas hooks without home landing', () => {
     const html = renderBacklogHtml();
 
-    assert.match(html, /data-view="home"/);
-    assert.match(html, /id="home-view"/);
-    assert.match(html, /renderHomeMissionControl/);
+    assert.match(html, /data-view="analytics"/);
+    assert.doesNotMatch(html, /id="home-view"/);
     assert.match(html, /graph-canvas-lit-flow\.js/);
     assert.match(html, /fill: true/);
     assert.match(html, /function renderIntentRoadmapCanvas/);
@@ -316,6 +396,8 @@ describe('renderBacklogHtml', () => {
     assert.match(html, /data-testid="prompts-panel"/);
     assert.match(html, /data-testid="prompts-list"/);
     assert.match(html, /function renderPromptsPanel\(\)/);
+    assert.match(html, /function getPanelSearchQuery\(\)/);
+    assert.match(html, /const query = getPanelSearchQuery\(\)/);
     assert.match(html, /function openPromptRuleDetails\(rule\)/);
     assert.match(html, /fetch\('\/api\/prompt-rules-projection'\)/);
     assert.match(html, /fetch\('\/api\/code-gap-projection'\)/);
@@ -376,6 +458,15 @@ describe('renderBacklogHtml', () => {
     assert.match(html, /data-testid="analytics-record-body"/);
     assert.match(html, /data-testid="analytics-related-tasks"/);
     assert.match(html, /renderAnalyticsRelatedWorkItemsSection/);
+    assert.match(html, /renderAnalyticsLineageSections/);
+    assert.match(html, /buildAnalyticsLineageListBadge/);
+    assert.match(html, /data-testid="analytics-lineage-section"/);
+    assert.match(html, /data-testid="analytics-lineage-badge"/);
+    assert.match(html, /data-testid="analytics-lineage-nav"/);
+    assert.match(html, /function openAnalyticsRelatedTaskSubDrawer\(/);
+    assert.match(html, /fromAnalyticsRelated/);
+    assert.match(html, /analytics-related-task-sub-drawer/);
+    assert.match(html, /renderTopDetailStackFrame/);
     assert.match(html, /analytics-section-title">Запрос/);
     assert.match(html, /bodySectionTitle = isClosing \? 'Итоги эпика' : 'Ответ'/);
     assert.match(html, /function stripAnalyticsBodyPreamble\(/);
@@ -387,6 +478,11 @@ describe('renderBacklogHtml', () => {
     assert.match(html, /function highlightCodeBlock\(/);
     assert.match(html, /src="\/vendor\/mermaid.min.js"/);
     assert.match(html, /function openAnalyticsRecordDetails\(record\)/);
+    assert.match(html, /function buildAnalyticsMarkdownForLlm\(record\)/);
+    assert.match(html, /function copyAnalyticsMarkdownForLlm\(record, button\)/);
+    assert.match(html, /testId: 'analytics-copy-md'/);
+    assert.match(html, /'data-action': 'copy-analytics-md'/);
+    assert.match(html, /analytics-section-header/);
     assert.match(html, /record\.key \|\| record\.id/);
     assert.match(html, /renderDetailText\('Ключ', record\.key/);
     assert.match(html, /analyticsView\.hidden = !isAnalytics/);
@@ -410,7 +506,7 @@ describe('renderBacklogHtml', () => {
   it('renders verification loop panel and dashboard snapshot hooks', () => {
     const html = renderBacklogHtml();
 
-    assert.match(html, /data-view="verification"[^>]*>Проверки/);
+    assert.match(html, /data-view="verification"[\s\S]*?nav-tab-label">Проверки</);
     assert.match(html, /id="verification-view" class="view"[^>]*hidden/);
     assert.match(html, /id="verification-panel"/);
     assert.match(html, /function renderVerificationPanel\(\)/);
@@ -436,7 +532,7 @@ describe('renderBacklogHtml', () => {
 
     assert.doesNotMatch(html, /id="graph-view"/);
     assert.doesNotMatch(html, /data-view="graph"/);
-    assert.match(html, /data-view="architecture"[^>]*>Архитектура/);
+    assert.match(html, /data-view="architecture"[\s\S]*?nav-tab-label">Архитектура</);
     assert.match(html, /id="architecture-view"/);
     assert.match(html, /architecture-view-shell/);
     assert.match(html, /architecture-tab-panel/);
@@ -482,7 +578,7 @@ describe('renderBacklogHtml', () => {
     assert.match(html, /function applyCrossHighlight\(taskId\)/);
     assert.match(html, /function crossHighlightTargets\(taskId\)/);
     assert.match(html, /task-atom\.is-highlighted/);
-    assert.match(html, /applyCrossHighlight\(item\.id\);\s*\n\s*const fromDrawer[\s\S]*?\n\s*render\(\);/);
+    assert.match(html, /applyCrossHighlight\(item\.id\);[\s\S]*?const fromAnalyticsRelated[\s\S]*?const fromDrawer[\s\S]*?\n\s*render\(\);/);
     assert.match(html, /id="cycle-filter"/);
     assert.match(html, /id="workflow-filters"/);
     assert.match(html, /data-testid="kanban-board-panel"/);
@@ -494,12 +590,12 @@ describe('renderBacklogHtml', () => {
     assert.doesNotMatch(html, /id="runner-queue-strip"/);
     assert.match(html, /function renderIntentDomainFilter\(\)/);
     assert.match(html, /data-task-id="/);
-    assert.match(html, /renderOptionalDetailAccordion\('Зависимости', item\.dependsOn, 'list'\)/);
+    assert.match(html, /renderOptionalDetailAccordion\(t\('drawer\.section\.dependencies'\), item\.dependsOn, 'list'\)/);
     assert.match(html, /function wrapDetailAccordion\(title, innerHtml/);
     assert.match(html, /function renderPipelineProse\(text\)/);
     assert.match(html, /renderPipelineProse\(analysis\)/);
     assert.doesNotMatch(html, /\.split\(\/\r?\n\/\)/);
-    const scriptMatch = html.match(/<script>([\s\S]*)<\/script>/);
+    const scriptMatch = html.match(/<script id="workgraph-app">([\s\S]*?)<\/script>/);
     assert.ok(scriptMatch, 'inline script block expected');
     assert.doesNotThrow(() => {
       // eslint-disable-next-line no-new-func
@@ -613,7 +709,7 @@ describe('createBacklogUiServer', () => {
       const address = server.address();
       const baseUrl = `http://127.0.0.1:${address.port}`;
 
-      const page = await fetch(`${baseUrl}/`);
+      const page = await fetch(`${baseUrl}/app`);
       assert.equal(page.status, 200);
       const pageHtml = await page.text();
       assert.match(pageHtml, /Поиск задач/);
@@ -632,6 +728,16 @@ describe('createBacklogUiServer', () => {
       assert.equal(fontCss.status, 200);
       assert.match(fontCss.headers.get('content-type') || '', /text\/css/);
 
+      const moonIcon = await fetch(`${baseUrl}/assets/icons/bold/moon-bold.svg`);
+      assert.equal(moonIcon.status, 200);
+      assert.match(moonIcon.headers.get('content-type') || '', /image\/svg\+xml/);
+      assert.match(await moonIcon.text(), /viewBox="0 0 256 256"/);
+
+      const avatarIcon = await fetch(`${baseUrl}/assets/avatars/avatar-01.svg`);
+      assert.equal(avatarIcon.status, 200);
+      assert.match(avatarIcon.headers.get('content-type') || '', /image\/svg\+xml/);
+      assert.match(await avatarIcon.text(), /viewBox="0 0 32 32"/);
+
       const designTokensCss = await fetch(`${baseUrl}/assets/design-tokens-workgraph-dark.css`);
       assert.equal(designTokensCss.status, 200);
       const cssText = await designTokensCss.text();
@@ -639,11 +745,33 @@ describe('createBacklogUiServer', () => {
       assert.match(cssText, /--text-sm: 0\.8125rem/);
       assert.match(cssText, /--text-base: 0\.9375rem/);
 
+      const localeResponse = await fetch(`${baseUrl}/api/ui-locale`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ locale: 'en' }),
+      });
+      assert.equal(localeResponse.status, 200);
+      const localePayload = await localeResponse.json();
+      assert.equal(localePayload.locale, 'en');
+      assert.match(localeResponse.headers.get('set-cookie') || '', /wg_locale=en/);
+
+      const enHtmlResponse = await fetch(`${baseUrl}/app`, {
+        headers: { cookie: localeResponse.headers.get('set-cookie') || '' },
+      });
+      assert.equal(enHtmlResponse.status, 200);
+      assert.match(await enHtmlResponse.text(), /nav-tab-label">Tasks</);
+
       const snapshotResponse = await fetch(`${baseUrl}/api/snapshot`);
       assert.equal(snapshotResponse.status, 200);
       const snapshot = await snapshotResponse.json();
       assert.equal(snapshot.items.find((item) => item.id === 'ready-task')?.nextAction, 'implement');
       assert.equal(snapshot.items.find((item) => item.id === 'ready-task')?.goal, 'Ready.');
+
+      const revisionResponse = await fetch(`${baseUrl}/api/backlog-revision`);
+      assert.equal(revisionResponse.status, 200);
+      const revision = await revisionResponse.json();
+      assert.equal(revision.schema, 'workgraph.backlog-revision.v1');
+      assert.match(revision.revision, /^sha256:/);
 
       const architectureResponse = await fetch(`${baseUrl}/api/architecture-snapshot`);
       assert.equal(architectureResponse.status, 200);

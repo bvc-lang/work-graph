@@ -1,0 +1,54 @@
+#Задача_migrate_analytics_drilldown_to_drawer_stack<[
+Базис:
+  openAnalyticsRelatedTaskSubDrawer — interim L2 hack.
+Вектор:
+  Replace openAnalyticsRelatedTaskSubDrawer with stack.push analytics→task.
+  Lineage parent/continuation clicks → stack.push analytics frames.
+  Remove or thin #detail-sub-drawer for analytics path.
+Цель:
+  Drill-down аналитики использует тот же stack API, что и иерархия задач.
+Проверки:
+  AN-50.1 related task + lineage nav on stack
+  No duplicate L2 path
+Анализ:
+  Зачем:
+  openAnalyticsRelatedTaskSubDrawer — interim L2 hack.
+  Контекст: Replace openAnalyticsRelatedTaskSubDrawer with stack.push analytics→task.
+  Когда:
+  После готовности: implement-detail-drawer-stack-core, wire-analytics-related-task-sub-drawer.
+  Готово, когда:
+  Drill-down аналитики использует тот же stack API, что и иерархия задач.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: implement-detail-drawer-stack-core, wire-analytics-related-task-sub-drawer.
+
+Свидетельства:
+  - openAnalyticsRelatedTaskSubDrawer + openAnalyticsLineageStackDrawer on detailStack
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-54
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/detail-drawer-stack-modal-queue.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-02T15:55:13.564Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-02T15:55:13.564Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: implement-detail-drawer-stack-core, wire-analytics-related-task-sub-drawer
+  work.id: migrate-analytics-drilldown-to-drawer-stack
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: feature_engineer
+  work.parent_id: epic-detail-drawer-stack-v1
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: medium
+  work.status: done
+  work.target_files: src/workGraphBacklogUiServer.mjs, intent/ui/dashboard/work/wire-analytics-related-task-sub-drawer.work.bvc
+  work.title: Мигрировать analytics related task + lineage nav на drawer stack
+]>
+

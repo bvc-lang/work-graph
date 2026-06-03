@@ -1,49 +1,27 @@
 #Задача_wire_onebase_pvrg_domain_graph_nodes<[
 Базис:
   Артефакты OneBase (YAML/OS) не связаны с unified graph view.
-  Задача «Фаза 7: узлы OneBase в графе PVRG» относится к контуру Work Graph rebuild и должна быть понятна агенту без чтения всего backlog.
-  Предварительно должны быть закрыты зависимости: wire-pvrg-task-scope-dashboard-panel.
 Вектор:
-  Расширить architecture snapshot узлами catalog/document OneBase.
-  Ближайший шаг исполнения: просмотреть и перевести в ready.
+  Расширить architecture snapshot узлами catalog/документировать OneBase.
 Цель:
   Доменная вертикаль видна в schematic/PVRG views.
-  Готово, когда выполнены проверки: Snapshot содержит onebase nodes на фикстуре.
-Анализ:
-  Целесообразность:
-  Стоит завести «Фаза 7: узлы OneBase в графе PVRG» в бэклог.
-  Контекст и границы:
-  Расширить architecture snapshot узлами catalog/document OneBase.
-  Зависимости и готовность:
-  depends_on=wire-pvrg-task-scope-dashboard-panel; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Доменная вертикаль видна в schematic/PVRG views.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+Проверки:
+  Snapshot содержит onebase nodes на фикстуре
+  UI или API отдаёт extended graph
 
 Метки:
   atom.profile: work_item
   migration.strategy: port
   trace.status: verified
-  work.analysis.at: 2026-05-30T17:22:37.869Z
-  work.analysis.source: backfill
-  work.decision.at: 2026-05-30T17:22:37.877Z
-  work.decision.verdict: useful
   work.department: domain-onebase
   work.depends_on: wire-pvrg-task-scope-dashboard-panel
   work.id: wire-onebase-pvrg-domain-graph-nodes
-  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.next_action: просмотреть и перевести в ready
   work.owner_role: domain_architect
-  work.pipeline_stage: decided
   work.priority: low
   work.risk: medium
   work.status: done
   work.target_files: src/architectureSnapshot.mjs, src/onebaseCliCapabilityProbe.mjs
-  work.title: Фаза 7: узлы OneBase в графе PVRG
+  work.title: Доменная вертикаль видна в schematic/PVRG views.
 ]>
+

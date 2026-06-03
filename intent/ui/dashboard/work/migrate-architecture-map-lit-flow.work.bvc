@@ -8,6 +8,13 @@
   Удалить дубли edge geometry из architectureLayout после cutover.
 Цель:
   Вкладка «Дорожная карта» / architecture panel использует lit-flow с pan/zoom.
+Проверки:
+  workGraphBacklogUiServer.test.mjs обновлён под lit-flow host
+  Pipeline и Full graph переключаются без reload
+Свидетельства:
+  protocols/graph-canvas-lit-flow-v1.bvc + schemas/graph-canvas-lit-flow-projection.v1.json
+  public/graph-canvas-lit-flow.js (lit-flow client island)
+  src/graphCanvasLitFlow/* + tests/graphCanvasLitFlow.test.mjs
 Анализ:
   Целесообразность:
   Стоит завести «мигрировать карту архитектуры на lit-flow canvas» в бэклог — по материалам AN-4 (analytics:graph-visualization-engine).
@@ -25,14 +32,6 @@
   Вердикт:
   полезно
   Создана по материалам приёма AN-4 (analytics:graph-visualization-engine); исполнять после вердикта «полезно» и готовности зависимостей.
-Проверки:
-  workGraphBacklogUiServer.test.mjs обновлён под lit-flow host
-  Pipeline и Full graph переключаются без reload
-
-Свидетельства:
-  - protocols/graph-canvas-lit-flow-v1.bvc + schemas/graph-canvas-lit-flow-projection.v1.json
-  - public/graph-canvas-lit-flow.js (lit-flow client island)
-  - src/graphCanvasLitFlow/* + tests/graphCanvasLitFlow.test.mjs
 
 Метки:
   atom.profile: work_item
@@ -59,3 +58,4 @@
   work.target_files: src/workGraphBacklogUiServer.mjs, src/architectureLayout.mjs, tests/workGraphBacklogUiServer.test.mjs
   work.title: мигрировать карту архитектуры на lit-flow canvas
 ]>
+

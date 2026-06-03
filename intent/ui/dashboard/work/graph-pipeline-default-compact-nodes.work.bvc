@@ -7,28 +7,11 @@
   Compact node cards: title + status + 1-line summary.
   Dagre spacing tuning; fit-view on mode switch.
 Цель:
-  Pipeline graph readable at first open without manual pan/zoom marathon.
+  Pipeline graph читаем при первом открытии без ручного pan/zoom.
 Проверки:
   Architecture opens in pipeline profile by default
   node card height bounded; no label overlap in fixture snapshot test
   link to graph-canvas-layout-mess remediation
-Анализ:
-  Целесообразность:
-  Стоит завести «Graph: pipeline default + compact canvas cards (AN-1 tail)» в бэклог — по материалам AN-34 (work/analytics/architecture-visualization-patterns-comparison.md).
-  Контекст и границы:
-  Default Architecture graph layout = pipeline (LR/TB profile).
-  Зависимости и готовность:
-  depends_on=epic-architecture-views-v1, adr-architecture-views-v1-profiles, architecture-blocks-list-view-tab; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Pipeline graph readable at first open without manual pan/zoom marathon.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-34 (work/analytics/architecture-visualization-patterns-comparison.md); исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -53,5 +36,6 @@
   work.risk: high
   work.status: done
   work.target_files: src/workGraphBacklogUiServer.mjs, work/analytics/graph-canvas-layout-mess.md, work/analytics/architecture-visualization-patterns-comparison.md
-  work.title: Graph: pipeline default + compact canvas cards (AN-1 tail)
+  work.title: Граф: pipeline default + компактные canvas cards (AN-1 tail)
 ]>
+

@@ -1,0 +1,42 @@
+#Задача_add_ui_i18n_pseudolocalization_ci<[
+Базис:
+  Pseudolocale ловит обрезанные подписи и пропущенные ключи до релиза.
+Вектор:
+  Опционально locale=ps lengthens strings ([!! ~~text~~ !!]).
+  CI: паритет ключей uiCatalog + smoke renderBacklogHtml({ locale: ps }).
+  Задокументировать в ADR или в troubleshooting-секции плана.
+Цель:
+  Overflow layout от длинных строк ловится детерминированными тестами.
+Проверки:
+  locale ps рендерится без исключений
+  CI падает при отсутствии ru-ключа
+
+Свидетельства:
+  - locales/ps/ui.json + tests/uiCatalog.test.mjs parity + renderBacklogHtml({ locale: ps })
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-55
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-ui-i18n-best-practices.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-02T16:36:21.485Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-02T16:36:21.485Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: extract-backlog-shell-i18n
+  work.id: add-ui-i18n-pseudolocalization-ci
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: feature_engineer
+  work.parent_id: epic-work-graph-ui-i18n-v1
+  work.pipeline_stage: decided
+  work.priority: low
+  work.risk: low
+  work.status: done
+  work.target_files: tests/uiCatalog.test.mjs, locales/ps/ui.json, docs/plan-work-graph-ui-i18n-v1.md
+  work.title: Добавить pseudolocale + CI guard паритета ключей
+]>
+

@@ -1,0 +1,48 @@
+#Задача_wire_markdown_inline_repo_file_clicks<[
+Базис:
+  В тексте разбора пути `protocols/foo.bvc` не интерактивны.
+Вектор:
+  Post-process markdown HTML or click delegate on .analytics-record-body code/path patterns.
+  Reuse openRepoFileStackPreview; avoid false positives on URLs.
+Цель:
+  Пути в prose разбора открывают preview так же как Related files.
+Проверки:
+  Click protocols/*.bvc in body opens stack preview
+Анализ:
+  Зачем:
+  В тексте разбора пути `protocols/foo.bvc` не интерактивны.
+  Контекст: Post-process markdown HTML or click delegate on .analytics-record-body code/path patterns.
+  Когда:
+  После готовности: epic-drawer-repo-file-preview-v1, implement-repo-file-stack-frame-renderer.
+  Готово, когда:
+  Пути в prose разбора открывают preview так же как Related files.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: epic-drawer-repo-file-preview-v1, implement-repo-file-stack-frame-renderer.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-59
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/drawer-repo-file-preview.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-02T19:57:33.429Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-02T19:57:33.429Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: epic-drawer-repo-file-preview-v1, implement-repo-file-stack-frame-renderer
+  work.id: wire-markdown-inline-repo-file-clicks
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.parent_id: epic-drawer-repo-file-preview-v1
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: low
+  work.status: backlog
+  work.target_files: src/workGraphBacklogUiServer.mjs, src/markdownDocumentRender.mjs, tests/workGraphBacklogUiServer.test.mjs
+  work.title: UI: клик по path-like токенам в markdown body drawer
+]>

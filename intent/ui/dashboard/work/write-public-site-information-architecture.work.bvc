@@ -1,0 +1,53 @@
+#Задача_write_public_site_information_architecture<[
+Базис:
+  docs/tz-public-site-v1.md фиксирует route map и acceptance criteria.
+Вектор:
+  Translate AN-64/TZ into route/content registry.
+  Define human-facing and agent-facing pages as data, not ad hoc strings.
+  Keep page content self-contained and markdown-projectable.
+Цель:
+  Единый content registry для site routes, docs routes и llms.txt.
+Проверки:
+  publicSiteContent exports route map
+  route map contains /, /compare, /docs, /onebase
+Анализ:
+  Зачем:
+  docs/tz-public-site-v1.md фиксирует route map и acceptance criteria.
+  Контекст: Translate AN-64/TZ into route/content registry.
+  Когда:
+  После готовности: epic-work-graph-public-site-v1.
+  Готово, когда:
+  Единый content registry для site routes, docs routes и llms.txt.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: epic-work-graph-public-site-v1.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-64
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-public-site-competitive-tz.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-02T22:20:53.034Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-02T22:20:53.034Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: epic-work-graph-public-site-v1
+  work.id: write-public-site-information-architecture
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: product_engineer
+  work.parent_id: epic-work-graph-public-site-v1
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: low
+  work.status: done
+  work.target_files: src/publicSiteContent.mjs, docs/tz-public-site-v1.md, work/analytics/work-graph-public-site-competitive-tz.md
+  work.title: Site: information architecture and route map
+
+Свидетельства:
+  - Implemented public site v1 in src/publicSiteContent.mjs + src/publicSiteServer.mjs; verified by node --test tests/publicSite.test.mjs tests/workGraphBacklogUiServer.test.mjs (22/22 pass).
+]>

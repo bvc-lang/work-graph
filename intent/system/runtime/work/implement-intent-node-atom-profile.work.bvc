@@ -9,42 +9,23 @@
   Сохранить WorkItem как execution layer; intent_node хранит смысл и lineage.
 Цель:
   IntentNode-атомы читаются из intent tree, валидируются и собираются в graph projection.
-Анализ:
-  Целесообразность:
-  Стоит завести «реализовать atom.profile intent_node и parser/projection» в бэклог — по материалам AN-3 (analytics:intent-graph-storage-roadmap).
-  Контекст и границы:
-  Добавить профиль atom.profile=intent_node с labels intent.id, intent.node_kind, intent.parent_id, intent.link.*.
-  Зависимости и готовность:
-  depends_on=design-intent-graph-storage-v1; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  IntentNode-атомы читаются из intent tree, валидируются и собираются в graph projection.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-3 (analytics:intent-graph-storage-roadmap); исполнять после вердикта «полезно» и готовности зависимостей.
 Проверки:
   node --test покрывает parse intent_node и lint ошибок
   projection возвращает question → options → decision → work refs
   существующие WorkItem tests не ломаются
-
 Свидетельства:
-  - src/intentNodeRuntime.mjs + src/intentNodeLint.mjs
+  src/intentNodeRuntime.mjs + src/intentNodeLint.mjs
 
 Метки:
   atom.profile: work_item
   intake.analytics_key: AN-3
   intake.source_kind: analytics-record
   intake.source_ref: analytics:intent-graph-storage-roadmap
+  intent.decision_id: decision:intent-graph-storage-v1
+  intent.option_id: option-c-intent-node-canon
+  intent.question_id: iq:intent-graph-storage
   migration.strategy: rebuild
   trace.status: verified
-  intent.question_id: iq:intent-graph-storage
-  intent.option_id: option-c-intent-node-canon
-  intent.decision_id: decision:intent-graph-storage-v1
-  work.parent_id: design-intent-graph-storage-v1
   work.analysis.at: 2026-05-30T18:13:05.415Z
   work.analysis.source: analytics-record
   work.decision.at: 2026-05-30T18:13:05.415Z
@@ -54,10 +35,12 @@
   work.id: implement-intent-node-atom-profile
   work.next_action: —
   work.owner_role: feature_engineer
+  work.parent_id: design-intent-graph-storage-v1
   work.pipeline_stage: decided
   work.priority: high
   work.risk: high
   work.status: done
   work.target_files: src/intentTreeWorkItems.mjs, src/intentTreeLint.mjs, src/intentHierarchy.mjs, tests/intentTreeLint.test.mjs, work/analytics/intent-graph-storage-roadmap.md
-  work.title: реализовать atom.profile intent_node и parser/projection
+  work.title: IntentNode-атомы читаются из intent tree, валидируются и собираются в graph projection.
 ]>
+

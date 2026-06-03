@@ -1,0 +1,44 @@
+#Задача_epic_work_graph_ui_settings_v1<[
+Базис:
+  Тема только в sidebar-footer (кнопка «Тёмная тема» на всю ширину) — нет пункта Настройки.
+  Нет страницы: язык, версия приложения, проверка обновлений.
+  UI chrome на RU; оператор просит EN/RU и централизованные настройки.
+Вектор:
+  P0: «Настройки» внизу sidebar + иконка темы справа в header.
+  P0: view Настройки — секции тема, язык, версия/обновление.
+  P1: locale switcher → wg_locale + epic-work-graph-ui-i18n-v1 rollout EN+RU.
+Цель:
+  Оператор меняет тему и язык из Настроек или быстрой иконки; видит версию WG и может проверить обновление.
+Проверки:
+  Sidebar: пункт Настройки внизу открывает settings view
+  Header: иконка темы справа переключает light/dark
+  Настройки: тема, язык (en|ru), версия + check update
+  UI chrome переведён EN+RU через locales/*/ui.json
+
+Свидетельства:
+  - 6/6 subtasks done; work/analytics/closing-epic-work-graph-ui-settings-v1.md
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-55
+  intake.source_kind: operator-request
+  intake.source_ref: docs/plan-work-graph-ui-settings-v1.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-02T16:45:45.764Z
+  work.analysis.source: operator-request
+  work.decision.at: 2026-06-02T16:45:45.764Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.id: epic-work-graph-ui-settings-v1
+  work.item_kind: epic
+  work.next_action: —
+  work.owner_role: feature_engineer
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: docs/plan-work-graph-ui-settings-v1.md, work/analytics/work-graph-ui-i18n-best-practices.md, src/workGraphBacklogUiServer.mjs, src/ui/backlogShellButtons.mjs, locales/en/ui.json, locales/ru/ui.json, docs/plan-work-graph-ui-i18n-v1.md
+  work.title: Настройки UI v1: sidebar, тема, язык, версия (AN-55)
+]>
+

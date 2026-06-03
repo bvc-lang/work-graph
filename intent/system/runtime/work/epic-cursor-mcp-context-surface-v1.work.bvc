@@ -16,33 +16,14 @@
   tests/workgraph-mcp.test.mjs: новые tools зарегистрированы и возвращают v1 schemas
   eval:llm-usefulness scorecard включает cursor-mcp-context-surface
   docs обновлены под новые tools/resources
-  AN-38 closing analysis опубликован
-Анализ:
-  Целесообразность:
-  Стоит завести «Cursor MCP context surface v1: graph RAG, memory, evidence + usefulness eval» в бэклог — по материалам AN-38 (work/analytics/llm-pvrg-richir-memory-slices-usage-audit.md).
-  Контекст и границы:
-  T1: MCP tool get_graph_rag_context + resource workgraph://pvrg/graph-rag/{workId} (порт buildGraphRagContextForWorkerInput).
-  Зависимости и готовность:
-  depends_on=implement-pvrg-graph-rag-context-slice, implement-memory-record-worker-slice-mvp, design-evidence-model-v1, implement-mcp-get-pvrg-task-scope; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Cursor видит graph RAG / memory / evidence как MCP tools и resources; usefulness eval ловит регрессии cursor-mcp-context-surface; AN-9 RichIR имеет решение.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана по материалам приёма AN-38 (work/analytics/llm-pvrg-richir-memory-slices-usage-audit.md); исполнять после вердикта «полезно» и готовности зависимостей.
-
-
+  AN-38 итоговый разбор опубликован
 Свидетельства:
   npm run test:deterministic — 648/648 green (2026-06-01)
 
 Метки:
+  analytics.closing_ref: work/analytics/closing-epic-cursor-mcp-context-surface-v1.md
   atom.profile: work_item
   intake.analytics_key: AN-38
-  analytics.closing_ref: work/analytics/closing-epic-cursor-mcp-context-surface-v1.md
   intake.source_kind: analytics-record
   intake.source_ref: work/analytics/llm-pvrg-richir-memory-slices-usage-audit.md
   migration.strategy: rebuild
@@ -62,5 +43,6 @@
   work.risk: medium
   work.status: done
   work.target_files: work/analytics/llm-pvrg-richir-memory-slices-usage-audit.md, packages/workgraph-mcp/src/index.mjs, packages/workgraph-mcp/src/handlers.mjs, tests/workgraph-mcp.test.mjs, src/workGraphLlmUsefulnessEval.mjs, tests/workGraphLlmUsefulnessEval.test.mjs, src/graphRagContextSlice.mjs, src/memoryRecordWriter.mjs, src/evidenceReadModel.mjs, .cursor/rules/
-  work.title: Cursor MCP context surface v1: graph RAG, memory, evidence + usefulness eval
+  work.title: Cursor MCP: поверхность контекста — graph RAG, memory, evidence (AN-32)
 ]>
+

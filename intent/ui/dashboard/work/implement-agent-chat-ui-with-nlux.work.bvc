@@ -9,23 +9,6 @@
   Сохранить действия «Отправить агенту» из backlog/card как установку WorkItem context в chat UI.
 Цель:
   Вкладка «Агент» выглядит и ведёт себя как нормальный AI chat UI, а не как самодельная форма.
-Анализ:
-  Целесообразность:
-  Стоит завести «заменить экран «Агент» на NLUX chat UI» в бэклог.
-  Контекст и границы:
-  Добавить NLUX vanilla dependency или локальный frontend island для вкладки «Агент».
-  Зависимости и готовность:
-  depends_on=design-agent-chat-ui-library-adoption, simplify-agent-run-panel-ux; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Вкладка «Агент» выглядит и ведёт себя как нормальный AI chat UI, а не как самодельная форма.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
 
 Метки:
   atom.profile: work_item
@@ -46,6 +29,6 @@
   work.risk: medium
   work.status: done
   work.target_files: package.json, src/workGraphBacklogUiServer.mjs, tests/workGraphBacklogUiServer.test.mjs, work/backlog.bvc
-  work.title: заменить экран «Агент» на NLUX chat UI
+  work.title: Вкладка «Агент» выглядит и ведёт себя как нормальный AI chat UI, а не как самодельная форма.
 ]>
 

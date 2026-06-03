@@ -3,7 +3,7 @@
   OneBase был выбран как первый реальный domain vertical, а в переписке звучали built-in tools, MCP parity и agent UI/daemon/external MCP paths.
   Сейчас есть static verification, template и parity matrix, но нет реального provider-neutral OneBase tool execution path для agent worker.
 Вектор:
-  Реализовать минимальный OneBase tool execution path: list metadata, read bounded artifact facts, прогнать optional verification command, return Worker Output evidence.
+  Реализовать минимальный OneBase tool execution path: list metadata, read bounded artifact facts, прогнать опционально verification command, return Worker Output evidence.
   Разделить built-in CLI, MCP package и agent provider path; mandatory CI остаётся на deterministic CLI/static gate.
   Подключить tool capabilities к provider registry и Agent Run panel later.
 Цель:
@@ -12,7 +12,7 @@
   Целесообразность:
   Стоит завести «реализовать OneBase tool execution path для worker» в бэклог.
   Контекст и границы:
-  Реализовать минимальный OneBase tool execution path: list metadata, read bounded artifact facts, прогнать optional verification command, return Worker Output evidence.
+  Реализовать минимальный OneBase tool execution path: list metadata, read bounded artifact facts, прогнать опционально verification command, return Worker Output evidence.
   Зависимости и готовность:
   depends_on=design-provider-registry-and-capability-selection, implement-language-adapter-layer-mvp, port-onebase-mcp-parity; старт после закрытия upstream-зависимостей.
   Риски и альтернативы:
@@ -45,6 +45,6 @@
   work.risk: high
   work.status: done
   work.target_files: src/onebaseWorkerTools.mjs, src/workGraphWorkerProvider.mjs, src/agentWorkerLocalRunner.mjs, tests/onebaseWorkerTools.test.mjs, protocols/onebase-mcp-parity-v1.bvc, work/backlog.bvc
-  work.title: реализовать OneBase tool execution path для worker
+  work.title: реализовать OneBase инструмент execution path
 ]>
 

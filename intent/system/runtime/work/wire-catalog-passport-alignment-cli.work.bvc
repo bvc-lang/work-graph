@@ -1,49 +1,27 @@
 #Задача_wire_catalog_passport_alignment_cli<[
 Базис:
   Протокол catalog-passport-intent-alignment без исполняемой команды.
-  Задача «Фаза 3: CLI выравнивания catalog/passport» относится к контуру платформы агента и должна быть понятна агенту без чтения всего backlog.
-  Предварительно должны быть закрыты зависимости: phase-3-step-canon-intent-graph.
 Вектор:
   npm run check:catalog-alignment — workId, intentPath, trace refs.
-  Ближайший шаг исполнения: просмотреть и перевести в ready.
 Цель:
   Выравнивание проверяется в ci:mandatory или lint.
-  Готово, когда выполнены проверки: Exit 0 на текущем intent tree.
-Анализ:
-  Целесообразность:
-  Стоит завести «Фаза 3: CLI выравнивания catalog/passport» в бэклог.
-  Контекст и границы:
-  npm run check:catalog-alignment — workId, intentPath, trace refs.
-  Зависимости и готовность:
-  depends_on=phase-3-step-canon-intent-graph; старт после закрытия upstream-зависимостей.
-  Риски и альтернативы:
-  Размывание границ и дубли в треке; отложить, если зависимости или контекст не готовы.
-  Критерии успеха:
-  Выравнивание проверяется в ci:mandatory или lint.; проверки из атома и `target_files`.
-  Рекомендация для решения:
-  Полезно — задача готова к исполнению после разбора материалов приёма.
-Решение:
-  Вердикт:
-  полезно
-  Создана через create_work_item; исполнять после вердикта «полезно» и готовности зависимостей.
+Проверки:
+  Exit 0 на текущем intent tree
+  Exit 1 на сломанной фикстуре
 
 Метки:
   atom.profile: work_item
   migration.strategy: port
   trace.status: verified
-  work.analysis.at: 2026-05-30T17:22:37.782Z
-  work.analysis.source: backfill
-  work.decision.at: 2026-05-30T17:22:37.791Z
-  work.decision.verdict: useful
   work.department: agent-platform
   work.depends_on: phase-3-step-canon-intent-graph
   work.id: wire-catalog-passport-alignment-cli
-  work.next_action: promote в ready после depends_on, затем claim/execute
+  work.next_action: просмотреть и перевести в ready
   work.owner_role: compiler_engineer
-  work.pipeline_stage: decided
   work.priority: low
   work.risk: medium
   work.status: done
-  work.target_files: scripts/check-catalog-alignment.mjs, src/intentHierarchy.mjs, protocols/catalog-passport-intent-alignment.bvc
-  work.title: Фаза 3: CLI выравнивания catalog/passport
+  work.target_files: src/intentHierarchy.mjs, protocols/catalog-passport-intent-alignment.bvc
+  work.title: Выравнивание проверяется в ci:mandatory или lint.
 ]>
+
