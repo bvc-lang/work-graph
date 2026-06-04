@@ -1,3 +1,4 @@
+import { execFileSync } from 'node:child_process';
 import { accessSync, constants, readFileSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
@@ -7,6 +8,47 @@ import { isNpmCliPackageRoot, resolveEngineRootFromNodeModules } from './workGra
 export const APP_VERSION_SCHEMA = 'workgraph.app-version.v1';
 export const DEFAULT_NPM_PACKAGE = '@work-graph/cli';
 export const NPM_VERSION_CACHE_TTL_MS = 60 * 60 * 1000;
+export const NPM_REGISTRY_FETCH_TIMEOUT_MS = 15_000;
+export const NPM_REGISTRY_USER_AGENT = 'work-graph-app-version-check';
+
+/**
+ * @param {string} packageName
+ * @param {string} [registryBase]
+ */
+export function buildNpmRegistryLatestUrl(packageName, registryBase = process.env.WORKGRAPH_NPM_REGISTRY ?? 'https://registry.npmjs.org') {
+  const base = String(registryBase).replace(/\/$/u, '');
+  const name = String(packageName ?? '').trim();
+  if (name.startsWith('@')) {
+    const slash = name.indexOf('/');
+    if (slash > 1) {
+      const scope = name.slice(0, slash);
+      const pkg = name.slice(slash + 1);
+      return `${base}/${scope}%2F${encodeURIComponent(pkg)}/latest`;
+    }
+  }
+  return `${base}/${encodeURIComponent(name)}/latest`;
+}
+
+/**
+ * @param {string} packageName
+ * @param {{ execFileSyncImpl?: typeof execFileSync, timeoutMs?: number }} [options]
+ */
+export function fetchNpmLatestVersionViaCli(packageName, options = {}) {
+  const execImpl = options.execFileSyncImpl ?? execFileSync;
+  const timeoutMs = options.timeoutMs ?? NPM_REGISTRY_FETCH_TIMEOUT_MS;
+  const raw = execImpl('npm', ['view', packageName, 'version', '--json'], {
+    encoding: 'utf8',
+    timeout: timeoutMs,
+    env: process.env,
+    stdio: ['ignore', 'pipe', 'pipe'],
+  });
+  const parsed = JSON.parse(String(raw).trim());
+  const latestVersion = typeof parsed === 'string' ? parsed : String(parsed?.version ?? parsed ?? '');
+  if (!latestVersion) {
+    throw new Error('npm view returned empty version');
+  }
+  return latestVersion;
+}
 
 /** @type {Map<string, { latestVersion: string, fetchedAt: number }>} */
 const npmVersionCache = new Map();
@@ -122,34 +164,80 @@ export async function readLocalAppVersion(options = {}) {
   };
 }
 
+/**
+ * @param {string} packageName
+ * @param {number} now
+ * @param {{ latestVersion: string, fetchedAt: number }} cached
+ */
+function cacheHit(cached, now) {
+  return {
+    latestVersion: cached.latestVersion,
+    fromCache: true,
+    checkedAt: new Date(cached.fetchedAt).toISOString(),
+  };
+}
+
 export async function fetchNpmLatestVersion(packageName, options = {}) {
   const fetchImpl = options.fetchImpl ?? globalThis.fetch;
-  if (typeof fetchImpl !== 'function') {
-    throw new TypeError('fetch is not available');
-  }
-
   const now = Date.now();
   const ttlMs = options.cacheTtlMs ?? NPM_VERSION_CACHE_TTL_MS;
   const cached = npmVersionCache.get(packageName);
   if (cached && now - cached.fetchedAt < ttlMs && options.bypassCache !== true) {
-    return { latestVersion: cached.latestVersion, fromCache: true, checkedAt: new Date(cached.fetchedAt).toISOString() };
+    return cacheHit(cached, now);
   }
 
-  const url = `https://registry.npmjs.org/${encodeURIComponent(packageName)}/latest`;
-  const response = await fetchImpl(url, {
-    headers: { accept: 'application/json' },
-    signal: options.signal,
-  });
-  if (!response.ok) {
-    if (cached) {
-      return { latestVersion: cached.latestVersion, fromCache: true, checkedAt: new Date(cached.fetchedAt).toISOString(), stale: true };
+  const url = buildNpmRegistryLatestUrl(packageName, options.registryBase);
+  const timeoutMs = options.timeoutMs ?? NPM_REGISTRY_FETCH_TIMEOUT_MS;
+  const signal = options.signal
+    ?? (typeof AbortSignal !== 'undefined' && typeof AbortSignal.timeout === 'function'
+      ? AbortSignal.timeout(timeoutMs)
+      : undefined);
+
+  let latestVersion = '';
+  let source = 'registry-fetch';
+
+  if (typeof fetchImpl === 'function') {
+    try {
+      const response = await fetchImpl(url, {
+        headers: {
+          accept: 'application/json',
+          'user-agent': NPM_REGISTRY_USER_AGENT,
+        },
+        signal,
+      });
+      if (!response.ok) {
+        throw new Error(`npm registry HTTP ${response.status}`);
+      }
+      const payload = await response.json();
+      latestVersion = String(payload.version ?? '');
+      if (!latestVersion) {
+        throw new Error('npm registry returned empty version');
+      }
+    } catch (error) {
+      if (cached) {
+        return { ...cacheHit(cached, now), stale: true };
+      }
+      try {
+        latestVersion = fetchNpmLatestVersionViaCli(packageName, options);
+        source = 'npm-cli';
+      } catch (cliError) {
+        const fetchMsg = error instanceof Error ? error.message : String(error);
+        const cliMsg = cliError instanceof Error ? cliError.message : String(cliError);
+        throw new Error(`${fetchMsg}; npm view: ${cliMsg}`);
+      }
     }
-    throw new Error(`npm registry HTTP ${response.status}`);
+  } else {
+    latestVersion = fetchNpmLatestVersionViaCli(packageName, options);
+    source = 'npm-cli';
   }
-  const payload = await response.json();
-  const latestVersion = String(payload.version ?? '');
+
   npmVersionCache.set(packageName, { latestVersion, fetchedAt: now });
-  return { latestVersion, fromCache: false, checkedAt: new Date(now).toISOString() };
+  return {
+    latestVersion,
+    fromCache: false,
+    checkedAt: new Date(now).toISOString(),
+    source,
+  };
 }
 
 export async function buildAppVersionResponse(options = {}) {
@@ -160,6 +248,7 @@ export async function buildAppVersionResponse(options = {}) {
   let checkError = null;
   let checkedAt = null;
   let fromCache = false;
+  let updateCheckSource = null;
 
   if (options.checkUpdate === true) {
     try {
@@ -167,6 +256,7 @@ export async function buildAppVersionResponse(options = {}) {
       latestVersion = npmResult.latestVersion;
       checkedAt = npmResult.checkedAt;
       fromCache = npmResult.fromCache === true;
+      updateCheckSource = npmResult.source ?? (npmResult.stale ? 'cache-stale' : null);
       updateAvailable = isVersionNewer(latestVersion, local.version);
     } catch (error) {
       checkError = error instanceof Error ? error.message : String(error);
@@ -184,6 +274,7 @@ export async function buildAppVersionResponse(options = {}) {
     checkError,
     checkedAt,
     fromCache,
+    updateCheckSource,
     installCommand: installCommandProject,
     installCommandProject,
     installCommandGlobal,

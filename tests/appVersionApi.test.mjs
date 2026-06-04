@@ -6,7 +6,9 @@ import { describe, it, afterEach } from 'node:test';
 
 import {
   buildAppVersionResponse,
+  buildNpmRegistryLatestUrl,
   clearNpmVersionCache,
+  fetchNpmLatestVersion,
   isVersionNewer,
   parseSemverCore,
   readLocalAppVersion,
@@ -15,6 +17,15 @@ import {
 } from '../src/appVersionApi.mjs';
 
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
+
+describe('buildNpmRegistryLatestUrl', () => {
+  it('uses scoped package path for @work-graph/cli', () => {
+    assert.equal(
+      buildNpmRegistryLatestUrl('@work-graph/cli'),
+      'https://registry.npmjs.org/@work-graph%2Fcli/latest',
+    );
+  });
+});
 
 describe('parseSemverCore / isVersionNewer', () => {
   it('compares semver tuples', () => {
@@ -87,6 +98,18 @@ describe('buildAppVersionResponse', () => {
     assert.match(payload.installCommand, /^npm update @work-graph\/cli @work-graph\/mcp$/);
     assert.match(payload.installCommandGlobal, /^npm i -g @work-graph\/cli@latest$/);
     assert.notEqual(local.version, '9.9.9');
+  });
+
+  it('falls back to npm view when registry fetch fails', async () => {
+    const result = await fetchNpmLatestVersion('@work-graph/cli', {
+      bypassCache: true,
+      fetchImpl: async () => {
+        throw new Error('fetch failed');
+      },
+      execFileSyncImpl: () => '"0.2.11"\n',
+    });
+    assert.equal(result.latestVersion, '0.2.11');
+    assert.equal(result.source, 'npm-cli');
   });
 
   it('serves npm latest from cache within ttl', async () => {
