@@ -1,0 +1,48 @@
+#Задача_intake_reference_an14_compiler_round_trip<[
+Базис:
+  AN-14: reference positioning/comparison intake — formal backlog linkage.
+  Источник: analytics:compiler-round-trip-low-code-scaffold (work/analytics/compiler-round-trip-low-code-scaffold.md).
+Вектор:
+  Статус done = catalog only; без исполнения до product decision.
+  См. epic-iohasc-positioning-reference-v1 и AN-16 meta-review.
+Цель:
+  AN-14 отображается в relatedWorkItems панели «Аналитика».
+Проверки:
+  intake.analytics_key=AN-14
+  intake.source_ref=analytics:compiler-round-trip-low-code-scaffold
+Анализ:
+  Зачем:
+  AN-14: reference positioning/comparison intake — formal backlog linkage.
+  Контекст: Источник: analytics:compiler-round-trip-low-code-scaffold (work/analytics/compiler-round-trip-low-code-scaffold.md).
+  Когда:
+  После готовности: epic-iohasc-positioning-reference-v1.
+  Готово, когда:
+  AN-14 отображается в relatedWorkItems панели «Аналитика».
+Решение:
+  Вердикт: defer (reference catalog)
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-14
+  intake.source_kind: analytics-record
+  intake.source_ref: analytics:compiler-round-trip-low-code-scaffold
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-04T18:30:01.737Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-04T18:30:01.737Z
+  work.decision.verdict: useful
+  work.department: product
+  work.depends_on: epic-iohasc-positioning-reference-v1
+  work.id: intake-reference-an14-compiler-round-trip
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: product_manager
+  work.parent_id: epic-iohasc-positioning-reference-v1
+  work.pipeline_stage: decided
+  work.priority: low
+  work.risk: low
+  work.status: done
+  work.target_files: work/analytics/compiler-round-trip-low-code-scaffold.md
+  work.title: Intake (reference): AN-14 Compiler Round-Trip — positioning catalog
+]>

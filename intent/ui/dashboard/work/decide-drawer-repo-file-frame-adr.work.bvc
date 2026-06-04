@@ -43,7 +43,10 @@
   work.pipeline_stage: decided
   work.priority: high
   work.risk: low
-  work.status: backlog
+  work.status: done
   work.target_files: docs/adr-detail-drawer-repo-file-frame-v1.md, docs/adr-detail-drawer-stack-v1.md, work/analytics/drawer-repo-file-preview.md
   work.title: ADR: detail stack frame repo-file + preview API contract
+
+Свидетельства:
+  - docs/adr-detail-drawer-repo-file-frame-v1.md — frame type repo-file, push rules, GET /api/repo-file/preview contract; npm run test:deterministic green
 ]>

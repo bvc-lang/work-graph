@@ -71,7 +71,29 @@ export function resolveCurrentCycle(items, itemById) {
     return deriveWorkCycle(readyItem, itemById);
   }
 
-  return cycles[0] ?? 'uncategorized';
+  if (cycles.length > 0) {
+    return cycles[0];
+  }
+
+  const backlogItems = items.filter((item) => item.status === 'backlog');
+  const cycleCounts = new Map();
+  for (const item of backlogItems) {
+    const cycleId = deriveWorkCycle(item, itemById);
+    cycleCounts.set(cycleId, (cycleCounts.get(cycleId) ?? 0) + 1);
+  }
+
+  if (cycleCounts.size > 0) {
+    const ranked = [...cycleCounts.entries()]
+      .filter(([cycleId]) => cycleId !== 'uncategorized')
+      .sort((left, right) => right[1] - left[1] || compareText(left[0], right[0]));
+    if (ranked.length > 0) {
+      return ranked[0][0];
+    }
+
+    return [...cycleCounts.entries()].sort((left, right) => right[1] - left[1])[0][0];
+  }
+
+  return 'uncategorized';
 }
 
 export function buildCycleSliceProjection(items, options = {}) {

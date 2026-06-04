@@ -28,4 +28,4 @@ npm run seed:analytics-record -- --body work/analytics/drawer-repo-file-preview.
 node scripts/seed-epic-drawer-repo-file-preview-v1.mjs
 ```
 
-**Status:** backlog
+**Status:** done (2026-06-04)

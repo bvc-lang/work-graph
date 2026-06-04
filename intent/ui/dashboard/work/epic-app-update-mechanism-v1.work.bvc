@@ -1,0 +1,57 @@
+#Задача_epic_app_update_mechanism_v1<[
+Базис:
+  Секция «О приложении» показывает версию project package.json, а не @work-graph/cli.
+  Оператор не узнаёт об обновлении, пока не откроет Настройки вручную.
+  Нет toast-уведомления слева снизу при доступном обновлении на npm.
+Вектор:
+  P0: readLocalAppVersion → @work-graph/cli package.json (npm-first + monorepo).
+  P1: npm registry cache 1h + semver compare.
+  P1: фоновая проверка on load + liveSync scope app-version (6h).
+  P1: wg-notice-stack bottom-left + dismiss per latestVersion.
+Цель:
+  Оператор видит корректную версию WG; при новой версии на npm получает notice слева снизу и команду npm update.
+Проверки:
+  Settings shows @work-graph/cli version
+  Background check calls /api/app-version?checkUpdate=1
+  Notice appears when updateAvailable and not dismissed
+  npm run test:deterministic green
+Анализ:
+  Зачем:
+  Секция «О приложении» показывает версию project package.json, а не @work-graph/cli.
+  Контекст: Оператор не узнаёт об обновлении, пока не откроет Настройки вручную.
+  Когда:
+  После готовности: epic-work-graph-ui-settings-v1.
+  Готово, когда:
+  Оператор видит корректную версию WG; при новой версии на npm получает notice слева снизу и команду npm update.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: epic-work-graph-ui-settings-v1.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-66
+  intake.source_kind: operator-request
+  intake.source_ref: docs/analysis/2026-06-app-update-mechanism.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-04T10:13:24.377Z
+  work.analysis.source: operator-request
+  work.decision.at: 2026-06-04T10:13:24.377Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: epic-work-graph-ui-settings-v1
+  work.id: epic-app-update-mechanism-v1
+  work.item_kind: epic
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: docs/plan-app-update-mechanism-v1.md, docs/analysis/2026-06-app-update-mechanism.md, src/appVersionApi.mjs, src/workGraphBacklogUiServer.mjs, tests/appVersionApi.test.mjs, locales/en/ui.json, locales/ru/ui.json
+  work.title: Механизм обновлений: версия CLI, npm check, toast слева снизу
+
+Свидетельства:
+  - Epic closed: @work-graph/cli version in Settings, /api/app-version?checkUpdate=1 background poll, wg-notice-stack update notice, closing-epic-app-update-mechanism-v1.md, npm run test:deterministic 790 pass
+]>

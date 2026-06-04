@@ -44,7 +44,10 @@
   work.pipeline_stage: decided
   work.priority: high
   work.risk: low
-  work.status: backlog
+  work.status: done
   work.target_files: src/workGraphBacklogUiServer.mjs, tests/workGraphBacklogUiServer.test.mjs
   work.title: UI: аватарки owner в kanban, backlog, memory, analytics
+
+Свидетельства:
+  - renderIssueFooter + memory/analytics use renderOwnerAvatar; workGraphBacklogUiServer.test smoke owner-avatar
 ]>

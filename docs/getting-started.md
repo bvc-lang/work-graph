@@ -7,7 +7,7 @@ This guide is for installing Work Graph into an existing project.
 - Node.js 20 or newer
 - npm
 - A Git repository where you want Work Graph work items to live
-- Cursor, if you want agent access through MCP
+- An MCP-capable agent client (Cursor, Claude Code, or another IDE that supports MCP), if you want agent access through tools
 
 ## Install
 
@@ -22,7 +22,7 @@ npm run workgraph:ui
 Open:
 
 ```text
-http://127.0.0.1:4177/
+http://localhost:4177/
 ```
 
 ## Verify
@@ -40,15 +40,15 @@ Work Graph creates or updates:
 - `.work-graph/config.json`
 - `intent/`
 - `intent/index.bvc`
-- `.cursor/mcp.json`
-- `.cursor/rules/work-graph-project.mdc`
+- `.cursor/mcp.json` (optional; Cursor and other clients that read this path)
+- `.cursor/rules/work-graph-project.mdc` (optional; agent guidance when using Cursor)
 - `package.json` scripts and devDependencies
 
 Existing `intent/index.bvc` and `architecture/main.bvc` files are preserved.
 
-## Cursor MCP
+## Agent MCP
 
-After install, reload MCP servers in Cursor. The generated MCP config runs:
+After install, reload MCP servers in your IDE. If you use Cursor, the generated `.cursor/mcp.json` runs:
 
 ```bash
 npx -y @work-graph/mcp
@@ -73,8 +73,8 @@ npm run workgraph:doctor
 Work Graph is local to the project. To remove it, delete:
 
 - `.work-graph/`
-- the Work Graph entries in `.cursor/mcp.json`
-- `.cursor/rules/work-graph-project.mdc`
+- Work Graph entries in `.cursor/mcp.json` (if you added them)
+- `.cursor/rules/work-graph-project.mdc` (if created)
 - Work Graph scripts and devDependencies from `package.json`
 
 Keep or delete `intent/` depending on whether you want to preserve the project work history.

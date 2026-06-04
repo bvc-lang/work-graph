@@ -54,7 +54,7 @@ export function formatWorkItemIssueKey(item) {
  * @param {{ key?: string, title?: string }} [options]
  */
 export function renderWorkItemIssueKeyChip(item, options = {}) {
-  const type = resolveWorkItemIssueType(item);
+  const type = options.type ?? resolveWorkItemIssueType(item);
   const key = options.key ?? formatWorkItemIssueKey(item);
   const title = options.title ?? String(item?.id ?? key);
   const icon = ISSUE_TYPE_SVG[type] ?? ISSUE_TYPE_SVG.task;
@@ -62,4 +62,21 @@ export function renderWorkItemIssueKeyChip(item, options = {}) {
     '<span class="issue-type-icon is-' + type + '" aria-hidden="true">' + icon + '</span>' +
     '<span class="issue-key-text">' + escapeIssueAttr(key) + '</span>' +
   '</span>';
+}
+
+/**
+ * @param {{ key?: string, id?: string, title?: string } | null | undefined} record
+ * @param {{ key?: string, title?: string, type?: string }} [options]
+ */
+export function renderAnalyticsRecordKeyChip(record, options = {}) {
+  const key = String(options.key ?? record?.key ?? '').trim();
+  const fallbackId = String(record?.id ?? '').trim();
+  const displayKey = key || fallbackId;
+  const title = options.title ?? String(record?.title ?? displayKey);
+  const type = options.type ?? 'task';
+
+  return renderWorkItemIssueKeyChip(
+    { key: displayKey, itemKind: type, id: record?.id },
+    { key: displayKey, title, type },
+  );
 }

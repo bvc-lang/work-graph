@@ -1,3 +1,6 @@
+import { getPublicSitePageBlocks, getPublicSitePageMeta } from './publicSitePageContent.mjs';
+import { loadPublicDocMarkdown } from './publicSiteDocs.mjs';
+
 export const PUBLIC_SITE_DEFAULT_LOCALE = 'en';
 export const PUBLIC_SITE_LOCALES = ['en', 'ru'];
 export const PUBLIC_SITE_THEMES = ['light', 'dark'];
@@ -7,13 +10,23 @@ const FLOW_RU = ['Решение (AN)', 'Контракт задачи (.bvc)', 
 
 const COMPETITORS = [
   ['Cursor / Claude Code', 'Writes code and runs tools', 'partial', 'Execution layer; WG is the evidence ledger above it'],
+  ['GitHub Copilot', 'IDE completions and agent sessions', 'partial', 'Execution layer; WG scopes work.id and proof per change'],
+  ['Windsurf / Cline', 'Open IDE agents and edits', 'partial', 'Same as Cursor; WG supplies backlog and gates in git'],
   ['Linear / Jira', 'Plans and tracks issues', 'no', 'PM layer; WG keeps local BVC contracts and proof'],
+  ['Asana / ClickUp', 'Team tasks and project tracking', 'no', 'PM layer; no machine-readable contract per task'],
+  ['Notion / Confluence', 'Docs and informal task lists', 'no', 'Knowledge layer; WG links decisions to executable work items'],
+  ['Langfuse / LangSmith', 'LLM traces and experiment logs', 'partial', 'Observability; WG ties traces to BVC checks and done'],
   ['Mem0', 'Stores agent memory', 'no', 'Memory layer; WG stores accountable work records'],
   ['Devin', 'Autonomous ticket-to-PR sessions', 'partial', 'Cloud execution; WG defines acceptance and evidence'],
 ];
 const COMPETITORS_RU = [
   ['Cursor / Claude Code', 'Пишут код и вызывают инструменты', 'частично', 'Слой исполнения; WG ведёт журнал доказательств над ним'],
+  ['GitHub Copilot', 'Подсказки и агентские сессии в IDE', 'частично', 'Слой исполнения; WG задаёт work.id и proof на изменение'],
+  ['Windsurf / Cline', 'Открытые IDE-агенты и правки', 'частично', 'Как Cursor; WG даёт бэклог и гейты в git'],
   ['Linear / Jira', 'Планируют и ведут задачи', 'нет', 'PM-слой; WG хранит локальные BVC-контракты и доказательства'],
+  ['Asana / ClickUp', 'Командные задачи и проекты', 'нет', 'PM-слой; нет машиночитаемого контракта на задачу'],
+  ['Notion / Confluence', 'Документы и неформальные списки', 'нет', 'Слой знаний; WG связывает решения с исполняемой работой'],
+  ['Langfuse / LangSmith', 'Трассы LLM и логи экспериментов', 'частично', 'Наблюдаемость; WG привязывает трассы к BVC-проверкам и done'],
   ['Mem0', 'Хранит память агента', 'нет', 'Слой памяти; WG хранит ответственные записи работ'],
   ['Devin', 'Автономные сессии тикет→PR', 'частично', 'Облачное исполнение; WG задаёт acceptance и evidence'],
 ];
@@ -52,8 +65,8 @@ export const FAQ_ENTRIES = [
       {
         question: { en: 'Is Work Graph a task tracker?', ru: 'Work Graph — это тасктрекер?' },
         answer: {
-          en: 'No. Unlike Linear or Jira, which track statuses and comments, Work Graph tracks contracts and evidence. A WG task is a .bvc structure linked to repository files and cannot be closed until the agent submits machine-readable proof such as npm test with exit_code: 0.',
-          ru: 'Нет. Обычные трекеры вроде Linear и Jira хранят статусы и комментарии. Work Graph хранит контракты и доказательства. Задача в WG — это структура .bvc, привязанная к файлам репозитория, и она не может быть закрыта, пока агент не предоставит машиночитаемое свидетельство выполнения, например npm test с exit_code: 0.',
+          en: 'Yes — a local one in your git repo, with a kanban board and statuses. Unlike Jira or Linear, each item is a BVC contract with evidence gates, not just status and comments. A task cannot close until machine-readable proof is attached, for example npm test with exit_code: 0.',
+          ru: 'Да — локальный, в git-репозитории, с доской и статусами. В отличие от Linear и Jira, единица работы — BVC-контракт с гейтами evidence, а не только статус и комментарии. Задача не закрывается, пока не приложено машиночитаемое свидетельство, например npm test с exit_code: 0.',
         },
       },
       {
@@ -79,7 +92,7 @@ export const FAQ_ENTRIES = [
         question: { en: 'What is BVC?', ru: 'Что такое BVC?' },
         answer: {
           en: 'Basis · Vector · Goal. BVC describes an intent atom: context and reason, concrete action and success criterion. It is readable by humans, validated by schema and precise enough for LLM agents.',
-          ru: 'Basis · Vector · Goal, или Базис · Вектор · Цель. Это формат атома намерения: контекст и причина, конкретные действия и критерий успеха. Он понятен человеку, валидируется схемой и помогает LLM точно понимать границы задачи.',
+          ru: 'BVC (Базис · Вектор · Цель) — формат атома намерения: контекст и причина, конкретные действия и критерий успеха. Он понятен человеку, валидируется схемой и помогает LLM точно понимать границы задачи.',
         },
       },
       {
@@ -152,13 +165,15 @@ const COPY = {
       evidence: 'Evidence ledger',
       compare: 'Compare',
       docs: 'Docs',
+      menuOpen: 'Open menu',
+      menuClose: 'Close menu',
     },
     theme: { light: 'Light', dark: 'Dark' },
     localeLabel: 'Language',
     hero: {
-      eyebrow: 'Local-first · Git · MCP · Agents',
-      title: 'Contract platform for AI-driven development',
-      body: 'Work Graph links intent, execution and memory into one machine-readable loop. Not an AI chat, but a graph of work with trace: from research to proof of readiness.',
+      title: 'Your navigator for AI development — turns goals into an executable graph',
+      documentTitle: 'Work Graph — contract platform for AI-driven development',
+      body: 'Work Graph links intent, execution and memory into one loop. The path from idea to outcome becomes a manageable project map.',
       primary: 'How to install',
       secondary: 'Read llms.txt',
     },
@@ -201,13 +216,15 @@ const COPY = {
       evidence: 'Журнал доказательств',
       compare: 'Сравнение',
       docs: 'Документация',
+      menuOpen: 'Открыть меню',
+      menuClose: 'Закрыть меню',
     },
     theme: { light: 'Светлая', dark: 'Тёмная' },
     localeLabel: 'Язык',
     hero: {
-      eyebrow: 'Local-first · Git · MCP · Агенты',
-      title: 'Work Graph — контрактная платформа для разработки с ИИ',
-      body: 'Work Graph связывает намерение, исполнение и память в единый машиночитаемый контур. Не чат с ИИ, а граф работ со следом: от исследования до доказательства готовности.',
+      title: 'Ваш навигатор для AI-разработки, переводит цели в исполняемый граф',
+      documentTitle: 'Work Graph — контрактная платформа для разработки с ИИ',
+      body: 'Work Graph связывает намерение, исполнение и память в единый контур. Путь от идеи до результата превращается в управляемую карту проекта.',
       primary: 'Как установить',
       secondary: 'Открыть llms.txt',
     },
@@ -296,7 +313,6 @@ export const PUBLIC_SITE_ROUTES = [
   '/product',
   '/evidence-ledger',
   '/compare',
-  '/faq',
   '/docs',
   ...PUBLIC_DOCS.map((doc) => `/docs/${doc.slug}`),
 ];
@@ -352,8 +368,13 @@ export function buildFaqJsonLd(locale = PUBLIC_SITE_DEFAULT_LOCALE) {
   };
 }
 
+export function getPublicSiteCompetitors(locale) {
+  return locale === 'ru' ? COMPETITORS_RU : COMPETITORS;
+}
+
 export function getPublicSitePage(pathname, locale = PUBLIC_SITE_DEFAULT_LOCALE) {
   const copy = getPublicSiteCopy(locale);
+  const pageMeta = getPublicSitePageMeta(locale);
   const path = pathname === '/index.html' ? '/' : pathname;
   const docsMatch = path.match(/^\/docs\/([^/.]+)$/u);
   if (docsMatch) {
@@ -366,55 +387,40 @@ export function getPublicSitePage(pathname, locale = PUBLIC_SITE_DEFAULT_LOCALE)
       description: doc.description,
       kind: 'doc',
       doc,
-      sections: [
-        { title: doc.title, body: doc.description },
-        { title: copy.labels.examples, body: doc.examples.join(' | ') },
-        { title: copy.labels.relatedMcpTools, body: doc.relatedTools.join(', ') },
-      ],
+      sections: [],
     };
   }
 
   const routes = {
     '/': {
       title: copy.hero.title,
+      documentTitle: copy.hero.documentTitle,
       description: copy.hero.body,
       kind: 'home',
       sections: [
-        { title: copy.sections.flowTitle, body: copy.sections.flowBody, items: locale === 'ru' ? FLOW_RU : FLOW, icon: 'git-branch', badges: [{ label: 'BVC', tone: 'accent' }, { label: locale === 'ru' ? 'ЛОКАЛЬНО' : 'LOCAL', tone: 'ok' }] },
-        { title: copy.sections.evidenceTitle, body: copy.sections.evidenceBody, icon: 'shield-check', badges: [{ label: locale === 'ru' ? 'ДОКАЗАТЕЛЬСТВА' : 'EVIDENCE', tone: 'warning' }, { label: locale === 'ru' ? 'ПРОВЕРКА' : 'VERIFY', tone: 'accent' }] },
-        { title: copy.sections.compareTitle, body: locale === 'ru' ? 'IDE выполняет команды, трекер ведёт задачи, память хранит факты. Work Graph связывает намерение, контракт работы и доказательство результата.' : 'The IDE runs commands, the tracker manages tasks and memory stores facts. Work Graph connects intent, work contract and proof of outcome.', icon: 'scales', badges: [{ label: locale === 'ru' ? 'ГРАФ НАМЕРЕНИЙ' : 'INTENT GRAPH', tone: 'accent' }, { label: locale === 'ru' ? 'ДОКАЗАТЕЛЬСТВА' : 'EVIDENCE', tone: 'warning' }] },
-        { title: copy.sections.docsTitle, body: copy.sections.docsBody, icon: 'robot', badges: [{ label: 'LLMS.TXT', tone: 'accent' }, { label: 'MCP', tone: 'ok' }] },
+        { title: copy.sections.flowTitle, body: copy.sections.flowBody, badges: [{ label: 'BVC', tone: 'accent' }, { label: locale === 'ru' ? 'ЛОКАЛЬНО' : 'LOCAL', tone: 'ok' }] },
+        { title: copy.sections.evidenceTitle, body: copy.sections.evidenceBody, badges: [{ label: locale === 'ru' ? 'ДОКАЗАТЕЛЬСТВА' : 'EVIDENCE', tone: 'warning' }, { label: locale === 'ru' ? 'ПРОВЕРКА' : 'VERIFY', tone: 'accent' }] },
+        { title: copy.sections.docsTitle, body: copy.sections.docsBody, badges: [{ label: 'LLMS.TXT', tone: 'accent' }, { label: 'MCP', tone: 'ok' }] },
+        { title: copy.sections.compareTitle, body: locale === 'ru' ? 'IDE выполняет команды, трекер ведёт задачи, память хранит факты. Work Graph связывает намерение, контракт работы и доказательство результата.' : 'The IDE runs commands, the tracker manages tasks and memory stores facts. Work Graph connects intent, work contract and proof of outcome.', badges: [{ label: locale === 'ru' ? 'ГРАФ НАМЕРЕНИЙ' : 'INTENT GRAPH', tone: 'accent' }, { label: locale === 'ru' ? 'ДОКАЗАТЕЛЬСТВА' : 'EVIDENCE', tone: 'warning' }] },
       ],
     },
     '/product': {
-      title: copy.sections.productTitle,
-      description: copy.sections.productBody,
+      ...pageMeta.product,
       kind: 'product',
-      sections: [
-        { title: copy.labels.analytics, body: locale === 'ru' ? 'Решения и аргументация становятся долговечными AN-записями до попадания работы в бэклог.' : 'Decisions and reasoning become durable AN records before work enters the backlog.', icon: 'chart-bar', badges: [{ label: 'AN', tone: 'accent' }] },
-        { title: copy.labels.workItems, body: locale === 'ru' ? 'BVC-атомы фиксируют Базис, Вектор и Цель, чтобы бэклог не превращался в список дел из чата.' : 'BVC atoms define Basis, Vector and Goal so the backlog is not a chat todo list.', icon: 'clipboard-text', badges: [{ label: '.WORK.BVC', tone: 'ok' }] },
-        { title: copy.labels.board, body: locale === 'ru' ? 'Текущее движение видно людям и агентам через состояния: готово, захвачено, выполняется и на проверке.' : 'Current motion is visible for humans and agents through ready, claimed, doing and verify states.', icon: 'kanban', badges: [{ label: locale === 'ru' ? 'ПОТОК' : 'FLOW', tone: 'warning' }] },
-        { title: copy.labels.verification, body: locale === 'ru' ? 'Доказательства и проверки решают готовность; done — это вердикт контракта, а не сообщение.' : 'Evidence and checks decide readiness; done is a contract verdict, not a message.', icon: 'shield-check', badges: [{ label: locale === 'ru' ? 'ГОТОВО' : 'READY', tone: 'accent' }] },
-        { title: copy.labels.memory, body: locale === 'ru' ? 'Проверенные результаты становятся памятью проекта с исходными задачами и связанными файлами.' : 'Verified outcomes become project memory with source work items and related files.', icon: 'brain', badges: [{ label: locale === 'ru' ? 'ПАМЯТЬ' : 'MEMORY', tone: 'ok' }] },
-      ],
+      blocks: getPublicSitePageBlocks(locale, 'product'),
+      sections: [],
     },
     '/evidence-ledger': {
-      title: copy.sections.evidenceTitle,
-      description: copy.sections.evidenceBody,
+      ...pageMeta.evidence,
       kind: 'evidence',
-      sections: [
-        { title: copy.labels.readyForDone, body: locale === 'ru' ? 'Завершение требует доказательств, проверок и трассируемого контракта работы. Гейт объясняет, чего именно не хватает.' : 'Done requires evidence, checks and a traceable work contract. The gate can explain exactly what is missing.', icon: 'check-circle', badges: [{ label: locale === 'ru' ? 'ГЕЙТ' : 'GATE', tone: 'accent' }] },
-        { title: copy.labels.evidenceRecords, body: locale === 'ru' ? 'Строки и структурированные записи доказательств связывают команды, файлы, трассы и результаты проверки с work.id.' : 'Evidence lines and structured records link commands, files, traces and verification outcomes to a work.id.', icon: 'list-checks', badges: [{ label: locale === 'ru' ? 'ТРАССА' : 'TRACE', tone: 'warning' }] },
-        { title: copy.labels.localByDefault, body: locale === 'ru' ? 'Журнал живёт в репозитории, а не в отдельной SaaS-базе, поэтому review и аудит следуют за git.' : 'The ledger lives in the repository, not in a separate SaaS database, so review and audit follow git.', icon: 'hard-drives', badges: [{ label: 'GIT', tone: 'ok' }] },
-      ],
+      blocks: getPublicSitePageBlocks(locale, 'evidence'),
+      sections: [],
     },
     '/compare': {
-      title: copy.sections.compareTitle,
-      description: locale === 'ru' ? 'Сравнение с Cursor, Claude Code, Linear, Devin и Mem0.' : 'Comparison with Cursor, Claude Code, Linear, Devin and Mem0.',
+      ...pageMeta.compare,
       kind: 'compare',
-      sections: [
-        { title: copy.labels.competitorMatrix, body: locale === 'ru' ? 'Work Graph занимает слой графа намерений: связывает цели, решения, задачи, evidence и память.' : 'Work Graph is the intent-graph layer: it links goals, decisions, work items, evidence and memory.', competitors: locale === 'ru' ? COMPETITORS_RU : COMPETITORS, icon: 'strategy', badges: [{ label: 'AN-44', tone: 'muted' }, { label: 'AN-64', tone: 'accent' }] },
-      ],
+      blocks: getPublicSitePageBlocks(locale, 'compare'),
+      sections: [],
     },
     '/docs': {
       title: copy.sections.docsTitle,
@@ -423,14 +429,6 @@ export function getPublicSitePage(pathname, locale = PUBLIC_SITE_DEFAULT_LOCALE)
       sections: [
         { title: copy.labels.docsIndex, body: locale === 'ru' ? 'BVC, MCP-инструменты, проверки и ошибки выполнения.' : 'BVC, MCP tools, verification and runtime errors.', docs: PUBLIC_DOCS.map((doc) => localizePublicDoc(doc, locale)), icon: 'book-open-text', badges: [{ label: 'MARKDOWN', tone: 'accent' }, { label: 'JSON-LD', tone: 'ok' }] },
       ],
-    },
-    '/faq': {
-      title: locale === 'ru' ? 'Вопрос-ответ (FAQ) — Work Graph' : 'FAQ — Work Graph',
-      description: locale === 'ru'
-        ? 'Быстрые ответы о контрактной платформе, BVC, MCP, локальном хранении, evidence и гейтах.'
-        : 'Quick answers about the contract platform, BVC, MCP, local storage, evidence and gates.',
-      kind: 'faq',
-      sections: [],
     },
   };
 
@@ -446,7 +444,7 @@ export function buildLlmsTxt() {
 - /product - Workflow: Analytics -> Work Items -> Board -> Verification -> Memory
 - /evidence-ledger - Evidence and ready-for-done contract
 - /compare - Comparison with Cursor, Claude Code, Linear, Devin and Mem0
-- /faq - Human and LLM-readable FAQ
+- /#faq - FAQ on the home page (structured JSON at /faq.json)
 - /docs/bvc-spec - BVC atom specification
 - /docs/mcp-tools - MCP tool contracts
 - /docs/verification-matrix - Tier A/B/C verification rules
@@ -503,25 +501,13 @@ export function buildDocsContext(kind) {
 }
 
 export function renderPublicDocMarkdown(slug, locale = PUBLIC_SITE_DEFAULT_LOCALE) {
+  const lang = normalizeLocale(locale);
+  const markdown = loadPublicDocMarkdown(slug, lang);
+  if (markdown == null) return null;
   const sourceDoc = PUBLIC_DOCS.find((entry) => entry.slug === slug);
   if (!sourceDoc) return null;
-  const doc = localizePublicDoc(sourceDoc, locale);
-  return `# ${doc.title}
-
-${doc.description}
-
-## Contract
-
-\`\`\`yaml
-title: ${doc.title}
-related_tools: [${doc.relatedTools.join(', ')}]
-examples: [${doc.examples.join(', ')}]
-\`\`\`
-
-## Examples
-
-${doc.examples.map((example) => `- ${example}`).join('\n')}
-`;
+  const doc = localizePublicDoc(sourceDoc, lang);
+  return `# ${doc.title}\n\n${doc.description}\n\n${markdown}`;
 }
 
 export function renderBvcExample(slug) {

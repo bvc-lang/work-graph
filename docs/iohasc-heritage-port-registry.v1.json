@@ -1,0 +1,161 @@
+{
+  "schema": "iohasc.heritage.port-registry.v1",
+  "updatedAt": "2026-06-04",
+  "sourceRepo": "../project",
+  "sourceStatusDoc": "../project/docs/architecture-v2/IMPLEMENTATION_STATUS.md",
+  "entries": [
+    {
+      "id": "bvc-workitem-canon",
+      "subsystem": "BVC / WorkItem canon",
+      "sourcePaths": ["src/bvc/", "work/backlog.bvc"],
+      "strategy": "rebuild",
+      "workId": "define-workitem-v1",
+      "wgArtifacts": ["intent/", "src/workGraphRuntime.mjs"],
+      "status": "done"
+    },
+    {
+      "id": "unified-linkage",
+      "subsystem": "Unified linkage projection",
+      "sourcePaths": ["src/pvrg/unifiedLinkage.ts"],
+      "strategy": "rebuild",
+      "workId": "implement-mcp-get-unified-linkage",
+      "wgArtifacts": ["src/unifiedLinkageProjection.mjs"],
+      "status": "done"
+    },
+    {
+      "id": "pvrg-lite-scope",
+      "subsystem": "PVRG task scope / Graph RAG lite",
+      "sourcePaths": ["src/pvrg/"],
+      "strategy": "rebuild",
+      "workId": "implement-pvrg-graph-rag-context-slice",
+      "wgArtifacts": ["src/graphRagContextSlice.mjs", "src/pvrgTaskScope.mjs"],
+      "status": "done"
+    },
+    {
+      "id": "semantic-search-lexical",
+      "subsystem": "Semantic search workflow",
+      "sourcePaths": ["src/semanticSearch/"],
+      "strategy": "rebuild",
+      "workId": "implement-full-semantic-search-workflow",
+      "wgArtifacts": ["src/semanticSearchWorkflow.mjs"],
+      "status": "done"
+    },
+    {
+      "id": "bracket-ir-trace",
+      "subsystem": "Bracket IR trace signal",
+      "sourcePaths": ["src/ir/bracketIr.ts"],
+      "strategy": "port",
+      "workId": "port-bracket-ir-trace-envelope",
+      "wgArtifacts": ["src/bracketIrTraceSignal.mjs"],
+      "status": "done"
+    },
+    {
+      "id": "compiler-roundtrip",
+      "subsystem": "Compiler round-trip CLI",
+      "sourcePaths": ["src/compiler/"],
+      "strategy": "port",
+      "workId": "port-compiler-round-trip-cli-from-iohasc",
+      "wgArtifacts": ["src/compilerRoundTripCli.mjs"],
+      "status": "done"
+    },
+    {
+      "id": "code-gap-analyzer",
+      "subsystem": "Code-gap analyzer",
+      "sourcePaths": ["src/codeGap/"],
+      "strategy": "port",
+      "workId": "implement-full-code-gap-analyzer-port",
+      "wgArtifacts": ["src/codeGapAnalyzer.mjs"],
+      "status": "done"
+    },
+    {
+      "id": "tur-ir-flow",
+      "subsystem": "TurIr / IR Flow CFG",
+      "sourcePaths": ["src/ir/turIr.ts", "src/ir/flowExecutor.ts"],
+      "strategy": "port",
+      "workId": "port-tur-ir-flow-executor-mvp-v1",
+      "wgArtifacts": [
+        "src/irFlow/validateIrFlow.mjs",
+        "src/irFlow/executeIrFlowCfg.mjs",
+        "packages/ir-spec/schemas/ir-flow.v1.json"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "llm-ir-normalizer",
+      "subsystem": "LLM IR normalizer",
+      "sourcePaths": ["src/llm/irNormalizer.js"],
+      "strategy": "port",
+      "workId": "port-iohasc-llm-ir-normalizer-v1",
+      "wgArtifacts": ["src/irFlow/llmIrNormalizer.mjs", "docs/spec-llm-ir-normalizer-v1.md"],
+      "status": "done"
+    },
+    {
+      "id": "pvrg-core-scanner",
+      "subsystem": "pvrg-core AST scanner",
+      "sourcePaths": ["pvrg-core/"],
+      "strategy": "port",
+      "workId": "integrate-pvrg-core-scanner-adapter-v1",
+      "wgArtifacts": ["src/pvrgCoreScannerAdapter.mjs"],
+      "status": "done"
+    },
+    {
+      "id": "semantic-runtime-stage2",
+      "subsystem": "ioHasC semantic runtime Stage 2",
+      "sourcePaths": ["src/iohascSemanticRuntime/"],
+      "strategy": "port",
+      "workId": "port-iohasc-semantic-runtime-stage2-v1",
+      "wgArtifacts": ["src/semanticRuntimeStage2.mjs"],
+      "status": "done"
+    },
+    {
+      "id": "vector-dsl-codegen",
+      "subsystem": "Vector DSL codegen",
+      "sourcePaths": ["src/generator/"],
+      "strategy": "port",
+      "workId": "port-vector-dsl-codegen-from-iohasc-v1",
+      "wgArtifacts": ["src/vectorDslCodegenPort.mjs", "src/compilerRoundTripCli.mjs"],
+      "status": "done"
+    },
+    {
+      "id": "gbc-gfs-slice",
+      "subsystem": "GBC/GFS binary slice",
+      "sourcePaths": [".iohasc/cache/"],
+      "strategy": "port",
+      "workId": "implement-gbc-gfs-heritage-slice-mvp-v1",
+      "wgArtifacts": [
+        "src/gbcSliceMvp.mjs",
+        "src/gfsOverlayProjectPassport.mjs",
+        "src/intentGraphGbcSliceBoundary.mjs"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "workgraph-embed",
+      "subsystem": "WG dashboard embed in ioHasC shell",
+      "sourcePaths": ["src/workGraphDashboardMount.ts"],
+      "strategy": "embed",
+      "workId": "wire-iohasc-shell-workgraph-embed-v1",
+      "wgArtifacts": ["docs/adr-iohasc-workgraph-embed-v1.md"],
+      "status": "done"
+    },
+    {
+      "id": "agent-orchestrator",
+      "subsystem": "Agent orchestrator + chat",
+      "sourcePaths": ["src/orchestrator.js"],
+      "strategy": "embed",
+      "workId": null,
+      "wgArtifacts": [],
+      "status": "embed-only",
+      "notes": "Not ported; MCP + embed contract"
+    },
+    {
+      "id": "gvm-genesis-ide",
+      "subsystem": "GVM verify / Genesis IDE",
+      "sourcePaths": ["src/gvm/"],
+      "strategy": "defer",
+      "workId": "optional-gvm-verify-worker-gate",
+      "wgArtifacts": [],
+      "status": "defer"
+    }
+  ]
+}

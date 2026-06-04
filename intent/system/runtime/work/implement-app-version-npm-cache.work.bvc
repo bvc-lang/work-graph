@@ -1,0 +1,50 @@
+#Задача_implement_app_version_npm_cache<[
+Базис:
+  Каждый checkUpdate бьёт в registry без кэша.
+Вектор:
+  fetchNpmLatestVersion cache Map ttl 1h; stale on HTTP error.
+Цель:
+  Повторные проверки используют cache within ttl.
+Проверки:
+  Test: second call does not fetch
+Анализ:
+  Зачем:
+  Каждый checkUpdate бьёт в registry без кэша.
+  Контекст: fetchNpmLatestVersion cache Map ttl 1h; stale on HTTP error.
+  Когда:
+  После готовности: fix-app-version-read-from-cli-package.
+  Готово, когда:
+  Повторные проверки используют cache within ttl.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: fix-app-version-read-from-cli-package.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-66
+  intake.source_kind: operator-request
+  intake.source_ref: docs/analysis/2026-06-app-update-mechanism.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-04T10:13:24.408Z
+  work.analysis.source: operator-request
+  work.decision.at: 2026-06-04T10:13:24.408Z
+  work.decision.verdict: useful
+  work.department: engineering
+  work.depends_on: fix-app-version-read-from-cli-package
+  work.id: implement-app-version-npm-cache
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: backend_engineer
+  work.parent_id: epic-app-update-mechanism-v1
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: src/appVersionApi.mjs, tests/appVersionApi.test.mjs
+  work.title: App version: in-memory cache npm registry 1h
+
+Свидетельства:
+  - fetchNpmLatestVersion Map cache TTL 1h; test serves npm latest from cache within ttl — 0 fetch calls on second call
+]>

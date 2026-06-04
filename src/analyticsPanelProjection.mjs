@@ -4,6 +4,20 @@ import { attachAnalyticsLineageToRecords } from './analyticsLineageProjection.mj
 import { readWorkItemsFromRepo } from './intentTreeWorkItems.mjs';
 import { buildIntentGraphProjection, attachIntentGraphToAnalyticsRecords } from './intentGraphProjection.mjs';
 import { readIntentNodesFromRepo } from './intentNodeRuntime.mjs';
+import {
+  sortAnalyticsRecordsByRecencyDesc,
+} from './analyticsRecordSort.mjs';
+
+export {
+  sortAnalyticsRecordsByRecencyDesc,
+  sortAnalyticsRecordsByKeyDesc,
+  sortAnalyticsRecords,
+  parseAnalyticsRecordKeySortParts,
+  compareAnalyticsRecordKeysDesc,
+  normalizeAnalyticsRecordSortMode,
+  ANALYTICS_RECORD_SORT_CREATED_DESC,
+  ANALYTICS_RECORD_SORT_KEY_DESC,
+} from './analyticsRecordSort.mjs';
 
 export const ANALYTICS_PANEL_PROJECTION_SCHEMA = 'analytics-panel.projection.v1';
 export const ANALYTICS_RECORDS_API_SCHEMA = 'analytics-records.api.v1';
@@ -115,25 +129,6 @@ export function assignAnalyticsRecordKeys(records) {
     ...record,
     key: String(record.key ?? '').trim() || `AN-${ordinalById.get(record.id)}`,
   }));
-}
-
-export function sortAnalyticsRecordsByRecencyDesc(records) {
-  if (!Array.isArray(records)) {
-    throw new TypeError('records must be an array');
-  }
-
-  return [...records].sort((left, right) => {
-    const createdCmp = String(right.createdAt ?? '').localeCompare(
-      String(left.createdAt ?? ''),
-      'en',
-      { sensitivity: 'variant' },
-    );
-    if (createdCmp !== 0) {
-      return createdCmp;
-    }
-
-    return compareText(right.id, left.id);
-  });
 }
 
 export function filterAnalyticsRecords(records, options = {}) {

@@ -1,0 +1,53 @@
+#Задача_decide_rich_ir_heritage_port_adr<[
+Базис:
+  docs/adr-an9-rich-ir-deferred.md отложил TurIr для lite WG; цель heritage требует явного решения о port executor.
+  packages/ir-spec/ — draft; reference impl в ioHasC src/ir/.
+Вектор:
+  docs/adr-rich-ir-heritage-port-v1.md — scope MVP: validateIrFlow + executeIrFlowCfg, без полного IDE.
+  Граница с semantic plane: IR для исполнимого workflow, не для backlog navigation.
+Цель:
+  RichIR port имеет однозначный scope; не конфликтует с epic-intent-information-semantic-planes.
+Проверки:
+  ADR принят
+  Ссылка на packages/ir-spec/
+Анализ:
+  Зачем:
+  docs/adr-an9-rich-ir-deferred.md отложил TurIr для lite WG; цель heritage требует явного решения о port executor.
+  Контекст: packages/ir-spec/ — draft; reference impl в ioHasC src/ir/.
+  Когда:
+  После готовности: decide-iohasc-heritage-reuse-adr.
+  Готово, когда:
+  RichIR port имеет однозначный scope; не конфликтует с epic-intent-information-semantic-planes.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: decide-iohasc-heritage-reuse-adr.
+
+Свидетельства:
+  - docs/adr-rich-ir-heritage-port-v1.md
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-69
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/pvrg-ir-semantic-plane-usage-audit.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-04T19:46:51.638Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-04T19:46:51.638Z
+  work.decision.verdict: useful
+  work.department: product
+  work.depends_on: decide-iohasc-heritage-reuse-adr
+  work.id: decide-rich-ir-heritage-port-adr
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: system_architect
+  work.parent_id: epic-iohasc-heritage-reuse-v1
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: high
+  work.status: done
+  work.target_files: docs/adr-rich-ir-heritage-port-v1.md, docs/adr-an9-rich-ir-deferred.md, packages/ir-spec/schemas/ir-flow.v1.json
+  work.title: ADR: RichIR/TurIr — port для heritage (revisit AN-9 defer)
+]>

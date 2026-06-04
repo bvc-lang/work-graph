@@ -1,0 +1,55 @@
+#Задача_integrate_pvrg_core_scanner_adapter_v1<[
+Базис:
+  AN-69: PVRG-lite в WG — task-graph; pvrg-core/ — AST, logical components, GFS overlay в ioHasC.
+  Heritage: подключить scanner как sidecar/CLI adapter, питающий language-adapter facts и semantic field.
+Вектор:
+  src/pvrgCoreScannerAdapter.mjs — invoke pvrg-core CLI или sibling package; output → adapter facts JSON.
+  MCP optional: refresh_pvrg_scan scope=work_id.
+  Не копировать 40+ модулей src/pvrg-ui/ в WG monolith.
+Цель:
+  File/symbol nodes появляются в graph RAG из real scan, не только target_files.
+Проверки:
+  Adapter test с fixture scan output
+  Documented boundary in ADR
+Анализ:
+  Зачем:
+  AN-69: PVRG-lite в WG — task-graph; pvrg-core/ — AST, logical components, GFS overlay в ioHasC.
+  Контекст: Heritage: подключить scanner как sidecar/CLI adapter, питающий language-adapter facts и semantic field.
+  Когда:
+  После готовности: decide-iohasc-heritage-reuse-adr, implement-full-semantic-search-workflow.
+  Готово, когда:
+  File/symbol nodes появляются в graph RAG из real scan, не только target_files.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: decide-iohasc-heritage-reuse-adr, implement-full-semantic-search-workflow.
+
+Свидетельства:
+  - src/pvrgCoreScannerAdapter.mjs
+  - tests/pvrgCoreScannerAdapter.test.mjs
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-69
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/pvrg-ir-semantic-plane-usage-audit.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-04T19:46:51.689Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-04T19:46:51.689Z
+  work.decision.verdict: useful
+  work.department: system-runtime
+  work.depends_on: decide-iohasc-heritage-reuse-adr, implement-full-semantic-search-workflow
+  work.id: integrate-pvrg-core-scanner-adapter-v1
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: integration_architect
+  work.parent_id: epic-iohasc-heritage-reuse-v1
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: high
+  work.status: done
+  work.target_files: src/pvrgCoreScannerAdapter.mjs, src/languageAdapterRegistry.mjs, tests/pvrgCoreScannerAdapter.test.mjs, packages/pvrg-spec/spec/overview.md
+  work.title: Adapter: pvrg-core scanner → WG derived facts (не монолит)
+]>

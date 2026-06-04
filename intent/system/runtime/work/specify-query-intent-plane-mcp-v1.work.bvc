@@ -1,0 +1,54 @@
+#Задача_specify_query_intent_plane_mcp_v1<[
+Базис:
+  AN-65 предлагает единый навигационный API: startNode, direction, filters (tier, status, domain), depth, returnFormat.
+  Сейчас оператор собирает картину вручную из get_unified_linkage и нескольких вкладок UI.
+Вектор:
+  docs/spec-query-intent-plane-mcp-v1.md — JSON schema запроса/ответа, примеры upstream/downstream/lateral.
+  Ограничения для агента: max depth, allowed node kinds, read-only.
+  Матрица: какие фильтры мапятся на labels work_item и evidence.
+Цель:
+  Разработчик MCP реализует query_intent_plane без повторного согласования формата с продуктом.
+Проверки:
+  Spec содержит ≥3 примера вызовов
+  Описаны коды ошибок и пустой граф
+Анализ:
+  Зачем:
+  AN-65 предлагает единый навигационный API: startNode, direction, filters (tier, status, domain), depth, returnFormat.
+  Контекст: Сейчас оператор собирает картину вручную из get_unified_linkage и нескольких вкладок UI.
+  Когда:
+  После готовности: design-intent-plane-canonical-model-v1.
+  Готово, когда:
+  Разработчик MCP реализует query_intent_plane без повторного согласования формата с продуктом.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: design-intent-plane-canonical-model-v1.
+
+Свидетельства:
+  - docs/spec-query-intent-plane-mcp-v1.md
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-65
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-intent-information-plane.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-04T19:10:57.385Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-04T19:10:57.385Z
+  work.decision.verdict: useful
+  work.department: system-runtime
+  work.depends_on: design-intent-plane-canonical-model-v1
+  work.id: specify-query-intent-plane-mcp-v1
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: integration_architect
+  work.parent_id: epic-intent-information-semantic-planes-v1
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: docs/spec-query-intent-plane-mcp-v1.md, work/analytics/work-graph-intent-information-plane.md, docs/plan-intent-information-semantic-planes-v1.md
+  work.title: Спецификация MCP: query_intent_plane
+]>

@@ -4,7 +4,7 @@ User-first установка через npm. Канон в git проекта; 
 
 ## Для человека (одна фраза)
 
-В Cursor в нужном репозитории:
+В любом агенте или IDE с MCP в нужном репозитории:
 
 > Установи Work Graph в этот проект
 
@@ -39,8 +39,8 @@ npm run workgraph:doctor
 - `.work-graph/config.json` — schema **v2** (`projectRoot`, `label`, без `engineRoot`)
 - `.work-graph/run-ui.mjs`, `run-mcp.mjs`
 - `package.json` — `devDependencies`: `@work-graph/cli`, `@work-graph/mcp`
-- `.cursor/mcp.json` — `npx -y @work-graph/mcp`
-- `.cursor/rules/work-graph-project.mdc`
+- `.cursor/mcp.json` — `npx -y @work-graph/mcp` (опционально; удобно для Cursor)
+- `.cursor/rules/work-graph-project.mdc` (опционально)
 
 Существующие `intent/index.bvc` и `architecture/main.bvc` **не перезаписываются**.
 

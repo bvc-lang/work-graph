@@ -1,0 +1,55 @@
+#Задача_maintain_iohasc_heritage_port_registry_v1<[
+Базис:
+  verify-iohasc-subsystem-inventory done, но нет машиночитаемого реестра «что уже port / что потеряно».
+  Без реестра heritage-эпик расползётся и продублирует done port-задачи.
+Вектор:
+  docs/iohasc-heritage-port-registry.v1.json — source_repo, source_paths, strategy, work_id, status.
+  CLI или npm script check:registry сверяет с intent/index.bvc.
+  Ссылка на ../project/docs/architecture-v2/IMPLEMENTATION_STATUS.md.
+Цель:
+  Оператор видит одну таблицу reuse; агент не создаёт дубликаты port-задач.
+Проверки:
+  Registry JSON валиден
+  Покрыты TurIr, pvrg-core, semantic runtime, GBC/GFS
+Анализ:
+  Зачем:
+  verify-iohasc-subsystem-inventory done, но нет машиночитаемого реестра «что уже port / что потеряно».
+  Контекст: Без реестра heritage-эпик расползётся и продублирует done port-задачи.
+  Когда:
+  После готовности: decide-iohasc-heritage-reuse-adr.
+  Готово, когда:
+  Оператор видит одну таблицу reuse; агент не создаёт дубликаты port-задач.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: decide-iohasc-heritage-reuse-adr.
+
+Свидетельства:
+  - docs/iohasc-heritage-port-registry.v1.json
+  - npm run check:iohasc-heritage-port-registry
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-69
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/pvrg-ir-semantic-plane-usage-audit.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-04T19:46:51.620Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-04T19:46:51.620Z
+  work.decision.verdict: useful
+  work.department: system-runtime
+  work.depends_on: decide-iohasc-heritage-reuse-adr
+  work.id: maintain-iohasc-heritage-port-registry-v1
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: integration_architect
+  work.parent_id: epic-iohasc-heritage-reuse-v1
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: docs/iohasc-heritage-port-registry.v1.json, scripts/check-iohasc-heritage-port-registry.mjs, docs/plan-iohasc-full-rebuild-backlog.md
+  work.title: Реестр port: ioHasC path → WG work item → strategy
+]>

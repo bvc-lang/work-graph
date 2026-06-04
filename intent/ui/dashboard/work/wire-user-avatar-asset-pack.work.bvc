@@ -43,7 +43,10 @@
   work.pipeline_stage: decided
   work.priority: high
   work.risk: low
-  work.status: backlog
+  work.status: done
   work.target_files: public/assets/avatars, src/workGraphBacklogUiServer.mjs
   work.title: UI: пак SVG-аватарок + static /assets/avatars
+
+Свидетельства:
+  - 10 SVG in public/assets/avatars; tryServePublicAvatarsAsset serves GET /assets/avatars/avatar-*.svg
 ]>

@@ -1,0 +1,52 @@
+#Задача_write_closing_epic_iohasc_heritage_reuse_v1<[
+Базис:
+  Heritage эпик требует closing с перечнем переиспользованных подсистем и остатка defer.
+Вектор:
+  work/analytics/closing-epic-iohasc-heritage-reuse-v1.md
+  Запись analytics-records.jsonl.
+Цель:
+  Эпик закрывается с evidence; port-registry актуален.
+Проверки:
+  Closing doc
+  Registry 100% mapped or deferred with reason
+Анализ:
+  Зачем:
+  Heritage эпик требует closing с перечнем переиспользованных подсистем и остатка defer.
+  Контекст: work/analytics/closing-epic-iohasc-heritage-reuse-v1.md
+  Когда:
+  После готовности: maintain-iohasc-heritage-port-registry-v1, port-tur-ir-flow-executor-mvp-v1, integrate-pvrg-core-scanner-adapter-v1.
+  Готово, когда:
+  Эпик закрывается с evidence; port-registry актуален.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: maintain-iohasc-heritage-port-registry-v1, port-tur-ir-flow-executor-mvp-v1, integrate-pvrg-core-scanner-adapter-v1.
+
+Свидетельства:
+  - work/analytics/closing-epic-iohasc-heritage-reuse-v1.md
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-69
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/pvrg-ir-semantic-plane-usage-audit.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-04T19:46:51.793Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-04T19:46:51.793Z
+  work.decision.verdict: useful
+  work.department: product
+  work.depends_on: maintain-iohasc-heritage-port-registry-v1, port-tur-ir-flow-executor-mvp-v1, integrate-pvrg-core-scanner-adapter-v1
+  work.id: write-closing-epic-iohasc-heritage-reuse-v1
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: product_manager
+  work.parent_id: epic-iohasc-heritage-reuse-v1
+  work.pipeline_stage: closed
+  work.priority: low
+  work.risk: low
+  work.status: done
+  work.target_files: work/analytics/closing-epic-iohasc-heritage-reuse-v1.md, docs/iohasc-heritage-port-registry.v1.json, docs/plan-iohasc-heritage-reuse-v1.md
+  work.title: Closing: epic-iohasc-heritage-reuse-v1
+]>

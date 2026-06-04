@@ -8,7 +8,7 @@ const TOOL_RULES = [
   'New WorkItem prose (Базис/Вектор/Цель/Проверки/title): Russian, min lengths per work-item-bvc-quality; forbidden jargon: closing analysis, Canon:, evidence, upstream, Track A, feeds_epics, depends_on=, «Стоит завести «…» в бэклог».',
   'Analysis is pre-execution only: feasibility (стоит ли делать), scope, deps, risks, alternatives — NOT a post-factum report of what was built, tests run, or evidence already in the atom.',
   'Write analysis in present/decision tense («Стоит брать», «Не стоит», «Можно стартовать»), never past retrospective («было оправдано», «можно было») even if work.status is done.',
-  'Analysis and decision are written only from Cursor: you (connected LLM) read the task, reason, then call record_work_item_analysis / record_work_item_decision. WorkGraph server never calls LLM.',
+  'Analysis and decision are written only from the connected agent (MCP client LLM): you read the task, reason, then call record_work_item_analysis / record_work_item_decision. WorkGraph server never calls LLM.',
   'Do not mark a WorkItem done without concrete evidence.',
   'Keep dashboard/kanban work in WorkGraph UI; MCP is the agent client bridge.',
 ].join('\n');
@@ -26,7 +26,7 @@ export const workgraphPrompts = {
   analyze_work_item: {
     description: 'Pre-execution feasibility analysis for a WorkItem (not post-factum review).',
     argsSchema: { workId: 'WorkItem id to analyze' },
-    text: ({ workId }) => `Analyze WorkGraph item ${workId || '<workId>'} in Cursor — **before execution**.
+    text: ({ workId }) => `Analyze WorkGraph item ${workId || '<workId>'} — **before execution** (pre-execution feasibility, not a post-mortem).
 
 This is a feasibility review (стоит ли делать), NOT a summary of work already done. Do NOT list implemented files, passing tests, or evidence from «Свидетельства» unless you judge future verification risk.
 

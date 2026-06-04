@@ -1,0 +1,55 @@
+#Задача_decide_iohasc_heritage_reuse_adr<[
+Базис:
+  plan-iohasc-full-rebuild-backlog уже задаёт migration.strategy, но AN-69 и ADR AN-9 defer создали двусмысленность: ждать ли TurIr и pvrg-core.
+  Нужен ADR heritage-трека: что portим, что embed, что replace lite-проекцией.
+Вектор:
+  docs/adr-iohasc-heritage-reuse-v1.md — таблица подсистем ioHasC → strategy → WG work item.
+  Явная связь с dual-track: lite semantic plane vs full heritage.
+  Supersedes частично: defer RichIR только для lite-only сценариев.
+Цель:
+  Любая heritage-задача ссылается на один ADR.
+Проверки:
+  ADR опубликован
+  Таблица ≥15 подсистем
+  Anti-goals: no orchestrator port
+Анализ:
+  Зачем:
+  plan-iohasc-full-rebuild-backlog уже задаёт migration.strategy, но AN-69 и ADR AN-9 defer создали двусмысленность: ждать ли TurIr и pvrg-core.
+  Контекст: Нужен ADR heritage-трека: что portим, что embed, что replace lite-проекцией.
+  Когда:
+  После готовности: epic-iohasc-heritage-reuse-v1.
+  Готово, когда:
+  Любая heritage-задача ссылается на один ADR.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: epic-iohasc-heritage-reuse-v1.
+
+Свидетельства:
+  - docs/adr-iohasc-heritage-reuse-v1.md — ≥15 подсистем, anti-goals
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-69
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/pvrg-ir-semantic-plane-usage-audit.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-04T19:46:51.588Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-04T19:46:51.588Z
+  work.decision.verdict: useful
+  work.department: product
+  work.depends_on: epic-iohasc-heritage-reuse-v1
+  work.id: decide-iohasc-heritage-reuse-adr
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: product_architect
+  work.parent_id: epic-iohasc-heritage-reuse-v1
+  work.pipeline_stage: closed
+  work.priority: critical
+  work.risk: medium
+  work.status: done
+  work.target_files: docs/adr-iohasc-heritage-reuse-v1.md, docs/plan-iohasc-heritage-reuse-v1.md, docs/plan-iohasc-full-rebuild-backlog.md, work/analytics/pvrg-ir-semantic-plane-usage-audit.md
+  work.title: ADR: стратегия reuse ioHasC (port / embed / rebuild / defer)
+]>

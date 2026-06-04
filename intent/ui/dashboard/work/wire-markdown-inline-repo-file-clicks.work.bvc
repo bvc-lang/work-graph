@@ -42,7 +42,10 @@
   work.pipeline_stage: decided
   work.priority: medium
   work.risk: low
-  work.status: backlog
+  work.status: done
   work.target_files: src/workGraphBacklogUiServer.mjs, src/markdownDocumentRender.mjs, tests/workGraphBacklogUiServer.test.mjs
   work.title: UI: клик по path-like токенам в markdown body drawer
+
+Свидетельства:
+  - autolinkRepoFilePathsInHtml on analytics/task markdown bodies; path tokens outside pre/code become repo-file-link; npm run test:deterministic — 808 pass
 ]>

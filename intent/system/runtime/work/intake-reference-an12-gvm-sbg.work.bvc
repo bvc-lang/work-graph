@@ -1,0 +1,48 @@
+#Задача_intake_reference_an12_gvm_sbg<[
+Базис:
+  AN-12: reference positioning/comparison intake — formal backlog linkage.
+  Источник: analytics:gvm-sbg-mandate-wasm-runtime (work/analytics/gvm-sbg-mandate-wasm-runtime.md).
+Вектор:
+  Статус done = catalog only; без исполнения до product decision.
+  См. epic-iohasc-positioning-reference-v1 и AN-16 meta-review.
+Цель:
+  AN-12 отображается в relatedWorkItems панели «Аналитика».
+Проверки:
+  intake.analytics_key=AN-12
+  intake.source_ref=analytics:gvm-sbg-mandate-wasm-runtime
+Анализ:
+  Зачем:
+  AN-12: reference positioning/comparison intake — formal backlog linkage.
+  Контекст: Источник: analytics:gvm-sbg-mandate-wasm-runtime (work/analytics/gvm-sbg-mandate-wasm-runtime.md).
+  Когда:
+  После готовности: epic-iohasc-positioning-reference-v1.
+  Готово, когда:
+  AN-12 отображается в relatedWorkItems панели «Аналитика».
+Решение:
+  Вердикт: defer (reference catalog)
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-12
+  intake.source_kind: analytics-record
+  intake.source_ref: analytics:gvm-sbg-mandate-wasm-runtime
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-04T18:30:01.704Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-04T18:30:01.704Z
+  work.decision.verdict: useful
+  work.department: product
+  work.depends_on: epic-iohasc-positioning-reference-v1
+  work.id: intake-reference-an12-gvm-sbg
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: product_manager
+  work.parent_id: epic-iohasc-positioning-reference-v1
+  work.pipeline_stage: decided
+  work.priority: low
+  work.risk: low
+  work.status: done
+  work.target_files: work/analytics/gvm-sbg-mandate-wasm-runtime.md
+  work.title: Intake (reference): AN-12 GVM+SBG Mandate — positioning catalog
+]>

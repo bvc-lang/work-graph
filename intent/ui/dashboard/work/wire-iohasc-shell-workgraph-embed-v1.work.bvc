@@ -1,0 +1,54 @@
+#Задача_wire_iohasc_shell_workgraph_embed_v1<[
+Базис:
+  AN ioHasC agent stack eval: orchestrator не port в WG; reuse через embed split/iframe :4177.
+  Без embed теряется «одно окно» ioHasC + теряется связь с WG canon.
+Вектор:
+  docs/adr-iohasc-workgraph-embed-v1.md — contract mount, theme sync, deep links.
+  Checklist для ../project workGraphDashboardMount.ts parity.
+  Не дублировать chat UI в WG.
+Цель:
+  Пользователь ioHasC видит WG backlog/analytics без потери orchestrator.
+Проверки:
+  ADR published
+  Smoke checklist in plan
+Анализ:
+  Зачем:
+  AN ioHasC agent stack eval: orchestrator не port в WG; reuse через embed split/iframe :4177.
+  Контекст: Без embed теряется «одно окно» ioHasC + теряется связь с WG canon.
+  Когда:
+  После готовности: decide-iohasc-heritage-reuse-adr.
+  Готово, когда:
+  Пользователь ioHasC видит WG backlog/analytics без потери orchestrator.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: decide-iohasc-heritage-reuse-adr.
+
+Свидетельства:
+  - docs/adr-iohasc-workgraph-embed-v1.md
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-69
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/pvrg-ir-semantic-plane-usage-audit.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-04T19:46:51.758Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-04T19:46:51.758Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: decide-iohasc-heritage-reuse-adr
+  work.id: wire-iohasc-shell-workgraph-embed-v1
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: feature_engineer
+  work.parent_id: epic-iohasc-heritage-reuse-v1
+  work.pipeline_stage: closed
+  work.priority: medium
+  work.risk: medium
+  work.status: done
+  work.target_files: docs/adr-iohasc-workgraph-embed-v1.md, work/analytics/iohasc-agent-stack-port-eval.md, docs/plan-iohasc-heritage-reuse-v1.md
+  work.title: Embed: WG dashboard + MCP в ioHasC shell (orchestrator остаётся)
+]>

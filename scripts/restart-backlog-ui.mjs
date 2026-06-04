@@ -10,7 +10,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
-const host = process.env.WORKGRAPH_BACKLOG_UI_HOST ?? '127.0.0.1';
+const host = process.env.WORKGRAPH_BACKLOG_UI_HOST ?? 'localhost';
 const port = Number(process.env.WORKGRAPH_BACKLOG_UI_PORT ?? 4177);
 
 function sleep(ms) {

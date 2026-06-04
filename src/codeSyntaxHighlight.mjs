@@ -122,3 +122,66 @@ export function highlightCodeBlock(source, language) {
       return escapeHtml(source);
   }
 }
+
+const BVC_SECTION_RE = /^(Базис|Вектор|Цель|Метки|Проверки|Свидетельства|Анализ|Решение|Checks|Basis|Vector|Goal|Labels|Evidence|Analysis|Decision):/u;
+
+function normalizePublicSiteCodeText(source) {
+  return String(source ?? '').replace(/\\n/g, '\n');
+}
+
+export function highlightBvcBlock(source) {
+  const text = normalizePublicSiteCodeText(source);
+  return text.split('\n').map((line) => {
+    const trimmed = line.trimEnd();
+    const header = trimmed.match(/^(#\w+)@(\w+)(<\[)?$/u);
+    if (header) {
+      const open = header[3] ? '<span class="code-hl-punct">&lt;[</span>' : '';
+      return `<span class="code-hl-keyword">${escapeHtml(header[1])}</span><span class="code-hl-punct">@</span><span class="code-hl-number">${escapeHtml(header[2])}</span>${open}`;
+    }
+    if (/^\]>$/.test(trimmed)) {
+      return '<span class="code-hl-punct">]&gt;</span>';
+    }
+    if (BVC_SECTION_RE.test(trimmed)) {
+      const match = trimmed.match(/^([^:]+):(.*)$/u);
+      const rest = match[2] ? highlightStructuredTokens(match[2]) : '';
+      return `<span class="code-hl-key">${escapeHtml(match[1])}</span><span class="code-hl-punct">:</span>${rest}`;
+    }
+    const kv = line.match(/^(\s+)([\w.*-]+):\s*(.*)$/u);
+    if (kv) {
+      return `${escapeHtml(kv[1])}<span class="code-hl-key">${escapeHtml(kv[2])}</span><span class="code-hl-punct">:</span> <span class="code-hl-string">${escapeHtml(kv[3])}</span>`;
+    }
+    if (/^\s+\S/u.test(line)) {
+      return `<span class="code-hl-comment">${escapeHtml(line)}</span>`;
+    }
+    return highlightStructuredTokens(line);
+  }).join('\n');
+}
+
+export function highlightMcpFlow(source) {
+  const text = normalizePublicSiteCodeText(source);
+  return text.split('\n').map((line) => {
+    let rest = line.trim();
+    let prefix = '';
+    if (/^→\s/u.test(rest)) {
+      prefix = '<span class="code-hl-punct">→</span> ';
+      rest = rest.replace(/^→\s/u, '');
+    }
+    const fnMatch = rest.match(/^([\w]+)(\(([^)]*)\))?(\s*\+\s*(\w+))?$/u);
+    if (fnMatch) {
+      const [, fn, parenGroup, args = '', plusSuffix, plusWord] = fnMatch;
+      let html = `${prefix}<span class="code-hl-key">${escapeHtml(fn)}</span>`;
+      if (parenGroup) {
+        html += `<span class="code-hl-punct">(</span><span class="code-hl-string">${escapeHtml(args)}</span><span class="code-hl-punct">)</span>`;
+      }
+      if (plusSuffix) {
+        html += `<span class="code-hl-punct"> + </span><span class="code-hl-keyword">${escapeHtml(plusWord)}</span>`;
+      }
+      return html;
+    }
+    const verbMatch = rest.match(/^([\w]+)\s+(.+)$/u);
+    if (verbMatch) {
+      return `${prefix}<span class="code-hl-key">${escapeHtml(verbMatch[1])}</span> <span class="code-hl-string">${escapeHtml(verbMatch[2])}</span>`;
+    }
+    return prefix + highlightStructuredTokens(rest);
+  }).join('\n');
+}

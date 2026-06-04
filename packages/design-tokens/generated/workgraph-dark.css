@@ -36,12 +36,12 @@
   --font-size-base: var(--text-base);
 
   /* Runtime UI semantic tokens */
-  --ui-accent-rgb: 133 184 255;
-  --ui-accent-hover-rgb: 87 157 255;
+  --ui-accent-rgb: 29 122 252;
+  --ui-accent-hover-rgb: 56 139 255;
   --ui-accent-active-rgb: 56 139 255;
-  --ui-accent-foreground-rgb: 29 33 37;
-  --ui-link-rgb: 133 184 255;
-  --ui-link-hover-rgb: 87 157 255;
+  --ui-accent-foreground-rgb: 255 255 255;
+  --ui-link-rgb: 29 122 252;
+  --ui-link-hover-rgb: 56 139 255;
   --ui-link-active-rgb: 56 139 255;
   --ui-text-rgb: 199 209 219;
   --ui-muted-rgb: 159 173 188;
@@ -52,7 +52,7 @@
   --ui-control-bg-hover-rgb: 56 65 74;
   --ui-control-checked-rgb: 29 122 252;
   --ui-control-checked-foreground-rgb: 255 255 255;
-  --ui-focus-ring-rgb: 133 184 255;
+  --ui-focus-ring-rgb: 29 122 252;
   --ui-danger-rgb: 255 156 143;
   --ui-cta-rgb: 29 122 252;
   --ui-cta-hover-rgb: 56 139 255;

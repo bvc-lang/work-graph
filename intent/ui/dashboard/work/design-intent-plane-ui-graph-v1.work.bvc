@@ -1,0 +1,53 @@
+#Задача_design_intent_plane_ui_graph_v1<[
+Базис:
+  AN-65 §3: визуализация — узлы BVC, рёбра связей, цвет tier/status; клик открывает контракт и evidence.
+  graph canvas (lit-flow) уже используется в architecture и intent roadmap.
+Вектор:
+  docs/adr-intent-plane-ui-graph-v1.md — вкладка или режим «Плоскость», источник данных query_intent_plane API.
+  Контекстная панель: work contract, evidence list, переход в drawer.
+Цель:
+  Оператор видит подграф плоскости без ручного сборки linkage в голове.
+Проверки:
+  ADR описывает UX-сценарий архитектора
+  Указан API backend для графа
+Анализ:
+  Зачем:
+  AN-65 §3: визуализация — узлы BVC, рёбра связей, цвет tier/status; клик открывает контракт и evidence.
+  Контекст: graph canvas (lit-flow) уже используется в architecture и intent roadmap.
+  Когда:
+  После готовности: specify-query-intent-plane-mcp-v1.
+  Готово, когда:
+  Оператор видит подграф плоскости без ручного сборки linkage в голове.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: specify-query-intent-plane-mcp-v1.
+
+Свидетельства:
+  - docs/adr-intent-plane-ui-graph-v1.md
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-65
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-intent-information-plane.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-04T19:10:57.512Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-04T19:10:57.512Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: specify-query-intent-plane-mcp-v1
+  work.id: design-intent-plane-ui-graph-v1
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: feature_engineer
+  work.parent_id: epic-intent-information-semantic-planes-v1
+  work.pipeline_stage: closed
+  work.priority: medium
+  work.risk: medium
+  work.status: done
+  work.target_files: docs/adr-intent-plane-ui-graph-v1.md, work/analytics/work-graph-intent-information-plane.md, src/graphCanvasLitFlow/
+  work.title: ADR+макет: UI граф информационной плоскости
+]>

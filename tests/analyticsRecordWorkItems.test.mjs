@@ -3,6 +3,10 @@ import { describe, it } from 'node:test';
 
 import {
   findWorkItemsForAnalyticsRecord,
+  formatAnalyticsRelatedTasksCardNote,
+  formatAnalyticsRelatedTasksCountLabel,
+  resolveAnalyticsRelatedTasksBadgeTone,
+  summarizeAnalyticsRelatedWorkItems,
   workItemMatchesAnalyticsRecord,
 } from '../src/analyticsRecordWorkItems.mjs';
 
@@ -35,6 +39,85 @@ describe('workItemMatchesAnalyticsRecord', () => {
       id: 'other-task',
       basis: ['Обычная задача без intake'],
     }), false);
+  });
+
+  it('matches basis text with AN-XX: colon pattern', () => {
+    assert.equal(workItemMatchesAnalyticsRecord(
+      { id: 'analytics:public-site', key: 'AN-44' },
+      { id: 'epic-public-site', basis: ['AN-44: WG должен позиционироваться как слой обязательств'] },
+    ), true);
+  });
+
+  it('matches feeds_epics on closing records', () => {
+    assert.equal(workItemMatchesAnalyticsRecord(
+      {
+        id: 'analytics:closing-epic-demo',
+        key: 'AN-23',
+        feeds_epics: ['epic-decision-pipeline-canonization'],
+      },
+      { id: 'epic-decision-pipeline-canonization', basis: ['Pipeline canon epic'] },
+    ), true);
+  });
+
+  it('matches subtasks of feeds_epics epic', () => {
+    assert.equal(workItemMatchesAnalyticsRecord(
+      {
+        id: 'analytics:closing-epic-demo',
+        key: 'AN-23',
+        feeds_epics: ['epic-decision-pipeline-canonization'],
+      },
+      {
+        id: 'document-decision-pipeline-canon',
+        labels: { 'work.parent_id': 'epic-decision-pipeline-canonization' },
+        basis: ['Subtask'],
+      },
+    ), true);
+  });
+
+  it('matches intake.source_ref against bodyPath', () => {
+    assert.equal(workItemMatchesAnalyticsRecord(
+      {
+        id: 'analytics:app-update',
+        key: 'AN-66',
+        bodyPath: 'docs/analysis/2026-06-app-update-mechanism.md',
+      },
+      {
+        id: 'epic-app-update-mechanism-v1',
+        labels: {
+          'intake.source_ref': 'docs/analysis/2026-06-app-update-mechanism.md',
+          'intake.analytics_key': 'AN-66',
+        },
+      },
+    ), true);
+  });
+});
+
+describe('formatAnalyticsRelatedTasksCardNote', () => {
+  it('returns empty string when no related tasks', () => {
+    assert.equal(formatAnalyticsRelatedTasksCardNote([]), '');
+    assert.equal(formatAnalyticsRelatedTasksCardNote(null), '');
+  });
+
+  it('formats done/total label for card badge', () => {
+    const related = [
+      { id: 'a', status: 'done' },
+      { id: 'b', status: 'ready' },
+      { id: 'c', status: 'verified' },
+      { id: 'd', status: 'backlog' },
+    ];
+
+    assert.deepEqual(summarizeAnalyticsRelatedWorkItems(related), { total: 4, done: 2 });
+    assert.equal(formatAnalyticsRelatedTasksCountLabel(related), '2/4 ЗАДАЧ');
+    assert.equal(resolveAnalyticsRelatedTasksBadgeTone(related), 'accent');
+    assert.equal(formatAnalyticsRelatedTasksCardNote(related), ' · 2/4 ЗАДАЧ');
+  });
+
+  it('uses ok tone when all related tasks are done', () => {
+    const related = [
+      { id: 'a', status: 'done' },
+      { id: 'b', status: 'verified' },
+    ];
+    assert.equal(resolveAnalyticsRelatedTasksBadgeTone(related), 'ok');
   });
 });
 

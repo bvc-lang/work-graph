@@ -34,10 +34,24 @@ function updateKanbanColumnCount(columnEl) {
   }
 }
 
+function resortKanbanColumnCards(container, columnId, workIds) {
+  const columnEl = findKanbanColumn(container, columnId);
+  if (!columnEl || !Array.isArray(workIds) || workIds.length === 0) {
+    return;
+  }
+
+  for (const workId of workIds) {
+    const node = findKanbanCardRoot(container, workId);
+    if (node) {
+      columnEl.appendChild(node);
+    }
+  }
+}
+
 /**
  * @param {Element} container
  * @param {object} delta
- * @param {{ renderCard: Function, emptyColumnHtml?: string, itemsById: Map<string, object> }} context
+ * @param {{ renderCard: Function, emptyColumnHtml?: string, itemsById: Map<string, object>, resortDoneColumnWorkIds?: string[] }} context
  */
 export function applyKanbanBoardPatch(container, delta, context) {
   if (!container || !delta || delta.fullRender) {
@@ -88,6 +102,10 @@ export function applyKanbanBoardPatch(container, delta, context) {
       const html = renderCard(item, { isNew: true });
       targetCol.insertAdjacentHTML('beforeend', html);
       updateKanbanColumnCount(targetCol);
+    }
+
+    if (Array.isArray(context.resortDoneColumnWorkIds) && context.resortDoneColumnWorkIds.length > 0) {
+      resortKanbanColumnCards(container, 'done', context.resortDoneColumnWorkIds);
     }
 
     return { ok: true };

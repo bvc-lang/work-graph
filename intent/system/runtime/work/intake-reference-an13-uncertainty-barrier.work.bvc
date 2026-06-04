@@ -1,0 +1,48 @@
+#Задача_intake_reference_an13_uncertainty_barrier<[
+Базис:
+  AN-13: reference positioning/comparison intake — formal backlog linkage.
+  Источник: analytics:uncertainty-barrier-shannon-metric (work/analytics/uncertainty-barrier-shannon-metric.md).
+Вектор:
+  Статус done = catalog only; без исполнения до product decision.
+  См. epic-iohasc-positioning-reference-v1 и AN-16 meta-review.
+Цель:
+  AN-13 отображается в relatedWorkItems панели «Аналитика».
+Проверки:
+  intake.analytics_key=AN-13
+  intake.source_ref=analytics:uncertainty-barrier-shannon-metric
+Анализ:
+  Зачем:
+  AN-13: reference positioning/comparison intake — formal backlog linkage.
+  Контекст: Источник: analytics:uncertainty-barrier-shannon-metric (work/analytics/uncertainty-barrier-shannon-metric.md).
+  Когда:
+  После готовности: epic-iohasc-positioning-reference-v1.
+  Готово, когда:
+  AN-13 отображается в relatedWorkItems панели «Аналитика».
+Решение:
+  Вердикт: defer (reference catalog)
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-13
+  intake.source_kind: analytics-record
+  intake.source_ref: analytics:uncertainty-barrier-shannon-metric
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-04T18:30:01.720Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-04T18:30:01.720Z
+  work.decision.verdict: useful
+  work.department: product
+  work.depends_on: epic-iohasc-positioning-reference-v1
+  work.id: intake-reference-an13-uncertainty-barrier
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: product_manager
+  work.parent_id: epic-iohasc-positioning-reference-v1
+  work.pipeline_stage: decided
+  work.priority: low
+  work.risk: low
+  work.status: done
+  work.target_files: work/analytics/uncertainty-barrier-shannon-metric.md
+  work.title: Intake (reference): AN-13 Uncertainty Barrier — positioning catalog
+]>

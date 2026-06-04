@@ -1,0 +1,54 @@
+#Задача_implement_get_context_slice_mcp_v1<[
+Базис:
+  AN-68 §8.3: агенту нужен ограниченный пакет BVC + прошлые ошибки + allowlist, а не весь репо.
+  Связь с get_pvrg_task_scope и graph RAG — объединить в один slice по work_id.
+Вектор:
+  get_context_slice(work_id, agent_role) → { bvc_excerpt, linkage_subgraph, semantic_neighbors, deny_patterns }.
+  Лимит размера ответа; приоритет tier A evidence.
+  Документировать в spec и public-site mcp-tools.
+Цель:
+  Промпт агента наполняется срезом плоскости вместо ручного набора MCP-вызовов.
+Проверки:
+  Slice не превышает заданный лимит байт
+  В slice есть Basis/Vector/Goal текущей задачи
+Анализ:
+  Зачем:
+  AN-68 §8.3: агенту нужен ограниченный пакет BVC + прошлые ошибки + allowlist, а не весь репо.
+  Контекст: Связь с get_pvrg_task_scope и graph RAG — объединить в один slice по work_id.
+  Когда:
+  После готовности: implement-query-semantic-field-mcp-v1, implement-query-intent-plane-mcp-v1.
+  Готово, когда:
+  Промпт агента наполняется срезом плоскости вместо ручного набора MCP-вызовов.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: implement-query-semantic-field-mcp-v1, implement-query-intent-plane-mcp-v1.
+
+Свидетельства:
+  - get_context_slice MCP tool
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-68
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-semantic-plane.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-04T19:10:57.497Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-04T19:10:57.497Z
+  work.decision.verdict: useful
+  work.department: system-runtime
+  work.depends_on: implement-query-semantic-field-mcp-v1, implement-query-intent-plane-mcp-v1
+  work.id: implement-get-context-slice-mcp-v1
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: integration_architect
+  work.parent_id: epic-intent-information-semantic-planes-v1
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: src/semanticContextSlice.mjs, packages/workgraph-mcp/src/handlers.mjs, src/pvrgTaskScope.mjs, docs/spec-semantic-plane-mcp-p0-v1.md
+  work.title: MCP: get_context_slice — контрактный пакет контекста для агента
+]>

@@ -170,6 +170,22 @@ work-graph register .             # зарегистрировать корен�
 
 ---
 
+## 10. Уточнение 2026-06: npm-first per-project и порты на одном ПК
+
+**Вопрос:** несколько репозиториев с WG — все на одном порту `4177` одновременно?
+
+**Ответ:** нет для двух процессов UI; да для одного процесса хоста с переключением корня.
+
+| Слой | Параллельно на одном ПК | Порт 4177 |
+|------|--------------------------|-----------|
+| Канон / MCP | Да (свой репо / workspace) | MCP не использует 4177 |
+| `npm run workgraph:ui` в каждом репо | Только если **разные** порты (`uiPort`, `WORKGRAPH_BACKLOG_UI_PORT`) | Второй процесс на 4177 → `EADDRINUSE` |
+| Один UI + `workspace/switch` | Один активный проект в UI | Один слушатель 4177 |
+
+Основной UX после pivot — per-project init ([ADR](../../docs/adr-work-graph-per-project-install.md)); гибрид C и реестр `~/.work-graph/workspaces.json` — power-user ([closing](closing-epic-work-graph-multiproject-host.md)). Полный разбор: [analysis entry](../../docs/analysis/2026-06-multi-project-local-ports.md).
+
+---
+
 ## feeds_epics
 
 - `epic-work-graph-multiproject-host` — реестр проектов, repoRoot-aware UI, CLI init/register, переключатель проектов
@@ -181,3 +197,4 @@ work-graph register .             # зарегистрировать корен�
 - [AN-17 OneBase integration](onebase-integration-vertical-stack.md) — sidecar `projectCwd`, указание на внешний корень
 - [AN-MP-1 Hub & Spoke](marketplace-hub-spoke-architecture.md) — несколько вертикалей одного домена
 - [AN-8 BVC открытый канон](step-as-открытый канон-standard.md) — канон рядом с кодом
+- [Analysis: multi-project ports (2026-06)](../../docs/analysis/2026-06-multi-project-local-ports.md) — уточнение «один порт / N репо»

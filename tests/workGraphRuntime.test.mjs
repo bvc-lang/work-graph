@@ -469,6 +469,7 @@ describe('transitionStatus', () => {
 
     assert.equal(done.status, 'done');
     assert.equal(done.labels['work.status'], 'done');
+    assert.match(done.labels['work.closed_at'], /^\d{4}-\d{2}-\d{2}T/u);
   });
 
   it('rejects blocked without reason', () => {
@@ -526,6 +527,7 @@ describe('buildSnapshot', () => {
           parentId: '',
           itemKind: 'task',
           childIds: [],
+          closedAt: '',
           labels: {
             'atom.profile': 'work_item',
             'work.id': 'blocked-task',
@@ -560,6 +562,7 @@ describe('buildSnapshot', () => {
           parentId: '',
           itemKind: 'task',
           childIds: [],
+          closedAt: '',
           labels: {
             'atom.profile': 'work_item',
             'work.id': 'first-task',
@@ -595,6 +598,7 @@ describe('buildSnapshot', () => {
           parentId: '',
           itemKind: 'task',
           childIds: [],
+          closedAt: '',
           labels: {
             'atom.profile': 'work_item',
             'work.id': 'second-task',

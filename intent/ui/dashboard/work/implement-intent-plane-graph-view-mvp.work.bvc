@@ -1,0 +1,54 @@
+#Задача_implement_intent_plane_graph_view_mvp<[
+Базис:
+  После MCP и ADR UI остаётся единственным местом, где плоскость не видна целостно.
+Вектор:
+  GET /api/intent-plane/graph?start=&direction=&depth=
+  Вкладка или panel в workGraphBacklogUiServer; lit-flow projection.
+  e2e smoke: открыть граф от выбранной задачи.
+Цель:
+  Клик по узлу в графе открывает task/analytics drawer как в остальном UI.
+Проверки:
+  API возвращает nodes/edges
+  UI рендерит ≥10 узлов без падения
+Анализ:
+  Зачем:
+  После MCP и ADR UI остаётся единственным местом, где плоскость не видна целостно.
+  Контекст: GET /api/intent-plane/graph?start=&direction=&depth=
+  Когда:
+  После готовности: design-intent-plane-ui-graph-v1, implement-query-intent-plane-mcp-v1.
+  Готово, когда:
+  Клик по узлу в графе открывает task/analytics drawer как в остальном UI.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: design-intent-plane-ui-graph-v1, implement-query-intent-plane-mcp-v1.
+
+Свидетельства:
+  - GET /api/intent-plane/graph
+  - intent-plane-panel in architecture view
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-65
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-intent-information-plane.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-04T19:10:57.529Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-04T19:10:57.529Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: design-intent-plane-ui-graph-v1, implement-query-intent-plane-mcp-v1
+  work.id: implement-intent-plane-graph-view-mvp
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: feature_engineer
+  work.parent_id: epic-intent-information-semantic-planes-v1
+  work.pipeline_stage: closed
+  work.priority: medium
+  work.risk: medium
+  work.status: done
+  work.target_files: src/workGraphBacklogUiServer.mjs, src/intentPlaneLinkageIndex.mjs, tests/workGraphBacklogUiServer.test.mjs, docs/adr-intent-plane-ui-graph-v1.md
+  work.title: UI MVP: граф информационной плоскости в dashboard
+]>

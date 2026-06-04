@@ -1,0 +1,50 @@
+#Задача_author_plan_iohasc_heritage_reuse_v1<[
+Базис:
+  ADR принят — нужен исполнимый plan с волнами и критериями приёмки.
+Вектор:
+  Расширить docs/plan-iohasc-heritage-reuse-v1.md: owners, порядок, зависимости от evaluate-flatbuffers-gbc-slice.
+Цель:
+  Подзадачи эпика соответствуют волнам plan.
+Проверки:
+  Plan синхронизирован с subtasks
+Анализ:
+  Зачем:
+  ADR принят — нужен исполнимый plan с волнами и критериями приёмки.
+  Контекст: Расширить docs/plan-iohasc-heritage-reuse-v1.md: owners, порядок, зависимости от evaluate-flatbuffers-gbc-slice.
+  Когда:
+  После готовности: decide-iohasc-heritage-reuse-adr.
+  Готово, когда:
+  Подзадачи эпика соответствуют волнам plan.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: decide-iohasc-heritage-reuse-adr.
+
+Свидетельства:
+  - docs/plan-iohasc-heritage-reuse-v1.md — волны P0→P6 + checklist
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-69
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/pvrg-ir-semantic-plane-usage-audit.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-04T19:46:51.605Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-04T19:46:51.605Z
+  work.decision.verdict: useful
+  work.department: product
+  work.depends_on: decide-iohasc-heritage-reuse-adr
+  work.id: author-plan-iohasc-heritage-reuse-v1
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: product_manager
+  work.parent_id: epic-iohasc-heritage-reuse-v1
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: low
+  work.status: done
+  work.target_files: docs/plan-iohasc-heritage-reuse-v1.md, docs/adr-iohasc-heritage-reuse-v1.md
+  work.title: Plan: волны heritage port v1 (P0→P6)
+]>

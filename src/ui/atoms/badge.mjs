@@ -75,9 +75,10 @@ body[data-theme="dark"] .wg-badge--default {
   border-color: #8696a7;
   color: #161a1d;
 }
+html[data-theme="dark"] .wg-badge--accent,
 body[data-theme="dark"] .wg-badge--accent {
-  background: #09326c;
-  border-color: #0055cc;
+  background: rgba(29, 122, 252, 0.2);
+  border-color: rgb(29 122 252);
   color: #cce0ff;
 }
 body[data-theme="dark"] .wg-badge--warning {

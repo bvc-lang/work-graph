@@ -1,0 +1,52 @@
+#Задача_wire_update_notice_from_app_version<[
+Базис:
+  Notice без wiring к API бесполезен.
+Вектор:
+  showUpdateAvailableNotice(info) on checkAppVersionAndMaybeNotify.
+  localStorage wg_dismissed_update_notice = latestVersion.
+  Open settings → applyView(settings) + renderSettingsPanel checkUpdate.
+Цель:
+  При новой версии на npm оператор видит notice слева снизу.
+Проверки:
+  Notice hidden when dismissed for same latestVersion
+Анализ:
+  Зачем:
+  Notice без wiring к API бесполезен.
+  Контекст: showUpdateAvailableNotice(info) on checkAppVersionAndMaybeNotify.
+  Когда:
+  После готовности: implement-wg-notice-stack-bottom-left, wire-app-version-background-check.
+  Готово, когда:
+  При новой версии на npm оператор видит notice слева снизу.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: implement-wg-notice-stack-bottom-left, wire-app-version-background-check.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-66
+  intake.source_kind: operator-request
+  intake.source_ref: docs/analysis/2026-06-app-update-mechanism.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-04T10:13:24.455Z
+  work.analysis.source: operator-request
+  work.decision.at: 2026-06-04T10:13:24.455Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: implement-wg-notice-stack-bottom-left, wire-app-version-background-check
+  work.id: wire-update-notice-from-app-version
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.parent_id: epic-app-update-mechanism-v1
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: medium
+  work.status: done
+  work.target_files: src/workGraphBacklogUiServer.mjs
+  work.title: UI: notice при updateAvailable + dismiss localStorage
+
+Свидетельства:
+  - showUpdateAvailableNotice on updateAvailable; localStorage wg_dismissed_update_notice per latestVersion; dismiss + open settings wired
+]>

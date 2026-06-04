@@ -42,7 +42,10 @@
   work.pipeline_stage: decided
   work.priority: high
   work.risk: medium
-  work.status: backlog
+  work.status: done
   work.target_files: work/analytics/drawer-repo-file-preview.md, docs/plan-drawer-repo-file-preview-v1.md, docs/adr-detail-drawer-repo-file-frame-v1.md, src/workGraphBacklogUiServer.mjs, src/detailDrawerStack.mjs, src/codeSyntaxHighlight.mjs, tests/workGraphBacklogUiServer.test.mjs
   work.title: Repo file preview v1: клик по path → stack frame + syntax highlight (AN-59)
+
+Свидетельства:
+  - Epic WG-145 repo file preview v1 (AN-59): frame repo-file + API + clickable paths + stack renderer + markdown autolink; 6/6 subtasks done; npm run test:deterministic — 808 pass, 0 fail
 ]>

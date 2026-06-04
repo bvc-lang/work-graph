@@ -1,0 +1,52 @@
+#Задача_write_closing_epic_intent_information_semantic_planes_v1<[
+Базис:
+  После P0/P1 нужен closing по канону эпика с evidence и ссылками на AN-65/AN-68.
+Вектор:
+  work/analytics/closing-epic-intent-information-semantic-planes-v1.md
+  Запись в analytics-records.jsonl при закрытии.
+Цель:
+  Эпик можно закрыть с воспроизводимым итогом для оператора.
+Проверки:
+  Closing doc опубликован
+  P0 MCP перечислены в итоге
+Анализ:
+  Зачем:
+  После P0/P1 нужен closing по канону эпика с evidence и ссылками на AN-65/AN-68.
+  Контекст: work/analytics/closing-epic-intent-information-semantic-planes-v1.md
+  Когда:
+  После готовности: implement-query-intent-plane-mcp-v1, implement-get-context-slice-mcp-v1, implement-intent-plane-graph-view-mvp.
+  Готово, когда:
+  Эпик можно закрыть с воспроизводимым итогом для оператора.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: implement-query-intent-plane-mcp-v1, implement-get-context-slice-mcp-v1, implement-intent-plane-graph-view-mvp.
+
+Свидетельства:
+  - work/analytics/closing-epic-intent-information-semantic-planes-v1.md
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-65
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-intent-information-plane.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-04T19:10:57.573Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-04T19:10:57.573Z
+  work.decision.verdict: useful
+  work.department: product
+  work.depends_on: implement-query-intent-plane-mcp-v1, implement-get-context-slice-mcp-v1, implement-intent-plane-graph-view-mvp
+  work.id: write-closing-epic-intent-information-semantic-planes-v1
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: product_manager
+  work.parent_id: epic-intent-information-semantic-planes-v1
+  work.pipeline_stage: closed
+  work.priority: low
+  work.risk: low
+  work.status: done
+  work.target_files: work/analytics/closing-epic-intent-information-semantic-planes-v1.md, docs/plan-intent-information-semantic-planes-v1.md, work/analytics/work-graph-intent-information-plane.md, work/analytics/work-graph-semantic-plane.md
+  work.title: Closing: epic-intent-information-semantic-planes-v1
+]>

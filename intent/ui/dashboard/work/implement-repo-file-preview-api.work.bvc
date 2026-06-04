@@ -45,7 +45,10 @@
   work.pipeline_stage: decided
   work.priority: high
   work.risk: medium
-  work.status: backlog
+  work.status: done
   work.target_files: src/repoFilePreviewApi.mjs, src/workGraphBacklogUiServer.mjs, tests/repoFilePreviewApi.test.mjs
   work.title: API: GET /api/repo-file/preview — bounded read для UI
+
+Свидетельства:
+  - src/repoFilePreviewApi.mjs + GET /api/repo-file/preview; tests/repoFilePreviewApi.test.mjs pass; traversal rejected; npm run test:deterministic — 808 pass
 ]>

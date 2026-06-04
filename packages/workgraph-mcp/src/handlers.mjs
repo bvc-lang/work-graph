@@ -33,6 +33,13 @@ import {
 } from '../../../src/memoryRecordWriter.mjs';
 import { buildPvrgTaskScopeSlice } from '../../../src/pvrgTaskScope.mjs';
 import { buildUnifiedLinkageProjectionV1 } from '../../../src/unifiedLinkageProjection.mjs';
+import { queryIntentPlane } from '../../../src/queryIntentPlane.mjs';
+import {
+  detectSemanticDrift,
+  getContextSlice,
+  querySemanticField,
+} from '../../../src/semanticPlaneMcp.mjs';
+import { findSemanticVoidsFromRepo } from '../../../src/semanticVoids.mjs';
 import { buildPhasePromoteReadyQueue } from '../../../src/workGraphPhasePromoteReadyQueue.mjs';
 import {
   buildStepGraphProjectionFromRepo,
@@ -154,6 +161,40 @@ export async function getArchitectureSnapshot(args = {}, options = {}) {
 export async function getUnifiedLinkage(_args = {}, options = {}) {
   const items = await readItems(options);
   return buildUnifiedLinkageProjectionV1(items);
+}
+
+export async function queryIntentPlaneMcp(args = {}, options = {}) {
+  const items = await readItems(options);
+  return queryIntentPlane(items, args, { cwd: resolveRoot(options) });
+}
+
+export async function querySemanticFieldMcp(args = {}, options = {}) {
+  const q = String(args.q ?? args.query ?? '').trim();
+  if (!q) {
+    throw new Error('q is required');
+  }
+  const items = await readItems(options);
+  return querySemanticField(items, args, { cwd: resolveRoot(options) });
+}
+
+export async function detectSemanticDriftMcp(args = {}, options = {}) {
+  const workId = requireWorkId(args);
+  const items = await readItems(options);
+  return detectSemanticDrift(items, workId);
+}
+
+export async function getContextSliceMcp(args = {}, options = {}) {
+  const workId = requireWorkId(args);
+  const items = await readItems(options);
+  return getContextSlice(items, args, { cwd: resolveRoot(options) });
+}
+
+export async function findSemanticVoidsMcp(args = {}, options = {}) {
+  return findSemanticVoidsFromRepo({
+    cwd: resolveRoot(options),
+    domain: args.domain ?? args.department ?? null,
+    tier: args.tier ?? null,
+  });
 }
 
 export async function getEpicWorkScope(args = {}, options = {}) {

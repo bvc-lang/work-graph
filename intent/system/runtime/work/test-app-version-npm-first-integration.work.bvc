@@ -1,0 +1,51 @@
+#Задача_test_app_version_npm_first_integration<[
+Базис:
+  Регрессия version source не ловится.
+Вектор:
+  tests/appVersionApi.test.mjs — node_modules layout, cache, semver.
+Цель:
+  npm run test:deterministic покрывает app version path.
+Проверки:
+  appVersionApi tests pass
+  workGraphBacklogUiServer smoke notice stack
+Анализ:
+  Зачем:
+  Регрессия version source не ловится.
+  Контекст: tests/appVersionApi.test.mjs — node_modules layout, cache, semver.
+  Когда:
+  После готовности: fix-app-version-read-from-cli-package, implement-app-version-npm-cache, implement-wg-notice-stack-bottom-left.
+  Готово, когда:
+  npm run test:deterministic покрывает app version path.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: fix-app-version-read-from-cli-package, implement-app-version-npm-cache, implement-wg-notice-stack-bottom-left.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-66
+  intake.source_kind: operator-request
+  intake.source_ref: docs/analysis/2026-06-app-update-mechanism.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-04T10:13:24.472Z
+  work.analysis.source: operator-request
+  work.decision.at: 2026-06-04T10:13:24.472Z
+  work.decision.verdict: useful
+  work.department: engineering
+  work.depends_on: fix-app-version-read-from-cli-package, implement-app-version-npm-cache, implement-wg-notice-stack-bottom-left
+  work.id: test-app-version-npm-first-integration
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: backend_engineer
+  work.parent_id: epic-app-update-mechanism-v1
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: tests/appVersionApi.test.mjs, tests/workGraphBacklogUiServer.test.mjs
+  work.title: Tests: app version npm-first + cache + notice HTML smoke
+
+Свидетельства:
+  - npm run test:deterministic — 790 pass; appVersionApi.test.mjs (semver, npm layout, cache); workGraphBacklogUiServer smoke wg-notice-stack + app-version scope
+]>

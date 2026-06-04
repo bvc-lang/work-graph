@@ -1,0 +1,55 @@
+#Задача_implement_gbc_gfs_heritage_slice_mvp_v1<[
+Базис:
+  evaluate-flatbuffers-gbc-slice и design-gfs-overlay done — решение и passport есть, реализации slice MVP нет.
+  GBC/GFS — часть уникального ioHasC heritage (AN-11).
+Вектор:
+  src/gbcSliceMvp.mjs — read/write one derived slice (pvrg cache metrics or linkage augment).
+  Optional FlatBuffers schema from packages/pvrg-spec.
+  Не блокирует operator UI; cache layer only.
+Цель:
+  Один GBC/GFS slice доказан в WG; heritage не только в docs.
+Проверки:
+  Round-trip test fixture
+  Documented in port-registry
+Анализ:
+  Зачем:
+  evaluate-flatbuffers-gbc-slice и design-gfs-overlay done — решение и passport есть, реализации slice MVP нет.
+  Контекст: GBC/GFS — часть уникального ioHasC heritage (AN-11).
+  Когда:
+  После готовности: evaluate-flatbuffers-gbc-slice, design-gfs-overlay-project-passport.
+  Готово, когда:
+  Один GBC/GFS slice доказан в WG; heritage не только в docs.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: evaluate-flatbuffers-gbc-slice, design-gfs-overlay-project-passport.
+
+Свидетельства:
+  - src/gbcSliceMvp.mjs
+  - tests/gbcSliceMvp.test.mjs
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-69
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/pvrg-ir-semantic-plane-usage-audit.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-04T19:46:51.741Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-04T19:46:51.741Z
+  work.decision.verdict: useful
+  work.department: system-storage
+  work.depends_on: evaluate-flatbuffers-gbc-slice, design-gfs-overlay-project-passport
+  work.id: implement-gbc-gfs-heritage-slice-mvp-v1
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: system_architect
+  work.parent_id: epic-iohasc-heritage-reuse-v1
+  work.pipeline_stage: closed
+  work.priority: medium
+  work.risk: high
+  work.status: done
+  work.target_files: src/gbcSliceMvp.mjs, src/gfsOverlayProjectPassport.mjs, src/intentGraphGbcSliceBoundary.mjs, tests/gbcSliceMvp.test.mjs
+  work.title: Port MVP: GBC/GFS binary slice (heritage phase 11)
+]>

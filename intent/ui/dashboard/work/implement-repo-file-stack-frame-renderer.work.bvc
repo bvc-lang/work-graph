@@ -45,7 +45,10 @@
   work.pipeline_stage: decided
   work.priority: high
   work.risk: medium
-  work.status: backlog
+  work.status: done
   work.target_files: src/workGraphBacklogUiServer.mjs, src/codeSyntaxHighlight.mjs, tests/workGraphBacklogUiServer.test.mjs
   work.title: UI: stack frame repo-file + syntax highlight preview
+
+Свидетельства:
+  - repo-file stack frame renderer + highlightCodeBlock/renderMarkdownDocument preview panel; fetch /api/repo-file/preview; npm run test:deterministic — 808 pass
 ]>

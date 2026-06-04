@@ -40,10 +40,11 @@
   work.pipeline_stage: decided
   work.priority: high
   work.risk: low
-  work.status: ready
+  work.status: done
   work.target_files: public/assets/avatars, src/ui/userAvatars.mjs, src/workGraphBacklogUiServer.mjs, tests/userAvatars.test.mjs, tests/workGraphBacklogUiServer.test.mjs
   work.title: UI Avatars v1: Jira-style цветные векторные аватарки owner
 
 Свидетельства:
   - promote-ready: backlog→ready via operator board
+  - Epic UI Avatars v1: 10 SVG avatars, userAvatars.mjs, renderOwnerAvatar on cards, tests/userAvatars.test.mjs pass; 3/3 subtasks done
 ]>

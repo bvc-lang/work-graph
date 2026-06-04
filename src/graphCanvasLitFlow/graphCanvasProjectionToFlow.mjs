@@ -91,6 +91,7 @@ export function graphCanvasProjectionToFlow(projection, options = {}) {
       schematicId: node.schematicId ?? '',
       doneChildCount: node.doneChildCount ?? 0,
       childCount: node.childCount ?? 0,
+      driftTier: node.driftTier ?? '',
     },
     width: node.width,
     height: node.height,

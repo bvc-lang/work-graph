@@ -32,6 +32,16 @@
   "settings.about.updateAvailable": "Update available: {latest}",
   "settings.about.installHint": "Run in terminal:",
   "settings.about.checkFailed": "Could not check npm registry.",
+  "notice.updateAvailable.title": "Update available",
+  "notice.updateAvailable.body": "Work Graph {current} → {latest} on npm.",
+  "notice.updateAvailable.openSettings": "Open settings",
+  "notice.updateAvailable.dismiss": "Dismiss",
+  "analytics.sort.label": "Sort analytics",
+  "analytics.sort.createdDesc": "By date",
+  "analytics.sort.keyDesc": "By AN number",
+  "loader.default": "Loading…",
+  "loader.bootstrap": "Loading Work Graph…",
+  "loader.view": "Loading view…",
   "theme.toggleAria": "Toggle theme",
   "theme.dark": "Dark theme",
   "theme.light": "Light theme",
@@ -39,6 +49,7 @@
   "kanban.col.ready": "Ready",
   "kanban.col.in_progress": "In progress",
   "kanban.col.done": "Done",
+  "kanban.column.shown": "Showing {shown} of {total}",
   "board.group.backlog": "Backlog",
   "board.group.ready": "Ready for agent",
   "board.group.in_progress": "In progress",
@@ -105,5 +116,6 @@
   "verification.status.failed": "failed",
   "verification.tierLabel.deterministic": "deterministic",
   "verification.tierLabel.optional-env": "optional (environment)",
-  "verification.tierLabel.optional-llm": "optional (LLM)"
+  "verification.tierLabel.optional-llm": "optional (LLM)",
+  "task.closedAt": "Closed {date}"
 }

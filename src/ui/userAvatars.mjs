@@ -1,5 +1,7 @@
 /** Jira-style colored vector avatars (deterministic pick by owner key). */
 
+export const OWNER_AVATAR_AGENT_FILE = 'agent-sparkle.svg';
+
 export const OWNER_AVATAR_FILES = [
   'avatar-01.svg',
   'avatar-02.svg',
@@ -46,13 +48,29 @@ function escapeAvatarAttr(value) {
 
 /**
  * @param {string | null | undefined} owner
+ */
+export function isAgentOwner(owner) {
+  const normalized = String(owner ?? '').trim().toLowerCase();
+  if (!normalized) {
+    return false;
+  }
+
+  return normalized === 'agent'
+    || normalized === 'cursor-agent'
+    || normalized === 'wg-agent'
+    || normalized === 'ai-agent';
+}
+
+/**
+ * @param {string | null | undefined} owner
  * @param {{ title?: string, className?: string, size?: number }} [options]
  */
 export function renderOwnerAvatar(owner, options = {}) {
   const label = options.title ?? owner ?? 'WG';
-  const className = options.className ?? 'owner-avatar';
+  const agent = isAgentOwner(owner);
+  const className = (options.className ?? 'owner-avatar') + (agent ? ' is-agent' : '');
   const size = options.size ?? 28;
-  const fileName = resolveOwnerAvatarFile(owner);
+  const fileName = agent ? OWNER_AVATAR_AGENT_FILE : resolveOwnerAvatarFile(owner);
   return '<span class="' + className + '" title="' + escapeAvatarAttr(label) + '">' +
     '<img src="/assets/avatars/' + fileName + '" alt="" width="' + size + '" height="' + size + '" loading="lazy" decoding="async">' +
   '</span>';

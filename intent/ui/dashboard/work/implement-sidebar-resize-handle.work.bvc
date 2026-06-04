@@ -44,7 +44,10 @@
   work.pipeline_stage: decided
   work.priority: high
   work.risk: low
-  work.status: backlog
+  work.status: done
   work.target_files: src/workGraphBacklogUiServer.mjs
   work.title: UI: sidebar-resize-handle + CSS + compact class
+
+Свидетельства:
+  - #sidebar-resize-handle pointer drag, html.is-sidebar-compact icon rail + emblem; tests/workGraphBacklogUiServer.test.mjs pass; npm run test:deterministic — 792 pass, 0 fail
 ]>

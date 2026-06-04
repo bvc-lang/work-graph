@@ -113,3 +113,42 @@ export function buildGraphCanvasProjectionFromSchematicModel(model, options = {}
     edges,
   };
 }
+
+/**
+ * @param {{ nodes?: Array<object>, edges?: Array<object> }} planeLayout
+ * @param {{ viewId?: string }} [options]
+ */
+export function buildGraphCanvasProjectionFromIntentPlane(planeLayout, options = {}) {
+  const nodes = (planeLayout?.nodes ?? []).map((node) => ({
+    id: node.id,
+    kind: node.kind ?? 'work_item',
+    title: node.title ?? node.id,
+    layer: node.layer ?? 'intent-plane',
+    summary: node.summary ?? '',
+    x: node.x ?? 0,
+    y: node.y ?? 0,
+    width: node.width ?? 220,
+    height: node.height ?? 78,
+    status: node.status ?? '',
+    taskId: node.taskId ?? node.id,
+    focused: node.focused === true,
+    driftTier: node.driftTier ?? '',
+  }));
+
+  const edges = (planeLayout?.edges ?? []).map((edge, index) => ({
+    id: edge.id ?? `${edge.from}-${edge.to}-${index}`,
+    from: edge.from,
+    to: edge.to,
+    label: edge.label ?? '',
+    rejected: false,
+    upstream: edge.upstream === true,
+  }));
+
+  return {
+    schema: GRAPH_CANVAS_LIT_FLOW_PROJECTION_SCHEMA,
+    layoutDirection: 'LR',
+    viewId: options.viewId ?? 'intent-plane',
+    nodes,
+    edges,
+  };
+}

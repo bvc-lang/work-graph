@@ -2,7 +2,9 @@
 
 Work Graph is a local, Git-friendly work system for AI-assisted software development.
 
-It gives a project its own durable backlog, BVC work-item files, Cursor MCP tools, and a local operator UI. The goal is to make agent work reviewable: every task can carry context, checks, evidence, and status in files that live next to the code.
+Website: [workgraph.ru/en](https://workgraph.ru/en/)
+
+It gives a project its own durable backlog, BVC work-item files, an MCP server for coding agents, and a local operator UI. The goal is to make agent work reviewable: every task can carry context, checks, evidence, and status in files that live next to the code.
 
 ## Send This To A Teammate
 
@@ -18,14 +20,14 @@ npm run workgraph:ui
 Then open:
 
 ```text
-http://127.0.0.1:4177/
+http://localhost:4177/
 ```
 
-For Cursor users, the same setup can be phrased as:
+For agents in any MCP-capable IDE (Cursor, Claude Code, and others), you can phrase it as:
 
 > Install Work Graph in this project and open the local UI.
 
-The CLI writes the project config, npm scripts, Cursor MCP configuration, and a project rule. Existing `intent/index.bvc` and `architecture/main.bvc` files are preserved.
+The CLI writes the project config, npm scripts, optional IDE integration files (for example Cursor MCP config and a project rule), and preserves existing `intent/index.bvc` and `architecture/main.bvc` files.
 
 Detailed install guide: [docs/getting-started.md](docs/getting-started.md).
 
@@ -47,7 +49,7 @@ AI coding agents are powerful, but their work often disappears into chat history
 
 - **Local-first:** files in your repo, local UI on `127.0.0.1`.
 - **Git-friendly:** work items are BVC text files that can be reviewed and diffed.
-- **Agent-ready:** Cursor MCP tools let agents list, claim, update, and complete work items.
+- **Agent-ready:** MCP tools let agents list, claim, update, and complete work items from any compatible client.
 - **Evidence-oriented:** checks, command results, and implementation evidence stay attached to the task.
 - **No hosted dependency:** npm packages install the runtime; no SaaS account is required.
 
@@ -62,8 +64,8 @@ Work Graph is not a Jira clone and not a chat UI. It is an operational layer for
 | `.work-graph/config.json` | Project id, label, and UI settings |
 | `intent/` | BVC intent tree and work items |
 | `intent/index.bvc` | Index of work item files |
-| `.cursor/mcp.json` | Cursor MCP server entry for Work Graph |
-| `.cursor/rules/work-graph-project.mdc` | Agent guidance for using Work Graph in this repo |
+| `.cursor/mcp.json` | Optional: MCP server entry when using Cursor |
+| `.cursor/rules/work-graph-project.mdc` | Optional: project rule for agents in Cursor |
 | `package.json` | `workgraph:*` scripts and `@work-graph/*` devDependencies |
 
 Useful scripts after install:
@@ -94,9 +96,11 @@ That makes it suitable for agent workflows where a reviewer needs to know:
 - which checks were expected;
 - what evidence was produced before the item was marked done.
 
-## Cursor And MCP
+## Agents And MCP
 
-After `init`, Cursor can use the generated `.cursor/mcp.json` entry:
+After `init`, connect any MCP client. Cursor picks up the generated `.cursor/mcp.json` entry; Claude Desktop, Claude Code, and other clients use the same `npx -y @work-graph/mcp` command with `WORKGRAPH_ROOT` set to the project root (see [docs/workgraph-mcp-clients.md](docs/workgraph-mcp-clients.md)).
+
+Example (Cursor):
 
 ```json
 {
@@ -113,7 +117,7 @@ After `init`, Cursor can use the generated `.cursor/mcp.json` entry:
 }
 ```
 
-Reload MCP servers in Cursor after installation. Agents can then read the backlog, inspect work contracts, append evidence, and complete work items through the Work Graph MCP tools.
+Reload MCP servers in your IDE after installation. Agents can then read the backlog, inspect work contracts, append evidence, and complete work items through the Work Graph MCP tools.
 
 ## Contributing To Work Graph
 
@@ -137,6 +141,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md), [PUBLIC_API.md](PUBLIC_API.md), and [SEC
 
 ## Links
 
+- Website: https://workgraph.ru/en/
 - CLI mirror: https://github.com/bvc-lang/work-graph-cli
 - MCP mirror: https://github.com/bvc-lang/work-graph-mcp
 - BVC spec: https://github.com/bvc-lang/spec

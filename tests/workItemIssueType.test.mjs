@@ -3,6 +3,7 @@ import { describe, it } from 'node:test';
 
 import {
   formatWorkItemIssueKey,
+  renderAnalyticsRecordKeyChip,
   renderWorkItemIssueKeyChip,
   resolveWorkItemIssueType,
 } from '../src/ui/workItemIssueType.mjs';
@@ -26,5 +27,17 @@ describe('workItemIssueType', () => {
     assert.match(html, /class="issue-type-icon is-epic"/);
     assert.match(html, /class="issue-key-text">EPIC-WORK-GRAPH-UI-AVATARS-V1</);
     assert.match(html, /<svg/);
+  });
+
+  it('renders analytics record key chip like board issue keys', () => {
+    const html = renderAnalyticsRecordKeyChip({
+      key: 'AN-64',
+      id: 'analytics:work-graph-public-site',
+      title: 'AN-64: Публичный сайт Work Graph',
+    });
+
+    assert.match(html, /class="issue-key-chip"/);
+    assert.match(html, /class="issue-type-icon is-task"/);
+    assert.match(html, /class="issue-key-text">AN-64</);
   });
 });

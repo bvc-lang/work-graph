@@ -44,7 +44,10 @@
   work.pipeline_stage: decided
   work.priority: high
   work.risk: low
-  work.status: backlog
+  work.status: done
   work.target_files: src/workGraphBacklogUiServer.mjs, tests/workGraphBacklogUiServer.test.mjs
   work.title: UI: classifier badge на kanban cards (surface=board)
+
+Свидетельства:
+  - renderIssueFooter surface=board → renderWorkItemClassifierBadge on kanban cards; tests/workGraphBacklogUiServer.test.mjs pass; npm run test:deterministic — 792 pass, 0 fail
 ]>

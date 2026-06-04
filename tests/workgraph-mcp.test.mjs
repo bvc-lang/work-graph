@@ -27,6 +27,9 @@ import {
   getStepGraphProjection,
   getStepGraphSlice,
   getUnifiedLinkage,
+  queryIntentPlaneMcp,
+  detectSemanticDriftMcp,
+  getContextSliceMcp,
   getWorkItem,
   listEvidenceRecords,
   listMemoryRecords,
@@ -327,6 +330,43 @@ describe('workgraph MCP handlers', () => {
     const result = await getAnalyticsLineage({ recordKey: 'AN-50.1' }, { root: repoRoot });
     assert.equal(result.schema, 'analytics-lineage.projection.v1');
     assert.equal(result.parent?.key, 'AN-50');
+  });
+
+  it('query_intent_plane returns downstream subgraph for fixture task', async () => {
+    const root = await createFixture();
+    try {
+      const downstream = await queryIntentPlaneMcp({
+        startNode: { id: 'ready-task' },
+        direction: 'downstream',
+        depth: 1,
+      }, { root });
+      assert.equal(downstream.schema, 'intent.plane.query.result.v1');
+      assert.ok(downstream.nodes.some((node) => node.id === 'ready-task'));
+
+      const upstream = await queryIntentPlaneMcp({
+        startNode: { id: 'ready-task' },
+        direction: 'upstream',
+        depth: 1,
+      }, { root });
+      assert.notDeepEqual(
+        downstream.edges.map((edge) => edge.to).sort(),
+        upstream.edges.map((edge) => edge.from).sort(),
+      );
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
+  it('detect_semantic_drift returns drift metrics for fixture task', async () => {
+    const root = await createFixture();
+    try {
+      const drift = await detectSemanticDriftMcp({ workId: 'ready-task' }, { root });
+      assert.equal(drift.schema, 'semantic.drift.result.v1');
+      assert.ok(typeof drift.drift_score === 'number');
+      assert.ok(Array.isArray(drift.reasons));
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
   });
 });
 

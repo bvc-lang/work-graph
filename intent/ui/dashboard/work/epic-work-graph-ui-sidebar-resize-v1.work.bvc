@@ -40,7 +40,10 @@
   work.pipeline_stage: decided
   work.priority: high
   work.risk: low
-  work.status: backlog
+  work.status: done
   work.target_files: src/workGraphBacklogUiServer.mjs, tests/workGraphBacklogUiServer.test.mjs
   work.title: UI Sidebar resize v1: ручная ширина с min (иконки) и max
+
+Свидетельства:
+  - Epic UI Sidebar resize v1 (WG-161): drag-resize 56–360px, localStorage persist, compact icon rail; 2/2 subtasks done; npm run test:deterministic — 792 pass, 0 fail
 ]>

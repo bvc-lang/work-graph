@@ -44,7 +44,10 @@
   work.pipeline_stage: decided
   work.priority: high
   work.risk: low
-  work.status: backlog
+  work.status: done
   work.target_files: src/ui/userAvatars.mjs, src/workGraphBacklogUiServer.mjs, tests/userAvatars.test.mjs
   work.title: UI: userAvatars.mjs — hash owner → avatar variant
+
+Свидетельства:
+  - src/ui/userAvatars.mjs: hashOwnerKey + renderOwnerAvatar; tests/userAvatars.test.mjs pass
 ]>

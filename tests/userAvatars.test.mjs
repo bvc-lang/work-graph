@@ -3,6 +3,8 @@ import { describe, it } from 'node:test';
 
 import {
   hashOwnerKey,
+  isAgentOwner,
+  OWNER_AVATAR_AGENT_FILE,
   OWNER_AVATAR_FILES,
   renderOwnerAvatar,
   resolveOwnerAvatarFile,
@@ -29,5 +31,17 @@ describe('userAvatars', () => {
     assert.match(html, /src="\/assets\/avatars\/avatar-\d{2}\.svg"/);
     assert.match(html, /title="Feature engineer"/);
     assert.match(html, /width="28"/);
+  });
+
+  it('detects agent owners', () => {
+    assert.equal(isAgentOwner('agent'), true);
+    assert.equal(isAgentOwner('Agent'), true);
+    assert.equal(isAgentOwner('feature_engineer'), false);
+  });
+
+  it('renders sparkle avatar for agent author', () => {
+    const html = renderOwnerAvatar('agent', { title: 'agent' });
+    assert.match(html, /class="owner-avatar is-agent"/);
+    assert.match(html, new RegExp(`src="/assets/avatars/${OWNER_AVATAR_AGENT_FILE}"`));
   });
 });

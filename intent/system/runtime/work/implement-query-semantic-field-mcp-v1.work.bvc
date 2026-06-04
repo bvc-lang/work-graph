@@ -1,0 +1,55 @@
+#Задача_implement_query_semantic_field_mcp_v1<[
+Базис:
+  AN-68: «покажи всё про платежный шлюз» — задачи, код и AN с семантическим весом, не только keyword.
+  semantic_search workflow уже есть — расширяем ранжирование на BVC-поля и типы узлов плоскости.
+Вектор:
+  Handler query_semantic_field: q, scope, depth → ranked nodes + edges.
+  Переиспользовать semanticSearchWorkflow + intent plane node kinds.
+  Тесты на фикстурном бэклоге.
+Цель:
+  Агент получает смысловой срез по запросу без чтения всего репозитория.
+Проверки:
+  MCP tool зарегистрирован
+  Ответ содержит work_id и analytics_key где релевантно
+Анализ:
+  Зачем:
+  AN-68: «покажи всё про платежный шлюз» — задачи, код и AN с семантическим весом, не только keyword.
+  Контекст: semantic_search workflow уже есть — расширяем ранжирование на BVC-поля и типы узлов плоскости.
+  Когда:
+  После готовности: specify-semantic-plane-mcp-p0-v1, implement-full-semantic-search-workflow.
+  Готово, когда:
+  Агент получает смысловой срез по запросу без чтения всего репозитория.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: specify-semantic-plane-mcp-p0-v1, implement-full-semantic-search-workflow.
+
+Свидетельства:
+  - query_semantic_field MCP tool
+  - src/semanticPlaneMcp.mjs
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-68
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-semantic-plane.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-04T19:10:57.468Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-04T19:10:57.468Z
+  work.decision.verdict: useful
+  work.department: system-runtime
+  work.depends_on: specify-semantic-plane-mcp-p0-v1, implement-full-semantic-search-workflow
+  work.id: implement-query-semantic-field-mcp-v1
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: backend_engineer
+  work.parent_id: epic-intent-information-semantic-planes-v1
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: packages/workgraph-mcp/src/handlers.mjs, packages/workgraph-mcp/src/index.mjs, src/semanticSearchWorkflow.mjs, docs/spec-semantic-plane-mcp-p0-v1.md
+  work.title: MCP: query_semantic_field — смысловой поиск по плоскости
+]>

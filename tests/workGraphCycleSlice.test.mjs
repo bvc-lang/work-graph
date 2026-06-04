@@ -71,6 +71,19 @@ describe('resolveCurrentCycle', () => {
     const itemById = new Map(items.map((item) => [item.id, item]));
     assert.equal(resolveCurrentCycle(items, itemById), 'phase-9-ui-operator-shell');
   });
+
+  it('falls back to backlog-heavy phase cycle when no operational items', () => {
+    const items = [
+      phase7,
+      phase9,
+      { id: 'task-a1', status: 'backlog', dependsOn: ['phase-9-ui-operator-shell'], labels: {} },
+      { id: 'task-a2', status: 'backlog', dependsOn: ['phase-9-ui-operator-shell'], labels: {} },
+      { id: 'task-a3', status: 'backlog', dependsOn: ['phase-9-ui-operator-shell'], labels: {} },
+      { id: 'task-b', status: 'backlog', dependsOn: ['phase-0-inventory-boundaries'], labels: {} },
+    ];
+    const itemById = new Map(items.map((item) => [item.id, item]));
+    assert.equal(resolveCurrentCycle(items, itemById), 'phase-9-ui-operator-shell');
+  });
 });
 
 describe('sortDoneArchiveItems', () => {

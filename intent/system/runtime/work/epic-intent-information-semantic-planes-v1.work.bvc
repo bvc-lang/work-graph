@@ -1,0 +1,56 @@
+#Задача_epic_intent_information_semantic_planes_v1<[
+Базис:
+  Разборы AN-65 и AN-68: WG и BVC уже образуют информационную и смысловую плоскости, но навигация размазана по отдельным MCP-инструментам и вкладкам UI.
+  Информационная плоскость отвечает на вопрос «как связаны задачи, код, доказательства и аналитика»; смысловая — «насколько реализация совпадает с намерением в Basis/Vector/Goal».
+  Нет единого query_intent_plane для обхода графа по контрактам и нет semantic navigator (дрейф, вакуумы, контекстный срез для агента).
+Вектор:
+  P0: ADR границ двух плоскостей + plan; канон узлов/рёбер; MCP query_intent_plane и semantic P0 (field, drift, context slice).
+  P1: UI — граф плоскости и heatmap дрейфа поверх тех же проекций.
+  P2: temporal snapshots, find_semantic_voids, resolve_semantic_conflict — после стабилизации P0/P1.
+Цель:
+  Оператор и агент перемещаются по проекту по контрактам BVC и связям, а не только по списку задач и полнотекстовому поиску.
+Проверки:
+  ADR и plan опубликованы
+  query_intent_plane и semantic MCP P0 доступны в workgraph-mcp
+  npm run test:deterministic green
+Анализ:
+  Зачем:
+  Без явного слоя навигации оператор теряет целостную картину: linkage, RAG и semantic_search работают изолированно.
+  Контекст: AN-65 задаёт топологию и evidence; AN-68 — alignment и эволюцию понимания поверх той же плоскости.
+  Когда:
+  После готовности upstream: implement-mcp-get-unified-linkage, implement-full-semantic-search-workflow.
+  Готово, когда:
+  MCP и UI MVP позволяют пройти сценарии из разборов (архитектор, разработчик, агент в scope).
+Решение:
+  Вердикт:
+  полезно
+  Один эпик с двумя фазами: сначала информационная плоскость (структура), затем смысловая (измерение смысла).
+  Не смешивать с wiki/Notion и не давать агенту свободный обход вне scope задачи.
+
+Свидетельства:
+  - P0 MCP + P1 UI + voids MCP delivered
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-65
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-intent-information-plane.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-04T19:10:57.319Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-04T19:10:57.319Z
+  work.decision.verdict: useful
+  work.department: product
+  work.depends_on: implement-mcp-get-unified-linkage, implement-full-semantic-search-workflow
+  work.id: epic-intent-information-semantic-planes-v1
+  work.item_kind: epic
+  work.next_action: —
+  work.owner_role: system_architect
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: high
+  work.status: done
+  work.target_files: docs/plan-intent-information-semantic-planes-v1.md, work/analytics/work-graph-intent-information-plane.md, work/analytics/work-graph-semantic-plane.md, docs/adr-intent-information-semantic-planes-v1.md
+  work.title: Информационная и смысловая плоскости WG v1 (AN-65, AN-68)
+]>

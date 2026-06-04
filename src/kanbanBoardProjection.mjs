@@ -1,3 +1,5 @@
+import { compareWorkItemsByClosedAtDesc } from './workItemClosedAt.mjs';
+
 const compareText = (left, right) => String(left).localeCompare(String(right), 'en', { sensitivity: 'variant' });
 
 export const KANBAN_BOARD_PROJECTION_SCHEMA = 'workgraph.kanban-board-projection.v1';
@@ -25,15 +27,19 @@ export function buildKanbanBoardProjection(items, options = {}) {
     throw new TypeError('items must be an array');
   }
 
-  const sortedItems = [...items].sort((left, right) => compareText(left.id, right.id));
   const statusCounts = Object.create(null);
 
-  for (const item of sortedItems) {
+  for (const item of items) {
     statusCounts[item.status] = (statusCounts[item.status] ?? 0) + 1;
   }
 
   const columns = KANBAN_BOARD_COLUMNS.map((column) => {
-    const columnItems = sortedItems.filter((item) => column.statuses.includes(item.status));
+    const columnItems = items.filter((item) => column.statuses.includes(item.status));
+    columnItems.sort((left, right) => (
+      column.id === 'done'
+        ? compareWorkItemsByClosedAtDesc(left, right)
+        : compareText(left.id, right.id)
+    ));
     return {
       id: column.id,
       title: column.title,
@@ -50,7 +56,7 @@ export function buildKanbanBoardProjection(items, options = {}) {
     schema: KANBAN_BOARD_PROJECTION_SCHEMA,
     readOnly: true,
     dragEnabled: false,
-    itemCount: sortedItems.length,
+    itemCount: items.length,
     statusCounts,
     columnCounts,
     columns,

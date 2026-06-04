@@ -1,0 +1,53 @@
+#Задача_wire_repo_file_links_remaining_detail_surfaces<[
+Базис:
+  WG-145 закрыл preview для relatedFiles/target_files, но architecture block «Пути артефактов», intent roots, L2 node paths, prompt rule filePath и PVRG file nodes остались plain text.
+Вектор:
+  P0: linkRepoFiles для artifactPaths + intentRoots в architecture block drawer.
+  P0: renderDetailPathText для одиночных path-полей (L2 path, prompt filePath, canon source).
+  P1: PVRG file nodes → repo-file-link.
+Цель:
+  Все явные repo paths в detail drawers кликабельны и открывают stack preview.
+Проверки:
+  artifactPaths render as repo-file-link
+  L2 node path + container paths clickable
+  prompt rule filePath clickable
+  tests/workGraphBacklogUiServer.test.mjs green
+Анализ:
+  Зачем:
+  WG-145 закрыл preview для relatedFiles/target_files, но architecture block «Пути артефактов», intent roots, L2 node paths, prompt rule filePath и PVRG file nodes остались plain text.
+  Контекст: P0: linkRepoFiles для artifactPaths + intentRoots в architecture block drawer.
+  Когда:
+  После готовности: epic-drawer-repo-file-preview-v1.
+  Готово, когда:
+  Все явные repo paths в detail drawers кликабельны и открывают stack preview.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: epic-drawer-repo-file-preview-v1.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-59
+  intake.source_kind: operator-request
+  intake.source_ref: src/workGraphBacklogUiServer.mjs
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-04T18:10:57.408Z
+  work.analysis.source: operator-request
+  work.decision.at: 2026-06-04T18:10:57.408Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: epic-drawer-repo-file-preview-v1
+  work.id: wire-repo-file-links-remaining-detail-surfaces
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: low
+  work.status: done
+  work.target_files: src/workGraphBacklogUiServer.mjs, tests/workGraphBacklogUiServer.test.mjs
+  work.title: UI: repo-file preview в оставшихся detail-секциях (architecture, L2, prompts, PVRG)
+
+Свидетельства:
+  - Architecture block: artifactPaths + intentRoots linkRepoFiles; canon source link; L2 node path/container paths; prompt rule filePath; PVRG file nodes → repo-file-link; npm run test:deterministic — 808 pass
+]>

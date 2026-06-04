@@ -32,6 +32,16 @@
   "settings.about.updateAvailable": "Доступно обновление: {latest}",
   "settings.about.installHint": "В терминале:",
   "settings.about.checkFailed": "Не удалось проверить npm registry.",
+  "notice.updateAvailable.title": "Доступно обновление",
+  "notice.updateAvailable.body": "Work Graph {current} → {latest} на npm.",
+  "notice.updateAvailable.openSettings": "Открыть настройки",
+  "notice.updateAvailable.dismiss": "Закрыть",
+  "analytics.sort.label": "Сортировка разборов",
+  "analytics.sort.createdDesc": "По дате",
+  "analytics.sort.keyDesc": "По номеру AN",
+  "loader.default": "Загрузка…",
+  "loader.bootstrap": "Загрузка Work Graph…",
+  "loader.view": "Загрузка раздела…",
   "theme.toggleAria": "Переключить тему",
   "theme.dark": "Тёмная тема",
   "theme.light": "Светлая тема",
@@ -39,6 +49,7 @@
   "kanban.col.ready": "Ready",
   "kanban.col.in_progress": "В работе",
   "kanban.col.done": "Завершено",
+  "kanban.column.shown": "Показано {shown} из {total}",
   "board.group.backlog": "Бэклог",
   "board.group.ready": "Доступно агенту",
   "board.group.in_progress": "В работе",
@@ -105,5 +116,6 @@
   "verification.status.failed": "провалено",
   "verification.tierLabel.deterministic": "детерминированный",
   "verification.tierLabel.optional-env": "опционально (окружение)",
-  "verification.tierLabel.optional-llm": "опционально (LLM)"
+  "verification.tierLabel.optional-llm": "опционально (LLM)",
+  "task.closedAt": "Закрыто {date}"
 }

@@ -43,7 +43,10 @@
   work.pipeline_stage: decided
   work.priority: high
   work.risk: low
-  work.status: backlog
+  work.status: done
   work.target_files: src/ui/workItemClassifierBadge.mjs, tests/workItemClassifierBadge.test.mjs
   work.title: UI: workItemClassifierBadge.mjs — resolve + render lozenge
+
+Свидетельства:
+  - src/ui/workItemClassifierBadge.mjs resolveWorkItemClassifierBadge + renderWorkItemClassifierBadge; tests/workItemClassifierBadge.test.mjs pass; npm run test:deterministic — 792 pass, 0 fail
 ]>

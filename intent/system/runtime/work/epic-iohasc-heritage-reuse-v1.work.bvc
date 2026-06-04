@@ -1,0 +1,58 @@
+#Задача_epic_iohasc_heritage_reuse_v1<[
+Базис:
+  AN-69: lite-трек WG (PVRG-lite, lexical) даёт быстрый эффект, но TurIr, pvrg-core AST, semantic runtime Stage 2, Vector DSL и GBC/GFS остаются в ioHasC и не портированы.
+  Цель «не потерять наработки» означает отдельный heritage-трек: port / embed / rebuild с реестром, а не бесконечное defer или переписывание с нуля.
+  Часть port уже done (compiler round-trip, bracket IR signal, code-gap MVP) — эпик продолжает хвост, не дублирует закрытое.
+Вектор:
+  P0: ADR dual-track (lite + heritage) + plan + живой port-registry.
+  P1: RichIR/TurIr executor + LLM IR normalizer.
+  P2: pvrg-core scanner как adapter (не монолит в WG).
+  P3–P5: semantic runtime, Vector DSL, GBC/GFS MVP.
+  P6: embed WG в ioHasC shell (orchestrator остаётся в ioHasC).
+Цель:
+  Каждая крупная подсистема ioHasC имеет явную стратегию reuse; ничего ценного не «забыто» в defer без work item.
+Проверки:
+  ADR и plan опубликованы
+  Port-registry покрывает phase 5–11 из full rebuild backlog
+  Минимум один heritage port (TurIr или pvrg-core adapter) в runtime или sidecar
+Анализ:
+  Зачем:
+  Без heritage-трека команда неосознанно выбирает lite-замены и теряет годы ioHasC (IR, PVRG full, semantic runtime).
+  Контекст: AN-69 рекомендует не ждать TurIr для semantic plane v1 — heritage идёт параллельно, не блокирует lite.
+  Когда:
+  После inventory: iohasc-full-rebuild-roadmap, verify-iohasc-subsystem-inventory (уже done — можно стартовать ADR).
+  Готово, когда:
+  Реестр port закрыт или явно defer с work item; closing doc фиксирует что переиспользовано.
+Решение:
+  Вердикт:
+  полезно
+  Heritage — отдельный эпик, не отмена epic-intent-information-semantic-planes-v1.
+  Orchestrator/chat ioHasC — embed, не port в WG.
+
+Свидетельства:
+  - heritage wave P0–P6 delivered; port-registry check green
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-69
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/pvrg-ir-semantic-plane-usage-audit.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-04T19:46:51.571Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-04T19:46:51.571Z
+  work.decision.verdict: useful
+  work.department: product
+  work.depends_on: iohasc-full-rebuild-roadmap, verify-iohasc-subsystem-inventory
+  work.id: epic-iohasc-heritage-reuse-v1
+  work.item_kind: epic
+  work.next_action: —
+  work.owner_role: product_architect
+  work.pipeline_stage: closed
+  work.priority: critical
+  work.risk: high
+  work.status: done
+  work.target_files: docs/plan-iohasc-heritage-reuse-v1.md, docs/plan-iohasc-full-rebuild-backlog.md, work/analytics/pvrg-ir-semantic-plane-usage-audit.md, docs/adr-iohasc-heritage-reuse-v1.md
+  work.title: Наследие ioHasC: сохранить и переиспользовать все наработки v1
+]>

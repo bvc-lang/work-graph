@@ -1,0 +1,56 @@
+#Задача_port_tur_ir_flow_executor_mvp_v1<[
+Базис:
+  phase-5-ir-codegen-runtime done (codegen evidence, bracket hash), но CFG executor TurIr не портирован.
+  Heritage без executor — только spec на полке.
+Вектор:
+  src/irFlow/ — port validateIrFlow + executeIrFlowCfg minimal из ioHasC (reference, не fork UI).
+  tests/irFlowExecutor.test.mjs — fixtures из packages/ir-spec/.
+  Wire в verification loop как optional gate для work items с trace.ir_flow.
+Цель:
+  BVC → IR Flow → verify step работает в WG для pilot workflow.
+Проверки:
+  tests green
+  Не тянет React/Monaco из ioHasC
+Анализ:
+  Зачем:
+  phase-5-ir-codegen-runtime done (codegen evidence, bracket hash), но CFG executor TurIr не портирован.
+  Контекст: Heritage без executor — только spec на полке.
+  Когда:
+  После готовности: decide-rich-ir-heritage-port-adr, phase-5-ir-codegen-runtime.
+  Готово, когда:
+  BVC → IR Flow → verify step работает в WG для pilot workflow.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: decide-rich-ir-heritage-port-adr, phase-5-ir-codegen-runtime.
+
+Свидетельства:
+  - src/irFlow/validateIrFlow.mjs
+  - src/irFlow/executeIrFlowCfg.mjs
+  - tests/irFlowExecutor.test.mjs
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-69
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/pvrg-ir-semantic-plane-usage-audit.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-04T19:46:51.656Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-04T19:46:51.656Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: decide-rich-ir-heritage-port-adr, phase-5-ir-codegen-runtime
+  work.id: port-tur-ir-flow-executor-mvp-v1
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: compiler_engineer
+  work.parent_id: epic-iohasc-heritage-reuse-v1
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: high
+  work.status: done
+  work.target_files: src/irFlow/validateIrFlow.mjs, src/irFlow/executeIrFlowCfg.mjs, tests/irFlowExecutor.test.mjs, packages/ir-spec/schemas/ir-flow.v1.json
+  work.title: Port MVP: TurIr / IR Flow executor + validateIrFlow
+]>

@@ -128,6 +128,9 @@ describe('renderBacklogHtml', () => {
     assert.match(html, /data-testid="sidebar-settings-nav"/);
     assert.match(html, /id="settings-view"/);
     assert.match(html, /data-testid="settings-panel"/);
+    assert.match(html, /data-testid="wg-notice-stack"/);
+    assert.match(html, /registerScope\('app-version'/);
+    assert.match(html, /checkAppVersionAndMaybeNotify/);
     assert.match(html, /data-testid="settings-locale-options"/);
     assert.match(html, /data-settings-locale="ru"/);
     assert.match(html, /data-settings-locale="en"/);
@@ -153,14 +156,17 @@ describe('renderBacklogHtml', () => {
     assert.match(html, /renderClientUiButton/);
     assert.match(html, /data-testid="intent-composer-propose"/);
     assert.match(html, /data-testid="analytics-subtabs"/);
+    assert.match(html, /data-testid="analytics-sort-options"/);
+    assert.match(html, /rel="icon" href="\/assets\/favicon\.svg" type="image\/svg\+xml"/);
+    assert.match(html, /data-testid="wg-page-loader"/);
+    assert.match(html, /function showPageLoader/);
+    assert.match(html, /data-analytics-sort="key-desc"/);
     assert.match(html, /data-testid="workflow-subtabs"/);
     assert.match(html, /data-analytics-tab="intake"/);
     assert.match(html, /data-workflow-tab="backlog"/);
     assert.match(html, /<button class="task-atom/);
     assert.match(html, /data-task-id="/);
     assert.match(html, /class="page-header"/);
-    assert.match(html, /class="breadcrumbs"/);
-    assert.match(html, /id="breadcrumb-project"/);
     assert.match(html, /id="view-toolbar" class="toolbar" hidden/);
     assert.match(html, /\.toolbar\[hidden\]/);
     assert.match(html, /--column-bg: #f4f5f7/);
@@ -169,6 +175,9 @@ describe('renderBacklogHtml', () => {
     assert.match(html, /data-testid="kanban-board-panel"/);
     assert.match(html, /data-testid="semantic-search-mode"/);
     assert.match(html, /function renderKanbanBoard/);
+    assert.match(html, /kanbanColumnPageSize = 10/);
+    assert.match(html, /function setupKanbanColumnLazyLoad/);
+    assert.match(html, /data-kanban-column-sentinel/);
     assert.match(html, /data-testid="prompt-rule-editor"/);
     assert.match(html, /id="board-view" class="view"[^>]*>\s*<div id="kanban-board"/);
     assert.match(html, /id="intent-domain-filter"/);
@@ -251,6 +260,7 @@ describe('renderBacklogHtml', () => {
     assert.match(html, /class="app-shell layout-root"/);
     assert.match(html, /aria-label="Навигация Work Graph"/);
     assert.match(html, /data-testid="workgraph-logo"/);
+    assert.match(html, /data-testid="workgraph-emblem"/);
     assert.doesNotMatch(html, /data-testid="workspace-switcher"/);
     assert.doesNotMatch(html, /id="workspace-select"/);
     assert.doesNotMatch(html, /bootstrapWorkspaceSwitcher/);
@@ -324,6 +334,28 @@ describe('renderBacklogHtml', () => {
     assert.match(html, /popDetailStackNavigation/);
   });
 
+  it('exposes repo file preview stack hooks', () => {
+    const html = renderBacklogHtml();
+    assert.match(html, /openRepoFileStackPreview/);
+    assert.match(html, /renderRepoFilePreviewPanel/);
+    assert.match(html, /data-testid="repo-file-link"/);
+    assert.match(html, /data-testid="repo-file-preview-panel"/);
+    assert.match(html, /repo-file-preview-sub-drawer/);
+    assert.match(html, /fetch\('\/api\/repo-file\/preview\?path='/);
+    assert.match(html, /linkRepoFiles: true/);
+    assert.match(html, /autolinkRepoFilePathsInHtml/);
+    assert.match(html, /renderDetailPathText/);
+    assert.match(html, /renderRepoFilePathListItems/);
+    assert.match(html, /renderOptionalDetailAccordion\('Пути артефактов', block\.artifactPaths, 'list', \{ linkRepoFiles: true \}\)/);
+    assert.match(html, /renderOptionalDetailAccordion\('Корни intent', block\.intentRoots, 'list', \{ linkRepoFiles: true \}\)/);
+    assert.match(html, /renderDetailPathText\('Путь', node\.path\)/);
+    assert.match(html, /renderDetailPathText\('Файл', rule\.filePath\)/);
+    assert.match(html, /\.repo-file-preview-panel pre\.repo-file-preview \.code-hl-keyword/);
+    assert.match(html, /language === 'bvc'/);
+    assert.match(html, /highlightBvcBlock\(preview\.content/);
+    assert.match(html, /data-testid="repo-file-preview-bvc"/);
+  });
+
   it('renders backlog html with pseudolocale without throw', () => {
     const html = renderBacklogHtml({ locale: 'ps' });
     assert.match(html, /\[!! ~~/);
@@ -361,7 +393,7 @@ describe('renderBacklogHtml', () => {
     assert.match(html, /renderDetailText\(t\('drawer\.section\.basis'\), item\.basis\)/);
     assert.match(html, /renderDetailText\(t\('drawer\.section\.vector'\), item\.vector\)/);
     assert.match(html, /renderDetailText\(t\('drawer\.section\.goal'\), item\.goal\)/);
-    assert.match(html, /renderOptionalDetailAccordion\(t\('drawer\.section\.targetFiles'\), item\.targetFiles, 'list'\)/);
+    assert.match(html, /renderOptionalDetailAccordion\(t\('drawer\.section\.targetFiles'\), item\.targetFiles, 'list', \{ linkRepoFiles: true \}\)/);
     assert.match(html, /function renderParentChildHierarchy\(item\)/);
     assert.match(html, /data-testid="hierarchy-children"/);
     assert.match(html, /data-testid="hierarchy-parent"/);
@@ -460,6 +492,10 @@ describe('renderBacklogHtml', () => {
     assert.match(html, /renderAnalyticsRelatedWorkItemsSection/);
     assert.match(html, /renderAnalyticsLineageSections/);
     assert.match(html, /buildAnalyticsLineageListBadge/);
+    assert.match(html, /function formatAnalyticsRelatedTasksCardNote\(relatedWorkItems\)/);
+    assert.match(html, /renderClientUiBadge\(\{\s*label: doneCount \+ '\/' \+ related\.length \+ ' задач'/);
+    assert.match(html, /data-testid="analytics-related-tasks-count"/);
+    assert.match(html, /renderAnalyticsRecordKeyChip\(record\)/);
     assert.match(html, /data-testid="analytics-lineage-section"/);
     assert.match(html, /data-testid="analytics-lineage-badge"/);
     assert.match(html, /data-testid="analytics-lineage-nav"/);
@@ -473,8 +509,10 @@ describe('renderBacklogHtml', () => {
     assert.match(html, /function mountMarkdownMermaidDiagrams\(/);
     assert.match(html, /theme: 'base'/);
     assert.match(html, /function fixMermaidSvgSizing\(/);
+    assert.match(html, /function dedupeMermaidClusterLabelText\(/);
     assert.match(html, /function alignMermaidClusterLabels\(/);
     assert.match(html, /htmlLabels: false/);
+    assert.match(html, /subGraphTitleMargin: \{ top: 24, bottom: 10 \}/);
     assert.match(html, /function highlightCodeBlock\(/);
     assert.match(html, /src="\/vendor\/mermaid.min.js"/);
     assert.match(html, /function openAnalyticsRecordDetails\(record\)/);
@@ -535,9 +573,10 @@ describe('renderBacklogHtml', () => {
     assert.match(html, /data-view="architecture"[\s\S]*?nav-tab-label">Архитектура</);
     assert.match(html, /id="architecture-view"/);
     assert.match(html, /architecture-view-shell/);
-    assert.match(html, /architecture-tab-panel/);
     assert.match(html, /data-testid="architecture-blocks-list"/);
-    assert.match(html, /data-testid="architecture-canon-badge"/);
+    assert.doesNotMatch(html, /data-testid="architecture-subtabs"/);
+    assert.doesNotMatch(html, /data-testid="intent-plane-panel"/);
+    assert.doesNotMatch(html, /function loadIntentPlaneGraph\(/);
     assert.match(html, /function renderBlockBvcDescription\(block\)/);
     assert.match(html, /function renderBvcDescription\(source/);
     assert.match(html, /testid: 'architecture-bvc-description'/);
@@ -584,6 +623,9 @@ describe('renderBacklogHtml', () => {
     assert.match(html, /data-testid="kanban-board-panel"/);
     assert.match(html, /data-testid="semantic-search-mode"/);
     assert.match(html, /function renderKanbanBoard/);
+    assert.match(html, /kanbanColumnPageSize = 10/);
+    assert.match(html, /function setupKanbanColumnLazyLoad/);
+    assert.match(html, /data-kanban-column-sentinel/);
     assert.match(html, /data-testid="prompt-rule-editor"/);
     assert.match(html, /id="board-view" class="view"[^>]*>\s*<div id="kanban-board"/);
     assert.doesNotMatch(html, /id="dashboard-v2-strip"/);
@@ -724,6 +766,10 @@ describe('createBacklogUiServer', () => {
       assert.equal(logoSvg.status, 200);
       assert.match(logoSvg.headers.get('content-type') || '', /image\/svg\+xml/);
 
+      const emblemSvg = await fetch(`${baseUrl}/assets/workgraph-emblem.svg`);
+      assert.equal(emblemSvg.status, 200);
+      assert.match(emblemSvg.headers.get('content-type') || '', /image\/svg\+xml/);
+
       const fontCss = await fetch(`${baseUrl}/assets/fonts/GraphikLCG/stylesheet.css`);
       assert.equal(fontCss.status, 200);
       assert.match(fontCss.headers.get('content-type') || '', /text\/css/);
@@ -779,6 +825,18 @@ describe('createBacklogUiServer', () => {
       assert.equal(architectureSnapshot.schema, 'architecture.snapshot.v1');
       assert.ok(architectureSnapshot.blocks.length >= 7);
       assert.ok(architectureSnapshot.blocks.every((block) => block.l2Graph?.layoutNodes?.length >= 0));
+
+      const intentPlaneResponse = await fetch(`${baseUrl}/api/intent-plane/graph?start=ready-task&depth=1&drift=1`);
+      assert.equal(intentPlaneResponse.status, 200);
+      const intentPlaneGraph = await intentPlaneResponse.json();
+      assert.equal(intentPlaneGraph.schema, 'intent.plane.graph.v1');
+      assert.ok(intentPlaneGraph.projection.nodes.length >= 1);
+
+      const driftBatchResponse = await fetch(`${baseUrl}/api/semantic-drift/batch?limit=10`);
+      assert.equal(driftBatchResponse.status, 200);
+      const driftBatch = await driftBatchResponse.json();
+      assert.equal(driftBatch.schema, 'semantic.drift.batch.v1');
+      assert.ok(Array.isArray(driftBatch.entries));
 
       const dashboardResponse = await fetch(`${baseUrl}/api/dashboard-snapshot`);
       assert.equal(dashboardResponse.status, 200);
@@ -1031,6 +1089,18 @@ describe('createBacklogUiServer', () => {
       const timeline = await timelineResponse.json();
       assert.equal(timeline.schema, 'evidence.timeline.v1');
       assert.ok(timeline.count >= 1);
+
+      const repoPreviewOk = await fetch(`${baseUrl}/api/repo-file/preview?path=src/sample-hybrid.mjs`);
+      assert.equal(repoPreviewOk.status, 200);
+      const previewPayload = await repoPreviewOk.json();
+      assert.equal(previewPayload.schema, 'workgraph.repo-file-preview.v1');
+      assert.equal(previewPayload.ok, true);
+      assert.match(previewPayload.content, /hybrid/);
+
+      const repoPreviewDenied = await fetch(`${baseUrl}/api/repo-file/preview?path=..%2Fsecret.txt`);
+      assert.equal(repoPreviewDenied.status, 400);
+      const deniedPayload = await repoPreviewDenied.json();
+      assert.equal(deniedPayload.ok, false);
     } finally {
       await new Promise((resolve, reject) => server.close((error) => (error ? reject(error) : resolve())));
       await rm(cwd, { recursive: true, force: true });

@@ -1,0 +1,54 @@
+#Задача_epic_work_graph_ui_page_loader_v1<[
+Базис:
+  При первом открытии UI и переключении на lazy views оператор видит пустой экран или только текст «Загрузка…» в списке.
+  Нет единого визуального индикатора, что страница ещё грузится.
+Вектор:
+  Overlay #wg-page-loader поверх .content (sidebar остаётся кликабельным).
+  Bootstrap: snapshot chain + ensureLazyViewData active view.
+  View switch: loader при первой загрузке lazy projection.
+  i18n loader.default / loader.bootstrap / loader.view.
+Цель:
+  Оператор видит spinner и сообщение, пока грузится контент страницы.
+Проверки:
+  Loader visible on first paint
+  Loader hides after render()
+  data-testid=wg-page-loader
+Анализ:
+  Зачем:
+  При первом открытии UI и переключении на lazy views оператор видит пустой экран или только текст «Загрузка…» в списке.
+  Контекст: Нет единого визуального индикатора, что страница ещё грузится.
+  Когда:
+  Можно начинать, когда оператор перевёл задачу в ready.
+  Готово, когда:
+  Оператор видит spinner и сообщение, пока грузится контент страницы.
+Решение:
+  Вердикт:
+  полезно
+  Можно брать в работу после перевода в ready.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-67
+  intake.source_kind: operator-request
+  intake.source_ref: docs/plan-work-graph-ui-page-loader-v1.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-04T14:23:17.115Z
+  work.analysis.source: operator-request
+  work.decision.at: 2026-06-04T14:23:17.115Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.id: epic-work-graph-ui-page-loader-v1
+  work.item_kind: epic
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: docs/plan-work-graph-ui-page-loader-v1.md, src/workGraphBacklogUiServer.mjs, locales/en/ui.json, locales/ru/ui.json
+  work.title: UI: загрузчик контента — overlay при bootstrap и lazy views
+
+Свидетельства:
+  - Overlay #wg-page-loader: bootstrap chain + lazy view switch; i18n loader.* EN/RU/PS; child implement-wg-page-loader-overlay done
+]>

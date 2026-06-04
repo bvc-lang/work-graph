@@ -77,6 +77,16 @@ export function createPublicSiteServer() {
       return;
     }
 
+    if (url.pathname === '/assets/workgraph-logo.svg') {
+      serveFile(response, join(PUBLIC_ROOT, 'assets', 'workgraph-logo.svg'), 'image/svg+xml; charset=utf-8');
+      return;
+    }
+
+    if (url.pathname === '/assets/workgraph-emblem.svg') {
+      serveFile(response, join(PUBLIC_ROOT, 'assets', 'workgraph-emblem.svg'), 'image/svg+xml; charset=utf-8');
+      return;
+    }
+
     if (url.pathname === '/assets/design-tokens-workgraph-dark.css') {
       serveFile(response, DESIGN_TOKENS_WG_CSS_PATH, 'text/css; charset=utf-8');
       return;

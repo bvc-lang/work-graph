@@ -1,7 +1,7 @@
 ---
 name: install-work-graph
 description: >-
-  Установить Work Graph в текущий git-проект: канон intent/, UI, MCP для Cursor.
+  Установить Work Graph в текущий git-проект: канон intent/, UI, MCP для агентов (любой MCP-клиент).
   Использовать когда пользователь просит «подключи WG», «установи Work Graph»,
   «настрой бэклог в этом репо» или проект ещё без .work-graph/config.json.
 version: "2.0.0"
@@ -20,8 +20,8 @@ npm install
 
 Скажи пользователю:
 
-> Work Graph готов. `npm run workgraph:ui` → http://127.0.0.1:4177/  
-> MCP: сервер `workgraph` в Cursor (перезагрузить MCP после init).
+> Work Graph готов. `npm run workgraph:ui` → http://localhost:4177/  
+> MCP: сервер `workgraph` — перезагрузить MCP в вашем IDE после init (см. docs/workgraph-mcp-clients.md).
 
 ## Что создаёт init
 
@@ -33,8 +33,8 @@ npm install
 | `.work-graph/config.json` | schema v2 — **без** engineRoot |
 | `.work-graph/run-ui.mjs`, `run-mcp.mjs` | runners |
 | `package.json` | devDependencies `@work-graph/cli`, `@work-graph/mcp` + scripts |
-| `.cursor/mcp.json` | `npx -y @work-graph/mcp` |
-| `.cursor/rules/work-graph-project.mdc` | правила агента |
+| `.cursor/mcp.json` | `npx -y @work-graph/mcp` (опционально; Cursor и др.) |
+| `.cursor/rules/work-graph-project.mdc` | правила агента (опционально; Cursor) |
 
 Флаги при необходимости: `--label`, `--no-mcp`, `--no-package`.
 

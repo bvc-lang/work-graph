@@ -1,0 +1,52 @@
+#Задача_implement_wg_notice_stack_bottom_left<[
+Базис:
+  Нет глобального toast для update-available.
+Вектор:
+  #wg-notice-stack fixed bottom-left; role=status aria-live=polite.
+  CSS tokens --panel, --border, --shadow-card.
+  i18n notice.updateAvailable.* EN/RU.
+Цель:
+  Notice stack рендерится в HTML и стилизован.
+Проверки:
+  data-testid=wg-notice-stack in renderBacklogHtml
+Анализ:
+  Зачем:
+  Нет глобального toast для update-available.
+  Контекст: #wg-notice-stack fixed bottom-left; role=status aria-live=polite.
+  Когда:
+  После готовности: epic-app-update-mechanism-v1.
+  Готово, когда:
+  Notice stack рендерится в HTML и стилизован.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: epic-app-update-mechanism-v1.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-66
+  intake.source_kind: operator-request
+  intake.source_ref: docs/analysis/2026-06-app-update-mechanism.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-04T10:13:24.440Z
+  work.analysis.source: operator-request
+  work.decision.at: 2026-06-04T10:13:24.440Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: epic-app-update-mechanism-v1
+  work.id: implement-wg-notice-stack-bottom-left
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.parent_id: epic-app-update-mechanism-v1
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: medium
+  work.status: done
+  work.target_files: src/workGraphBacklogUiServer.mjs, locales/en/ui.json, locales/ru/ui.json, tests/workGraphBacklogUiServer.test.mjs
+  work.title: UI: wg-notice-stack — info-окно слева снизу
+
+Свидетельства:
+  - workGraphBacklogUiServer: #wg-notice-stack data-testid=wg-notice-stack; CSS .wg-notice-stack bottom-left; i18n notice.updateAvailable.* EN/RU
+]>

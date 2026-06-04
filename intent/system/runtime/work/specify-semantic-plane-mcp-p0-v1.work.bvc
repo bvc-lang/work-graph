@@ -1,0 +1,53 @@
+#Задача_specify_semantic_plane_mcp_p0_v1<[
+Базис:
+  AN-68 §8.1: пять режимов навигатора; в P0 берём field, drift, context slice (voids и temporal — P1/P2).
+Вектор:
+  docs/spec-semantic-plane-mcp-p0-v1.md — query_semantic_field, detect_semantic_drift, get_context_slice.
+  Входы/выходы, лимиты токенов для context slice, связь с agent scope (AN-57).
+  Опционально resource workgraph://semantic/{scope}.
+Цель:
+  Три MCP-инструмента можно реализовать параллельно без споров о контракте.
+Проверки:
+  Spec описывает все три tool
+  Есть пример для агента «правлю валидатор»
+Анализ:
+  Зачем:
+  AN-68 §8.1: пять режимов навигатора; в P0 берём field, drift, context slice (voids и temporal — P1/P2).
+  Контекст: docs/spec-semantic-plane-mcp-p0-v1.md — query_semantic_field, detect_semantic_drift, get_context_slice.
+  Когда:
+  После готовности: design-semantic-plane-metrics-v1.
+  Готово, когда:
+  Три MCP-инструмента можно реализовать параллельно без споров о контракте.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: design-semantic-plane-metrics-v1.
+
+Свидетельства:
+  - docs/spec-semantic-plane-mcp-p0-v1.md
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-68
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-semantic-plane.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-04T19:10:57.451Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-04T19:10:57.451Z
+  work.decision.verdict: useful
+  work.department: system-runtime
+  work.depends_on: design-semantic-plane-metrics-v1
+  work.id: specify-semantic-plane-mcp-p0-v1
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: integration_architect
+  work.parent_id: epic-intent-information-semantic-planes-v1
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: docs/spec-semantic-plane-mcp-p0-v1.md, work/analytics/work-graph-semantic-plane.md, docs/semantic-plane-metrics-v1.md
+  work.title: Спецификация MCP P0: semantic field, drift, context slice
+]>

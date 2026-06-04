@@ -1,0 +1,52 @@
+#Задача_implement_wg_page_loader_overlay<[
+Базис:
+  Нет глобального loading overlay в backlog UI.
+Вектор:
+  CSS spinner + semi-transparent backdrop.
+  runWithPageLoader() с depth counter.
+  Initial fetch chain + nav tab lazy views.
+Цель:
+  Загрузчик показывается при bootstrap и lazy view fetch.
+Проверки:
+  workGraphBacklogUiServer smoke wg-page-loader
+Анализ:
+  Зачем:
+  Нет глобального loading overlay в backlog UI.
+  Контекст: CSS spinner + semi-transparent backdrop.
+  Когда:
+  После готовности: epic-work-graph-ui-page-loader-v1.
+  Готово, когда:
+  Загрузчик показывается при bootstrap и lazy view fetch.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: epic-work-graph-ui-page-loader-v1.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-67
+  intake.source_kind: operator-request
+  intake.source_ref: docs/plan-work-graph-ui-page-loader-v1.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-04T14:23:17.131Z
+  work.analysis.source: operator-request
+  work.decision.at: 2026-06-04T14:23:17.131Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: epic-work-graph-ui-page-loader-v1
+  work.id: implement-wg-page-loader-overlay
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.parent_id: epic-work-graph-ui-page-loader-v1
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: src/workGraphBacklogUiServer.mjs, tests/workGraphBacklogUiServer.test.mjs
+  work.title: UI: wg-page-loader — overlay, spinner, bootstrap + lazy view wiring
+
+Свидетельства:
+  - tests/workGraphBacklogUiServer.test.mjs — wg-page-loader smoke + showPageLoader; npm test pass
+]>

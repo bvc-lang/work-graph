@@ -1,0 +1,52 @@
+#Задача_author_plan_intent_information_semantic_planes_v1<[
+Базис:
+  AN-65 § «Рекомендуемая структура» и AN-68 §7–8 требуют plan с фазами и зависимостями между MCP и UI.
+Вектор:
+  Расширить docs/plan-intent-information-semantic-planes-v1.md: владельцы, порядок подзадач, критерии приёмки P0.
+  Явно указать зависимость semantic P0 от query_intent_plane / linkage index.
+Цель:
+  Оператор видит один plan на весь эпик; подзадачи бэклога соответствуют фазам plan.
+Проверки:
+  Plan синхронизирован с подзадачами эпика
+  P0/P1/P2 разделены
+Анализ:
+  Зачем:
+  AN-65 § «Рекомендуемая структура» и AN-68 §7–8 требуют plan с фазами и зависимостями между MCP и UI.
+  Контекст: Расширить docs/plan-intent-information-semantic-planes-v1.md: владельцы, порядок подзадач, критерии приёмки P0.
+  Когда:
+  После готовности: decide-intent-information-semantic-planes-adr.
+  Готово, когда:
+  Оператор видит один plan на весь эпик; подзадачи бэклога соответствуют фазам plan.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: decide-intent-information-semantic-planes-adr.
+
+Свидетельства:
+  - docs/plan-intent-information-semantic-planes-v1.md — ADR + dual-track links
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-65
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-intent-information-plane.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-04T19:10:57.352Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-04T19:10:57.352Z
+  work.decision.verdict: useful
+  work.department: product
+  work.depends_on: decide-intent-information-semantic-planes-adr
+  work.id: author-plan-intent-information-semantic-planes-v1
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: product_manager
+  work.parent_id: epic-intent-information-semantic-planes-v1
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: low
+  work.status: done
+  work.target_files: docs/plan-intent-information-semantic-planes-v1.md, docs/adr-intent-information-semantic-planes-v1.md
+  work.title: Plan: дорожная карта плоскостей v1 (P0→P1→P2)
+]>

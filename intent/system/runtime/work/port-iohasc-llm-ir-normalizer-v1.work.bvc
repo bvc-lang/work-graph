@@ -1,0 +1,56 @@
+#Задача_port_iohasc_llm_ir_normalizer_v1<[
+Базис:
+  ioHasC src/llm/irNormalizer.js — уникальная связка LLM + BVC-семантика на узлах CFG.
+  Без normalizer heritage IR — только ручной JSON.
+Вектор:
+  src/irFlow/llmIrNormalizer.mjs — port с адаптацией к WG worker provider.
+  Deterministic fallback stub для test:deterministic.
+  Protocol docs/spec-llm-ir-normalizer-v1.md.
+Цель:
+  Оператор может получить IR Flow из BVC-прозы через WG tool/CLI.
+Проверки:
+  Unit tests с fixture prose
+  No network in deterministic CI
+Анализ:
+  Зачем:
+  ioHasC src/llm/irNormalizer.js — уникальная связка LLM + BVC-семантика на узлах CFG.
+  Контекст: Без normalizer heritage IR — только ручной JSON.
+  Когда:
+  После готовности: port-tur-ir-flow-executor-mvp-v1.
+  Готово, когда:
+  Оператор может получить IR Flow из BVC-прозы через WG tool/CLI.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: port-tur-ir-flow-executor-mvp-v1.
+
+Свидетельства:
+  - src/irFlow/llmIrNormalizer.mjs
+  - docs/spec-llm-ir-normalizer-v1.md
+  - tests/irFlowNormalizer.test.mjs
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-69
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/pvrg-ir-semantic-plane-usage-audit.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-04T19:46:51.672Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-04T19:46:51.672Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: port-tur-ir-flow-executor-mvp-v1
+  work.id: port-iohasc-llm-ir-normalizer-v1
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: integration_architect
+  work.parent_id: epic-iohasc-heritage-reuse-v1
+  work.pipeline_stage: closed
+  work.priority: medium
+  work.risk: high
+  work.status: done
+  work.target_files: src/irFlow/llmIrNormalizer.mjs, docs/spec-llm-ir-normalizer-v1.md, tests/irFlowNormalizer.test.mjs
+  work.title: Port: LLM IR normalizer (проза BVC → IR Flow JSON)
+]>

@@ -25,6 +25,8 @@ function main() {
 
 npm: [\`@work-graph/mcp\`](https://www.npmjs.com/package/@work-graph/mcp) v${pkg.version}
 
+Website: [workgraph.ru/en](https://workgraph.ru/en/)
+
 Monorepo: [bvc-lang/work-graph](https://github.com/bvc-lang/work-graph)
 
 \`\`\`bash

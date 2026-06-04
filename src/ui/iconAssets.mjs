@@ -10,6 +10,7 @@ const { PUBLIC_ROOT } = resolveInstallLayout({
 });
 
 const ICONS_BOLD_DIR = join(PUBLIC_ROOT, 'assets', 'icons', 'bold');
+const ICONS_FILL_DIR = join(PUBLIC_ROOT, 'assets', 'icons', 'fill');
 
 /** @type {Map<string, string>} */
 const svgCache = new Map();
@@ -27,20 +28,22 @@ export const NAV_VIEW_ICON_FILES = {
 };
 
 const THEME_ICON_FILES = {
-  moon: 'moon-bold.svg',
-  sun: 'sun-bold.svg',
+  moon: 'moon-fill.svg',
+  sun: 'sun-fill.svg',
 };
 
 /**
  * @param {string} fileName
+ * @param {'bold' | 'fill'} [variant]
  * @returns {string}
  */
-export function readPublicIconSvg(fileName) {
-  const cacheKey = fileName;
+export function readPublicIconSvg(fileName, variant = 'bold') {
+  const cacheKey = `${variant}:${fileName}`;
   if (svgCache.has(cacheKey)) {
     return svgCache.get(cacheKey);
   }
-  const source = readFileSync(join(ICONS_BOLD_DIR, fileName), 'utf8');
+  const root = variant === 'fill' ? ICONS_FILL_DIR : ICONS_BOLD_DIR;
+  const source = readFileSync(join(root, fileName), 'utf8');
   svgCache.set(cacheKey, source);
   return source;
 }
@@ -60,10 +63,11 @@ export function normalizeInlineSvg(rawSvg, { className = 'wg-icon', size = 18 } 
 /**
  * @param {string} fileName
  * @param {{ className?: string, size?: number }} [options]
+ * @param {'bold' | 'fill'} [variant]
  * @returns {string}
  */
-export function renderInlineIcon(fileName, options = {}) {
-  return normalizeInlineSvg(readPublicIconSvg(fileName), options);
+export function renderInlineIcon(fileName, options = {}, variant = 'bold') {
+  return normalizeInlineSvg(readPublicIconSvg(fileName, variant), options);
 }
 
 /**
@@ -83,14 +87,16 @@ export function renderNavViewIcon(view, options = {}) {
 
 /**
  * @param {'moon' | 'sun'} kind
+ * @param {{ className?: string, size?: number }} [options]
  * @returns {string}
  */
-export function renderThemeIcon(kind) {
+export function renderThemeIcon(kind, options = {}) {
   const fileName = THEME_ICON_FILES[kind];
   return renderInlineIcon(fileName, {
     className: 'header-theme-toggle-icon',
     size: 18,
-  });
+    ...options,
+  }, 'fill');
 }
 
 export function getPublicIconsRoot() {

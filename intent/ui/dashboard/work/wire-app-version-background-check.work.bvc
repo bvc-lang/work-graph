@@ -1,0 +1,51 @@
+#Задача_wire_app_version_background_check<[
+Базис:
+  Обновление видно только после ручного захода в Settings.
+Вектор:
+  liveSync.registerScope app-version interval 6h.
+  setTimeout 5s after load → checkAppVersionAndMaybeNotify.
+Цель:
+  UI проверяет npm без клика в настройках.
+Проверки:
+  HTML contains registerScope app-version
+Анализ:
+  Зачем:
+  Обновление видно только после ручного захода в Settings.
+  Контекст: liveSync.registerScope app-version interval 6h.
+  Когда:
+  После готовности: implement-app-version-npm-cache.
+  Готово, когда:
+  UI проверяет npm без клика в настройках.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: implement-app-version-npm-cache.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-66
+  intake.source_kind: operator-request
+  intake.source_ref: docs/analysis/2026-06-app-update-mechanism.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-04T10:13:24.424Z
+  work.analysis.source: operator-request
+  work.decision.at: 2026-06-04T10:13:24.424Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: implement-app-version-npm-cache
+  work.id: wire-app-version-background-check
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.parent_id: epic-app-update-mechanism-v1
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: src/workGraphBacklogUiServer.mjs, tests/workGraphBacklogUiServer.test.mjs
+  work.title: UI: фоновая проверка версии on load + liveSync 6h
+
+Свидетельства:
+  - liveSync.registerScope('app-version', interval 6h); setTimeout 5s checkAppVersionAndMaybeNotify on load; HTML smoke test asserts registerScope app-version
+]>

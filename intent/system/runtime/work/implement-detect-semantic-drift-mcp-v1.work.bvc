@@ -1,0 +1,54 @@
+#Задача_implement_detect_semantic_drift_mcp_v1<[
+Базис:
+  AN-68: «где код ушёл от плана AN-40» — нужен drift_score и объяснение (Goal vs diff + тесты).
+  Без drift агент может сдать синтаксически верный, но смыслово неверный код.
+Вектор:
+  implement-detect-semantic-drift: work_id | scope → drift_score, violations[], summary_ru.
+  v1: эвристики BVC Goal + target_files + git diff scope (без тяжёлого LLM на каждый вызов).
+  Связь с evidence types для failed checks.
+Цель:
+  Техлид видит задачи с drift выше порога; агент может вызвать tool перед assert_ready.
+Проверки:
+  drift_score в диапазоне 0..1
+  Тест на задаче с заведомо устаревшим Basis
+Анализ:
+  Зачем:
+  AN-68: «где код ушёл от плана AN-40» — нужен drift_score и объяснение (Goal vs diff + тесты).
+  Контекст: Без drift агент может сдать синтаксически верный, но смыслово неверный код.
+  Когда:
+  После готовности: specify-semantic-plane-mcp-p0-v1, implement-query-semantic-field-mcp-v1.
+  Готово, когда:
+  Техлид видит задачи с drift выше порога; агент может вызвать tool перед assert_ready.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: specify-semantic-plane-mcp-p0-v1, implement-query-semantic-field-mcp-v1.
+
+Свидетельства:
+  - detect_semantic_drift MCP tool
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-68
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-semantic-plane.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-04T19:10:57.483Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-04T19:10:57.483Z
+  work.decision.verdict: useful
+  work.department: system-runtime
+  work.depends_on: specify-semantic-plane-mcp-p0-v1, implement-query-semantic-field-mcp-v1
+  work.id: implement-detect-semantic-drift-mcp-v1
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: backend_engineer
+  work.parent_id: epic-intent-information-semantic-planes-v1
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: high
+  work.status: done
+  work.target_files: src/semanticDrift.mjs, packages/workgraph-mcp/src/handlers.mjs, tests/semanticDrift.test.mjs, docs/semantic-plane-metrics-v1.md
+  work.title: MCP: detect_semantic_drift — расхождение намерения и кода
+]>

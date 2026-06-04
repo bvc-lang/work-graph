@@ -39,7 +39,10 @@
   work.pipeline_stage: decided
   work.priority: high
   work.risk: low
-  work.status: backlog
+  work.status: done
   work.target_files: src/workItemBlockClassifier.mjs, src/ui/workItemClassifierBadge.mjs, src/workGraphBacklogUiServer.mjs, tests/workItemClassifierBadge.test.mjs, tests/workGraphBacklogUiServer.test.mjs
   work.title: UI Classifier badges v1: блок архитектуры на карточках доски вместо статуса
+
+Свидетельства:
+  - Epic UI Classifier badges v1 (WG-155): board cards show architecture/department classifier lozenge via renderWorkItemClassifierBadge; 3/3 subtasks done; npm run test:deterministic — 792 pass, 0 fail
 ]>

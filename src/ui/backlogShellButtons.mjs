@@ -227,6 +227,26 @@ export function renderAnalyticsSubtabsShell() {
   });
 }
 
+/**
+ * @param {{ t: (key: string) => string, sort?: string }} props
+ */
+export function renderAnalyticsSortOptions({ t, sort = 'created-desc' }) {
+  const options = [
+    { id: 'created-desc', label: t('analytics.sort.createdDesc') },
+    { id: 'key-desc', label: t('analytics.sort.keyDesc') },
+  ];
+  return `<div class="analytics-sort-options" role="group" aria-label="${escapeHtml(t('analytics.sort.label'))}" data-testid="analytics-sort-options">${options.map(({ id, label }) => renderUiButton({
+    variant: 'secondary',
+    size: 'sm',
+    className: sort === id ? 'is-active' : '',
+    label,
+    attrs: {
+      'data-analytics-sort': id,
+      'aria-pressed': sort === id ? 'true' : 'false',
+    },
+  })).join('')}</div>`;
+}
+
 export function renderWorkflowSubtabsShell(labels = {}) {
   return renderUiTabsGroup({
     className: 'workflow-subtabs',
@@ -252,10 +272,6 @@ export function renderWorkflowSubtabsShell(labels = {}) {
       },
     ],
   });
-}
-
-export function renderArchitectureSubtabsShell() {
-  return '';
 }
 
 export function renderWorkflowDisplayModeSelect() {

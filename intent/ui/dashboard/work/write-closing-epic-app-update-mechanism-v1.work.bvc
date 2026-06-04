@@ -1,0 +1,51 @@
+#Задача_write_closing_epic_app_update_mechanism_v1<[
+Базис:
+  Closing с smoke после delivery всех subtasks.
+Вектор:
+  work/analytics/closing-epic-app-update-mechanism-v1.md
+Цель:
+  Эпик закрыт с проверяемым UX обновлений.
+Проверки:
+  Closing doc published
+  test:deterministic green
+Анализ:
+  Зачем:
+  Closing с smoke после delivery всех subtasks.
+  Контекст: work/analytics/closing-epic-app-update-mechanism-v1.md
+  Когда:
+  После готовности: fix-app-version-read-from-cli-package, implement-app-version-npm-cache, wire-app-version-background-check, implement-wg-notice-stack-bottom-left, wire-update-notice-from-app-version, test-app-version-npm-first-integration.
+  Готово, когда:
+  Эпик закрыт с проверяемым UX обновлений.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: fix-app-version-read-from-cli-package, implement-app-version-npm-cache, wire-app-version-background-check, implement-wg-notice-stack-bottom-left, wire-update-notice-from-app-version, test-app-version-npm-first-integration.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-66
+  intake.source_kind: operator-request
+  intake.source_ref: docs/plan-app-update-mechanism-v1.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-04T10:13:24.489Z
+  work.analysis.source: operator-request
+  work.decision.at: 2026-06-04T10:13:24.489Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: fix-app-version-read-from-cli-package, implement-app-version-npm-cache, wire-app-version-background-check, implement-wg-notice-stack-bottom-left, wire-update-notice-from-app-version, test-app-version-npm-first-integration
+  work.id: write-closing-epic-app-update-mechanism-v1
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.parent_id: epic-app-update-mechanism-v1
+  work.pipeline_stage: decided
+  work.priority: low
+  work.risk: low
+  work.status: done
+  work.target_files: work/analytics/closing-epic-app-update-mechanism-v1.md, docs/plan-app-update-mechanism-v1.md
+  work.title: Closing: epic-app-update-mechanism-v1
+
+Свидетельства:
+  - work/analytics/closing-epic-app-update-mechanism-v1.md published; npm run test:deterministic 790 pass
+]>

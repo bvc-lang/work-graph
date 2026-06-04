@@ -25,6 +25,11 @@ import {
   getStepGraphProjection,
   getStepGraphSlice,
   getUnifiedLinkage,
+  queryIntentPlaneMcp,
+  querySemanticFieldMcp,
+  detectSemanticDriftMcp,
+  getContextSliceMcp,
+  findSemanticVoidsMcp,
   getWorkContract,
   getAnalyticsLineage,
   getWorkItem,
@@ -115,6 +120,67 @@ server.tool(
   'Read unified-linkage.projection.v1 (trace links, planning edges, reverse markers)',
   {},
   async () => jsonText(await getUnifiedLinkage({}, rootOptions())),
+);
+
+server.tool(
+  'query_intent_plane',
+  'Navigate information plane subgraph from a start node (work/analytics) with direction and depth',
+  {
+    startNode: z.object({
+      kind: z.string().optional(),
+      id: z.string(),
+    }).optional(),
+    workId: z.string().optional().describe('Shortcut for startNode.id when kind=work'),
+    direction: z.string().optional().describe('downstream | upstream | lateral | both'),
+    depth: z.number().optional().describe('Traversal depth 0..3'),
+    returnFormat: z.string().optional().describe('json | markdown'),
+  },
+  async (args) => jsonText(await queryIntentPlaneMcp(args, rootOptions())),
+);
+
+server.tool(
+  'query_semantic_field',
+  'Semantic search over work items and linked files with optional scope anchor',
+  {
+    q: z.string().describe('Semantic query'),
+    query: z.string().optional(),
+    workId: z.string().optional(),
+    scope: z.object({ workId: z.string().optional() }).optional(),
+    depth: z.number().optional(),
+    limit: z.number().optional(),
+    mode: z.string().optional(),
+  },
+  async (args) => jsonText(await querySemanticFieldMcp(args, rootOptions())),
+);
+
+server.tool(
+  'detect_semantic_drift',
+  'Compute lexical drift_score between BVC goal/vector and target files/evidence',
+  {
+    workId: z.string().describe('WorkItem id'),
+  },
+  async (args) => jsonText(await detectSemanticDriftMcp(args, rootOptions())),
+);
+
+server.tool(
+  'get_context_slice',
+  'Agent context bundle: graph RAG + drift metrics + optional semantic field',
+  {
+    workId: z.string().describe('WorkItem id'),
+    q: z.string().optional(),
+    maxTokens: z.number().optional(),
+  },
+  async (args) => jsonText(await getContextSliceMcp(args, rootOptions())),
+);
+
+server.tool(
+  'find_semantic_voids',
+  'List semantic voids: work without evidence, orphan files, orphan analytics',
+  {
+    domain: z.string().optional().describe('Filter by work.department'),
+    tier: z.string().optional(),
+  },
+  async (args) => jsonText(await findSemanticVoidsMcp(args, rootOptions())),
 );
 
 server.tool(
@@ -340,10 +406,10 @@ server.tool(
 
 server.tool(
   'record_work_item_analysis',
-  'Write pre-execution feasibility analysis into WorkItem «Анализ» (стоит ли делать; not post-factum review). Text must come from Cursor LLM — server does not call models.',
+  'Write pre-execution feasibility analysis into WorkItem «Анализ» (стоит ли делать; not post-factum review). Text must come from the connected agent LLM — server does not call models.',
   {
     workId: z.string().describe('WorkItem id'),
-    analysis: z.string().describe('Full analysis text produced in Cursor'),
+    analysis: z.string().describe('Full analysis text produced by the connected agent'),
   },
   async (args) => jsonText(await recordWorkItemAnalysisFromMcp(args, rootOptions())),
 );

@@ -7,7 +7,7 @@ import { startBacklogUiServer } from '../src/workGraphBacklogUiServer.mjs';
 const scriptDir = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(scriptDir, '..');
 const e2eRoot = resolve(repoRoot, 'tests/fixtures/e2e-operator-dashboard');
-const host = process.env.WORKGRAPH_BACKLOG_UI_HOST ?? '127.0.0.1';
+const host = process.env.WORKGRAPH_BACKLOG_UI_HOST ?? 'localhost';
 const port = Number(process.env.WORKGRAPH_BACKLOG_UI_PORT ?? 4188);
 
 const { host: boundHost, port: boundPort } = await startBacklogUiServer({

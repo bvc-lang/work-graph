@@ -1,0 +1,52 @@
+#Задача_fix_app_version_read_from_cli_package<[
+Базис:
+  readLocalAppVersion читает cwd/package.json — неверно для npm-first.
+Вектор:
+  resolveCliPackageJsonPath: node_modules → monorepo packages/work-graph-cli → fallback.
+  buildAppVersionResponse возвращает source + installRoot.
+Цель:
+  GET /api/app-version возвращает версию @work-graph/cli.
+Проверки:
+  Monorepo test reads 0.2.x from packages/work-graph-cli
+Анализ:
+  Зачем:
+  readLocalAppVersion читает cwd/package.json — неверно для npm-first.
+  Контекст: resolveCliPackageJsonPath: node_modules → monorepo packages/work-graph-cli → fallback.
+  Когда:
+  После готовности: epic-app-update-mechanism-v1.
+  Готово, когда:
+  GET /api/app-version возвращает версию @work-graph/cli.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: epic-app-update-mechanism-v1.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-66
+  intake.source_kind: operator-request
+  intake.source_ref: docs/analysis/2026-06-app-update-mechanism.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-04T10:13:24.392Z
+  work.analysis.source: operator-request
+  work.decision.at: 2026-06-04T10:13:24.392Z
+  work.decision.verdict: useful
+  work.department: engineering
+  work.depends_on: epic-app-update-mechanism-v1
+  work.id: fix-app-version-read-from-cli-package
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: backend_engineer
+  work.parent_id: epic-app-update-mechanism-v1
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: src/appVersionApi.mjs, tests/appVersionApi.test.mjs
+  work.title: App version: читать версию из @work-graph/cli package.json
+
+Свидетельства:
+  - test evidence line
+  - npm run test:deterministic — resolveCliPackageJsonPath reads packages/work-graph-cli; readLocalAppVersion returns @work-graph/cli version (790 pass)
+]>

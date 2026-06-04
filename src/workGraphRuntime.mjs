@@ -4,6 +4,7 @@ import {
   readWorkItemKind,
   readWorkItemParentId,
 } from './workItemHierarchy.mjs';
+import { stampWorkItemClosedAt } from './workItemClosedAt.mjs';
 
 const STEP_ATOM_PATTERN = /^#([^\n<]+)<\[\n([\s\S]*?)\n\]>/gmu;
 const LIST_SEPARATOR_PATTERN = /\s*,\s*/u;
@@ -69,6 +70,7 @@ export function parseWorkItems(text) {
       uiRefs: normalizeSectionText(sections.uiRefs),
       parentId: String(labels['work.parent_id'] ?? '').trim(),
       itemKind: readWorkItemKind({ labels }),
+      closedAt: String(labels['work.closed_at'] ?? '').trim(),
       labels,
     });
   }
@@ -177,7 +179,7 @@ export function transitionStatus(item, targetStatus, options = {}) {
     throw new WorkGraphPolicyError('cannot mark blocked without reason');
   }
 
-  const nextItem = {
+  let nextItem = {
     ...item,
     status: targetStatus,
     labels: {
@@ -185,6 +187,8 @@ export function transitionStatus(item, targetStatus, options = {}) {
       'work.status': targetStatus,
     },
   };
+
+  nextItem = stampWorkItemClosedAt(nextItem, targetStatus, options.recordedAt);
 
   if (options.reason !== undefined || options.blocker !== undefined) {
     const blocker = String(options.reason ?? options.blocker).trim();
@@ -368,6 +372,7 @@ export function buildSnapshot(items) {
     parentId: readWorkItemParentId(item),
     itemKind: readWorkItemKind(item),
     childIds: [...(item.childIds ?? [])],
+    closedAt: item.closedAt ?? String(item.labels?.['work.closed_at'] ?? '').trim(),
     labels: { ...(item.labels ?? {}) },
   }));
 

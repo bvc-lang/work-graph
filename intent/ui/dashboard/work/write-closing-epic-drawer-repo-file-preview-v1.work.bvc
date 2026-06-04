@@ -42,7 +42,10 @@
   work.pipeline_stage: decided
   work.priority: medium
   work.risk: low
-  work.status: backlog
+  work.status: done
   work.target_files: work/analytics/closing-epic-drawer-repo-file-preview-v1.md
   work.title: Closing: epic-drawer-repo-file-preview-v1
+
+Свидетельства:
+  - work/analytics/closing-epic-drawer-repo-file-preview-v1.md published; 6/6 subtasks done; npm run test:deterministic — 808 pass
 ]>

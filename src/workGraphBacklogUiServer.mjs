@@ -35,13 +35,14 @@ import {
   renderCycleFilterSelect,
   renderIntentDomainFilterSelect,
   renderAnalyticsSubtabsShell,
+  renderAnalyticsSortOptions,
   renderWorkflowSubtabsShell,
-  renderArchitectureSubtabsShell,
   renderWorkflowDisplayModeSelect,
   renderSettingsLocaleOptions,
 } from './ui/backlogShellButtons.mjs';
 import { renderThemeIcon } from './ui/iconAssets.mjs';
 import { buildAppVersionResponse } from './appVersionApi.mjs';
+import { readRepoFilePreviewFromRequest } from './repoFilePreviewApi.mjs';
 import { computeBacklogRevision } from './backlogRevision.mjs';
 import { createBacklogUiEventsHub } from './backlogUiEventsHub.mjs';
 import { createUiTranslator, loadUiCatalogSync } from './ui/i18n/uiCatalog.mjs';
@@ -68,6 +69,8 @@ import { buildSchematicViewModel, GRAPH_CANVAS_VIEW_FULL, GRAPH_CANVAS_VIEW_PIPE
 import { DEFAULT_DONE_ARCHIVE_CAP } from './workGraphCycleSlice.mjs';
 import { readRunnerQueueProjectionFromRepo } from './workGraphRunnerQueueProjection.mjs';
 import { readWorkItemsFromRepo } from './intentTreeWorkItems.mjs';
+import { buildIntentPlaneGraphResponse } from './intentPlaneApi.mjs';
+import { buildSemanticDriftBatch } from './semanticDrift.mjs';
 import { buildSnapshot, buildOperatorDashboardSnapshot, parseWorkItems } from './workGraphRuntime.mjs';
 import { buildVerificationSummary } from './verificationLoop.mjs';
 import { executePromoteReady } from './workGraphPromoteReadyApi.mjs';
@@ -108,15 +111,31 @@ import { resolveInstallLayout } from './workGraphInstallLayout.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const {
+  installRoot: WG_INSTALL_ROOT,
   MERMAID_VENDOR_PATH,
   GRAPH_CANVAS_LIT_FLOW_JS_PATH,
   GRAPH_CANVAS_LIT_FLOW_CSS_PATH,
   WORKGRAPH_LOGO_SVG_PATH,
+  WORKGRAPH_EMBLEM_SVG_PATH,
   PUBLIC_ROOT,
   DESIGN_TOKENS_GRIPE_CSS_PATH,
   DESIGN_TOKENS_WG_CSS_PATH,
   SRC_ROOT,
 } = resolveInstallLayout({ moduleUrl: import.meta.url });
+const FAVICON_SVG_PATH = join(PUBLIC_ROOT, 'assets', 'favicon.svg');
+
+function serveFaviconSvg(response) {
+  try {
+    const source = readFileSync(FAVICON_SVG_PATH);
+    response.writeHead(200, {
+      'content-type': 'image/svg+xml; charset=utf-8',
+      'cache-control': 'public, max-age=3600',
+    });
+    response.end(source);
+  } catch {
+    sendText(response, 404, 'not_found');
+  }
+}
 
 function contentTypeForPublicFont(filePath) {
   if (filePath.endsWith('.css')) return 'text/css; charset=utf-8';
@@ -354,7 +373,13 @@ function loadBrowserLiveSyncSseAdapterSource() {
   );
 }
 
-const DEFAULT_HOST = '127.0.0.1';
+function loadBrowserAnalyticsRecordSortSource() {
+  return stripModuleForBrowserInline(
+    readFileSync(join(__dirname, 'analyticsRecordSort.mjs'), 'utf8'),
+  );
+}
+
+const DEFAULT_HOST = 'localhost';
 const DEFAULT_PORT = 4177;
 
 const STATUS_GROUPS = [
@@ -464,6 +489,25 @@ export async function readArchitectureSnapshot(options = {}) {
   });
 }
 
+export async function readIntentPlaneGraph(options = {}) {
+  const items = await readWorkItemsFromRepo(options);
+  return buildIntentPlaneGraphResponse(items, {
+    start: options.start ?? options.workId,
+    direction: options.direction,
+    depth: options.depth !== undefined ? Number(options.depth) : undefined,
+    drift: options.drift,
+  });
+}
+
+export async function readSemanticDriftBatch(options = {}) {
+  const items = await readWorkItemsFromRepo(options);
+  return buildSemanticDriftBatch(items, {
+    department: options.department,
+    parentId: options.parentId ?? options.epicId,
+    limit: options.limit !== undefined ? Number(options.limit) : undefined,
+  });
+}
+
 export function renderBacklogHtml(options = {}) {
   const catalog = options.catalog ?? loadUiCatalogSync(options.locale ?? 'ru', options);
   const { locale, t, messages } = createUiTranslator(catalog);
@@ -489,6 +533,7 @@ export function renderBacklogHtml(options = {}) {
   const detailDrawerStackSource = loadBrowserDetailDrawerStackSource();
   const liveSyncCoordinatorSource = loadBrowserLiveSyncCoordinatorSource();
   const liveSyncSseAdapterSource = loadBrowserLiveSyncSseAdapterSource();
+  const analyticsRecordSortSource = loadBrowserAnalyticsRecordSortSource();
   const bvcDialectSectionTitles = Object.fromEntries(
     ['en', 'ru'].map((lang) => [lang, Object.fromEntries(getFieldSectionsForDialect(lang))]),
   );
@@ -512,11 +557,11 @@ export function renderBacklogHtml(options = {}) {
   const shellCycleFilterSelect = renderCycleFilterSelect();
   const shellIntentDomainFilterSelect = renderIntentDomainFilterSelect();
   const shellAnalyticsSubtabs = renderAnalyticsSubtabsShell();
+  const shellAnalyticsSortOptions = renderAnalyticsSortOptions({ t, sort: 'created-desc' });
   const shellWorkflowSubtabs = renderWorkflowSubtabsShell({
     backlog: t('workflow.tab.backlog'),
     archive: t('workflow.tab.archive'),
   });
-  const shellArchitectureSubtabs = renderArchitectureSubtabsShell();
   const shellWorkflowDisplayModeSelect = renderWorkflowDisplayModeSelect();
   const themeIconMoonHtml = renderThemeIcon('moon');
   const themeIconSunHtml = renderThemeIcon('sun');
@@ -541,6 +586,7 @@ export function renderBacklogHtml(options = {}) {
     })();
   </script>
   <title>Work Graph: атомы задач</title>
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/assets/fonts/GraphikLCG/stylesheet.css">
   <link rel="stylesheet" href="/assets/graph-canvas-lit-flow.css">
   <link rel="stylesheet" href="/assets/design-tokens-workgraph-dark.css">
@@ -741,6 +787,13 @@ export function renderBacklogHtml(options = {}) {
       width: auto;
     }
 
+    .project-logo-emblem {
+      display: none;
+      height: 22px;
+      margin: 0 auto;
+      width: auto;
+    }
+
     body[data-theme="dark"] .project-logo {
       filter: brightness(0) invert(1);
     }
@@ -835,6 +888,60 @@ export function renderBacklogHtml(options = {}) {
       overflow-x: hidden;
       overflow-y: auto;
       padding: 20px 32px 28px;
+      position: relative;
+    }
+
+    .wg-page-loader {
+      align-items: center;
+      background: color-mix(in srgb, var(--bg) 82%, transparent);
+      display: flex;
+      inset: 0;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      position: absolute;
+      transition: opacity 0.15s ease, visibility 0.15s ease;
+      visibility: hidden;
+      z-index: 90;
+    }
+
+    .wg-page-loader.is-visible {
+      opacity: 1;
+      pointer-events: auto;
+      visibility: visible;
+    }
+
+    .wg-page-loader-panel {
+      align-items: center;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      box-shadow: var(--shadow-card);
+      display: grid;
+      gap: 12px;
+      justify-items: center;
+      min-width: 220px;
+      padding: 18px 22px;
+    }
+
+    .wg-page-loader-spinner {
+      animation: wg-page-loader-spin 0.8s linear infinite;
+      border: 3px solid var(--border);
+      border-radius: 50%;
+      border-top-color: var(--accent);
+      height: 32px;
+      width: 32px;
+    }
+
+    @keyframes wg-page-loader-spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .wg-page-loader-message {
+      color: var(--muted);
+      font-size: var(--text-sm);
+      margin: 0;
+      text-align: center;
     }
 
     .content.is-graph-workspace {
@@ -1284,6 +1391,47 @@ export function renderBacklogHtml(options = {}) {
       word-break: break-all;
     }
 
+    .wg-notice-stack {
+      bottom: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      left: 16px;
+      max-width: min(360px, calc(100vw - 32px));
+      pointer-events: none;
+      position: fixed;
+      z-index: 120;
+    }
+
+    .wg-notice {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: var(--shadow-card);
+      display: grid;
+      gap: 8px;
+      padding: 12px 14px;
+      pointer-events: auto;
+    }
+
+    .wg-notice-title {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .wg-notice-body {
+      color: var(--muted);
+      font-size: var(--text-sm);
+      margin: 0;
+    }
+
+    .wg-notice-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
     .nav-tab-settings {
       margin-top: 2px;
     }
@@ -1567,7 +1715,8 @@ export function renderBacklogHtml(options = {}) {
 
     .memory-panel,
     .analytics-panel,
-    .prompts-panel {
+    .prompts-panel,
+    .architecture-panel {
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: 3px;
@@ -1581,6 +1730,46 @@ export function renderBacklogHtml(options = {}) {
     .analytics-summary,
     .prompts-summary {
       display: none;
+    }
+
+    .analytics-panel-header {
+      flex-wrap: wrap;
+      gap: 8px 12px;
+    }
+
+    .architecture-panel-header {
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 4px 12px;
+    }
+
+    .architecture-panel-heading {
+      align-items: center;
+      display: flex;
+      flex: 1 1 auto;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .analytics-panel-heading {
+      align-items: center;
+      display: flex;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .analytics-sort-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-left: auto;
+    }
+
+    body:not([data-theme="dark"]) .analytics-sort-options .wg-btn--secondary.is-active,
+    body[data-theme="dark"] .analytics-sort-options .wg-btn--secondary.is-active {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: var(--accent);
     }
 
     .pill {
@@ -1630,6 +1819,29 @@ export function renderBacklogHtml(options = {}) {
       text-transform: uppercase;
     }
 
+    .kanban-column-body {
+      display: flex;
+      flex: 1 1 auto;
+      flex-direction: column;
+      gap: 0;
+      min-height: 0;
+    }
+
+    .kanban-column-more-hint {
+      color: var(--muted);
+      font-size: var(--text-xs);
+      line-height: 1.3;
+      margin-top: 6px;
+      padding: 0 4px;
+      text-align: center;
+    }
+
+    .kanban-column-sentinel {
+      height: 1px;
+      margin-top: 4px;
+      width: 100%;
+    }
+
     .count {
       background: #dfe1e6;
       border-radius: 999px;
@@ -1666,6 +1878,17 @@ export function renderBacklogHtml(options = {}) {
       background: #ffffff;
       border-color: #c1c7d0;
       box-shadow: 0 2px 6px rgba(9, 30, 66, .16), 0 0 1px rgba(9, 30, 66, .3);
+    }
+
+    .task-atom.list-row:hover {
+      background: rgba(9, 30, 66, 0.04);
+      border-color: transparent;
+      box-shadow: none;
+    }
+
+    body[data-theme="dark"] .task-atom.list-row:hover {
+      background: rgb(var(--ui-surface-hover-rgb, 56 65 74));
+      border-color: transparent;
     }
 
     body[data-theme="dark"] .task-atom:hover {
@@ -1735,6 +1958,14 @@ export function renderBacklogHtml(options = {}) {
       display: flex;
       gap: 5px;
       min-width: 0;
+    }
+
+    .issue-closed-at {
+      color: var(--muted);
+      flex: 0 0 auto;
+      font-size: 11px;
+      line-height: 1.2;
+      white-space: nowrap;
     }
 
     .issue-key-chip {
@@ -1807,6 +2038,10 @@ export function renderBacklogHtml(options = {}) {
       height: 100%;
       object-fit: cover;
       width: 100%;
+    }
+
+    .owner-avatar.is-agent img {
+      object-fit: contain;
     }
 
     .owner-avatar-stack {
@@ -2179,45 +2414,45 @@ export function renderBacklogHtml(options = {}) {
     }
 
     .workflow-epic-group {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-left: 3px solid #8250df;
-      border-radius: 10px;
-      margin-bottom: 8px;
-      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+      display: block;
+      margin: 0;
     }
 
-    .workflow-epic-header {
+    .list-rows > .workflow-epic-group:last-child {
+      border-bottom: 0;
+    }
+
+    .workflow-epic-group .workflow-epic-children .list-row:last-child {
+      border-bottom: 0;
+    }
+
+    .workflow-epic-group:not(:has(.workflow-epic-children)) .workflow-epic-row {
+      border-bottom: 0;
+    }
+
+    .workflow-epic-row {
+      box-shadow: inset 3px 0 0 #8250df;
+    }
+
+    body[data-theme="dark"] .workflow-epic-row {
+      box-shadow: inset 3px 0 0 #c59cff;
+    }
+
+    .list-row-inner {
       align-items: center;
       display: flex;
-      gap: 8px;
-      justify-content: space-between;
-      padding: 8px 10px 8px 12px;
+      gap: 6px;
     }
 
-    .workflow-epic-header .task-atom {
+    .list-row-inner .workflow-epic-toggle {
+      align-self: center;
+      flex-shrink: 0;
+    }
+
+    .list-row-body {
       flex: 1;
-      margin: 0;
-      text-align: left;
-    }
-
-    .workflow-epic-badge {
-      background: rgba(130, 80, 223, 0.12);
-      border: 1px solid rgba(130, 80, 223, 0.35);
-      border-radius: 999px;
-      color: #8250df;
-      display: inline-block;
-      font-size: var(--text-xs);
-      letter-spacing: 0.06em;
-      margin-right: 8px;
-      padding: 2px 8px;
-      text-transform: uppercase;
-      vertical-align: middle;
-    }
-
-    body[data-theme="dark"] .workflow-epic-badge {
-      background: rgba(130, 80, 223, 0.18);
-      color: #c59cff;
+      min-width: 0;
     }
 
     .workflow-epic-meta {
@@ -2228,30 +2463,49 @@ export function renderBacklogHtml(options = {}) {
     }
 
     .workflow-epic-toggle {
+      align-items: center;
       background: transparent;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      color: var(--text);
+      border: 0;
+      border-radius: 999px;
+      color: var(--muted);
       cursor: pointer;
+      display: inline-flex;
       flex-shrink: 0;
-      font-size: var(--text-xs);
-      padding: 4px 10px;
+      height: 28px;
+      justify-content: center;
+      line-height: 1;
+      padding: 0;
+      width: 28px;
     }
 
     .workflow-epic-toggle:hover {
-      border-color: var(--accent);
       color: var(--accent);
     }
 
-    .workflow-epic-children {
-      border-top: 1px solid var(--border);
-      display: grid;
-      gap: 6px;
-      padding: 8px 10px 10px 18px;
+    .list-row:hover .workflow-epic-toggle {
+      background: transparent;
     }
 
-    .workflow-epic-children .task-atom {
+    .workflow-epic-caret-icon {
+      display: block;
+      height: 16px;
+      width: 16px;
+    }
+
+    .workflow-epic-children {
+      display: block;
       margin: 0;
+      padding: 0;
+    }
+
+    .workflow-epic-child-row {
+      padding-left: 42px;
+    }
+
+    .workflow-epic-empty {
+      color: var(--muted);
+      font-size: var(--text-sm);
+      padding: 8px 12px 8px 28px;
     }
 
     .list-row,
@@ -2263,8 +2517,8 @@ export function renderBacklogHtml(options = {}) {
       margin: 0;
     }
 
-    .list-row:last-child,
-    .backlog-row:last-child,
+    .list-rows > .list-row:last-child,
+    .list-rows > .backlog-row:last-child,
     .list-rows > li:last-child {
       border-bottom: 0;
     }
@@ -2352,24 +2606,6 @@ export function renderBacklogHtml(options = {}) {
       opacity: .45;
     }
 
-    .architecture-panel {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      box-shadow: var(--shadow-card);
-      display: grid;
-      gap: 12px;
-      padding: 16px;
-    }
-
-    .architecture-panel-header,
-    .schematic-panel-header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 16px;
-    }
-
     .graph-canvas-mode-toggle {
       display: inline-flex;
       border: 1px solid var(--border);
@@ -2393,21 +2629,11 @@ export function renderBacklogHtml(options = {}) {
       font-weight: 600;
     }
 
-    .architecture-panel-header {
+    .schematic-panel-header {
       align-items: flex-start;
       display: flex;
-      gap: 12px;
+      gap: 16px;
       justify-content: space-between;
-    }
-
-    .architecture-panel-header h2 {
-      font-size: var(--text-lg);
-      margin: 0 0 4px;
-    }
-
-    .architecture-panel-header p {
-      color: var(--muted);
-      margin: 0;
     }
 
     .architecture-canvas-wrap {
@@ -2764,6 +2990,58 @@ export function renderBacklogHtml(options = {}) {
     .detail-stack-crumb-sep {
       margin: 0 4px;
       opacity: .65;
+    }
+
+    .repo-file-link {
+      background: transparent;
+      border: 0;
+      color: var(--accent, #0052cc);
+      cursor: pointer;
+      font: inherit;
+      padding: 0;
+      text-align: left;
+      text-decoration: underline;
+      word-break: break-all;
+    }
+
+    .repo-file-link:hover {
+      color: var(--accent-strong, #0065ff);
+    }
+
+    .repo-file-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 12px;
+    }
+
+    .repo-file-path {
+      font-size: 13px;
+      word-break: break-all;
+    }
+
+    .repo-file-preview-panel pre.repo-file-preview {
+      background: var(--surface-sunken, #f4f5f7);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+      line-height: 1.45;
+      max-height: min(70vh, 640px);
+      overflow: auto;
+      padding: 12px 14px;
+      white-space: pre;
+      word-break: normal;
+    }
+
+    .repo-file-truncated {
+      color: var(--warning, #974f00);
+      font-size: 12px;
+    }
+
+    .repo-file-markdown {
+      max-height: min(70vh, 640px);
+      overflow: auto;
     }
 
     .detail-stack-crumb.is-current {
@@ -3296,37 +3574,46 @@ export function renderBacklogHtml(options = {}) {
       white-space: pre;
     }
 
-    .markdown-doc .code-hl-key {
+    .markdown-doc .code-hl-key,
+    .repo-file-preview-panel pre.repo-file-preview .code-hl-key {
       color: #0d7a6f;
     }
 
-    .markdown-doc .code-hl-string {
+    .markdown-doc .code-hl-string,
+    .repo-file-preview-panel pre.repo-file-preview .code-hl-string {
       color: #7b4bb7;
     }
 
     .markdown-doc .code-hl-number,
-    .markdown-doc .code-hl-punct {
+    .markdown-doc .code-hl-punct,
+    .repo-file-preview-panel pre.repo-file-preview .code-hl-number,
+    .repo-file-preview-panel pre.repo-file-preview .code-hl-punct {
       color: var(--text);
     }
 
-    .markdown-doc .code-hl-keyword {
+    .markdown-doc .code-hl-keyword,
+    .repo-file-preview-panel pre.repo-file-preview .code-hl-keyword {
       color: #0052cc;
     }
 
-    .markdown-doc .code-hl-comment {
+    .markdown-doc .code-hl-comment,
+    .repo-file-preview-panel pre.repo-file-preview .code-hl-comment {
       color: var(--muted);
       font-style: italic;
     }
 
-    body[data-theme="dark"] .markdown-doc .code-hl-key {
+    body[data-theme="dark"] .markdown-doc .code-hl-key,
+    body[data-theme="dark"] .repo-file-preview-panel pre.repo-file-preview .code-hl-key {
       color: #4ec9b0;
     }
 
-    body[data-theme="dark"] .markdown-doc .code-hl-string {
+    body[data-theme="dark"] .markdown-doc .code-hl-string,
+    body[data-theme="dark"] .repo-file-preview-panel pre.repo-file-preview .code-hl-string {
       color: #c792ea;
     }
 
-    body[data-theme="dark"] .markdown-doc .code-hl-keyword {
+    body[data-theme="dark"] .markdown-doc .code-hl-keyword,
+    body[data-theme="dark"] .repo-file-preview-panel pre.repo-file-preview .code-hl-keyword {
       color: #569cd6;
     }
 
@@ -3429,6 +3716,12 @@ export function renderBacklogHtml(options = {}) {
     .analytics-lineage-badge {
       color: var(--muted);
       font-size: var(--font-size-sm);
+    }
+
+    .issue-footer-left .wg-badge[data-testid="analytics-related-tasks-count"] {
+      flex-shrink: 0;
+      max-width: none;
+      text-transform: uppercase;
     }
 
     .analytics-lineage-section {
@@ -3754,7 +4047,11 @@ export function renderBacklogHtml(options = {}) {
       text-anchor: start;
     }
 
-    .markdown-mermaid-wrap svg .nodeLabel,
+    .markdown-mermaid-wrap svg g.cluster-label foreignObject {
+      display: none;
+    }
+
+    .markdown-mermaid-wrap svg g.cluster-label text,
     .markdown-mermaid-wrap svg .cluster-label .nodeLabel,
     .markdown-mermaid-wrap svg .label text,
     .markdown-mermaid-wrap svg .edgeLabel {
@@ -4025,7 +4322,17 @@ export function renderBacklogHtml(options = {}) {
     }
 
     html.is-sidebar-compact .project-title {
+      margin: 0 6px;
+      padding: 8px 4px 10px;
+      text-align: center;
+    }
+
+    html.is-sidebar-compact .project-logo-full {
       display: none;
+    }
+
+    html.is-sidebar-compact .project-logo-emblem {
+      display: block;
     }
 
     html.is-sidebar-compact .sidebar-nav,
@@ -4135,35 +4442,6 @@ export function renderBacklogHtml(options = {}) {
       min-height: 0;
     }
 
-    .architecture-view-shell .architecture-subtabs {
-      flex-shrink: 0;
-    }
-
-    .architecture-tab-panel {
-      display: flex;
-      flex: 1;
-      flex-direction: column;
-      min-height: 420px;
-      min-width: 0;
-      overflow: hidden;
-    }
-
-    #architecture-list-panel.architecture-tab-panel {
-      flex: none;
-      min-height: auto;
-      overflow: visible;
-    }
-
-    .architecture-tab-panel[hidden] {
-      display: none !important;
-    }
-
-    .architecture-tab-panel .architecture-matrix {
-      flex: 1;
-      min-height: 0;
-      overflow: auto;
-    }
-
     #architecture-list-panel .backlog-list {
       flex: none;
       min-height: auto;
@@ -4204,14 +4482,24 @@ export function renderBacklogHtml(options = {}) {
     .architecture-matrix-cell.is-zero {
       color: var(--muted);
     }
+
+    .architecture-matrix-panel .architecture-matrix {
+      min-height: 320px;
+    }
+
     .workflow-tree-node { display: block; }
-    .workflow-tree-node .task-atom.list-row {
-      margin-left: calc(var(--tree-depth, 0) * 16px);
+    .workflow-tree-node .workflow-tree-row {
+      padding-left: calc(12px + var(--tree-depth, 0) * 16px);
+    }
+
+    .workflow-tree-node .workflow-tree-row .list-row-inner {
+      margin-left: calc(var(--tree-depth, 0) * -16px);
+      padding-left: calc(var(--tree-depth, 0) * 16px);
     }
     .workflow-tree-toggle {
-      color: var(--muted);
       font-size: var(--font-size-sm);
-      margin-left: 8px;
+      min-width: 1.5em;
+      text-align: center;
     }
     #workflow-display-mode { max-width: 140px; }
   </style>
@@ -4221,12 +4509,20 @@ export function renderBacklogHtml(options = {}) {
     <aside class="sidebar" aria-label="Навигация Work Graph">
       <div class="project-title">
         <img
-          class="project-logo"
+          class="project-logo project-logo-full"
           src="/assets/workgraph-logo.svg"
           height="24"
           width="146"
           alt="Work Graph"
           data-testid="workgraph-logo"
+        >
+        <img
+          class="project-logo project-logo-emblem"
+          src="/assets/workgraph-emblem.svg"
+          height="22"
+          width="38"
+          alt="Work Graph"
+          data-testid="workgraph-emblem"
         >
       </div>
       <nav class="sidebar-nav" aria-label="Канон Work Graph">
@@ -4258,15 +4554,18 @@ export function renderBacklogHtml(options = {}) {
     <main class="content">
       <header class="page-header">
         <div class="page-header-main">
-          <nav class="breadcrumbs" aria-label="Хлебные крошки">
-            <span class="breadcrumb-current" id="breadcrumb-project">Work Graph</span>
-          </nav>
           <h1 id="view-title">${t('view.analytics')}</h1>
         </div>
         <div class="page-header-actions">
           ${shellHeaderThemeToggle}
         </div>
       </header>
+      <div id="wg-page-loader" class="wg-page-loader is-visible" data-testid="wg-page-loader" aria-live="polite" aria-busy="true">
+        <div class="wg-page-loader-panel" role="status">
+          <div class="wg-page-loader-spinner" aria-hidden="true"></div>
+          <p id="wg-page-loader-message" class="wg-page-loader-message">${t('loader.bootstrap')}</p>
+        </div>
+      </div>
       <section id="view-toolbar" class="toolbar" hidden>
         <input id="search" class="search" type="search" placeholder="${t('search.placeholder')}" autocomplete="off">
         ${shellSearchModeSelect}
@@ -4369,9 +4668,12 @@ export function renderBacklogHtml(options = {}) {
       <section id="analytics-view" class="view" aria-live="polite" hidden>
         ${shellAnalyticsSubtabs}
         <article id="analytics-panel" class="list-panel analytics-panel" data-testid="analytics-panel">
-          <header class="list-panel-header">
-            <h2 id="analytics-panel-title">Аналитические разборы</h2>
-            <span id="analytics-panel-count" class="count">0</span>
+          <header class="list-panel-header analytics-panel-header">
+            <div class="analytics-panel-heading">
+              <h2 id="analytics-panel-title">Аналитические разборы</h2>
+              <span id="analytics-panel-count" class="count">0</span>
+            </div>
+            ${shellAnalyticsSortOptions}
           </header>
           <div id="analytics-summary" class="analytics-summary" data-testid="analytics-summary" hidden></div>
           <div id="analytics-list" class="backlog-list list-rows" data-testid="analytics-list"></div>
@@ -4379,15 +4681,12 @@ export function renderBacklogHtml(options = {}) {
         </article>
       </section>
       <section id="architecture-view" class="view architecture-view-shell" aria-live="polite" hidden>
-        ${shellArchitectureSubtabs}
-        <article id="architecture-list-panel" class="list-panel architecture-panel architecture-tab-panel" data-testid="architecture-list-panel">
+        <article id="architecture-list-panel" class="list-panel architecture-panel" data-testid="architecture-list-panel">
           <header class="list-panel-header architecture-panel-header">
-            <div>
+            <div class="architecture-panel-heading">
               <h2>Блоки архитектуры</h2>
-              <p>Список блоков L1; клик по строке открывает детали L2.</p>
-              <p id="architecture-canon-badge" class="architecture-canon-badge muted" data-testid="architecture-canon-badge" hidden></p>
+              <span id="architecture-panel-count" class="count">0</span>
             </div>
-            <span id="architecture-panel-count" class="count">0</span>
           </header>
           <div id="architecture-blocks-list" class="backlog-list list-rows" data-testid="architecture-blocks-list"></div>
         </article>
@@ -4492,6 +4791,7 @@ export function renderBacklogHtml(options = {}) {
       ${shellAgentRunFooter}
     </footer>
   </aside>
+  <div id="wg-notice-stack" class="wg-notice-stack" data-testid="wg-notice-stack" role="status" aria-live="polite" aria-atomic="true"></div>
   <div id="cmd-k-overlay" data-testid="cmd-k-overlay" aria-hidden="true">
     <div id="cmd-k-panel" role="dialog" aria-label="Палитра команд">
       <input id="cmd-k-input" type="search" placeholder="task: / an: / cmd: / run:" autocomplete="off">
@@ -4511,6 +4811,7 @@ export function renderBacklogHtml(options = {}) {
     ${workItemClassifierSource}
     ${detailDrawerStackSource}
     ${liveSyncCoordinatorSource}
+    ${analyticsRecordSortSource}
     ${liveSyncSseAdapterSource}
     const detailStack = createDetailDrawerStack();
     const BVC_DIALECT_SECTION_TITLES = ${JSON.stringify(bvcDialectSectionTitles)};
@@ -4530,6 +4831,7 @@ export function renderBacklogHtml(options = {}) {
     const doneArchiveGroup = ${JSON.stringify(DONE_ARCHIVE_GROUP)};
     const doneArchiveCap = ${DEFAULT_DONE_ARCHIVE_CAP};
     const workflowPageSize = doneArchiveCap;
+    const kanbanColumnPageSize = 10;
     const backlogGroup = ${JSON.stringify(BACKLOG_GROUP)};
     const workItemStatusOptions = ${JSON.stringify(workItemStatusOptions())};
     const schematicModelFull = ${JSON.stringify(schematicModelFull)};
@@ -4571,6 +4873,7 @@ export function renderBacklogHtml(options = {}) {
     const viewStorageKey = 'workGraphBacklogView';
     const workflowTabStorageKey = 'workGraphWorkflowTab';
     const analyticsTabStorageKey = 'workGraphAnalyticsTab';
+    const analyticsSortStorageKey = 'workGraphAnalyticsSort';
     const backlogPageStorageKey = 'workGraphBacklogPage';
     const archivePageStorageKey = 'workGraphArchivePage';
     const promptsPageStorageKey = 'workGraphPromptsPage';
@@ -4581,6 +4884,9 @@ export function renderBacklogHtml(options = {}) {
     const detailDrawerWidthStorageKey = 'workGraphDetailDrawerWidth';
     const detailSubDrawerWidthStorageKey = 'workGraphDetailSubDrawerWidth';
     const sidebarWidthStorageKey = 'workGraphSidebarWidth';
+    const dismissedUpdateNoticeStorageKey = 'wg_dismissed_update_notice';
+    const appVersionCheckDelayMs = 5000;
+    const appVersionPollMs = 6 * 60 * 60 * 1000;
     const SIDEBAR_WIDTH_MIN = 56;
     const SIDEBAR_WIDTH_MAX = 360;
     const SIDEBAR_WIDTH_DEFAULT = 252;
@@ -4603,7 +4909,7 @@ export function renderBacklogHtml(options = {}) {
     let focusedBlockId = null;
     let highlightTaskId = null;
     let intentDomainFilter = localStorage.getItem(intentDomainFilterStorageKey) || '';
-    let cycleFilter = localStorage.getItem(cycleFilterStorageKey) || 'current';
+    let cycleFilter = localStorage.getItem(cycleFilterStorageKey) || 'all';
     let detailContext = null;
     let detailInspectorState = { workId: null, draft: null, mode: 'view' };
     let promptsProjection = null;
@@ -4640,6 +4946,7 @@ export function renderBacklogHtml(options = {}) {
     let activeView = readStoredView();
     let activeWorkflowTab = readStoredWorkflowTab();
     let activeAnalyticsTab = readStoredAnalyticsTab();
+    let activeAnalyticsSort = readStoredAnalyticsSort();
     let workflowDisplayMode = readStoredWorkflowDisplayMode();
     let collapsedWorkflowTreeIds = new Set(JSON.parse(localStorage.getItem(collapsedWorkflowTreeIdsStorageKey) || '[]'));
     let backlogPage = Math.max(1, Number(localStorage.getItem(backlogPageStorageKey)) || 1);
@@ -4647,6 +4954,8 @@ export function renderBacklogHtml(options = {}) {
     let promptsPage = Math.max(1, Number(localStorage.getItem(promptsPageStorageKey)) || 1);
     let memoryPage = Math.max(1, Number(localStorage.getItem(memoryPageStorageKey)) || 1);
     let analyticsPage = Math.max(1, Number(localStorage.getItem(analyticsPageStorageKey)) || 1);
+    let kanbanColumnVisibleCounts = Object.create(null);
+    let kanbanColumnObserver = null;
 
     const architecturePanelCount = document.querySelector('#architecture-panel-count');
     const architectureView = document.querySelector('#architecture-view');
@@ -4655,6 +4964,9 @@ export function renderBacklogHtml(options = {}) {
     const intentGraphView = document.querySelector('#intent-graph-view');
     const intentRoadmapBody = document.querySelector('#intent-roadmap-body');
     const contentRoot = document.querySelector('.content');
+    const wgPageLoader = document.querySelector('#wg-page-loader');
+    const wgPageLoaderMessage = document.querySelector('#wg-page-loader-message');
+    let pageLoaderDepth = 0;
     const schematicCanvas = document.querySelector('#schematic-canvas');
     const schematicPanelCount = document.querySelector('#schematic-panel-count');
     const schematicView = document.querySelector('#schematic-view');
@@ -4729,6 +5041,7 @@ export function renderBacklogHtml(options = {}) {
     const settingsCheckUpdate = document.querySelector('#settings-check-update');
     const settingsUpdateStatus = document.querySelector('#settings-update-status');
     const settingsInstallCommand = document.querySelector('#settings-install-command');
+    const wgNoticeStack = document.querySelector('#wg-notice-stack');
     const codeGapSummary = document.querySelector('#code-gap-summary');
     const codeGapList = document.querySelector('#code-gap-list');
     const codeGapCount = document.querySelector('#code-gap-count');
@@ -4756,8 +5069,8 @@ export function renderBacklogHtml(options = {}) {
     const analyticsIntakeTabCount = document.querySelector('#analytics-intake-tab-count');
     const analyticsClosingTabCount = document.querySelector('#analytics-closing-tab-count');
     const analyticsSubtabs = [...document.querySelectorAll('[data-analytics-tab]')];
+    const analyticsSortButtons = [...document.querySelectorAll('[data-analytics-sort]')];
     const viewTitle = document.querySelector('#view-title');
-    const breadcrumbProject = document.querySelector('#breadcrumb-project');
     const cycleFilterSelect = document.querySelector('#cycle-filter');
     const intentDomainFilterSelect = document.querySelector('#intent-domain-filter');
     const intentDomainClear = document.querySelector('#intent-domain-clear');
@@ -4793,17 +5106,89 @@ export function renderBacklogHtml(options = {}) {
       enabled: () => agentRunDock?.classList.contains('is-open'),
       onTick: () => { refreshAgentScopePanel().catch(() => undefined); },
     });
+    liveSync.registerScope('app-version', {
+      intervalMs: appVersionPollMs,
+      enabled: () => true,
+      onTick: () => { checkAppVersionAndMaybeNotify().catch(() => undefined); },
+    });
     document.addEventListener('visibilitychange', () => liveSync.sync());
     connectLiveSyncRevisionSse(liveSync);
 
     applyView(activeView);
     applyWorkflowTab(activeWorkflowTab);
     applyAnalyticsTab(activeAnalyticsTab);
+    applyAnalyticsSortUi(activeAnalyticsSort);
     if (workflowDisplayModeSelect) {
       workflowDisplayModeSelect.value = workflowDisplayMode;
     }
     initMissionControlUi();
     liveSync.forceTick('home');
+    window.setTimeout(() => {
+      checkAppVersionAndMaybeNotify().catch(() => undefined);
+    }, appVersionCheckDelayMs);
+
+    function setPageLoaderMessage(message) {
+      if (wgPageLoaderMessage && message) {
+        wgPageLoaderMessage.textContent = message;
+      }
+    }
+
+    function showPageLoader(message) {
+      pageLoaderDepth += 1;
+      if (message) {
+        setPageLoaderMessage(message);
+      }
+      if (wgPageLoader) {
+        wgPageLoader.classList.add('is-visible');
+        wgPageLoader.setAttribute('aria-busy', 'true');
+      }
+    }
+
+    function hidePageLoader() {
+      pageLoaderDepth = Math.max(0, pageLoaderDepth - 1);
+      if (pageLoaderDepth === 0 && wgPageLoader) {
+        wgPageLoader.classList.remove('is-visible');
+        wgPageLoader.setAttribute('aria-busy', 'false');
+      }
+    }
+
+    function runWithPageLoader(task, message) {
+      showPageLoader(message || t('loader.default'));
+      return Promise.resolve().then(task).finally(() => hidePageLoader());
+    }
+
+    function isLazyViewPending(view) {
+      if (view === 'prompts') return !promptsPanelLoaded;
+      if (view === 'verification') return !codeGapPanelLoaded || !daemonAuditPanelLoaded;
+      if (view === 'memory') return !memoryPanelLoaded;
+      if (view === 'analytics') return !analyticsPanelLoaded;
+      if (view === 'architecture') return !architectureLoaded;
+      return false;
+    }
+
+    function loadActiveViewData(view) {
+      return ensureLazyViewData(view).then(() => {
+        if (view === 'architecture') {
+          renderArchitecturePanels();
+        }
+        render();
+      }).catch(() => {
+        if (view === 'architecture') {
+          renderArchitecturePanels();
+        }
+        render();
+      });
+    }
+
+    function refreshActiveViewData(view) {
+      const work = loadActiveViewData(view);
+      if (isLazyViewPending(view)) {
+        return runWithPageLoader(() => work, t('loader.view'));
+      }
+      return work;
+    }
+
+    showPageLoader(t('loader.bootstrap'));
 
     fetch('/api/snapshot')
       .then((response) => {
@@ -4836,17 +5221,7 @@ export function renderBacklogHtml(options = {}) {
         if (revisionPayload?.revision) {
           backlogRevision = revisionPayload.revision;
         }
-        return refreshHomeSnapshot().catch(() => undefined).then(() => ensureLazyViewData(activeView).then(() => {
-          if (activeView === 'architecture') {
-            renderArchitecturePanels();
-          }
-          render();
-        }).catch(() => {
-          if (activeView === 'architecture') {
-            renderArchitecturePanels();
-          }
-          render();
-        }));
+        return refreshHomeSnapshot().catch(() => undefined).then(() => loadActiveViewData(activeView));
       })
       .catch((error) => {
         const message = '<div class="error">Не удалось загрузить срез backlog: ' + escapeHtml(error.message) + '</div>';
@@ -4855,7 +5230,8 @@ export function renderBacklogHtml(options = {}) {
         verificationMatrixWrap.innerHTML = message;
         verificationEvidenceList.innerHTML = '';
         verificationTierBadges.innerHTML = '';
-      });
+      })
+      .finally(() => hidePageLoader());
 
     search.addEventListener('input', () => {
       resetListPages();
@@ -4949,17 +5325,7 @@ export function renderBacklogHtml(options = {}) {
           : 'analytics';
         localStorage.setItem(viewStorageKey, activeView);
         applyView(activeView);
-        ensureLazyViewData(activeView).then(() => {
-          if (activeView === 'architecture') {
-            renderArchitecturePanels();
-          }
-          render();
-        }).catch(() => {
-          if (activeView === 'architecture') {
-            renderArchitecturePanels();
-          }
-          render();
-        });
+        refreshActiveViewData(activeView);
       });
     });
 
@@ -4993,6 +5359,16 @@ export function renderBacklogHtml(options = {}) {
         analyticsPage = 1;
         localStorage.setItem(analyticsPageStorageKey, '1');
         applyAnalyticsTab(activeAnalyticsTab);
+        renderAnalyticsPanel();
+      });
+    });
+    analyticsSortButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        activeAnalyticsSort = normalizeAnalyticsRecordSortMode(button.dataset.analyticsSort);
+        localStorage.setItem(analyticsSortStorageKey, activeAnalyticsSort);
+        analyticsPage = 1;
+        localStorage.setItem(analyticsPageStorageKey, '1');
+        applyAnalyticsSortUi(activeAnalyticsSort);
         renderAnalyticsPanel();
       });
     });
@@ -5109,6 +5485,18 @@ export function renderBacklogHtml(options = {}) {
         return 'closing';
       }
       return 'intake';
+    }
+
+    function readStoredAnalyticsSort() {
+      return normalizeAnalyticsRecordSortMode(localStorage.getItem(analyticsSortStorageKey));
+    }
+
+    function applyAnalyticsSortUi(sort) {
+      analyticsSortButtons.forEach((button) => {
+        const selected = normalizeAnalyticsRecordSortMode(button.dataset.analyticsSort) === sort;
+        button.classList.toggle('is-active', selected);
+        button.setAttribute('aria-pressed', String(selected));
+      });
     }
 
     function readStoredWorkflowDisplayMode() {
@@ -5476,7 +5864,7 @@ export function renderBacklogHtml(options = {}) {
           settingsUpdateStatus.textContent = t('settings.about.updateAvailable', { latest: info.latestVersion });
           if (settingsInstallCommand) {
             settingsInstallCommand.hidden = false;
-            settingsInstallCommand.textContent = t('settings.about.installHint') + ' ' + info.installCommand;
+            settingsInstallCommand.textContent = t('settings.about.installHint') + ' ' + (info.installCommand || info.installCommandProject);
           }
           return;
         }
@@ -5488,6 +5876,75 @@ export function renderBacklogHtml(options = {}) {
           settingsUpdateStatus.textContent = t('settings.about.checkFailed');
         }
       }
+    }
+
+    function readDismissedUpdateNoticeVersion() {
+      return localStorage.getItem(dismissedUpdateNoticeStorageKey) || '';
+    }
+
+    function dismissUpdateNotice(latestVersion) {
+      if (latestVersion) {
+        localStorage.setItem(dismissedUpdateNoticeStorageKey, String(latestVersion));
+      }
+      if (wgNoticeStack) {
+        wgNoticeStack.replaceChildren();
+      }
+    }
+
+    function showUpdateAvailableNotice(info) {
+      if (!wgNoticeStack || !info?.updateAvailable || !info.latestVersion) {
+        return;
+      }
+      if (String(info.version || '').includes('-dev')) {
+        return;
+      }
+      if (readDismissedUpdateNoticeVersion() === String(info.latestVersion)) {
+        return;
+      }
+      wgNoticeStack.replaceChildren();
+      const notice = document.createElement('article');
+      notice.className = 'wg-notice';
+      notice.dataset.testid = 'wg-notice-update-available';
+      notice.innerHTML =
+        '<p class="wg-notice-title">' + escapeHtml(t('notice.updateAvailable.title')) + '</p>' +
+        '<p class="wg-notice-body">' + escapeHtml(t('notice.updateAvailable.body', {
+          current: info.version,
+          latest: info.latestVersion,
+        })) + '</p>' +
+        '<div class="wg-notice-actions">' +
+          '<button type="button" class="wg-btn wg-btn--secondary wg-btn--sm" data-notice-action="open-settings">' +
+            escapeHtml(t('notice.updateAvailable.openSettings')) +
+          '</button>' +
+          '<button type="button" class="wg-btn wg-btn--flat wg-btn--sm" data-notice-action="dismiss">' +
+            escapeHtml(t('notice.updateAvailable.dismiss')) +
+          '</button>' +
+        '</div>';
+      notice.addEventListener('click', (event) => {
+        const action = event.target instanceof Element
+          ? event.target.closest('[data-notice-action]')?.dataset.noticeAction
+          : null;
+        if (action === 'open-settings') {
+          activeView = 'settings';
+          localStorage.setItem(viewStorageKey, activeView);
+          applyView(activeView);
+          renderSettingsPanel({ checkUpdate: true }).catch(() => undefined);
+          dismissUpdateNotice(info.latestVersion);
+          return;
+        }
+        if (action === 'dismiss') {
+          dismissUpdateNotice(info.latestVersion);
+        }
+      });
+      wgNoticeStack.appendChild(notice);
+    }
+
+    async function checkAppVersionAndMaybeNotify() {
+      const info = await loadSettingsVersionInfo(true);
+      if (settingsVersionValue && activeView !== 'settings') {
+        settingsVersionValue.textContent = info.version + ' · ' + info.npmPackage;
+      }
+      showUpdateAvailableNotice(info);
+      return info;
     }
 
     function remountActiveGraphWorkspace() {
@@ -5610,7 +6067,7 @@ export function renderBacklogHtml(options = {}) {
         activeView = row.view;
         localStorage.setItem(viewStorageKey, activeView);
         applyView(activeView);
-        ensureLazyViewData(activeView).then(render).catch(render);
+        refreshActiveViewData(activeView);
         return;
       }
       if (row.workId) {
@@ -5813,9 +6270,6 @@ export function renderBacklogHtml(options = {}) {
       };
       const title = viewCopy[view] ?? viewCopy.analytics;
       viewTitle.textContent = title;
-      if (breadcrumbProject) {
-        breadcrumbProject.textContent = 'Work Graph';
-      }
       navTabs.forEach((tab) => {
         tab.setAttribute('aria-selected', String(tab.dataset.view === view));
       });
@@ -5843,6 +6297,7 @@ export function renderBacklogHtml(options = {}) {
             const items = getFilteredItems();
             renderIntentDomainFilter();
             renderNavigationCounts(items);
+            renderKanbanBoard(items);
             renderBoard(items);
           }
           await reconcileDetailDrawerOnRemotePatch();
@@ -5854,7 +6309,7 @@ export function renderBacklogHtml(options = {}) {
     }
 
     function patchKanbanBoardIncremental(prevProjection) {
-      if (!kanbanBoard || !prevProjection) {
+      if (!kanbanBoard || !prevProjection || !shouldUseKanbanIncrementalPatch()) {
         return false;
       }
       const nextProjection = operatorShellSnapshot?.kanbanBoard ?? null;
@@ -5866,10 +6321,12 @@ export function renderBacklogHtml(options = {}) {
         return false;
       }
       const itemsById = new Map((snapshot?.items ?? []).map((item) => [item.id, item]));
+      const doneColumn = nextProjection.columns.find((column) => column.id === 'done');
       const result = applyKanbanBoardPatch(kanbanBoard, delta, {
         renderCard: (item, options) => renderTaskAtomCard(item, 'kanban-card', options),
         emptyColumnHtml: '<div class="empty">' + escapeHtml(t('empty.noTasks')) + '</div>',
         itemsById,
+        resortDoneColumnWorkIds: doneColumn?.workIds ?? [],
       });
       return result.ok === true;
     }
@@ -6246,13 +6703,16 @@ export function renderBacklogHtml(options = {}) {
     }
 
     function renderListRow({
-      title,
+      title = '',
+      titleHtml = '',
       lines = [],
       footerLeft = '',
       footerRight = '',
+      leadingHtml = '',
       extraClass = '',
       selected = false,
       highlighted = false,
+      rowTag = 'button',
       attrs = {},
     }) {
       const attrParts = Object.entries(attrs)
@@ -6270,11 +6730,71 @@ export function renderBacklogHtml(options = {}) {
         ? '<div class="issue-footer"><div class="issue-footer-left">' + footerLeft + '</div>' +
           '<div class="issue-footer-right">' + footerRight + '</div></div>'
         : '';
+      const heading = titleHtml || escapeHtml(title);
+      const body = '<h3>' + heading + '</h3>' + lineHtml + footer;
+      const contents = leadingHtml
+        ? '<div class="list-row-inner">' + leadingHtml + '<div class="list-row-body">' + body + '</div></div>'
+        : body;
+      if (rowTag === 'div') {
+        return '<div class="' + className + '" role="button" tabindex="0" ' + attrParts.join(' ') + '>' +
+          contents +
+        '</div>';
+      }
       return '<button class="' + className + '" type="button" ' + attrParts.join(' ') + '>' +
-        '<h3>' + escapeHtml(title) + '</h3>' +
-        lineHtml +
-        footer +
+        contents +
       '</button>';
+    }
+
+    function renderWorkflowCaretIcon(direction) {
+      const points = direction === 'down' ? '208 96 128 176 48 96' : '96 48 176 128 96 208';
+      return '<svg class="workflow-epic-caret-icon" width="16" height="16" viewBox="0 0 256 256" aria-hidden="true" focusable="false">' +
+        '<polyline points="' + points + '" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></polyline>' +
+      '</svg>';
+    }
+
+    function renderWorkflowExpandToggle(itemId, collapsed, options = {}) {
+      const attrName = options.attr ?? 'data-workflow-epic-toggle';
+      const testIdPrefix = options.testIdPrefix ?? 'workflow-epic-toggle';
+      const label = collapsed ? t('workflow.epic.expand') : t('workflow.epic.collapse');
+      return renderClientUiButton({
+        labelHtml: renderWorkflowCaretIcon(collapsed ? 'right' : 'down'),
+        unstyled: true,
+        className: 'workflow-epic-toggle',
+        testId: testIdPrefix + '-' + itemId,
+        attrs: {
+          [attrName]: itemId,
+          'aria-label': label,
+          title: label,
+        },
+      });
+    }
+
+    function renderWorkflowTaskListRow(item, options = {}) {
+      const queueKind = options.queueKind ?? null;
+      const extraClass = options.extraClass ?? '';
+      const titleHtml = options.titleHtml ?? '';
+      const title = options.title ?? (item.title || item.id);
+      const rowTag = options.rowTag ?? 'button';
+      const leadingHtml = options.leadingHtml ?? '';
+      const targets = highlightTaskId ? crossHighlightTargets(highlightTaskId) : { peerIds: [] };
+      const highlighted = item.id === highlightTaskId || targets.peerIds.includes(item.id);
+      const goalLine = item.goal ? escapeHtml(preview(item.goal)) : '';
+      const lines = goalLine ? [goalLine] : [];
+      const footerLeft = renderWorkItemIssueKeyChip(item) + renderWorkItemClassifierBadge(item);
+      const owner = item.ownerRole || item.department || 'WG';
+      const footerRight = renderOwnerAvatar(owner, { title: owner });
+      return renderListRow({
+        title,
+        titleHtml,
+        lines,
+        footerLeft,
+        footerRight,
+        leadingHtml,
+        extraClass,
+        highlighted,
+        rowTag,
+        attrs: { 'data-task-id': item.id, 'data-work-id': item.id },
+      });
     }
 
     function renderPromptsPanel() {
@@ -6413,7 +6933,7 @@ export function renderBacklogHtml(options = {}) {
         renderDetailText('Status', record.status) +
         renderDetailText('Confidence', record.confidence) +
         renderDetailText('Source WorkItem', record.sourceWorkItem) +
-        renderDetailList('Related files', record.relatedFiles ?? []) +
+        renderDetailList('Related files', record.relatedFiles ?? [], { linkRepoFiles: true }) +
         renderDetailList('Related tasks', record.relatedTasks ?? []) +
         renderDetailList('Evidence ids', record.evidenceIds ?? []) +
         renderDetailText('Review required', record.reviewRequired ? 'yes' : 'no');
@@ -6464,8 +6984,14 @@ export function renderBacklogHtml(options = {}) {
 
       const query = getPanelSearchQuery();
       const queryMatched = (analyticsProjection.records ?? []).filter((record) => matchesAnalyticsRecordQuery(record, query));
-      const intakeRecords = queryMatched.filter((record) => readAnalyticsRecordKind(record) === 'intake');
-      const closingRecords = queryMatched.filter((record) => readAnalyticsRecordKind(record) === 'closing');
+      const intakeRecords = sortAnalyticsRecords(
+        queryMatched.filter((record) => readAnalyticsRecordKind(record) === 'intake'),
+        activeAnalyticsSort,
+      );
+      const closingRecords = sortAnalyticsRecords(
+        queryMatched.filter((record) => readAnalyticsRecordKind(record) === 'closing'),
+        activeAnalyticsSort,
+      );
       const records = activeAnalyticsTab === 'closing' ? closingRecords : intakeRecords;
 
       if (analyticsIntakeTabCount) analyticsIntakeTabCount.textContent = String(intakeRecords.length);
@@ -6485,10 +7011,7 @@ export function renderBacklogHtml(options = {}) {
         ? pagination.items.map((record) => {
           const isClosing = readAnalyticsRecordKind(record) === 'closing';
           const queryPreview = String(record.query ?? '').slice(0, 120);
-          const relatedCount = Array.isArray(record.relatedWorkItems) ? record.relatedWorkItems.length : 0;
-          const relatedNote = relatedCount > 0
-            ? ' · ' + relatedCount + ' ' + (relatedCount === 1 ? 'задача' : (relatedCount < 5 ? 'задачи' : 'задач'))
-            : '';
+          const relatedNote = formatAnalyticsRelatedTasksCardNote(record.relatedWorkItems);
           const feedsEpics = Array.isArray(record.feeds_epics) ? record.feeds_epics : [];
           const epicNote = isClosing && feedsEpics.length > 0
             ? ' · ' + escapeHtml(feedsEpics.join(', '))
@@ -6503,7 +7026,7 @@ export function renderBacklogHtml(options = {}) {
               kindLine + ' · ' + escapeHtml((record.tags ?? []).filter((tag) => tag !== 'closing-analysis').join(', ') || 'no tags'),
               escapeHtml(queryPreview + (String(record.query ?? '').length > 120 ? '…' : '')),
             ],
-            footerLeft: '<span class="id">' + escapeHtml(record.key || record.id) + relatedNote + lineageBadge + '</span>',
+            footerLeft: renderAnalyticsRecordKeyChip(record) + relatedNote + lineageBadge,
             footerRight: renderOwnerAvatar(record.author || 'operator', { title: record.author || 'operator' }),
             selected: selectedAnalyticsRecordId === record.id,
             attrs: { 'data-analytics-record-id': record.id },
@@ -6527,6 +7050,25 @@ export function renderBacklogHtml(options = {}) {
       selectedAnalyticsRecordId = record.id;
       renderAnalyticsPanel();
       openAnalyticsRecordDetails(record);
+    }
+
+    function formatAnalyticsRelatedTasksCardNote(relatedWorkItems) {
+      const related = Array.isArray(relatedWorkItems) ? relatedWorkItems : [];
+      if (related.length === 0) {
+        return '';
+      }
+
+      const doneCount = related.filter((entry) => entry.status === 'done' || entry.status === 'verified').length;
+      const tone = doneCount === related.length
+        ? 'ok'
+        : (doneCount === 0 ? 'default' : 'accent');
+
+      return renderClientUiBadge({
+        label: doneCount + '/' + related.length + ' задач',
+        tone,
+        testId: 'analytics-related-tasks-count',
+        title: doneCount + ' из ' + related.length + ' задач завершено',
+      });
     }
 
     function buildAnalyticsLineageListBadge(record) {
@@ -6751,7 +7293,13 @@ export function renderBacklogHtml(options = {}) {
 
     function openAnalyticsRecordDetails(record) {
       const isClosing = readAnalyticsRecordKind(record) === 'closing';
-      detailContext = { type: 'analytics', recordId: record.id, recordKey: record.key || record.id, recordKind: isClosing ? 'closing' : 'intake' };
+      detailContext = {
+        type: 'analytics',
+        recordId: record.id,
+        recordKey: record.key || record.id,
+        recordKind: isClosing ? 'closing' : 'intake',
+        bodyPath: record.bodyPath || '',
+      };
       detailTitle.textContent = record.title;
       detailId.textContent = record.key || record.id;
       detailStack.reset();
@@ -6773,7 +7321,7 @@ export function renderBacklogHtml(options = {}) {
         renderDetailText('Создано', record.createdAt || '—') +
         (isClosing && feedsEpics.length > 0 ? renderDetailList('Эпики', feedsEpics) : '') +
         renderDetailList('Теги', record.tags ?? []) +
-        renderDetailList('Связанные файлы', record.relatedFiles ?? []);
+        renderDetailList('Связанные файлы', record.relatedFiles ?? [], { linkRepoFiles: true });
 
       const querySection = isClosing
         ? (String(record.query ?? '').trim() !== ''
@@ -6808,7 +7356,7 @@ export function renderBacklogHtml(options = {}) {
               '<h3 class="analytics-section-title">' + bodySectionTitle + '</h3>' +
               copyMdButton +
             '</div>' +
-            renderMarkdownDocument(answerBody || '—') +
+            autolinkRepoFilePathsInHtml(renderMarkdownDocument(answerBody || '—'), record.bodyPath || '') +
           '</section>' +
         '</div>' +
         (isClosing ? '' : renderAnalyticsIntentGraphSections(record)) +
@@ -6880,27 +7428,60 @@ export function renderBacklogHtml(options = {}) {
       });
     }
 
+    function dedupeMermaidClusterLabelText(rootText) {
+      const tspans = [...rootText.querySelectorAll('tspan')];
+      if (tspans.length <= 1) {
+        rootText.setAttribute('text-anchor', 'start');
+        return;
+      }
+
+      const fullText = (rootText.textContent || '').replace(/\s+/gu, ' ').trim();
+      let keeper = tspans.find(function(tspan) {
+        return (tspan.textContent || '').replace(/\s+/gu, ' ').trim() === fullText;
+      });
+      if (!keeper) {
+        keeper = tspans.reduce(function(best, tspan) {
+          const len = (tspan.textContent || '').trim().length;
+          const bestLen = (best.textContent || '').trim().length;
+          return len > bestLen ? tspan : best;
+        }, tspans[0]);
+      }
+
+      const title = (keeper.textContent || fullText).replace(/\s+/gu, ' ').trim();
+      while (rootText.firstChild) {
+        rootText.removeChild(rootText.firstChild);
+      }
+
+      const single = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
+      single.setAttribute('x', '0');
+      single.setAttribute('dy', keeper.getAttribute('dy') || '1em');
+      single.textContent = title;
+      rootText.appendChild(single);
+      rootText.setAttribute('text-anchor', 'start');
+    }
+
     function alignMermaidClusterLabels(root) {
-      const padding = 12;
       root.querySelectorAll('.markdown-mermaid-wrap svg g.cluster').forEach(function(cluster) {
-        const clusterRect = cluster.querySelector(':scope > rect');
         const labelGroup = cluster.querySelector(':scope > g.cluster-label');
-        if (!clusterRect || !labelGroup) {
+        if (!labelGroup) {
           return;
         }
 
-        const rectX = Number.parseFloat(clusterRect.getAttribute('x') || '0');
-        const rectY = clusterRect.getAttribute('y') || '0';
-        const labelX = rectX + padding;
-        const transform = labelGroup.getAttribute('transform') || '';
-        const transformMatch = transform.match(/translate\(\s*[-\d.]+\s*[,\s]\s*([-\d.]+)\s*\)/u);
-        const labelY = transformMatch ? transformMatch[1] : rectY;
-
-        labelGroup.setAttribute('transform', 'translate(' + labelX + ', ' + labelY + ')');
-        labelGroup.querySelectorAll('text, tspan').forEach(function(textNode) {
-          textNode.setAttribute('text-anchor', 'start');
-          textNode.setAttribute('x', '0');
+        labelGroup.querySelectorAll('foreignObject').forEach(function(foreignObject) {
+          foreignObject.remove();
         });
+
+        const textNodes = [...labelGroup.querySelectorAll(':scope > text')];
+        if (textNodes.length > 1) {
+          textNodes.slice(1).forEach(function(extraText) {
+            extraText.remove();
+          });
+        }
+
+        const rootText = labelGroup.querySelector('text');
+        if (rootText) {
+          dedupeMermaidClusterLabelText(rootText);
+        }
       });
     }
 
@@ -6924,6 +7505,8 @@ export function renderBacklogHtml(options = {}) {
           flowchart: {
             htmlLabels: false,
             curve: 'linear',
+            padding: 16,
+            subGraphTitleMargin: { top: 24, bottom: 10 },
           },
         });
         await mermaid.run({ nodes: blocks, suppressErrors: true });
@@ -6955,7 +7538,7 @@ export function renderBacklogHtml(options = {}) {
       detailId.textContent = rule.id;
       detailBody.innerHTML =
         renderDetailBackButton('← К промптам') +
-        renderDetailText('Файл', rule.filePath) +
+        renderDetailPathText('Файл', rule.filePath) +
         renderDetailText('Validation', rule.validationStatus) +
         renderDetailText('Trace status', rule.traceStatus) +
         renderDetailText('Базис', rule.basis) +
@@ -7472,8 +8055,20 @@ export function renderBacklogHtml(options = {}) {
       workflowArchiveTabCount.textContent = String(doneTotal);
     }
 
+    function readItemClosedAtMs(item) {
+      const raw = item?.closedAt ?? item?.labels?.['work.closed_at'] ?? '';
+      const parsed = Date.parse(String(raw));
+      return Number.isFinite(parsed) ? parsed : 0;
+    }
+
     function sortDoneArchiveItems(items) {
-      return [...items].sort((left, right) => String(right.id).localeCompare(String(left.id), 'en', { sensitivity: 'variant' }));
+      return [...items].sort((left, right) => {
+        const delta = readItemClosedAtMs(right) - readItemClosedAtMs(left);
+        if (delta !== 0) {
+          return delta;
+        }
+        return String(right.id).localeCompare(String(left.id), 'en', { sensitivity: 'variant' });
+      });
     }
 
     function resetListPages() {
@@ -7482,11 +8077,63 @@ export function renderBacklogHtml(options = {}) {
       promptsPage = 1;
       memoryPage = 1;
       analyticsPage = 1;
+      kanbanColumnVisibleCounts = Object.create(null);
       localStorage.setItem(backlogPageStorageKey, '1');
       localStorage.setItem(archivePageStorageKey, '1');
       localStorage.setItem(promptsPageStorageKey, '1');
       localStorage.setItem(memoryPageStorageKey, '1');
       localStorage.setItem(analyticsPageStorageKey, '1');
+    }
+
+    function getKanbanColumnVisibleLimit(columnId, total) {
+      const requested = kanbanColumnVisibleCounts[columnId] ?? kanbanColumnPageSize;
+      return Math.min(Math.max(kanbanColumnPageSize, requested), total);
+    }
+
+    function loadMoreKanbanColumn(columnId, total) {
+      const current = kanbanColumnVisibleCounts[columnId] ?? kanbanColumnPageSize;
+      if (current >= total) {
+        return;
+      }
+      kanbanColumnVisibleCounts[columnId] = Math.min(current + kanbanColumnPageSize, total);
+      renderKanbanBoard(getFilteredItems());
+    }
+
+    function shouldUseKanbanIncrementalPatch() {
+      const projection = operatorShellSnapshot?.kanbanBoard;
+      if (!projection?.columns) {
+        return false;
+      }
+      return projection.columns.every((column) => (column.workIds?.length ?? 0) <= kanbanColumnPageSize);
+    }
+
+    function setupKanbanColumnLazyLoad() {
+      if (kanbanColumnObserver) {
+        kanbanColumnObserver.disconnect();
+        kanbanColumnObserver = null;
+      }
+      if (!kanbanBoard || activeView !== 'board') {
+        return;
+      }
+      kanbanColumnObserver = new IntersectionObserver((entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) {
+            continue;
+          }
+          const columnId = entry.target.dataset.kanbanColumnSentinel;
+          if (!columnId) {
+            continue;
+          }
+          const column = operatorShellSnapshot?.kanbanBoard?.columns?.find((candidate) => candidate.id === columnId);
+          const total = column?.workIds?.length ?? 0;
+          if (total > getKanbanColumnVisibleLimit(columnId, total)) {
+            loadMoreKanbanColumn(columnId, total);
+          }
+        }
+      }, { root: null, rootMargin: '160px 0px', threshold: 0 });
+      kanbanBoard.querySelectorAll('[data-kanban-column-sentinel]').forEach((node) => {
+        kanbanColumnObserver.observe(node);
+      });
     }
 
     function paginateItems(items, page, pageSize) {
@@ -7611,17 +8258,35 @@ export function renderBacklogHtml(options = {}) {
       }
 
       kanbanBoard.innerHTML = projection.columns.map((column) => {
-        const cards = column.workIds
+        const columnItems = column.workIds
           .map((workId) => items.find((item) => item.id === workId) ?? snapshot.items.find((item) => item.id === workId))
-          .filter(Boolean)
+          .filter(Boolean);
+        const total = columnItems.length;
+        const visibleLimit = getKanbanColumnVisibleLimit(column.id, total);
+        const visibleItems = columnItems.slice(0, visibleLimit);
+        const hasMore = total > visibleLimit;
+
+        const cards = visibleItems
           .map((item) => renderTaskAtomCard(item, 'kanban-card'))
           .join('');
 
+        const cardsHtml = cards || '<div class="empty">' + escapeHtml(t('empty.noTasks')) + '</div>';
+
         return '<article class="column" data-kanban-column="' + escapeHtml(column.id) + '">' +
           '<h2>' + escapeHtml(localizedKanbanColumnTitle(column.id, column.title)) + renderClientUiBadge({ label: String(column.count), tone: 'default', testId: 'kanban-col-count-' + column.id }) + '</h2>' +
-          (cards || '<div class="empty">' + escapeHtml(t('empty.noTasks')) + '</div>') +
+          '<div class="kanban-column-body" data-kanban-column-body="' + escapeHtml(column.id) + '">' +
+          cardsHtml +
+          (hasMore ? '<div class="kanban-column-sentinel" data-kanban-column-sentinel="' + escapeHtml(column.id) + '" aria-hidden="true"></div>' : '') +
+          '</div>' +
+          (hasMore
+            ? '<div class="kanban-column-more-hint" data-testid="kanban-col-more-' + escapeHtml(column.id) + '">' +
+              escapeHtml(t('kanban.column.shown', { shown: visibleLimit, total })) +
+              '</div>'
+            : '') +
           '</article>';
       }).join('');
+
+      setupKanbanColumnLazyLoad();
     }
 
     function renderBoard(items) {
@@ -7653,29 +8318,21 @@ export function renderBacklogHtml(options = {}) {
       const progress = group.childCount > 0
         ? group.doneChildCount + '/' + group.childCount
         : '0';
-      const toggleLabel = collapsed ? t('workflow.epic.expand') : t('workflow.epic.collapse');
+      const epicTitleHtml = escapeHtml(epic.title || epic.id) +
+        '<span class="workflow-epic-meta">' + escapeHtml(progress) + '</span>';
+      const hasChildren = group.childCount > 0;
+      const epicRow = renderWorkflowTaskListRow(epic, {
+        extraClass: 'workflow-epic-row',
+        titleHtml: epicTitleHtml,
+        rowTag: hasChildren ? 'div' : 'button',
+        leadingHtml: hasChildren ? renderWorkflowExpandToggle(epic.id, collapsed) : '',
+      });
       const childrenHtml = group.children.length
-        ? group.children.map((child) => renderTaskAtom(child, 'list-row')).join('')
-        : '<div class="empty">' + escapeHtml(t('empty.noSubtasks')) + '</div>';
+        ? group.children.map((child) => renderWorkflowTaskListRow(child, { extraClass: 'workflow-epic-child-row' })).join('')
+        : '<div class="empty workflow-epic-empty">' + escapeHtml(t('empty.noSubtasks')) + '</div>';
 
       return '<article class="workflow-epic-group" data-testid="workflow-epic-' + escapeHtml(epic.id) + '">' +
-        '<div class="workflow-epic-header">' +
-          '<button class="task-atom list-row" type="button" data-task-id="' + escapeHtml(epic.id) + '">' +
-            '<h3><span class="workflow-epic-badge">' + escapeHtml(t('workflow.epic.badge')) + '</span>' + escapeHtml(epic.title || epic.id) +
-            '<span class="workflow-epic-meta">' + escapeHtml(progress) + '</span></h3>' +
-            renderSemanticCore(epic) +
-            renderIssueFooter(epic) +
-          '</button>' +
-          (group.childCount > 0
-            ? renderClientUiButton({
-              label: toggleLabel,
-              unstyled: true,
-              className: 'workflow-epic-toggle',
-              testId: 'workflow-epic-toggle-' + epic.id,
-              attrs: { 'data-workflow-epic-toggle': epic.id },
-            })
-            : '') +
-        '</div>' +
+        epicRow +
         (collapsed ? '' : '<div class="workflow-epic-children">' + childrenHtml + '</div>') +
       '</article>';
     }
@@ -7684,32 +8341,25 @@ export function renderBacklogHtml(options = {}) {
       const item = node.item;
       const collapsed = collapsedWorkflowTreeIds.has(item.id);
       const hasChildren = node.children.length > 0;
-      const toggleLabel = collapsed ? '▸' : '▾';
-      const kindBadge = item.itemKind === 'epic'
-        ? '<span class="workflow-epic-badge">Эпик</span>'
-        : (item.itemKind === 'subtask' ? '<span class="workflow-epic-badge">Sub</span>' : '');
+      const titleHtml = escapeHtml(item.title || item.id);
+      const row = renderWorkflowTaskListRow(item, {
+        extraClass: 'workflow-tree-row',
+        titleHtml,
+        rowTag: hasChildren ? 'div' : 'button',
+        leadingHtml: hasChildren
+          ? renderWorkflowExpandToggle(item.id, collapsed, {
+            attr: 'data-workflow-tree-toggle',
+            testIdPrefix: 'workflow-tree-toggle',
+          })
+          : '',
+      });
       const childrenHtml = collapsed
         ? ''
         : node.children.map((child) => renderWorkflowTreeNode(child)).join('');
 
       return '<div class="workflow-tree-node" style="--tree-depth:' + node.depth + '" data-testid="workflow-tree-node-' + escapeHtml(item.id) + '">' +
-        '<div class="workflow-epic-header">' +
-          '<button class="task-atom list-row" type="button" data-task-id="' + escapeHtml(item.id) + '">' +
-            '<h3>' + kindBadge + escapeHtml(item.title || item.id) + '</h3>' +
-            renderSemanticCore(item) +
-            renderIssueFooter(item) +
-          '</button>' +
-          (hasChildren
-            ? renderClientUiButton({
-              label: toggleLabel,
-              unstyled: true,
-              className: 'workflow-tree-toggle',
-              testId: 'workflow-tree-toggle-' + item.id,
-              attrs: { 'data-workflow-tree-toggle': item.id },
-            })
-            : '') +
-        '</div>' +
-        (collapsed ? '' : '<div class="workflow-epic-children">' + childrenHtml + '</div>') +
+        row +
+        (collapsed ? '' : (childrenHtml ? '<div class="workflow-epic-children">' + childrenHtml + '</div>' : '')) +
       '</div>';
     }
 
@@ -7742,7 +8392,7 @@ export function renderBacklogHtml(options = {}) {
           if (unit.type === 'tree-root') {
             return renderWorkflowTreeNode(unit.root);
           }
-          return renderTaskAtom(unit.item, 'list-row');
+          return renderWorkflowTaskListRow(unit.item);
         }).join('')
         : '';
 
@@ -8029,11 +8679,22 @@ export function renderBacklogHtml(options = {}) {
 
     function renderArchitectureBlockListRow(block) {
       const summary = summarizeArchitectureBlockForList(block);
-      return '<button type="button" class="task-atom list-row architecture-block-row" data-architecture-block-id="' + escapeHtml(block.id) + '" data-testid="architecture-block-' + escapeHtml(block.id) + '">' +
-        '<h3>' + escapeHtml(summary.title) + '</h3>' +
-        '<p class="list-row-line">' + escapeHtml(summary.summary) + '</p>' +
-        '<p class="list-row-line muted">' + summary.taskCount + ' задач · в работе ' + summary.activeCount + ' · завершено ' + summary.doneCount + '</p>' +
-      '</button>';
+      const statsNote = summary.taskCount + ' задач · в работе ' + summary.activeCount + ' · завершено ' + summary.doneCount;
+      const lines = [
+        summary.summary ? escapeHtml(summary.summary) : '',
+        summary.groupLabel ? escapeHtml(summary.groupLabel) : '',
+      ].filter(Boolean);
+      return renderListRow({
+        title: summary.title,
+        lines,
+        footerLeft: '<span class="id">' + escapeHtml(block.id) + '</span> · ' + escapeHtml(statsNote),
+        extraClass: 'architecture-block-row',
+        selected: focusedBlockId === block.id,
+        attrs: {
+          'data-architecture-block-id': block.id,
+          'data-testid': 'architecture-block-' + block.id,
+        },
+      });
     }
 
     function renderArchitectureBlocksListHtml(blocks) {
@@ -8055,18 +8716,6 @@ export function renderBacklogHtml(options = {}) {
       }
 
       const blocks = architectureSnapshot.blocks ?? [];
-      const canonBadge = document.querySelector('#architecture-canon-badge');
-      if (canonBadge) {
-        const canon = architectureSnapshot.l1Canon;
-        if (canon?.digest) {
-          canonBadge.textContent = 'Канон L1 v' + String(canon.version ?? 1) + ' · ' + canon.digest;
-          canonBadge.title = (canon.sourcePath || 'architecture/main.bvc') + (canon.charterRef ? ' · ' + canon.charterRef : '');
-          canonBadge.hidden = false;
-        } else {
-          canonBadge.hidden = true;
-          canonBadge.textContent = '';
-        }
-      }
       if (architecturePanelCount) {
         architecturePanelCount.textContent = String(blocks.length);
       }
@@ -8167,7 +8816,7 @@ export function renderBacklogHtml(options = {}) {
         renderDetailBackButton('← К схеме') +
         renderDetailText('Слой', node.layer) +
         renderDetailText('Описание', node.summary) +
-        renderDetailList('Связанные артефакты', node.protocolPath ? [node.protocolPath] : []) +
+        renderDetailList('Связанные артефакты', node.protocolPath ? [node.protocolPath] : [], { linkRepoFiles: true }) +
         '<section class="detail-section"><h3>Ограничения MVP</h3><p>Readonly derived schematic без ручного graph editor. Зависимости задач доступны в detail drawer и через MCP tools для агента.</p></section>';
       openDetailDrawer();
       bindDetailNavBack(closeTaskDetails);
@@ -8298,10 +8947,12 @@ export function renderBacklogHtml(options = {}) {
         renderPipelineReadOnly(block, { testid: 'architecture-pipeline-panel' }) +
         renderBlockL2Graph(block.l2Graph) +
         summarySection +
-        renderOptionalDetailAccordion('Корни intent', block.intentRoots, 'list') +
+        renderOptionalDetailAccordion('Корни intent', block.intentRoots, 'list', { linkRepoFiles: true }) +
         renderOptionalDetailAccordion('Контейнеры L2', containerLines, 'list') +
-        renderOptionalDetailAccordion('Пути артефактов', block.artifactPaths, 'list') +
-        '<section class="detail-section detail-source-link"><p class="muted">Источник: <code>' + escapeHtml(canonSource) + '</code></p></section>' +
+        renderOptionalDetailAccordion('Пути артефактов', block.artifactPaths, 'list', { linkRepoFiles: true }) +
+        '<section class="detail-section detail-source-link"><p class="muted">Источник: ' +
+        (isRepoFilePreviewPath(canonSource) ? renderRepoFileLink(canonSource) : '<code>' + escapeHtml(canonSource) + '</code>') +
+        '</p></section>' +
         wrapDetailAccordion('Задачи блока (' + blockTasks.length + ')', tasksHtml, {
           testid: 'block-tasks-accordion',
           required: true,
@@ -8394,8 +9045,11 @@ export function renderBacklogHtml(options = {}) {
     function renderTaskAtom(item, extraClass = '', options = {}) {
       const queueKind = options.queueKind ?? null;
       const surface = extraClass.includes('kanban-card') ? 'board' : 'default';
-      const targets = highlightTaskId ? crossHighlightTargets(highlightTaskId) : { peerIds: [] };
-      const highlightClass = item.id === highlightTaskId || targets.peerIds.includes(item.id) ? ' is-highlighted' : '';
+      const isKanbanCard = surface === 'board';
+      const targets = !isKanbanCard && highlightTaskId ? crossHighlightTargets(highlightTaskId) : { peerIds: [] };
+      const highlightClass = !isKanbanCard && (item.id === highlightTaskId || targets.peerIds.includes(item.id))
+        ? ' is-highlighted'
+        : '';
       const newClass = options.isNew ? ' is-new' : '';
       return '<button class="task-atom' + highlightClass + newClass + (extraClass ? ' ' + extraClass : '') + '" type="button" data-task-id="' + escapeHtml(item.id) + '" data-work-id="' + escapeHtml(item.id) + '">' +
         '<h3>' + escapeHtml(item.title || item.id) + '</h3>' +
@@ -8415,6 +9069,17 @@ export function renderBacklogHtml(options = {}) {
     }
 
     function handleBoardClick(event) {
+      const repoFileLink = event.target.closest('.repo-file-link[data-repo-file-path]');
+      if (repoFileLink) {
+        event.preventDefault();
+        event.stopPropagation();
+        const fromDrawer = Boolean(repoFileLink.closest('#detail-body, #detail-sub-body'));
+        if (fromDrawer && detailDrawer.classList.contains('is-open')) {
+          openRepoFileStackPreview(repoFileLink.dataset.repoFilePath);
+        }
+        return;
+      }
+
       const copyAnalyticsBtn = event.target.closest('[data-action="copy-analytics-md"]');
       if (copyAnalyticsBtn) {
         event.preventDefault();
@@ -8654,6 +9319,8 @@ export function renderBacklogHtml(options = {}) {
         detailSubId.textContent = top.payload?.recordKey || top.payload?.recordId || top.key || '';
       } else if (top.type === 'architecture-l2') {
         detailSubId.textContent = top.payload?.nodePath || top.payload?.nodeId || top.key || '';
+      } else if (top.type === 'repo-file') {
+        detailSubId.textContent = top.payload?.repoPath || top.key || '';
       } else {
         detailSubId.textContent = top.key || '';
       }
@@ -8766,6 +9433,39 @@ export function renderBacklogHtml(options = {}) {
           : '← ' + (block.title || block.id);
         detailSubBody.innerHTML = renderDetailSubBackButton(backLabel) + buildL2NodeDetailSections(node, l2Graph, block);
         bindDetailSubNavBack(() => popDetailStackNavigation());
+        return;
+      }
+      if (frame.type === 'repo-file') {
+        const repoPath = frame.payload?.repoPath || frame.key;
+        if (!repoPath || !detailSubBody) {
+          return;
+        }
+        detailSubBody.setAttribute('data-testid', 'repo-file-preview-sub-drawer');
+        const backLabel = parentFrame
+          ? '← ' + (parentFrame.title || parentFrame.key)
+          : '← Назад';
+        detailSubBody.innerHTML = renderDetailSubBackButton(backLabel) +
+          '<section class="detail-section repo-file-preview-panel" data-testid="repo-file-preview-panel">' +
+          '<p class="muted">Загрузка предпросмотра…</p></section>';
+        bindDetailSubNavBack(() => popDetailStackNavigation());
+
+        try {
+          const response = await fetch('/api/repo-file/preview?path=' + encodeURIComponent(repoPath));
+          const preview = await response.json();
+          detailSubBody.innerHTML = renderDetailSubBackButton(backLabel) + renderRepoFilePreviewPanel(preview);
+          bindDetailSubNavBack(() => popDetailStackNavigation());
+          const markdownRoot = detailSubBody.querySelector('.repo-file-markdown');
+          if (markdownRoot) {
+            queueMicrotask(function() {
+              mountMarkdownMermaidDiagrams(markdownRoot);
+            });
+          }
+        } catch (error) {
+          detailSubBody.innerHTML = renderDetailSubBackButton(backLabel) +
+            '<section class="detail-section repo-file-preview-panel" data-testid="repo-file-preview-panel">' +
+            '<p class="error">' + escapeHtml(error instanceof Error ? error.message : String(error)) + '</p></section>';
+          bindDetailSubNavBack(() => popDetailStackNavigation());
+        }
       }
     }
 
@@ -8811,7 +9511,7 @@ export function renderBacklogHtml(options = {}) {
         querySection +
         '<section class="detail-section analytics-record-body" data-testid="analytics-record-body">' +
           '<h3 class="analytics-section-title">' + bodySectionTitle + '</h3>' +
-          renderMarkdownDocument(answerBody || '—') +
+          autolinkRepoFilePathsInHtml(renderMarkdownDocument(answerBody || '—'), record.bodyPath || '') +
         '</section>' +
       '</div>' +
       (isClosing ? '' : renderAnalyticsIntentGraphSections(record)) +
@@ -8908,11 +9608,11 @@ export function renderBacklogHtml(options = {}) {
         html += renderDetailText('Роль', formatArchitectureContainerKind(node.subtitle || ''));
       }
       if (node.path) {
-        html += renderDetailText('Путь', node.path);
+        html += renderDetailPathText('Путь', node.path);
       }
       if (node.kind === 'container' && Array.isArray(node.paths) && node.paths.length > 0) {
         html += wrapDetailAccordion('Пути (' + node.paths.length + ')',
-          '<ul>' + node.paths.map((path) => '<li>' + escapeHtml(path) + '</li>').join('') + '</ul>',
+          '<ul>' + renderRepoFilePathListItems(node.paths) + '</ul>',
           { testid: 'l2-node-paths-accordion' });
       }
       html += renderL2NodeEdgesAccordion('Исходящие связи (' + outgoing.length + ')', outgoing, l2Graph, 'out');
@@ -9076,11 +9776,12 @@ export function renderBacklogHtml(options = {}) {
         '<div class="detail-accordion-body">' + body + '</div></details>';
     }
 
-    function renderOptionalDetailAccordion(title, value, kind) {
+    function renderOptionalDetailAccordion(title, value, kind, options = {}) {
       if (kind === 'list') {
         if (!Array.isArray(value) || value.length === 0) return '';
+        const linkRepoFiles = options.linkRepoFiles === true;
         return wrapDetailAccordion(title,
-          '<ul>' + value.map((entry) => '<li>' + escapeHtml(entry) + '</li>').join('') + '</ul>');
+          '<ul>' + (linkRepoFiles ? renderRepoFilePathListItems(value) : value.map((entry) => '<li>' + escapeHtml(entry) + '</li>').join('')) + '</ul>');
       }
       if (!value) return '';
       return wrapDetailAccordion(title, '<p>' + escapeHtml(value) + '</p>');
@@ -9142,7 +9843,7 @@ export function renderBacklogHtml(options = {}) {
         renderOptionalDetailAccordion(t('drawer.section.evidence'), item.evidence, 'list') +
         renderOptionalDetailAccordion(t('drawer.section.nextAction'), item.nextAction, 'text') +
         renderOptionalDetailAccordion(t('drawer.section.blocker'), item.blocker, 'text') +
-        renderOptionalDetailAccordion(t('drawer.section.targetFiles'), item.targetFiles, 'list') +
+        renderOptionalDetailAccordion(t('drawer.section.targetFiles'), item.targetFiles, 'list', { linkRepoFiles: true }) +
         wrapDetailAccordion(t('drawer.section.memory'),
           '<button type="button" class="detail-link-btn" data-action="open-memory-for-task" data-work-id="' + escapeHtml(item.id) + '" data-testid="open-memory-for-task">' + escapeHtml(t('drawer.section.memoryLink')) + '</button>',
           { required: true });
@@ -9627,6 +10328,10 @@ export function renderBacklogHtml(options = {}) {
       document.documentElement.classList.remove('detail-drawer-open');
       document.body.classList.remove('detail-drawer-open');
       detailContext = null;
+      if (highlightTaskId !== null) {
+        highlightTaskId = null;
+        render();
+      }
     }
 
     function renderDetailText(title, value) {
@@ -9634,10 +10339,231 @@ export function renderBacklogHtml(options = {}) {
       return '<section class="detail-section"><h3>' + escapeHtml(title) + '</h3><p>' + renderInlineCode(value) + '</p></section>';
     }
 
-    function renderDetailList(title, values) {
+    const REPO_FILE_PREVIEW_EXT_RE = /\\.(?:bvc|mjs|js|cjs|ts|tsx|md|yaml|yml|json|step)$/i;
+    const REPO_FILE_PATH_INLINE_RE = /\\b([a-zA-Z0-9_.-]+(?:\\/[a-zA-Z0-9_.-]+)*\\.(?:bvc|mjs|js|cjs|ts|tsx|md|yaml|yml|json|step))\\b/gi;
+
+    function basenameFromRepoPath(repoPath) {
+      const normalized = String(repoPath ?? '').replace(/\\\\/g, '/');
+      const parts = normalized.split('/');
+      return parts[parts.length - 1] || normalized;
+    }
+
+    function isRepoFilePreviewPath(value) {
+      const text = String(value ?? '').trim();
+      if (!text || text.includes(' ') || /^https?:\\/\\//i.test(text)) {
+        return false;
+      }
+      if (text.startsWith('/') || /^[a-zA-Z]:/.test(text)) {
+        return false;
+      }
+      if (text.split('/').includes('..')) {
+        return false;
+      }
+      return REPO_FILE_PREVIEW_EXT_RE.test(text);
+    }
+
+    function renderRepoFileLink(repoPath) {
+      const path = String(repoPath ?? '').trim();
+      return '<button type="button" class="repo-file-link" data-repo-file-path="' + escapeHtml(path) + '" data-testid="repo-file-link">' +
+        escapeHtml(path) + '</button>';
+    }
+
+    function renderRepoFilePathListItems(paths) {
+      return (paths ?? []).map((entry) => {
+        if (isRepoFilePreviewPath(entry)) {
+          return '<li>' + renderRepoFileLink(entry) + '</li>';
+        }
+        return '<li>' + escapeHtml(entry) + '</li>';
+      }).join('');
+    }
+
+    function renderDetailPathText(title, value) {
+      if (!value) {
+        return '';
+      }
+      const path = String(value).trim();
+      const body = isRepoFilePreviewPath(path)
+        ? renderRepoFileLink(path)
+        : renderInlineCode(path);
+      return '<section class="detail-section"><h3>' + escapeHtml(title) + '</h3><p>' + body + '</p></section>';
+    }
+
+    function formatRepoFileByteLength(bytes) {
+      const value = Number(bytes) || 0;
+      if (value < 1024) {
+        return value + ' B';
+      }
+      if (value < 1024 * 1024) {
+        return (value / 1024).toFixed(1) + ' KB';
+      }
+      return (value / (1024 * 1024)).toFixed(1) + ' MB';
+    }
+
+    function resolveRepoFilePathForPreview(repoPath, basePath) {
+      const path = String(repoPath ?? '').trim().replace(/\\\\/g, '/');
+      const base = String(basePath ?? '').trim().replace(/\\\\/g, '/');
+      if (!path || path.split('/').includes('..')) {
+        return path;
+      }
+      if (path.includes('/') || !base) {
+        return path;
+      }
+      const slash = base.lastIndexOf('/');
+      const dir = slash >= 0 ? base.slice(0, slash) : '';
+      return dir ? dir + '/' + path : path;
+    }
+
+    function findAnalyticsRecordById(recordId) {
+      return (analyticsProjection?.records ?? []).find((entry) => entry.id === recordId) ?? null;
+    }
+
+    function getRepoFilePreviewBasePath() {
+      const top = detailStack.peek();
+      if (top?.type === 'repo-file' && top.payload?.repoPath) {
+        return top.payload.repoPath;
+      }
+      if (top?.type === 'analytics' && top.payload?.recordId) {
+        return findAnalyticsRecordById(top.payload.recordId)?.bodyPath || detailContext?.bodyPath || '';
+      }
+      const below = detailStack.peekBelow();
+      if (below?.type === 'analytics' && below.payload?.recordId) {
+        return findAnalyticsRecordById(below.payload.recordId)?.bodyPath || detailContext?.bodyPath || '';
+      }
+      if (detailContext?.type === 'analytics') {
+        return detailContext.bodyPath || findAnalyticsRecordById(detailContext.recordId)?.bodyPath || '';
+      }
+      return '';
+    }
+
+    function autolinkRepoFilePathsInHtml(html, basePath) {
+      if (!html) {
+        return '';
+      }
+      const base = String(basePath ?? getRepoFilePreviewBasePath() ?? '').trim();
+      return html.split(/(<(?:pre|code)\\b[^>]*>[\\s\\S]*?<\\/(?:pre|code)>)/gi).map((segment, index) => {
+        if (index % 2 === 1) {
+          return segment;
+        }
+        return segment.replace(REPO_FILE_PATH_INLINE_RE, (match) => {
+          if (!isRepoFilePreviewPath(match)) {
+            return match;
+          }
+          return renderRepoFileLink(resolveRepoFilePathForPreview(match, base));
+        });
+      }).join('');
+    }
+
+    function renderRepoFilePreviewPanel(preview) {
+      if (!preview?.ok) {
+        return '<section class="detail-section repo-file-preview-panel" data-testid="repo-file-preview-panel">' +
+          '<p class="error">' + escapeHtml(preview?.error || 'Файл не найден в workspace') + '</p></section>';
+      }
+
+      const language = preview.language || 'plaintext';
+      const meta = '<div class="repo-file-meta">' +
+        '<code class="repo-file-path">' + escapeHtml(preview.path || '') + '</code>' +
+        '<span class="muted">' + escapeHtml(formatRepoFileByteLength(preview.byteLength)) +
+        ' · ' + escapeHtml(language) + ' · read-only</span>' +
+        (preview.truncated ? '<span class="repo-file-truncated">Файл обрезан до лимита preview</span>' : '') +
+        '</div>';
+
+      let body;
+      if (language === 'bvc') {
+        body = '<pre class="repo-file-preview code-hl language-bvc" data-language="bvc" data-testid="repo-file-preview-bvc">' +
+          highlightBvcBlock(preview.content || '') + '</pre>';
+      } else if (language === 'markdown') {
+        body = '<div class="repo-file-markdown">' +
+          autolinkRepoFilePathsInHtml(renderMarkdownDocument(preview.content || ''), preview.path || '') +
+          '</div>';
+      } else {
+        body = '<pre class="repo-file-preview code-hl" data-language="' + escapeHtml(language) + '">' +
+          highlightCodeBlock(preview.content || '', language) + '</pre>';
+      }
+
+      return '<section class="detail-section repo-file-preview-panel" data-testid="repo-file-preview-panel">' +
+        meta + body + '</section>';
+    }
+
+    function seedDetailStackFromOpenDrawerIfNeeded() {
+      if (detailStack.depth() > 0) {
+        return;
+      }
+
+      if (detailContext?.type === 'task') {
+        const item = snapshot?.items?.find((candidate) => candidate.id === detailContext.taskId);
+        if (item) {
+          detailStack.push({
+            type: 'task',
+            key: item.id,
+            title: item.title || item.id,
+            payload: { workId: item.id },
+          });
+          return;
+        }
+      }
+
+      if (detailContext?.type === 'analytics') {
+        const record = (analyticsProjection?.records ?? []).find((entry) => entry.id === detailContext.recordId);
+        if (record) {
+          detailStack.push({
+            type: 'analytics',
+            key: record.id,
+            title: record.title || record.key || record.id,
+            payload: { recordId: record.id, recordKey: record.key || record.id },
+          });
+          return;
+        }
+      }
+
+      if (detailContext?.type === 'block') {
+        const block = architectureSnapshot?.blocks?.find((candidate) => candidate.id === detailContext.blockId);
+        if (block) {
+          detailStack.push({
+            type: 'architecture-block',
+            key: block.id,
+            title: block.title || block.id,
+            payload: { blockId: block.id },
+          });
+          return;
+        }
+      }
+
+      if (detailDrawer.classList.contains('is-open')) {
+        const shellTitle = String(detailTitle?.textContent ?? '').trim() || 'Drawer';
+        const shellKey = String(detailId?.textContent ?? '').trim() || shellTitle;
+        detailStack.push({
+          type: 'repo-file-shell',
+          key: 'shell:' + shellKey,
+          title: shellTitle,
+          payload: { shellKey },
+        });
+      }
+    }
+
+    function openRepoFileStackPreview(repoPath) {
+      const rawPath = String(repoPath ?? '').trim();
+      if (!rawPath || !detailDrawer.classList.contains('is-open')) {
+        return;
+      }
+      const path = resolveRepoFilePathForPreview(rawPath, getRepoFilePreviewBasePath());
+      seedDetailStackFromOpenDrawerIfNeeded();
+      detailStack.push({
+        type: 'repo-file',
+        key: path,
+        title: basenameFromRepoPath(path),
+        payload: { repoPath: path },
+      });
+      renderTopDetailStackFrame().catch(() => undefined);
+      detailSubClose?.focus();
+    }
+
+    function renderDetailList(title, values, options = {}) {
       if (!Array.isArray(values) || values.length === 0) return '';
+      const linkRepoFiles = options.linkRepoFiles === true;
       return '<section class="detail-section"><h3>' + escapeHtml(title) + '</h3><ul>' +
-        values.map((value) => '<li>' + escapeHtml(value) + '</li>').join('') +
+        (linkRepoFiles
+          ? renderRepoFilePathListItems(values)
+          : values.map((value) => '<li>' + escapeHtml(value) + '</li>').join('')) +
         '</ul></section>';
     }
 
@@ -9655,7 +10581,9 @@ export function renderBacklogHtml(options = {}) {
             '</li>';
         }
 
-        return '<li><span class="pvrg-node-kind">file</span> <code>' + escapeHtml(node.path || node.id) + '</code></li>';
+        return '<li><span class="pvrg-node-kind">file</span> ' +
+          (isRepoFilePreviewPath(node.path || node.id) ? renderRepoFileLink(node.path || node.id) : '<code>' + escapeHtml(node.path || node.id) + '</code>') +
+          '</li>';
       }).join('');
 
       const edgeRows = (slice.edges ?? []).slice(0, 48).map((edge) =>
@@ -9769,11 +10697,41 @@ export function renderBacklogHtml(options = {}) {
         '</div>';
     }
 
+    function formatWorkItemClosedAt(item) {
+      const raw = item?.closedAt ?? item?.labels?.['work.closed_at'] ?? '';
+      const parsed = Date.parse(String(raw));
+      if (!Number.isFinite(parsed)) {
+        return '';
+      }
+      const localeTag = window.__WG_LOCALE__ === 'ru'
+        ? 'ru-RU'
+        : (window.__WG_LOCALE__ === 'en' ? 'en-GB' : (window.__WG_LOCALE__ || 'ru-RU'));
+      return new Date(parsed).toLocaleDateString(localeTag, {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+      });
+    }
+
+    function renderClosedAtMeta(item, { surface = 'default' } = {}) {
+      if (surface !== 'board' || (item.status !== 'done' && item.status !== 'verified')) {
+        return '';
+      }
+      const dateLabel = formatWorkItemClosedAt(item);
+      if (!dateLabel) {
+        return '';
+      }
+      return '<span class="issue-closed-at" data-testid="issue-closed-at">' +
+        escapeHtml(t('task.closedAt', { date: dateLabel })) +
+        '</span>';
+    }
+
     function renderIssueFooter(item, { queueKind = null, surface = 'default' } = {}) {
       const secondaryBadge = surface === 'board'
         ? renderWorkItemClassifierBadge(item)
         : ((item.status || queueKind) ? renderStatusBadge(item.status, queueKind) : '');
-      const leftTags = renderWorkItemIssueKeyChip(item) + secondaryBadge;
+      const closedAtMeta = renderClosedAtMeta(item, { surface });
+      const leftTags = renderWorkItemIssueKeyChip(item) + secondaryBadge + closedAtMeta;
       const owner = item.ownerRole || item.department || 'WG';
       return '<div class="issue-footer">' +
         '<div class="issue-footer-left">' + leftTags + '</div>' +
@@ -10501,6 +11459,7 @@ export function createBacklogUiServer(options = {}) {
           || url.searchParams.get('checkUpdate') === 'true';
         const payload = await buildAppVersionResponse({
           cwd,
+          installRoot: WG_INSTALL_ROOT,
           checkUpdate,
         });
         sendJson(response, 200, payload);
@@ -10656,6 +11615,63 @@ export function createBacklogUiServer(options = {}) {
       return;
     }
 
+    if (url.pathname === '/api/repo-file/preview' && method === 'GET') {
+      try {
+        const result = await readRepoFilePreviewFromRequest(url, { repoRoot: cwd, cwd });
+        sendJson(response, result.status, result.body);
+      } catch (error) {
+        sendJson(response, 500, {
+          schema: 'workgraph.repo-file-preview.v1',
+          ok: false,
+          error: 'repo_file_preview_failed',
+          message: error instanceof Error ? error.message : String(error),
+        });
+      }
+      return;
+    }
+
+    if (url.pathname === '/api/intent-plane/graph' && method === 'GET') {
+      try {
+        const start = url.searchParams.get('start') ?? url.searchParams.get('workId') ?? '';
+        if (!String(start).trim()) {
+          sendJson(response, 400, { error: 'start_required', message: 'query param start is required' });
+          return;
+        }
+        const items = await readWorkItemsFromRepo({ cwd, backlogPath });
+        const payload = buildIntentPlaneGraphResponse(items, {
+          start,
+          direction: url.searchParams.get('direction') ?? 'downstream',
+          depth: Number(url.searchParams.get('depth') ?? 1),
+          drift: url.searchParams.get('drift') === '1',
+        });
+        sendJson(response, 200, payload);
+      } catch (error) {
+        sendJson(response, 500, {
+          error: 'failed_to_build_intent_plane_graph',
+          message: error instanceof Error ? error.message : String(error),
+        });
+      }
+      return;
+    }
+
+    if (url.pathname === '/api/semantic-drift/batch' && method === 'GET') {
+      try {
+        const items = await readWorkItemsFromRepo({ cwd, backlogPath });
+        const payload = buildSemanticDriftBatch(items, {
+          department: url.searchParams.get('department') ?? url.searchParams.get('domain') ?? '',
+          parentId: url.searchParams.get('parentId') ?? url.searchParams.get('epicId') ?? '',
+          limit: Number(url.searchParams.get('limit') ?? 200),
+        });
+        sendJson(response, 200, payload);
+      } catch (error) {
+        sendJson(response, 500, {
+          error: 'failed_to_build_semantic_drift_batch',
+          message: error instanceof Error ? error.message : String(error),
+        });
+      }
+      return;
+    }
+
     if (url.pathname === '/api/architecture-snapshot') {
       try {
         const focusBlockId = url.searchParams.get('focusBlockId') || null;
@@ -10698,9 +11714,13 @@ export function createBacklogUiServer(options = {}) {
       return;
     }
 
+    if (url.pathname === '/assets/favicon.svg' && method === 'GET') {
+      serveFaviconSvg(response);
+      return;
+    }
+
     if (url.pathname === '/favicon.ico' && method === 'GET') {
-      response.writeHead(204);
-      response.end();
+      serveFaviconSvg(response);
       return;
     }
 
@@ -10714,6 +11734,20 @@ export function createBacklogUiServer(options = {}) {
         response.end(source);
       } catch (error) {
         sendText(response, 500, 'failed_to_load_workgraph_logo');
+      }
+      return;
+    }
+
+    if (url.pathname === '/assets/workgraph-emblem.svg' && method === 'GET') {
+      try {
+        const source = readFileSync(WORKGRAPH_EMBLEM_SVG_PATH);
+        response.writeHead(200, {
+          'content-type': 'image/svg+xml; charset=utf-8',
+          'cache-control': 'public, max-age=3600',
+        });
+        response.end(source);
+      } catch (error) {
+        sendText(response, 500, 'failed_to_load_workgraph_emblem');
       }
       return;
     }

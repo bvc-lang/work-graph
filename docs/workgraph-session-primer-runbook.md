@@ -4,14 +4,14 @@
 
 ## Когда использовать
 
-Перед первым «делай эпики / следующие задачи» в Cursor или Claude с MCP `workgraph`. Без primer модель часто уходит в **TodoWrite**, английский prose и код без `claim_work_item`.
+Перед первым «делай эпики / следующие задачи» в любом MCP-клиенте (Cursor, Claude Code, Claude Desktop, …) с сервером `workgraph`. Без primer модель часто уходит в **TodoWrite**, английский prose и код без `claim_work_item`.
 
 ## Чеклист оператора
 
 1. **Workspace** — корень репозитория Work Graph (`intent/**/work/*.work.bvc` в дереве) **или** ioHasC project с настроенным MCP и `WORKGRAPH_ROOT`.
 2. **MCP** — сервер `workgraph` включён; `WORKGRAPH_ROOT` указывает на clone Work Graph. См. [workgraph-mcp-clients.md](./workgraph-mcp-clients.md).
-3. **Cursor rules** — после clone: `npm run sync:cursor-rules` (канон в `docs/cursor-rules/`).
-4. **Multi-repo (project + WG)** — опционально [user rule](./cursor-user-rule-wg-backlog.template.md) в Cursor Settings.
+3. **Agent rules (Cursor)** — после clone WG: `npm run sync:cursor-rules` (канон в `docs/cursor-rules/`).
+4. **Multi-repo (project + WG)** — опционально [user rule](./cursor-user-rule-wg-backlog.template.md) в Cursor Settings (только для Cursor).
 5. **Первое сообщение** — скопируй шаблон ниже или отправь эквивалент.
 
 ## Шаблон первого сообщения

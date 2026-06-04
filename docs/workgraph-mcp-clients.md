@@ -2,9 +2,11 @@
 
 ## Цель
 
-WorkGraph MCP exposes WorkItems to external agent clients. Cursor or Claude stays the chat/workbench UI; WorkGraph keeps the dashboard, kanban, runtime policy, evidence, and intent tree storage.
+WorkGraph MCP exposes WorkItems to external agent clients. The agent IDE (Cursor, Claude Code, Claude Desktop, or another MCP client) stays the chat/workbench UI; WorkGraph keeps the dashboard, kanban, runtime policy, evidence, and intent tree storage.
 
-## Cursor
+## Cursor (optional project file from `init`)
+
+`npx @work-graph/cli init` writes `.cursor/mcp.json` when you do not pass `--no-mcp`. Other clients use the same server command — see sections below.
 
 Project-local example:
 

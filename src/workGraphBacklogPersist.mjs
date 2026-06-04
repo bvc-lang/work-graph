@@ -151,6 +151,11 @@ export function patchWorkItemAtomBody(body, item) {
 
   let next = upsertLabelLine(body, 'work.status', item.status);
 
+  const closedAt = String(item.labels?.['work.closed_at'] ?? item.closedAt ?? '').trim();
+  if (closedAt !== '') {
+    next = upsertLabelLine(next, 'work.closed_at', closedAt);
+  }
+
   if (item.status === 'blocked' && item.blocker) {
     next = upsertLabelLine(next, 'work.blocker', item.blocker);
   } else {

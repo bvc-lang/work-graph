@@ -1,0 +1,48 @@
+#Задача_epic_iohasc_positioning_reference_v1<[
+Базис:
+  AN-11..15: positioning reference разборы ioHasC unique tech без отдельного production epic v1.
+  AN-31, AN-41, AN-48, AN-49: standalone reference/comparison — нужна формальная связь с бэклогом.
+  Цель: оператор видит related work items в UI «Аналитика»; defer до product decision.
+Вектор:
+  Intake subtasks (done) с intake.analytics_key + intake.source_ref на каждый AN.
+  Без исполнения — только catalog linkage для discovery и lineage.
+Цель:
+  Все positioning/reference AN из аудита 202-06 имеют work item linkage в бэклоге.
+Проверки:
+  9 intake subtasks created with intake labels
+  UI analytics panel shows relatedWorkItems for AN-11..15, AN-31, AN-41, AN-48, AN-49
+Анализ:
+  Зачем:
+  AN-11..15: positioning reference разборы ioHasC unique tech без отдельного production epic v1.
+  Контекст: AN-31, AN-41, AN-48, AN-49: standalone reference/comparison — нужна формальная связь с бэклогом.
+  Когда:
+  Можно начинать, когда оператор перевёл задачу в ready.
+  Готово, когда:
+  Все positioning/reference AN из аудита 202-06 имеют work item linkage в бэклоге.
+Решение:
+  Вердикт: полезно как reference catalog
+  Defer productization — revisit via decide-positioning-from-an7 / AN-16 meta-review.
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-15
+  intake.source_kind: analytics-record
+  intake.source_ref: analytics:other-unique-technologies-overview
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-04T18:30:01.675Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-04T18:30:01.675Z
+  work.decision.verdict: useful
+  work.department: product
+  work.id: epic-iohasc-positioning-reference-v1
+  work.item_kind: epic
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: product_manager
+  work.pipeline_stage: decided
+  work.priority: low
+  work.risk: low
+  work.status: done
+  work.target_files: work/analytics/gbc-gfs-binary-slice-overlay.md, work/analytics/gvm-sbg-mandate-wasm-runtime.md, work/analytics/uncertainty-barrier-shannon-metric.md, work/analytics/compiler-round-trip-low-code-scaffold.md, work/analytics/other-unique-technologies-overview.md, work/analytics/promptpilot-claude-note-vs-work-graph.md, work/analytics/work-graph-desktop-exe-packaging.md, work/analytics/open-agent-chat-ui-embed-options.md, work/analytics/work-graph-codebase-volume-rewrite-scope.md
+  work.title: Каталог positioning reference: ioHasC unique tech (AN-11..15, AN-31, AN-41, AN-48, AN-49)
+]>

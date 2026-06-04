@@ -1,22 +1,75 @@
 import assert from 'node:assert/strict';
+import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { describe, it } from 'node:test';
+import { describe, it, afterEach } from 'node:test';
 
-import { buildAppVersionResponse, readLocalAppVersion } from '../src/appVersionApi.mjs';
+import {
+  buildAppVersionResponse,
+  clearNpmVersionCache,
+  isVersionNewer,
+  parseSemverCore,
+  readLocalAppVersion,
+  resolveCliPackageJsonPath,
+  seedNpmVersionCache,
+} from '../src/appVersionApi.mjs';
 
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 
+describe('parseSemverCore / isVersionNewer', () => {
+  it('compares semver tuples', () => {
+    assert.deepEqual(parseSemverCore('0.2.9'), [0, 2, 9]);
+    assert.equal(isVersionNewer('0.3.0', '0.2.9'), true);
+    assert.equal(isVersionNewer('0.2.9', '0.2.9'), false);
+    assert.equal(isVersionNewer('0.2.8', '0.2.9'), false);
+  });
+});
+
+describe('resolveCliPackageJsonPath', () => {
+  it('prefers monorepo cli package in dev repo', () => {
+    const resolved = resolveCliPackageJsonPath({ cwd: repoRoot });
+    assert.equal(resolved.source, 'monorepo-cli-package');
+    assert.match(resolved.packageJsonPath, /packages[\\/]work-graph-cli[\\/]package\.json$/);
+  });
+
+  it('reads npm package from node_modules layout', async () => {
+    const tempRoot = join(repoRoot, 'tests', '.tmp-app-version-npm');
+    await rm(tempRoot, { recursive: true, force: true });
+    await mkdir(join(tempRoot, 'node_modules', '@work-graph', 'cli'), { recursive: true });
+    await writeFile(join(tempRoot, 'package.json'), JSON.stringify({ name: 'user-app', version: '9.9.9' }), 'utf8');
+    await writeFile(
+      join(tempRoot, 'node_modules', '@work-graph', 'cli', 'package.json'),
+      JSON.stringify({ name: '@work-graph/cli', version: '0.2.9' }),
+      'utf8',
+    );
+
+    try {
+      const resolved = resolveCliPackageJsonPath({ cwd: tempRoot });
+      assert.equal(resolved.source, 'npm-cli-package');
+      const info = await readLocalAppVersion({ cwd: tempRoot });
+      assert.equal(info.version, '0.2.9');
+      assert.equal(info.source, 'npm-cli-package');
+    } finally {
+      await rm(tempRoot, { recursive: true, force: true });
+    }
+  });
+});
+
 describe('readLocalAppVersion', () => {
-  it('reads version from package.json', async () => {
+  it('reads version from cli package.json in monorepo', async () => {
     const info = await readLocalAppVersion({ cwd: repoRoot });
     assert.equal(info.schema, 'workgraph.app-version.v1');
-    assert.match(info.version, /^\d+\.\d+\.\d+$|^0\.0\.0$/);
+    assert.match(info.version, /^\d+\.\d+\.\d+$/);
     assert.equal(info.npmPackage, '@work-graph/cli');
+    assert.equal(info.source, 'monorepo-cli-package');
   });
 });
 
 describe('buildAppVersionResponse', () => {
+  afterEach(() => {
+    clearNpmVersionCache();
+  });
+
   it('uses mock fetch for npm latest check', async () => {
     const local = await readLocalAppVersion({ cwd: repoRoot });
     const payload = await buildAppVersionResponse({
@@ -25,12 +78,35 @@ describe('buildAppVersionResponse', () => {
       fetchImpl: async () => ({
         ok: true,
         async json() {
-          return { version: local.version === '9.9.9' ? '9.9.9' : '9.9.9' };
+          return { version: '9.9.9' };
         },
       }),
     });
     assert.equal(payload.latestVersion, '9.9.9');
-    assert.equal(typeof payload.updateAvailable, 'boolean');
-    assert.match(payload.installCommand, /^npm i -g @work-graph\/cli@latest$/);
+    assert.equal(payload.updateAvailable, true);
+    assert.match(payload.installCommand, /^npm update @work-graph\/cli @work-graph\/mcp$/);
+    assert.match(payload.installCommandGlobal, /^npm i -g @work-graph\/cli@latest$/);
+    assert.notEqual(local.version, '9.9.9');
+  });
+
+  it('serves npm latest from cache within ttl', async () => {
+    seedNpmVersionCache('@work-graph/cli', { latestVersion: '1.0.0' });
+    let fetchCalls = 0;
+    const payload = await buildAppVersionResponse({
+      cwd: repoRoot,
+      checkUpdate: true,
+      fetchImpl: async () => {
+        fetchCalls += 1;
+        return {
+          ok: true,
+          async json() {
+            return { version: '2.0.0' };
+          },
+        };
+      },
+    });
+    assert.equal(fetchCalls, 0);
+    assert.equal(payload.latestVersion, '1.0.0');
+    assert.equal(payload.fromCache, true);
   });
 });

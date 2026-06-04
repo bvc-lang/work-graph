@@ -27,6 +27,21 @@ describe('workGraphBacklogPersist', () => {
     assert.match(span.body, /work\.status: ready/u);
   });
 
+  it('patches status, blocker, closed_at and evidence in atom body', () => {
+    const patched = patchWorkItemAtomBody(SAMPLE_BACKLOG.match(/<\[([\s\S]*)\n\]>/u)[1], {
+      id: 'ready-task',
+      status: 'done',
+      closedAt: '2026-06-04T12:00:00.000Z',
+      labels: { 'work.closed_at': '2026-06-04T12:00:00.000Z' },
+      evidence: ['worker-run runId=abc status=failed'],
+    });
+
+    assert.match(patched, /work\.status: done/u);
+    assert.match(patched, /work\.closed_at: 2026-06-04T12:00:00.000Z/u);
+    assert.match(patched, /Свидетельства:/u);
+    assert.match(patched, /worker-run runId=abc status=failed/u);
+  });
+
   it('patches status, blocker and evidence in atom body', () => {
     const patched = patchWorkItemAtomBody(SAMPLE_BACKLOG.match(/<\[([\s\S]*)\n\]>/u)[1], {
       id: 'ready-task',

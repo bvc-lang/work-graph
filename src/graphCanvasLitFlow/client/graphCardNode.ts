@@ -123,6 +123,19 @@ export class GraphCardNode extends FlowNode {
         border-left: 3px solid var(--wg-graph-tone-architecture, #0052cc);
       }
 
+      .graph-card.drift-high {
+        border-color: var(--wg-graph-drift-high, #cf3700);
+        box-shadow: 0 0 0 1px rgba(207, 55, 0, 0.15);
+      }
+
+      .graph-card.drift-medium {
+        border-color: var(--wg-graph-drift-medium, #9a6700);
+      }
+
+      .graph-card.drift-low {
+        border-color: var(--wg-graph-drift-low, #1a7f37);
+      }
+
       .layer {
         display: inline-block;
         font-size: 10px;
@@ -277,6 +290,7 @@ export class GraphCardNode extends FlowNode {
       rejected ? 'is-rejected' : '',
       data.focused === true ? 'is-focused' : '',
       done ? 'is-done' : '',
+      data.driftTier ? `drift-${String(data.driftTier)}` : '',
     ].filter(Boolean).join(' ');
 
     const progress = Number(data.childCount) > 0

@@ -43,7 +43,10 @@
   work.pipeline_stage: decided
   work.priority: high
   work.risk: low
-  work.status: backlog
+  work.status: done
   work.target_files: src/workGraphBacklogUiServer.mjs, tests/workGraphBacklogUiServer.test.mjs
   work.title: UI: applySidebarWidth + localStorage + head bootstrap
+
+Свидетельства:
+  - localStorage workGraphSidebarWidth + head bootstrap --sidebar-width 56–360px; keyboard resize on separator; npm run test:deterministic — 792 pass, 0 fail
 ]>

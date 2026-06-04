@@ -1,0 +1,52 @@
+#Задача_decide_intent_information_semantic_planes_adr<[
+Базис:
+  AN-65 и AN-68 используют разную терминологию; без ADR команда смешает «граф связей» и «семантическое поле».
+  Нужны anti-goals: не wiki, не cross-repo federation в v1, не свободный crawl агента.
+Вектор:
+  docs/adr-intent-information-semantic-planes-v1.md — определения, измерения (семантика, топология, состояние, evidence, время).
+  Таблица: Information Plane vs Semantic Plane; какие MCP к какой плоскости относятся.
+  Связь с get_unified_linkage, graph RAG, semantic_search (наследие, не дублирование).
+Цель:
+  Любая последующая задача эпика ссылается на один ADR вместо пересказа разборов в каждой подзадаче.
+Проверки:
+  ADR принят в docs/
+  В plan есть ссылка на ADR
+  Anti-goals явно перечислены
+Анализ:
+  Зачем:
+  Без зафиксированных границ легко построить «ещё один граф» вместо контрактной плоскости исполнения.
+  Готово, когда:
+  ADR читается человеком без знания AN-65/AN-68 и даёт однозначные ответы «что в v1, что отложено».
+Решение:
+  Вердикт:
+  полезно
+  Принять ADR до спецификаций MCP — иначе query_intent_plane и semantic tools разъедутся.
+
+Свидетельства:
+  - docs/adr-intent-information-semantic-planes-v1.md
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-65
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-intent-information-plane.md
+  migration.strategy: rebuild
+  trace.status: verified
+  work.analysis.at: 2026-06-04T19:10:57.335Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-04T19:10:57.335Z
+  work.decision.verdict: useful
+  work.department: product
+  work.depends_on: epic-intent-information-semantic-planes-v1
+  work.id: decide-intent-information-semantic-planes-adr
+  work.item_kind: subtask
+  work.next_action: —
+  work.owner_role: system_architect
+  work.parent_id: epic-intent-information-semantic-planes-v1
+  work.pipeline_stage: closed
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: docs/adr-intent-information-semantic-planes-v1.md, work/analytics/work-graph-intent-information-plane.md, work/analytics/work-graph-semantic-plane.md, docs/plan-intent-information-semantic-planes-v1.md
+  work.title: ADR: границы информационной и смысловой плоскости WG
+]>

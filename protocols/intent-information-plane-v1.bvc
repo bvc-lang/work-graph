@@ -1,0 +1,18 @@
+#Протокол_Intent_Information_Plane_V1<[
+Базис:
+  AN-65 задаёт информационную плоскость как многомерный граф поверх intent tree, evidence и unified linkage.
+  Без единого словаря node/edge kinds MCP query_intent_plane и UI-граф расходятся в ad hoc полях.
+Вектор:
+  Node kinds v1: work, epic, analytics, evidence, file, intent_node.
+  Edge kinds v1: depends_on, implements, verified_by, traces_to, feeds_epic, parent_of.
+  Navigation directions: upstream, downstream, lateral, temporal (temporal — контракт P2).
+  Query envelope: startNode { kind, id }, direction, depth (0..3), filters { status, department, tier }.
+Цель:
+  query_intent_plane и operator UI используют один канон узлов/рёбер; read-only для агентов.
+
+Метки:
+  atom.profile: prompt_rule
+  protocol.id: intent-information-plane-v1
+  work.source: design-intent-plane-canonical-model-v1
+  trace.status: verified
+]>

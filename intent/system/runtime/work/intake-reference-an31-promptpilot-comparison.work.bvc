@@ -1,0 +1,48 @@
+#Задача_intake_reference_an31_promptpilot_comparison<[
+Базис:
+  AN-31: reference positioning/comparison intake — formal backlog linkage.
+  Источник: analytics:promptpilot-claude-note-vs-work-graph (work/analytics/promptpilot-claude-note-vs-work-graph.md).
+Вектор:
+  Статус done = catalog only; без исполнения до product decision.
+  См. epic-iohasc-positioning-reference-v1 и AN-16 meta-review.
+Цель:
+  AN-31 отображается в relatedWorkItems панели «Аналитика».
+Проверки:
+  intake.analytics_key=AN-31
+  intake.source_ref=analytics:promptpilot-claude-note-vs-work-graph
+Анализ:
+  Зачем:
+  AN-31: reference positioning/comparison intake — formal backlog linkage.
+  Контекст: Источник: analytics:promptpilot-claude-note-vs-work-graph (work/analytics/promptpilot-claude-note-vs-work-graph.md).
+  Когда:
+  После готовности: epic-iohasc-positioning-reference-v1.
+  Готово, когда:
+  AN-31 отображается в relatedWorkItems панели «Аналитика».
+Решение:
+  Вердикт: defer (reference catalog)
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-31
+  intake.source_kind: analytics-record
+  intake.source_ref: analytics:promptpilot-claude-note-vs-work-graph
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-04T18:30:01.775Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-04T18:30:01.775Z
+  work.decision.verdict: useful
+  work.department: product
+  work.depends_on: epic-iohasc-positioning-reference-v1
+  work.id: intake-reference-an31-promptpilot-comparison
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: product_manager
+  work.parent_id: epic-iohasc-positioning-reference-v1
+  work.pipeline_stage: decided
+  work.priority: low
+  work.risk: low
+  work.status: done
+  work.target_files: work/analytics/promptpilot-claude-note-vs-work-graph.md
+  work.title: Intake (reference): AN-31 PromptPilot vs WG — comparison catalog
+]>
