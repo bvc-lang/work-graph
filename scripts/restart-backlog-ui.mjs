@@ -39,11 +39,15 @@ function listListeningPids(targetPort) {
 
   if (platform() === 'win32') {
     try {
-      const output = execSync('netstat -ano -p tcp', { encoding: 'utf8' });
+      // No `-p tcp`: that filters to IPv4 only and misses IPv6 (TCPv6)
+      // listeners such as [::1]:PORT, which is how Node binds on localhost.
+      const output = execSync('netstat -ano', { encoding: 'utf8' });
       for (const line of output.split('\n')) {
         if (!/LISTENING/i.test(line)) continue;
-        if (!line.includes(`:${targetPort}`)) continue;
         const parts = line.trim().split(/\s+/);
+        // parts: [proto, localAddress, foreignAddress, state, pid]
+        const localAddress = parts[1] ?? '';
+        if (!localAddress.endsWith(`:${targetPort}`)) continue;
         const pid = parts.at(-1);
         if (pid && /^\d+$/.test(pid) && pid !== '0') {
           pids.add(pid);

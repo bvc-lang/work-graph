@@ -1,0 +1,25 @@
+# Normalize line endings to LF on commit and checkout.
+# The WorkItem/atom parser (STEP_ATOM_PATTERN) only matches LF; CRLF files are
+# silently skipped, so keep all repo text as LF regardless of editor/OS.
+* text=auto eol=lf
+
+# Domain source / config formats parsed by the runtime — must stay LF.
+*.bvc   text eol=lf
+*.mjs   text eol=lf
+*.js    text eol=lf
+*.json  text eol=lf
+*.jsonl text eol=lf
+*.md    text eol=lf
+*.yaml  text eol=lf
+*.yml   text eol=lf
+*.os    text eol=lf
+
+# Binary assets — never touch line endings.
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.webp  binary
+*.ico   binary
+*.pdf   binary
+*.exe   binary

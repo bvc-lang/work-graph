@@ -31,8 +31,9 @@ export function parseWorkItems(text) {
   }
 
   const items = [];
+  const normalizedText = text.replace(/\r\n?/gu, '\n');
 
-  for (const match of text.matchAll(STEP_ATOM_PATTERN)) {
+  for (const match of normalizedText.matchAll(STEP_ATOM_PATTERN)) {
     const [, atomName, body] = match;
     const sections = parseSections(body);
     const labels = sections.labels;

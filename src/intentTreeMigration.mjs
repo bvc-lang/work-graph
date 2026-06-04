@@ -12,7 +12,7 @@ export function extractWorkItemAtoms(backlogText) {
     throw new TypeError('backlogText must be a string');
   }
 
-  return [...backlogText.matchAll(STEP_ATOM_PATTERN)]
+  return [...backlogText.replace(/\r\n?/gu, '\n').matchAll(STEP_ATOM_PATTERN)]
     .map((match) => {
       const [content] = match;
       const [item] = parseWorkItems(content);
