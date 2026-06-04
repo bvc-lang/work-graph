@@ -7,9 +7,11 @@ import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 const repoRoot = process.cwd();
-const pkg = JSON.parse(readFileSync(join(repoRoot, 'packages/work-graph-cli/package.json'), 'utf8'));
-const version = pkg.version;
+const cliPkg = JSON.parse(readFileSync(join(repoRoot, 'packages/work-graph-cli/package.json'), 'utf8'));
+const mcpPkg = JSON.parse(readFileSync(join(repoRoot, 'packages/workgraph-mcp/package.json'), 'utf8'));
+const version = cliPkg.version;
 const tag = `v${version}`;
+const mcpTag = `v${mcpPkg.version}`;
 
 const MONOREPO_REMOTE = process.env.WG_GITHUB_MONOREPO_REMOTE
   ?? 'https://github.com/bvc-lang/work-graph.git';
@@ -59,7 +61,7 @@ function main() {
   run(`git push -f origin "${tag}"`);
 
   run(`node scripts/push-git-bundle.mjs --dir=dist/work-graph-cli-github --remote="${CLI_REMOTE}" --message="release: @work-graph/cli ${tag}" --tag="${tag}"`);
-  run(`node scripts/push-git-bundle.mjs --dir=dist/work-graph-mcp-github --remote="${MCP_REMOTE}" --message="release: @work-graph/mcp ${tag}" --tag="${tag}"`);
+  run(`node scripts/push-git-bundle.mjs --dir=dist/work-graph-mcp-github --remote="${MCP_REMOTE}" --message="release: @work-graph/mcp ${mcpTag}" --tag="${mcpTag}"`);
 
   console.log(JSON.stringify({ ok: true, tag, github: 'https://github.com/bvc-lang/work-graph' }, null, 2));
 }
