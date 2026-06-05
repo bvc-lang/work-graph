@@ -1,0 +1,50 @@
+#Задача_wire_settings_font_scale_slider<[
+Базис:
+  Оператор попросил перенести из MasterClick настройку размера шрифта: пользователь должен менять масштаб текста из раздела настроек, а выбранное значение должно сохраняться между перезагрузками.
+  Разбор уже записан в work/analytics/font-scale-settings-reference-masterclick.md; без отдельной задачи связь между анализом, изменениями UI и проверками остаётся неявной для Work Graph.
+Вектор:
+  Добавить в экран настроек Work Graph ползунок размера шрифта и связать его с существующими текстовыми токенами через переменную --text-scale.
+  Сохранить выбранный режим в localStorage.workGraphFontScale, применить его ранним bootstrap до отрисовки интерфейса и покрыть wiring smoke-проверкой HTML.
+Цель:
+  В разделе Настройки -> Оформление оператор видит ползунок размера шрифта, меняет масштаб текста сразу, а выбранный режим сохраняется после перезагрузки страницы.
+Проверки:
+  Ползунок размера шрифта отображается в разделе Настройки -> Оформление и имеет четыре понятных режима.
+  Выбор режима сохраняется в localStorage.workGraphFontScale и применяется ранним bootstrap без заметного сброса масштаба при перезагрузке.
+  Команда node --test tests/workGraphBacklogUiServer.test.mjs проходит и проверяет наличие wiring для настройки масштаба.
+Анализ:
+  Задачу стоит брать в работу, потому что разбор MasterClick уже дал проверенный паттерн: режим хранится в локальном состоянии, а UI меняет один множитель типографики вместо точечных размеров.
+  Граница задачи узкая: нужен только контроль масштаба в настройках Work Graph, без серверного состояния, без отдельной модалки и без переделки всей дизайн-системы.
+  Основной риск в том, что текстовые токены уже приходят из design tokens; поэтому реализацию нужно делать через аккуратное переопределение существующих переменных, а не через правки каждого компонента.
+  Успех проверяется глазами в настройках и targeted-тестом рендера HTML, который фиксирует bootstrap, storage key и сам range-control.
+Решение:
+  Вердикт: полезно.
+  Брать в работу можно сразу после разборa, потому что зависимости понятны, область небольшая, а проверка ограничивается smoke-тестом UI server.
+
+Метки:
+  work.closed_at: 2026-06-05T10:27:04.672Z
+  atom.profile: work_item
+  intake.analytics_key: font-scale-settings-reference-masterclick
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/font-scale-settings-reference-masterclick.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-05T10:23:45.176Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-05T10:23:45.176Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.id: wire-settings-font-scale-slider
+  work.next_action: проверить уже внесённую реализацию по контракту задачи и закрыть только после добавления доказательства
+  work.owner_role: feature_engineer
+  work.parent_id: epic-work-graph-ui-settings-v1
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: medium
+  work.status: done
+  work.target_files: src/workGraphBacklogUiServer.mjs, locales/en/ui.json, locales/ru/ui.json, tests/workGraphBacklogUiServer.test.mjs, work/analytics/font-scale-settings-reference-masterclick.md
+  work.title: Настройки: ползунок масштаба шрифта
+
+Свидетельства:
+  - node --test tests/workGraphBacklogUiServer.test.mjs — прошло: 21 тест, 5 suites, 0 fail; проверен HTML wiring ползунка масштаба шрифта.
+  - Ползунок масштаба шрифта реализован в настройках, привязан к localStorage.workGraphFontScale и проверен командой node --test tests/workGraphBacklogUiServer.test.mjs — 21 passed.
+]>

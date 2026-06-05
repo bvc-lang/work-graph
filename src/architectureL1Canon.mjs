@@ -7,7 +7,7 @@ import { parseBvcFileContent } from './bvcFileFormat.mjs';
 
 export const ARCHITECTURE_L1_CANON_DEFAULT_PATH = 'architecture/main.bvc';
 export const ARCHITECTURE_L1_CANON_ID = 'architecture-l1-blocks-v1';
-export const ARCHITECTURE_L1_BLOCK_COUNT = 7;
+export const ARCHITECTURE_L1_MIN_BLOCK_COUNT = 1;
 
 const VALID_CONTAINER_KINDS = new Set([
   'runtime',
@@ -274,8 +274,8 @@ export function loadArchitectureL1Canon(repoRoot, options = {}) {
   try {
     content = readFileSync(absolutePath, 'utf8');
   } catch (error) {
-    if (error && error.code === 'ENOENT' && repoRoot !== ARCHITECTURE_L1_CANON_REPO_ROOT) {
-      return loadArchitectureL1Canon(ARCHITECTURE_L1_CANON_REPO_ROOT, options);
+    if (error && error.code === 'ENOENT') {
+      throw new Error(`Architecture L1 canon not found at ${sourcePath}. Run work-graph init or create architecture/main.bvc in the project.`);
     }
     throw error;
   }
@@ -304,8 +304,8 @@ export function validateArchitectureL1Canon(canon) {
     }
   }
 
-  if (canon.blocks.length !== ARCHITECTURE_L1_BLOCK_COUNT) {
-    errors.push(`expected ${ARCHITECTURE_L1_BLOCK_COUNT} L1 blocks, got ${canon.blocks.length}`);
+  if (canon.blocks.length < ARCHITECTURE_L1_MIN_BLOCK_COUNT) {
+    errors.push(`expected at least ${ARCHITECTURE_L1_MIN_BLOCK_COUNT} L1 block, got ${canon.blocks.length}`);
   }
 
   const blockIds = new Set(canon.blocks.map((block) => block.id));
@@ -331,7 +331,7 @@ export function validateArchitectureL1Canon(canon) {
     }
   }
 
-  if (!canon.edges.length) {
+  if (!canon.edges.length && canon.blocks.length > 1) {
     errors.push('missing L1 edges section');
   }
 
@@ -408,12 +408,38 @@ export const ARCHITECTURE_L1_CANON_REPO_ROOT = join(moduleDir, '..');
 
 let cachedDefaultCanon = null;
 
+let cachedDefaultBlocks = null;
+let cachedDefaultEdges = null;
+let cachedDefaultCanonLoaded = false;
+
+function materializeDefaultCanonExports() {
+  if (cachedDefaultCanonLoaded) {
+    return;
+  }
+  cachedDefaultCanonLoaded = true;
+  try {
+    const canon = loadArchitectureL1Canon(ARCHITECTURE_L1_CANON_REPO_ROOT);
+    cachedDefaultBlocks = canon.blocks.map(toArchitectureL1BlockProjection);
+    cachedDefaultEdges = canon.edges.map((edge) => ({ ...edge }));
+  } catch {
+    cachedDefaultBlocks = [];
+    cachedDefaultEdges = [];
+  }
+}
+
+export function getArchitectureL1Blocks() {
+  materializeDefaultCanonExports();
+  return cachedDefaultBlocks ?? [];
+}
+
+export function getArchitectureL1Edges() {
+  materializeDefaultCanonExports();
+  return cachedDefaultEdges ?? [];
+}
+
 export function getDefaultArchitectureL1Canon() {
   if (!cachedDefaultCanon) {
     cachedDefaultCanon = loadArchitectureL1Canon(ARCHITECTURE_L1_CANON_REPO_ROOT);
   }
   return cachedDefaultCanon;
 }
-
-export const ARCHITECTURE_L1_BLOCKS = getDefaultArchitectureL1Canon().blocks.map(toArchitectureL1BlockProjection);
-export const ARCHITECTURE_L1_EDGES = getDefaultArchitectureL1Canon().edges.map((edge) => ({ ...edge }));

@@ -1,0 +1,47 @@
+#Задача_extend_init_dot_canon_layout_v1<[
+Базис:
+  Plan docs/plan-workgraph-canon-folder-layout-v1.md: init opt-in --canon-layout dot-canon, config v3 fields, default root-intent.
+Вектор:
+  Выполнить задачу с evidence-driven workflow.
+Цель:
+  extend init + buildProjectConfig для dot-canon layout; CLI флаг --canon-layout.
+Проверки:
+  init --canon-layout dot-canon пишет config v3 с canonLayout
+  stubs intent/index.bvc и architecture/main.bvc под .work-graph/canon/
+  default init без флага — root-intent v2/v3 без ломания
+  Тесты workGraphProjectInit проходят
+Анализ:
+  Зависит от implement-canon-paths-resolver-v1 (done): init должен писать config v3 и stubs в .work-graph/canon/.
+Решение:
+  Вердикт: полезно.
+  Opt-in only; root-intent остаётся default.
+
+Метки:
+  work.closed_at: 2026-06-05T14:46:05.057Z
+  atom.profile: work_item
+  intake.analytics_key: AN-77
+  intake.source_kind: plan
+  intake.source_ref: docs/plan-workgraph-canon-folder-layout-v1.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-05T14:45:31.984Z
+  work.analysis.source: plan
+  work.decision.at: 2026-06-05T14:45:31.984Z
+  work.decision.verdict: useful
+  work.department: system/runtime
+  work.depends_on: implement-canon-paths-resolver-v1
+  work.id: extend-init-dot-canon-layout-v1
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: agent
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: src/workGraphProjectInit.mjs, packages/work-graph-cli/bin/work-graph.mjs, tests/workGraphProjectInit.test.mjs
+  work.title: Расширить init для dot-canon layout (config v3 opt-in)
+
+Свидетельства:
+  - claim: extend init dot-canon layout v3
+  - node --test tests/workGraphProjectInit.test.mjs tests/canonPaths.test.mjs — 16/16 pass
+  - extend-init-dot-canon-layout-v1: config v3 + --canon-layout dot-canon in CLI; stubs under .work-graph/canon; default root-intent unchanged. Tests 16/16 pass.
+]>

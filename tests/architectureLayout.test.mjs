@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
-import { ARCHITECTURE_L1_BLOCKS, ARCHITECTURE_L1_EDGES } from '../src/architectureSnapshot.mjs';
+import { getArchitectureL1Blocks, getArchitectureL1Edges } from '../src/architectureSnapshot.mjs';
 import {
   buildArchitectureLayout,
   architectureEdgeGeometry,
@@ -10,8 +10,8 @@ import {
 describe('buildArchitectureLayout', () => {
   it('embeds geometry on edges and sizes nodes from summary text', () => {
     const layout = buildArchitectureLayout({
-      blocks: ARCHITECTURE_L1_BLOCKS,
-      edges: ARCHITECTURE_L1_EDGES,
+      blocks: getArchitectureL1Blocks(),
+      edges: getArchitectureL1Edges(),
     });
 
     assert.ok(layout.nodes.length >= 7);
@@ -21,8 +21,8 @@ describe('buildArchitectureLayout', () => {
 
   it('anchors downward links from bottom to top', () => {
     const layout = buildArchitectureLayout({
-      blocks: ARCHITECTURE_L1_BLOCKS,
-      edges: ARCHITECTURE_L1_EDGES,
+      blocks: getArchitectureL1Blocks(),
+      edges: getArchitectureL1Edges(),
     });
     const edge = layout.edges.find((candidate) => candidate.from === 'trace-evidence' && candidate.to === 'derived-projections');
     const geometry = edge.geometry;
@@ -33,8 +33,8 @@ describe('buildArchitectureLayout', () => {
 
   it('anchors upward links from top to bottom', () => {
     const layout = buildArchitectureLayout({
-      blocks: ARCHITECTURE_L1_BLOCKS,
-      edges: ARCHITECTURE_L1_EDGES,
+      blocks: getArchitectureL1Blocks(),
+      edges: getArchitectureL1Edges(),
     });
     const edge = layout.edges.find((candidate) => candidate.from === 'domains' && candidate.to === 'work-graph');
     const geometry = edge.geometry;
@@ -45,8 +45,8 @@ describe('buildArchitectureLayout', () => {
 
   it('keeps row spacing below tallest card in each row', () => {
     const layout = buildArchitectureLayout({
-      blocks: ARCHITECTURE_L1_BLOCKS,
-      edges: ARCHITECTURE_L1_EDGES,
+      blocks: getArchitectureL1Blocks(),
+      edges: getArchitectureL1Edges(),
     });
     const byRow = new Map();
     for (const node of layout.nodes) {
@@ -65,8 +65,8 @@ describe('buildArchitectureLayout', () => {
 describe('architectureEdgeGeometry', () => {
   it('computes bezier path for horizontal links', () => {
     const layout = buildArchitectureLayout({
-      blocks: ARCHITECTURE_L1_BLOCKS,
-      edges: ARCHITECTURE_L1_EDGES,
+      blocks: getArchitectureL1Blocks(),
+      edges: getArchitectureL1Edges(),
     });
     const edge = layout.edges.find((candidate) => candidate.from === 'step-canon' && candidate.to === 'work-graph');
     assert.match(architectureEdgeGeometry(edge).d, /^M /);

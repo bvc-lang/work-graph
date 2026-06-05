@@ -1,0 +1,47 @@
+#Задача_migrate_project_root_intent_to_dot_canon_v1<[
+Базис:
+  Plan plan-workgraph-canon-folder-layout-v1.md: one-time migration root intent → .work-graph/canon + config v3 + evidence file.
+Вектор:
+  Выполнить задачу с evidence-driven workflow.
+Цель:
+  scripts/migrate-root-intent-to-dot-canon.mjs + src/canonLayoutMigration.mjs с dry-run и evidence manifest.
+Проверки:
+  Dry-run показывает план миграции
+  Migrate копирует intent/charter/architecture и обновляет config v3
+  Пишет .work-graph/migration/root-intent-to-dot-canon.v1.json
+  readWorkItemsFromRepo читает из dot-canon после migrate
+  Тесты canonLayoutMigration проходят
+Анализ:
+  Resolver + init dot-canon готовы; для реальных проектов нужен controlled migrate с evidence manifest.
+Решение:
+  Вердикт: полезно.
+  Copy + config update; remove-source только с флагом.
+
+Метки:
+  work.closed_at: 2026-06-05T15:08:43.945Z
+  atom.profile: work_item
+  intake.analytics_key: AN-77
+  intake.source_kind: plan
+  intake.source_ref: docs/plan-workgraph-canon-folder-layout-v1.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-05T15:08:08.893Z
+  work.analysis.source: plan
+  work.decision.at: 2026-06-05T15:08:08.893Z
+  work.decision.verdict: useful
+  work.department: system/runtime
+  work.depends_on: extend-init-dot-canon-layout-v1
+  work.id: migrate-project-root-intent-to-dot-canon-v1
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: agent
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: src/canonLayoutMigration.mjs, scripts/migrate-root-intent-to-dot-canon.mjs, tests/canonLayoutMigration.test.mjs
+  work.title: Migration tool root-intent → dot-canon с evidence
+
+Свидетельства:
+  - claim: migrate root-intent to dot-canon tool
+  - migrate-project-root-intent-to-dot-canon-v1: src/canonLayoutMigration.mjs + scripts/migrate-root-intent-to-dot-canon.mjs (--dry-run, --remove-source). Copies intent/charter/architecture, config v3, evidence .work-graph/migration/root-intent-to-dot-canon.v1.json. Tests 3/3 pass.
+]>

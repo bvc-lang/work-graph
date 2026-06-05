@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { describe, it, afterEach } from 'node:test';
 
 import {
+  buildAppVersionInstallResponse,
   buildAppVersionResponse,
   buildNpmRegistryLatestUrl,
   clearNpmVersionCache,
@@ -13,6 +14,7 @@ import {
   parseSemverCore,
   readLocalAppVersion,
   resolveCliPackageJsonPath,
+  runAppVersionProjectUpdate,
   seedNpmVersionCache,
 } from '../src/appVersionApi.mjs';
 
@@ -131,5 +133,96 @@ describe('buildAppVersionResponse', () => {
     assert.equal(fetchCalls, 0);
     assert.equal(payload.latestVersion, '1.0.0');
     assert.equal(payload.fromCache, true);
+  });
+
+  it('bypasses npm cache when bypassCache is true', async () => {
+    seedNpmVersionCache('@work-graph/cli', { latestVersion: '1.0.0' });
+    let fetchCalls = 0;
+    const payload = await buildAppVersionResponse({
+      cwd: repoRoot,
+      checkUpdate: true,
+      bypassCache: true,
+      fetchImpl: async () => {
+        fetchCalls += 1;
+        return {
+          ok: true,
+          async json() {
+            return { version: '2.0.0' };
+          },
+        };
+      },
+    });
+    assert.equal(fetchCalls, 1);
+    assert.equal(payload.latestVersion, '2.0.0');
+    assert.equal(payload.fromCache, false);
+  });
+});
+
+describe('runAppVersionProjectUpdate / buildAppVersionInstallResponse', () => {
+  afterEach(() => {
+    clearNpmVersionCache();
+  });
+
+  it('runs npm update in npm-installed project layout', async () => {
+    const tempRoot = join(repoRoot, 'tests', '.tmp-app-version-install');
+    await rm(tempRoot, { recursive: true, force: true });
+    await mkdir(join(tempRoot, 'node_modules', '@work-graph', 'cli'), { recursive: true });
+    await writeFile(join(tempRoot, 'package.json'), JSON.stringify({ name: 'user-app', version: '9.9.9' }), 'utf8');
+    await writeFile(
+      join(tempRoot, 'node_modules', '@work-graph', 'cli', 'package.json'),
+      JSON.stringify({ name: '@work-graph/cli', version: '0.2.9' }),
+      'utf8',
+    );
+
+    let command = '';
+    try {
+      const result = await runAppVersionProjectUpdate({
+        cwd: tempRoot,
+        execFileImpl: async (file, args) => {
+          command = `${file} ${args.join(' ')}`;
+          await writeFile(
+            join(tempRoot, 'node_modules', '@work-graph', 'cli', 'package.json'),
+            JSON.stringify({ name: '@work-graph/cli', version: '0.2.14' }),
+            'utf8',
+          );
+          return { stdout: 'updated', stderr: '' };
+        },
+      });
+      assert.equal(command, 'npm update @work-graph/cli @work-graph/mcp');
+      assert.equal(result.version, '0.2.14');
+      assert.equal(result.needsUiRestart, true);
+    } finally {
+      await rm(tempRoot, { recursive: true, force: true });
+    }
+  });
+
+  it('rejects install when update is not available', async () => {
+    await assert.rejects(
+      () => buildAppVersionInstallResponse({
+        cwd: repoRoot,
+        fetchImpl: async () => ({
+          ok: true,
+          async json() {
+            return { version: '0.0.1' };
+          },
+        }),
+      }),
+      /update_not_available/,
+    );
+  });
+
+  it('rejects install from monorepo dev layout', async () => {
+    await assert.rejects(
+      () => buildAppVersionInstallResponse({
+        cwd: repoRoot,
+        fetchImpl: async () => ({
+          ok: true,
+          async json() {
+            return { version: '9.9.9' };
+          },
+        }),
+      }),
+      /project_update_requires_npm_install/,
+    );
   });
 });

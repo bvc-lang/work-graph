@@ -1,0 +1,9 @@
+--- a/intent/ui/dashboard/work/example.work.bvc
++++ b/intent/ui/dashboard/work/example.work.bvc
+@@ -10,7 +10,10 @@
+   work.id: example
+   work.title: Example
+   work.status: doing
++  work.updated_by: workgraph-mcp
++  work.write.operation: claim
++  work.write.at: 2026-06-05T12:00:00.000Z

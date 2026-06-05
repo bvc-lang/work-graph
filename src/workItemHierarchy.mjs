@@ -73,6 +73,36 @@ export function hasWorkItemParentCycle(itemId, itemById) {
   return false;
 }
 
+export function findEpicDependentsWithoutParent(items, epicId) {
+  const epicKey = String(epicId ?? '').trim();
+  if (epicKey === '' || !Array.isArray(items)) {
+    return [];
+  }
+
+  return items.filter((item) => {
+    if (readWorkItemKind(item) === 'epic') {
+      return false;
+    }
+    if (!(item.dependsOn ?? []).includes(epicKey)) {
+      return false;
+    }
+    return readWorkItemParentId(item) !== epicKey;
+  });
+}
+
+export function validateWorkItemCreateHierarchy({ itemKind, parentId } = {}) {
+  const kind = readWorkItemKind({ itemKind, labels: { 'work.item_kind': itemKind } });
+  const normalizedParentId = String(parentId ?? '').trim();
+  if (kind === 'subtask' && normalizedParentId === '') {
+    return {
+      ok: false,
+      code: 'subtask_requires_parent_id',
+      message: 'itemKind=subtask requires parentId (work.parent_id)',
+    };
+  }
+  return { ok: true };
+}
+
 export function lintWorkItemHierarchyIssues(items) {
   if (!Array.isArray(items)) {
     throw new TypeError('items must be an array');
@@ -136,6 +166,21 @@ export function lintWorkItemHierarchyIssues(items) {
           message: `Parent ${item.id} depends_on child ${dependencyId}`,
           workId: item.id,
           dependencyId,
+        });
+      }
+
+      if (
+        dependency !== undefined
+        && readWorkItemKind(dependency) === 'epic'
+        && itemKind !== 'epic'
+        && readWorkItemParentId(item) === ''
+      ) {
+        issues.push({
+          severity: 'warning',
+          code: 'epic_dependency_without_parent',
+          message: `${item.id} depends_on epic ${dependencyId} without work.parent_id`,
+          workId: item.id,
+          epicId: dependencyId,
         });
       }
     }

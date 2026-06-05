@@ -128,6 +128,10 @@ export function buildDoctorReport({ projectRoot, config, engineRoot }) {
   if (engineRoot) {
     add('ui-module', pathExists(resolveBacklogUiServerModule(engineRoot)), 'workGraphBacklogUiServer.mjs');
     add('mcp-module', pathExists(resolveMcpEntryModule(engineRoot)), 'workgraph-mcp entry');
+    if (isNpmCliPackageRoot(engineRoot)) {
+      add('vendor-locales', pathExists(join(engineRoot, 'vendor/locales/en/ui.json')), 'vendor/locales');
+      add('starter-templates', pathExists(join(engineRoot, 'templates/starter/intent/index.bvc')), 'templates/starter');
+    }
   }
   add('npm-cli', Boolean(resolveEngineRootFromNodeModules(root)), '@work-graph/cli в node_modules');
 

@@ -1,5 +1,7 @@
 import { readFile, rename, writeFile } from 'node:fs/promises';
 
+import { buildWorkGraphWriteAuditLabels } from './workGraphWriteAudit.mjs';
+
 const STEP_ATOM_PATTERN = /^#([^\n<]+)<\[\n([\s\S]*?)\n\]>/gmu;
 
 function escapeRegex(value) {
@@ -144,7 +146,15 @@ function appendEvidenceLines(body, newLines) {
   return bodyLines.join('\n');
 }
 
-export function patchWorkItemAtomBody(body, item) {
+function applyWriteAuditLabels(body, writeAudit) {
+  let next = body;
+  for (const [key, value] of Object.entries(writeAudit)) {
+    next = upsertLabelLine(next, key, String(value).trim());
+  }
+  return next;
+}
+
+export function patchWorkItemAtomBody(body, item, options = {}) {
   if (!item || typeof item !== 'object') {
     throw new TypeError('item must be an object');
   }
@@ -182,16 +192,22 @@ export function patchWorkItemAtomBody(body, item) {
     next = removeLabelLine(next, 'work.claim_lease_until');
   }
 
+  const writeAudit = options.writeAudit
+    ?? (options.audit ? buildWorkGraphWriteAuditLabels(options.audit) : null);
+  if (writeAudit) {
+    next = applyWriteAuditLabels(next, writeAudit);
+  }
+
   return next;
 }
 
-export function patchWorkItemInBacklogText(backlogText, item) {
+export function patchWorkItemInBacklogText(backlogText, item, options = {}) {
   const span = findWorkItemAtomSpan(backlogText, item.id);
   if (!span) {
     throw new Error(`work item atom not found: ${item.id}`);
   }
 
-  const patchedBody = patchWorkItemAtomBody(span.body, item);
+  const patchedBody = patchWorkItemAtomBody(span.body, item, options);
   const patchedAtom = `#${span.atomName}<[\n${patchedBody}\n]>`;
   return `${backlogText.slice(0, span.start)}${patchedAtom}${backlogText.slice(span.end)}`;
 }

@@ -1,0 +1,51 @@
+#Задача_epic_workgraph_git_snapshot_v1<[
+Базис:
+  AN-71: автокоммиты технически возможны, но должны быть opt-in слоем, не тихим commit внутри complete_work_item по умолчанию.
+  Work Graph уже пишет BVC/analytics файлы в рабочую копию, но git snapshot сейчас остаётся ручным действием оператора.
+Вектор:
+  Реализовать Work Graph Git Snapshot v1: policy protocol, scoped staging, commit без push, evidence с SHA, hooks после persist, явный CLI/MCP tool и тесты на dirty tree.
+  Главный принцип: never git add -A, never push, never block done при git failure.
+Цель:
+  Оператор может включить безопасные opt-in коммиты для WorkItem/analytics событий, сохраняя контроль над рабочим деревом и remote.
+Проверки:
+  policy disabled by default
+  scoped paths only
+  dirty unrelated file не попадает в commit
+  commit SHA записывается в evidence при успешном snapshot
+  git failure пишет evidence/skipped, но не ломает основной persist
+Свидетельства:
+  promote-ready: backlog→ready via operator board
+  - claim: epic-workgraph-git-snapshot-v1 via WorkGraph MCP
+  - AN-71 epic closed 7/7: protocol, src/gitSnapshot.mjs, MCP git_snapshot, persist/analytics hooks, evidence SHA, Settings UI.
+Анализ:
+  Зачем:
+  AN-71 Git Snapshot v1 закрывает opt-in scoped autocommit без push.
+  Когда:
+  Все 7 подзадач done.
+  Готово, когда:
+  эпик закрыт.
+
+Метки:
+  work.closed_at: 2026-06-05T15:55:10.444Z
+  atom.profile: work_item
+  intake.analytics_key: AN-71
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-git-autocommit-on-events.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-05T15:55:06.004Z
+  work.analysis.source: cursor-mcp
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.id: epic-workgraph-git-snapshot-v1
+  work.item_kind: epic
+  work.next_action: Cursor: record_work_item_decision (useful/harmful/defer)
+  work.owner_role: runtime_engineer
+  work.pipeline_stage: analyzed
+  work.priority: high
+  work.risk: high
+  work.status: done
+  work.target_files: protocols/workgraph-git-snapshot-v1.bvc, src/gitSnapshot.mjs, src/intentTreeWorkItems.mjs, src/analyticsRecordStore.mjs, packages/workgraph-mcp/src/handlers.mjs, packages/workgraph-mcp/src/index.mjs, tests/gitSnapshot.test.mjs
+  work.title: Git Snapshot v1: opt-in автокоммиты Work Graph без auto-push
+]>
+

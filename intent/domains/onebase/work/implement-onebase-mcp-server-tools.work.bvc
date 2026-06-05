@@ -1,0 +1,43 @@
+#Задача_implement_onebase_mcp_server_tools<[
+Базис:
+  AN-72: OneBase MCP сейчас существует как намерение в parity-матрице, а не как рабочие tools в `packages/workgraph-mcp`.
+  Для пилота хватает worker-tools и CLI gates, но продукту нужен внешний MCP access path для Cursor/Claude/Continue и других MCP-клиентов.
+Вектор:
+  Зарегистрировать OneBase tools в рабочем MCP-сервере Work Graph: `onebase_list_metadata`, `onebase_read_config_file`, `onebase_describe_config`, `onebase_check_config`.
+  Переиспользовать `src/onebaseWorkerTools.mjs` и `src/onebaseCliRunner.mjs`, не дублировать логику сканирования/CLI.
+  Описать tool schemas, bounded path policy и skipped/blocked поведение при отсутствии OneBase CLI/project root.
+Цель:
+  MCP-клиент может безопасно читать OneBase metadata/config и запускать describe/check без доступа к произвольным файлам.
+Проверки:
+  MCP tool schemas включены в `packages/workgraph-mcp/src/index.mjs`
+  handlers вызывают существующие OneBase helpers
+  read_config_file не выходит за OneBase root
+  tests покрывают success, missing CLI/project, bounded path reject
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-72
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/onebase-integration-implementation-review.md
+  migration.strategy: port
+  trace.status: verified
+  work.department: domain-onebase
+  work.decision.verdict: useful
+  work.depends_on: epic-onebase-productize-mcp-rest
+  work.id: implement-onebase-mcp-server-tools
+  work.item_kind: task
+  work.next_action: закрыто; продолжить implement-onebase-rest-read-tools
+  work.owner_role: integration_engineer
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: packages/workgraph-mcp/src/index.mjs, packages/workgraph-mcp/src/handlers.mjs, src/onebaseWorkerTools.mjs, tests/workGraphToolTransportRuntime.test.mjs, tests/onebaseWorkerTools.test.mjs, protocols/onebase-mcp-parity-v1.bvc
+  work.title: Реализовать рабочие MCP tools для OneBase metadata/describe/check
+
+Свидетельства:
+  - Реализованы OneBase MCP handlers/tools: onebase_list_metadata, onebase_read_config_file, onebase_describe_config, onebase_check_config; logic переиспользует src/onebaseWorkerTools.mjs и onebase CLI/evidence helpers.
+  - Добавлены MCP handler tests для bounded metadata/read, traversal reject, mocked describe/check evidence в tests/workgraph-mcp-contract.test.mjs.
+  - Verification: node --test tests/workgraph-mcp-contract.test.mjs tests/onebaseWorkerTools.test.mjs => 20/20 pass; npm run test:deterministic => 838/838 pass.
+]>
+

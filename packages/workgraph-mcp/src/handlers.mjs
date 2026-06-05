@@ -42,6 +42,15 @@ import {
 import { findSemanticVoidsFromRepo } from '../../../src/semanticVoids.mjs';
 import { buildPhasePromoteReadyQueue } from '../../../src/workGraphPhasePromoteReadyQueue.mjs';
 import {
+  executeOnebaseCheckCli,
+  executeOnebaseDescribeCli,
+  executeOnebaseListMetadata,
+  executeOnebaseReadConfigFile,
+  executeOnebaseRestGetTool,
+  executeOnebaseRestWriteTool,
+  prepareOnebaseRestWriteTool,
+} from '../../../src/onebaseWorkerTools.mjs';
+import {
   buildStepGraphProjectionFromRepo,
   buildStepGraphSliceFromRepo,
 } from '../../../src/stepGraphSlice.mjs';
@@ -66,6 +75,18 @@ import {
 import { prepareWorkItemEvidenceAppend } from '../../../src/structuredEvidenceV1.mjs';
 import { buildAnalyticsPanelProjection } from '../../../src/analyticsPanelProjection.mjs';
 import { findAnalyticsRecordByKeyOrId } from '../../../src/analyticsLineageProjection.mjs';
+import { buildActiveWorkspaceProjection } from '../../../src/activeWorkspaceProjection.mjs';
+import {
+  buildWorkGraphWriteAuditLabels,
+  WORKGRAPH_MCP_CHANNEL,
+} from '../../../src/workGraphWriteAudit.mjs';
+import { resolveCanonReadOptions } from '../../../src/canonPaths.mjs';
+import { validateWorkItemCreateHierarchy } from '../../../src/workItemHierarchy.mjs';
+import {
+  appendGitSnapshotEvidenceToWorkItem,
+  GIT_SNAPSHOT_EVENTS,
+  runGitSnapshot,
+} from '../../../src/gitSnapshot.mjs';
 
 const DONE_STATUSES = new Set(['done', 'verified']);
 
@@ -165,7 +186,7 @@ export async function getUnifiedLinkage(_args = {}, options = {}) {
 
 export async function queryIntentPlaneMcp(args = {}, options = {}) {
   const items = await readItems(options);
-  return queryIntentPlane(items, args, { cwd: resolveRoot(options) });
+  return queryIntentPlane(items, args, resolveRepoReadOptions(options));
 }
 
 export async function querySemanticFieldMcp(args = {}, options = {}) {
@@ -174,7 +195,7 @@ export async function querySemanticFieldMcp(args = {}, options = {}) {
     throw new Error('q is required');
   }
   const items = await readItems(options);
-  return querySemanticField(items, args, { cwd: resolveRoot(options) });
+  return querySemanticField(items, args, resolveRepoReadOptions(options));
 }
 
 export async function detectSemanticDriftMcp(args = {}, options = {}) {
@@ -186,12 +207,12 @@ export async function detectSemanticDriftMcp(args = {}, options = {}) {
 export async function getContextSliceMcp(args = {}, options = {}) {
   const workId = requireWorkId(args);
   const items = await readItems(options);
-  return getContextSlice(items, args, { cwd: resolveRoot(options) });
+  return getContextSlice(items, args, resolveRepoReadOptions(options));
 }
 
 export async function findSemanticVoidsMcp(args = {}, options = {}) {
   return findSemanticVoidsFromRepo({
-    cwd: resolveRoot(options),
+    ...resolveRepoReadOptions(options),
     domain: args.domain ?? args.department ?? null,
     tier: args.tier ?? null,
   });
@@ -219,7 +240,7 @@ export async function getPvrgTaskScope(args = {}, options = {}) {
 async function loadMergedMemoryRecords(options = {}) {
   const items = await readItems(options);
   const candidates = buildMemoryRecordCandidatesFromItems(items).records;
-  const journal = await readMemoryRecordJournal({ cwd: resolveRoot(options) });
+  const journal = await readMemoryRecordJournal(resolveRepoReadOptions(options));
   return {
     items,
     records: mergeMemoryJournalWithCandidates(candidates, journal.records),
@@ -381,7 +402,7 @@ export async function getOperatorShellSnapshot(_args = {}, options = {}) {
 
 export async function getStepGraphProjection(args = {}, options = {}) {
   return buildStepGraphProjectionFromRepo({
-    cwd: resolveRoot(options),
+    ...resolveRepoReadOptions(options),
     maxNodes: args.maxNodes,
     roots: normalizeOptional(args.roots)?.split(',').map((entry) => entry.trim()).filter(Boolean),
   });
@@ -397,7 +418,7 @@ export async function getStepGraphSlice(args = {}, options = {}) {
   }
 
   return buildStepGraphSliceFromRepo({
-    cwd: resolveRoot(options),
+    ...resolveRepoReadOptions(options),
     ...(seedStepName ? { seedStepName } : {}),
     ...(seedPath ? { seedPath } : {}),
     ...(seedNodeId ? { seedNodeId } : {}),
@@ -422,8 +443,16 @@ export async function updateWorkItemStatus(args = {}, options = {}) {
     blocker: args.reason,
     evidence: args.evidence,
   });
-  const persisted = await persistWorkItemUpdatesToRepo(updated.updatedItems, {
-    cwd: resolveRoot(options),
+  const persisted = await persistUpdatedWorkItems(updated.updatedItems, options, {
+    operation: 'status',
+    gitSnapshot: {
+      event: status === 'done' || status === 'verified'
+        ? GIT_SNAPSHOT_EVENTS.WORK_ITEM_DONE
+        : GIT_SNAPSHOT_EVENTS.WORK_ITEM_STATUS,
+      workId,
+      title: item.title,
+    },
+    evidenceWorkId: status === 'done' || status === 'verified' ? workId : null,
   });
   const primary = updated.updatedItems.find((entry) => entry.id === workId) ?? updated.updatedItems.at(-1);
   return {
@@ -434,6 +463,7 @@ export async function updateWorkItemStatus(args = {}, options = {}) {
     cascadedChildIds: updated.cascadedChildIds,
     paths: persisted.map((entry) => entry.path),
     path: persisted.find((entry) => entry.workId === workId)?.path ?? persisted.at(-1)?.path,
+    gitSnapshot: persisted.gitSnapshot ?? null,
   };
 }
 
@@ -456,10 +486,11 @@ export async function addWorkItemEvidence(args = {}, options = {}) {
     updated = recordEvidence(updated, line);
   }
 
-  const persisted = await persistWorkItemUpdateToRepo({
-    cwd: resolveRoot(options),
+  const persisted = await persistWorkItemUpdateToRepo(withMcpWriteAudit({
+    ...resolveRepoReadOptions(options),
     item: updated,
-  });
+    skipGitSnapshot: true,
+  }, 'evidence'));
   return {
     ok: true,
     workId,
@@ -506,9 +537,14 @@ export async function claimWorkItem(args = {}, options = {}) {
     };
   }
 
-  const persisted = await persistWorkItemUpdateToRepo({
-    cwd: resolveRoot(options),
-    item: claimResult.item,
+  const persisted = await persistUpdatedWorkItems([claimResult.item], options, {
+    operation: 'claim',
+    runId: claimResult.claimRunId,
+    gitSnapshot: {
+      event: GIT_SNAPSHOT_EVENTS.WORK_ITEM_STATUS,
+      workId: item.id,
+      title: item.title,
+    },
   });
   return {
     ok: true,
@@ -517,7 +553,8 @@ export async function claimWorkItem(args = {}, options = {}) {
     newStatus: claimResult.newStatus,
     claimRunId: claimResult.claimRunId,
     leaseUntil: claimResult.leaseUntil,
-    path: persisted.path,
+    path: persisted.find((entry) => entry.workId === item.id)?.path ?? persisted.at(-1)?.path,
+    gitSnapshot: persisted.gitSnapshot ?? null,
   };
 }
 
@@ -591,8 +628,14 @@ export async function completeWorkItem(args = {}, options = {}) {
   }
 
   const updated = transitionWorkItemWithEpicCascade(items, item, 'done', { evidence });
-  const persisted = await persistWorkItemUpdatesToRepo(updated.updatedItems, {
-    cwd: resolveRoot(options),
+  const persisted = await persistUpdatedWorkItems(updated.updatedItems, options, {
+    operation: 'complete',
+    gitSnapshot: {
+      event: GIT_SNAPSHOT_EVENTS.WORK_ITEM_DONE,
+      workId,
+      title: item.title,
+    },
+    evidenceWorkId: workId,
   });
   const primary = updated.updatedItems.find((entry) => entry.id === workId) ?? updated.updatedItems.at(-1);
   return {
@@ -603,7 +646,30 @@ export async function completeWorkItem(args = {}, options = {}) {
     cascadedChildIds: updated.cascadedChildIds,
     paths: persisted.map((entry) => entry.path),
     path: persisted.find((entry) => entry.workId === workId)?.path ?? persisted.at(-1)?.path,
+    gitSnapshot: persisted.gitSnapshot ?? null,
     readiness: evaluation,
+  };
+}
+
+export async function gitSnapshot(args = {}, options = {}) {
+  const paths = normalizeTextList(args.paths ?? args.path);
+  if (paths.some((entry) => /[*?[\]]/u.test(entry))) {
+    throw new Error('wildcard paths are not allowed for git_snapshot');
+  }
+
+  const result = await runGitSnapshot({
+    cwd: resolveRoot(options),
+    env: options.env,
+    event: args.event,
+    workId: normalizeOptional(args.workId ?? args.work_id),
+    analyticsKey: normalizeOptional(args.analyticsKey ?? args.analytics_key ?? args.key),
+    title: normalizeOptional(args.title),
+    paths,
+  });
+
+  return {
+    schema: 'workgraph.git-snapshot.result.v1',
+    ...result,
   };
 }
 
@@ -614,7 +680,7 @@ export async function getAnalyticsLineage(args = {}, options = {}) {
     throw new Error('recordKey or recordId is required');
   }
 
-  const projection = await buildAnalyticsPanelProjection({ cwd: resolveRoot(options) });
+  const projection = await buildAnalyticsPanelProjection(resolveRepoReadOptions(options));
   const record = findAnalyticsRecordByKeyOrId(projection.records, { recordKey, recordId });
   if (!record) {
     throw new Error(`Analytics record not found: ${recordKey || recordId}`);
@@ -626,8 +692,19 @@ export async function getAnalyticsLineage(args = {}, options = {}) {
   };
 }
 
+export async function getActiveWorkspace(_args = {}, options = {}) {
+  return buildActiveWorkspaceProjection({
+    env: options.env,
+    registryPath: options.registryPath,
+    effectiveRepoRoot: resolveRoot(options),
+  });
+}
+
 export async function readWorkGraphResource(uri, options = {}) {
   const value = String(uri ?? '').trim();
+  if (value === 'workgraph://workspace/active') {
+    return getActiveWorkspace({}, options);
+  }
   if (value === 'workgraph://backlog') {
     return getBacklogSnapshot({}, options);
   }
@@ -693,7 +770,7 @@ export async function readWorkGraphResource(uri, options = {}) {
 }
 
 export async function readWorkItemAtomResource(workId, options = {}) {
-  const atom = await readWorkItemAtomFromRepo(workId, { cwd: resolveRoot(options) });
+  const atom = await readWorkItemAtomFromRepo(workId, resolveRepoReadOptions(options));
   return atom.atomText;
 }
 
@@ -706,10 +783,108 @@ export async function semanticSearch(args = {}, options = {}) {
   const limit = clampLimit(args.limit, 12);
   const mode = String(args.mode ?? '').trim() || undefined;
   return executeSemanticSearchFromRepo({
-    cwd: resolveRoot(options),
+    ...resolveRepoReadOptions(options),
     query,
     limit,
     ...(mode ? { mode } : {}),
+  });
+}
+
+export async function onebaseListMetadata(args = {}, options = {}) {
+  const onebaseRoot = resolveOnebaseRoot(args, options);
+  return executeOnebaseListMetadata(onebaseRoot, {
+    ...options,
+    onebaseRoot,
+  });
+}
+
+export async function onebaseReadConfigFile(args = {}, options = {}) {
+  const relativePath = normalizeOptional(args.relativePath ?? args.path);
+  if (!relativePath) {
+    throw new Error('relativePath is required');
+  }
+
+  const onebaseRoot = resolveOnebaseRoot(args, options);
+  return executeOnebaseReadConfigFile(onebaseRoot, relativePath, {
+    ...options,
+    onebaseRoot,
+    maxChars: args.maxChars,
+  });
+}
+
+export async function onebaseDescribeConfig(args = {}, options = {}) {
+  const onebaseRoot = resolveOnebaseRoot(args, options);
+  return executeOnebaseDescribeCli({
+    ...options,
+    onebaseRoot,
+    projectRoot: args.projectRoot ?? args.project_root ?? onebaseRoot,
+    cwd: args.cwd ?? args.projectRoot ?? args.project_root ?? onebaseRoot,
+    taskId: args.taskId ?? args.task_id ?? 'onebase-mcp-describe',
+  });
+}
+
+export async function onebaseCheckConfig(args = {}, options = {}) {
+  const onebaseRoot = resolveOnebaseRoot(args, options);
+  return executeOnebaseCheckCli({
+    ...options,
+    onebaseRoot,
+    projectRoot: args.projectRoot ?? args.project_root ?? onebaseRoot,
+    cwd: args.cwd ?? args.projectRoot ?? args.project_root ?? onebaseRoot,
+    taskId: args.taskId ?? args.task_id ?? 'onebase-mcp-check',
+  });
+}
+
+export async function onebaseRestGet(args = {}, options = {}) {
+  const path = normalizeOptional(args.path ?? args.relativePath);
+  if (!path) {
+    throw new Error('path is required');
+  }
+
+  return executeOnebaseRestGetTool({
+    path,
+    baseUrl: args.baseUrl ?? args.base_url,
+    taskId: args.taskId ?? args.task_id,
+  }, {
+    ...options,
+    taskId: args.taskId ?? args.task_id ?? 'onebase-mcp-rest-get',
+    env: options.env,
+  });
+}
+
+export async function onebaseRestWritePrepare(args = {}, options = {}) {
+  const path = normalizeOptional(args.path ?? args.relativePath);
+  if (!path) {
+    throw new Error('path is required');
+  }
+
+  return prepareOnebaseRestWriteTool({
+    path,
+    body: args.body ?? {},
+    method: args.method ?? 'POST',
+    taskId: args.taskId ?? args.task_id,
+  }, {
+    ...options,
+    taskId: args.taskId ?? args.task_id ?? 'onebase-mcp-rest-write',
+  });
+}
+
+export async function onebaseRestWriteExecute(args = {}, options = {}) {
+  const path = normalizeOptional(args.path ?? args.relativePath);
+  if (!path) {
+    throw new Error('path is required');
+  }
+
+  return executeOnebaseRestWriteTool({
+    path,
+    body: args.body ?? {},
+    method: args.method ?? 'POST',
+    baseUrl: args.baseUrl ?? args.base_url,
+    confirmToken: args.confirmToken ?? args.confirm_token,
+    confirmedBy: args.confirmedBy ?? args.confirmed_by,
+    taskId: args.taskId ?? args.task_id,
+  }, {
+    ...options,
+    taskId: args.taskId ?? args.task_id ?? 'onebase-mcp-rest-write',
   });
 }
 
@@ -747,6 +922,12 @@ export async function createWorkItem(args = {}, options = {}) {
   const targetFiles = normalizeTextList(args.targetFiles ?? args.target_files);
   const parentId = normalizeOptional(args.parentId ?? args.parent_id);
   const itemKind = normalizeOptional(args.itemKind ?? args.item_kind);
+  const hierarchyValidation = validateWorkItemCreateHierarchy({ itemKind, parentId });
+  if (!hierarchyValidation.ok) {
+    const error = new Error(hierarchyValidation.message);
+    error.code = hierarchyValidation.code;
+    throw error;
+  }
   const intentQuestionId = normalizeOptional(args.intentQuestionId ?? args.intent_question_id);
   const intentOptionId = normalizeOptional(args.intentOptionId ?? args.intent_option_id);
   const intentDecisionId = normalizeOptional(args.intentDecisionId ?? args.intent_decision_id);
@@ -787,6 +968,10 @@ export async function createWorkItem(args = {}, options = {}) {
       ...(intentDecisionId ? { 'intent.decision_id': intentDecisionId } : {}),
       'trace.status': 'pending',
       'migration.strategy': String(args.migrationStrategy ?? 'rebuild').trim(),
+      ...buildWorkGraphWriteAuditLabels({
+        channel: WORKGRAPH_MCP_CHANNEL,
+        operation: 'create',
+      }),
       ...(args.intakeSourceKind ? { 'intake.source_kind': String(args.intakeSourceKind).trim() } : {}),
       ...pipelineLabels,
     },
@@ -794,7 +979,7 @@ export async function createWorkItem(args = {}, options = {}) {
 
   const atomText = formatStepAtomDraft(draft);
   const persisted = await appendWorkItemAtomToIntentTree(atomText, {
-    cwd: resolveRoot(options),
+    ...resolveRepoReadOptions(options),
     path: args.path,
   });
 
@@ -815,7 +1000,7 @@ export async function getWorkItemPipeline(args = {}, options = {}) {
 
 export async function recordWorkItemAnalysisFromMcp(args = {}, options = {}) {
   return recordWorkItemAnalysis({
-    cwd: resolveRoot(options),
+    ...resolveRepoReadOptions(options),
     workId: requireWorkId(args),
     analysis: args.analysis,
     analysisSource: args.analysisSource ?? 'cursor-mcp',
@@ -828,7 +1013,7 @@ export async function recordWorkItemDecisionFromMcp(args = {}, options = {}) {
     throw new Error('verdict is required (useful | harmful | defer)');
   }
   return recordWorkItemDecision({
-    cwd: resolveRoot(options),
+    ...resolveRepoReadOptions(options),
     workId: requireWorkId(args),
     verdict,
     notes: args.notes ?? args.decision,
@@ -837,7 +1022,7 @@ export async function recordWorkItemDecisionFromMcp(args = {}, options = {}) {
 
 export async function attachWorkItemUiReference(args = {}, options = {}) {
   return attachUiReference({
-    cwd: resolveRoot(options),
+    ...resolveRepoReadOptions(options),
     workId: requireWorkId(args),
     filename: args.filename,
     contentBase64: args.contentBase64,
@@ -848,13 +1033,19 @@ export async function attachWorkItemUiReference(args = {}, options = {}) {
 
 export async function listWorkItemUiReferences(args = {}, options = {}) {
   return listUiReferences({
-    cwd: resolveRoot(options),
+    ...resolveRepoReadOptions(options),
     workId: requireWorkId(args),
   });
 }
 
 async function readItems(options) {
-  return readWorkItemsFromRepo({ cwd: resolveRoot(options) });
+  return readWorkItemsFromRepo(resolveRepoReadOptions(options));
+}
+
+function resolveRepoReadOptions(options = {}) {
+  return resolveCanonReadOptions({
+    repoRoot: resolveRoot(options),
+  });
 }
 
 function findItem(items, workId) {
@@ -863,6 +1054,46 @@ function findItem(items, workId) {
     throw new Error(`WorkItem not found: ${workId}`);
   }
   return item;
+}
+
+function withMcpWriteAudit(options = {}, operation, runId) {
+  return {
+    ...options,
+    writeAudit: buildWorkGraphWriteAuditLabels({
+      channel: WORKGRAPH_MCP_CHANNEL,
+      operation,
+      runId,
+    }),
+  };
+}
+
+async function persistUpdatedWorkItems(updatedItems, options, persistOptions = {}) {
+  const repoOptions = withMcpWriteAudit({
+    ...resolveRepoReadOptions(options),
+    gitSnapshot: persistOptions.gitSnapshot,
+    skipGitSnapshot: persistOptions.skipGitSnapshot,
+  }, persistOptions.operation, persistOptions.runId);
+
+  const persisted = await persistWorkItemUpdatesToRepo(updatedItems, repoOptions);
+  const snapshot = persisted.gitSnapshot ?? null;
+  const evidenceWorkId = persistOptions.evidenceWorkId;
+
+  if (evidenceWorkId && snapshot?.sha) {
+    const primary = updatedItems.find((entry) => entry.id === evidenceWorkId) ?? updatedItems.at(-1);
+    const { item: withEvidence, appended } = await appendGitSnapshotEvidenceToWorkItem(primary, snapshot, {
+      cwd: resolveRoot(options),
+      env: options.env,
+    });
+    if (appended) {
+      await persistWorkItemUpdateToRepo({
+        ...resolveRepoReadOptions(options),
+        item: withEvidence,
+        skipGitSnapshot: true,
+      });
+    }
+  }
+
+  return persisted;
 }
 
 function requireWorkId(args) {
@@ -886,6 +1117,18 @@ function clampLimit(value, fallback) {
 
 function resolveRoot(options) {
   return resolve(options.root ?? resolveWorkGraphRoot(options.env));
+}
+
+function resolveOnebaseRoot(args = {}, options = {}) {
+  return resolve(
+    args.onebaseRoot
+      ?? args.onebase_root
+      ?? options.onebaseRoot
+      ?? options.onebase_root
+      ?? options.projectRoot
+      ?? options.project_root
+      ?? resolveRoot(options),
+  );
 }
 
 function toWorkItemSummary(item) {

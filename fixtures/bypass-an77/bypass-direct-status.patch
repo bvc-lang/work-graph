@@ -1,0 +1,7 @@
+--- a/intent/ui/dashboard/work/example.work.bvc
++++ b/intent/ui/dashboard/work/example.work.bvc
+@@ -10,6 +10,7 @@
+   work.id: example
+   work.title: Example
+   work.status: doing
++  work.next_action: patched directly without MCP

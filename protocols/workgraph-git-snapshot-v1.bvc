@@ -1,0 +1,22 @@
+#Протокол_WorkGraph_Git_Snapshot_V1<[
+Базис:
+  AN-71: Work Graph пишет intent/work файлы, но не фиксирует их в git автоматически.
+  Оператору нужен opt-in scoped snapshot без auto-push и без `git add -A`.
+Вектор:
+  Policy default `enabled=false`.
+  Events: `work_item.done`, `work_item.status`, `work_item.created`, `analytics.created`, `analytics.closing`.
+  Stage только explicit paths из persist result / caller; `requireCleanSubset=true`; wildcard paths запрещены.
+  `allowEmpty=skip`: пустой index → skipped, не error.
+  `push=never` в v1; `git commit` без `--no-verify`.
+  Snapshot failure не откатывает persist WorkItem/analytics; optional `recordShaInEvidence`.
+  Env: `WORKGRAPH_GIT_SNAPSHOT=1`, `WORKGRAPH_GIT_SNAPSHOT_EVENTS=done,analytics`.
+  Project file: `.work-graph/git-snapshot.json` (UI Settings compatible).
+Цель:
+  Проверяемый контракт безопасного opt-in git snapshot до реализации hooks/MCP/UI.
+
+Метки:
+  atom.profile: prompt_rule
+  protocol.id: workgraph-git-snapshot-v1
+  work.source: design-workgraph-git-snapshot-policy-v1
+  trace.status: verified
+]>

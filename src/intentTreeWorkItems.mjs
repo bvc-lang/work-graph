@@ -4,6 +4,7 @@ import { dirname, join, resolve } from 'node:path';
 import { resolveIntentPathFromIndex } from './intentHierarchy.mjs';
 import { buildIntentIndexStep } from './intentTreeMigration.mjs';
 import { intentPathForNewWorkItem } from './bvcNewWritePolicy.mjs';
+import { resolveCanonReadOptions } from './canonPaths.mjs';
 import { readBvcTextFile, resolveBvcReadablePath } from './bvcFileFormat.mjs';
 import { parseWorkItems } from './workGraphRuntime.mjs';
 import {
@@ -11,12 +12,19 @@ import {
   patchWorkItemInBacklogText,
 } from './workGraphBacklogPersist.mjs';
 
+import {
+  appendGitSnapshotEvidenceToWorkItem,
+  GIT_SNAPSHOT_EVENTS,
+  maybeRunGitSnapshotAfterPersist,
+} from './gitSnapshot.mjs';
+
 const DEFAULT_INTENT_INDEX_PATH = 'intent/index.bvc';
 
 export async function readIntentWorkItemTexts(options = {}) {
-  const cwd = options.cwd ?? process.cwd();
-  const indexPath = resolveBvcReadablePath(options.intentIndexPath ?? DEFAULT_INTENT_INDEX_PATH, cwd);
-  const indexText = options.indexText ?? await readBvcTextFile(options.intentIndexPath ?? DEFAULT_INTENT_INDEX_PATH, { cwd });
+  const resolved = resolveCanonReadOptions(options);
+  const cwd = resolved.cwd ?? process.cwd();
+  const indexPath = resolveBvcReadablePath(resolved.intentIndexPath ?? DEFAULT_INTENT_INDEX_PATH, cwd);
+  const indexText = resolved.indexText ?? await readBvcTextFile(resolved.intentIndexPath ?? DEFAULT_INTENT_INDEX_PATH, { cwd });
   const entries = parseIntentIndexEntries(indexText);
   const texts = [];
 
@@ -48,7 +56,7 @@ export async function readWorkItemsFromRepo(options = {}) {
     return parseWorkItems(backlogText);
   }
 
-  return readWorkItemsFromIntentTree(options);
+  return readWorkItemsFromIntentTree(resolveCanonReadOptions(options));
 }
 
 export async function readWorkItemAtomFromRepo(workId, options = {}) {
@@ -76,9 +84,10 @@ export async function readWorkItemAtomFromRepo(workId, options = {}) {
     };
   }
 
-  const cwd = options.cwd ?? process.cwd();
-  const indexPath = options.intentIndexPath ?? DEFAULT_INTENT_INDEX_PATH;
-  const indexText = options.indexText ?? await readBvcTextFile(indexPath, { cwd });
+  const resolved = resolveCanonReadOptions(options);
+  const cwd = resolved.cwd ?? process.cwd();
+  const indexPath = resolved.intentIndexPath ?? DEFAULT_INTENT_INDEX_PATH;
+  const indexText = resolved.indexText ?? await readBvcTextFile(indexPath, { cwd });
   const relativePath = resolveIntentPathFromIndex(indexText, normalizedWorkId);
   if (!relativePath) {
     throw new Error(`intent path not found for work item: ${normalizedWorkId}`);
@@ -115,31 +124,53 @@ export async function persistWorkItemUpdateToRepo(options = {}) {
       ? resolveBvcReadablePath(options.backlogPath, cwd)
       : null;
     const sourceText = options.backlogText ?? await readBvcTextFile(options.backlogPath, { cwd });
-    const newText = patchWorkItemInBacklogText(sourceText, item);
+    const newText = patchWorkItemInBacklogText(sourceText, item, {
+      writeAudit: options.writeAudit,
+    });
     if (options.persistBacklog !== false && backlogPath) {
       await writeTextAtomically(backlogPath, newText);
     }
-    return {
+    const result = {
       path: backlogPath,
       workId: item.id,
       status: item.status,
       mode: 'backlog',
       persisted: options.persistBacklog !== false && Boolean(backlogPath),
     };
+    if (options.skipGitSnapshot !== true) {
+      result.gitSnapshot = await maybeRunGitSnapshotAfterPersist({
+        ...options,
+        persistedResults: [result],
+        workId: item.id,
+        title: item.title,
+      });
+    }
+    return result;
   }
 
   const source = await readWorkItemAtomFromRepo(item.id, options);
-  const newText = patchWorkItemInBacklogText(source.text, item);
+  const newText = patchWorkItemInBacklogText(source.text, item, {
+    writeAudit: options.writeAudit,
+  });
   if (options.persistIntent !== false) {
     await writeTextAtomically(source.path, newText);
   }
-  return {
+  const result = {
     path: source.relativePath ?? source.path,
     workId: item.id,
     status: item.status,
     mode: 'intent',
     persisted: options.persistIntent !== false,
   };
+  if (options.skipGitSnapshot !== true) {
+    result.gitSnapshot = await maybeRunGitSnapshotAfterPersist({
+      ...options,
+      persistedResults: [result],
+      workId: item.id,
+      title: item.title,
+    });
+  }
+  return result;
 }
 
 export async function persistWorkItemUpdatesToRepo(items, options = {}) {
@@ -149,8 +180,21 @@ export async function persistWorkItemUpdatesToRepo(items, options = {}) {
 
   const results = [];
   for (const item of items) {
-    results.push(await persistWorkItemUpdateToRepo({ ...options, item }));
+    results.push(await persistWorkItemUpdateToRepo({ ...options, item, skipGitSnapshot: true }));
   }
+
+  if (options.skipGitSnapshot !== true) {
+    const snapshot = await maybeRunGitSnapshotAfterPersist({
+      ...options,
+      persistedResults: results,
+      workId: options.gitSnapshot?.workId ?? items[0]?.id,
+      title: options.gitSnapshot?.title ?? items[0]?.title,
+    });
+    if (snapshot) {
+      results.gitSnapshot = snapshot;
+    }
+  }
+
   return results;
 }
 
@@ -165,12 +209,13 @@ export async function appendWorkItemAtomToIntentTree(atomText, options = {}) {
     throw new Error('atomText must contain a WorkItem');
   }
 
-  const cwd = options.cwd ?? process.cwd();
-  const indexPath = resolveBvcReadablePath(options.intentIndexPath ?? DEFAULT_INTENT_INDEX_PATH, cwd);
+  const resolved = resolveCanonReadOptions(options);
+  const cwd = resolved.cwd ?? process.cwd();
+  const indexPath = resolveBvcReadablePath(resolved.intentIndexPath ?? DEFAULT_INTENT_INDEX_PATH, cwd);
   let indexText = '';
   let entries = [];
   try {
-    indexText = await readBvcTextFile(options.intentIndexPath ?? DEFAULT_INTENT_INDEX_PATH, { cwd });
+    indexText = await readBvcTextFile(resolved.intentIndexPath ?? DEFAULT_INTENT_INDEX_PATH, { cwd });
     entries = parseIntentIndexEntries(indexText);
   } catch (error) {
     if (!error || typeof error !== 'object' || error.code !== 'ENOENT') {
@@ -195,11 +240,28 @@ export async function appendWorkItemAtomToIntentTree(atomText, options = {}) {
     path: entry.path,
   }))));
 
-  return {
+  const result = {
     workId: item.id,
     path,
     indexPath,
   };
+
+  if (options.skipGitSnapshot !== true) {
+    result.gitSnapshot = await maybeRunGitSnapshotAfterPersist({
+      ...options,
+      gitSnapshot: {
+        event: GIT_SNAPSHOT_EVENTS.WORK_ITEM_CREATED,
+        workId: item.id,
+        title: item.title,
+        paths: [path, 'intent/index.bvc'],
+      },
+      persistedResults: [{ path }, { path: 'intent/index.bvc' }],
+      workId: item.id,
+      title: item.title,
+    });
+  }
+
+  return result;
 }
 
 export function parseIntentIndexEntries(indexText) {

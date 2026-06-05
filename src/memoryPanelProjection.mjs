@@ -9,6 +9,41 @@ export const MEMORY_PANEL_PROJECTION_SCHEMA = 'memory-panel.projection.v1';
 export const MEMORY_RECORDS_API_SCHEMA = 'memory-records.api.v1';
 export const DEFAULT_MEMORY_RECORDS_LIMIT = 50;
 
+const compareText = (left, right) => String(left).localeCompare(String(right), 'en', { sensitivity: 'variant' });
+
+export function assignMemoryRecordKeys(records) {
+  if (!Array.isArray(records)) {
+    throw new TypeError('records must be an array');
+  }
+
+  if (records.length === 0) {
+    return [];
+  }
+
+  const sorted = [...records].sort((left, right) => {
+    const updatedCmp = String(left.updatedAt ?? '').localeCompare(
+      String(right.updatedAt ?? ''),
+      'en',
+      { sensitivity: 'variant' },
+    );
+    if (updatedCmp !== 0) {
+      return updatedCmp;
+    }
+
+    return compareText(left.id, right.id);
+  });
+
+  const ordinalById = new Map();
+  sorted.forEach((record, index) => {
+    ordinalById.set(record.id, index + 1);
+  });
+
+  return records.map((record) => ({
+    ...record,
+    key: String(record.key ?? '').trim() || `MEM-${ordinalById.get(record.id)}`,
+  }));
+}
+
 function summarizeRecords(records) {
   const byType = {};
   const byStatus = {};
@@ -65,7 +100,8 @@ export function filterMemoryRecords(records, options = {}) {
 }
 
 export function buildMemoryPanelProjectionFromRecords(records, options = {}) {
-  const summary = summarizeRecords(records);
+  const keyedRecords = assignMemoryRecordKeys(records);
+  const summary = summarizeRecords(keyedRecords);
 
   return {
     schema: MEMORY_PANEL_PROJECTION_SCHEMA,
@@ -73,7 +109,7 @@ export function buildMemoryPanelProjectionFromRecords(records, options = {}) {
     reviewActionsEnabled: false,
     source: options.source ?? 'merged-memory-records',
     summary,
-    records,
+    records: keyedRecords,
     filters: {
       types: Object.keys(summary.byType).sort(),
       statuses: Object.keys(summary.byStatus).sort(),
@@ -94,7 +130,7 @@ export function buildMemoryPanelProjectionFromItems(items, options = {}) {
 }
 
 export async function buildMemoryRecordsApiResponse(options = {}) {
-  const records = await loadMergedMemoryRecords(options);
+  const records = assignMemoryRecordKeys(await loadMergedMemoryRecords(options));
   const filtered = filterMemoryRecords(records, {
     workId: options.workId,
     limit: options.limit ?? DEFAULT_MEMORY_RECORDS_LIMIT,

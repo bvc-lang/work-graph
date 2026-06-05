@@ -7,6 +7,7 @@ import { describe, it } from 'node:test';
 import {
   DEFAULT_MEMORY_RECORDS_LIMIT,
   MEMORY_RECORDS_API_SCHEMA,
+  assignMemoryRecordKeys,
   buildMemoryRecordsApiResponse,
   filterMemoryRecords,
   loadMergedMemoryRecords,
@@ -50,6 +51,31 @@ const SAMPLE_ITEMS = parseWorkItems(`#Задача_done_task<[
 ]>
 `);
 
+describe('assignMemoryRecordKeys', () => {
+  it('assigns stable MEM keys by updatedAt then id', () => {
+    const records = [
+      { id: 'mem-b', updatedAt: '2026-06-02T00:00:00.000Z' },
+      { id: 'mem-a', updatedAt: '2026-06-01T00:00:00.000Z' },
+    ];
+
+    const keyed = assignMemoryRecordKeys(records);
+    assert.deepEqual(
+      keyed.map((record) => ({ id: record.id, key: record.key })),
+      [
+        { id: 'mem-b', key: 'MEM-2' },
+        { id: 'mem-a', key: 'MEM-1' },
+      ],
+    );
+  });
+
+  it('preserves explicit record.key when present', () => {
+    const keyed = assignMemoryRecordKeys([
+      { id: 'mem-a', key: 'MEM-CUSTOM', updatedAt: '2026-06-01T00:00:00.000Z' },
+    ]);
+    assert.equal(keyed[0].key, 'MEM-CUSTOM');
+  });
+});
+
 describe('filterMemoryRecords', () => {
   it('filters by workId and applies limit', () => {
     const records = [
@@ -77,6 +103,7 @@ describe('buildMemoryRecordsApiResponse', () => {
     assert.equal(payload.schema, MEMORY_RECORDS_API_SCHEMA);
     assert.ok(payload.count >= 1);
     assert.ok(payload.records.every((record) => record.sourceWorkItem === 'done-task'));
+    assert.ok(payload.records.every((record) => /^MEM-\d+$/.test(record.key)));
     assert.equal(payload.limit, 5);
   });
 

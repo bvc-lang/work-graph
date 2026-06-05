@@ -7,7 +7,12 @@ import {
   verifyOnebaseGrossProfitWarehouseArtifacts,
 } from './onebaseGrossProfitStaticVerify.mjs';
 import { runOnebaseCheck, runOnebaseDescribeJson } from './onebaseCliRunner.mjs';
-import { buildOnebaseRestEvidenceAdapterResult } from './onebaseRestEvidenceAdapter.mjs';
+import {
+  buildOnebaseRestEvidenceAdapterResult,
+  executeOnebaseRestGet,
+  executeOnebaseRestWrite,
+  prepareOnebaseRestWrite,
+} from './onebaseRestEvidenceAdapter.mjs';
 import { extractJsonYamlFacts } from './languageAdapters/jsonYamlAdapter.mjs';
 import { extractOnebaseOsFacts } from './languageAdapters/onebaseOsAdapter.mjs';
 
@@ -18,6 +23,9 @@ export const ONEBASE_WORKER_TOOL_IDS = [
   'onebase.runVerificationCommand',
   'onebase.describeCli',
   'onebase.checkCli',
+  'onebase.restGet',
+  'onebase.restWritePrepare',
+  'onebase.restWriteExecute',
 ];
 
 export const ONEBASE_METADATA_DIRS = [
@@ -310,6 +318,33 @@ export function executeOnebaseCheckCli(options = {}) {
   };
 }
 
+export async function executeOnebaseRestGetTool(args = {}, context = {}) {
+  return executeOnebaseRestGet(args.path ?? args.relativePath, {
+    ...context,
+    taskId: context.task?.id ?? context.taskId ?? args.taskId,
+    baseUrl: args.baseUrl ?? context.baseUrl,
+  });
+}
+
+export function prepareOnebaseRestWriteTool(args = {}, context = {}) {
+  return prepareOnebaseRestWrite(args.path ?? args.relativePath, args.body ?? {}, {
+    ...context,
+    taskId: context.task?.id ?? context.taskId ?? args.taskId,
+    method: args.method ?? 'POST',
+  });
+}
+
+export async function executeOnebaseRestWriteTool(args = {}, context = {}) {
+  return executeOnebaseRestWrite(args.path ?? args.relativePath, args.body ?? {}, {
+    ...context,
+    taskId: context.task?.id ?? context.taskId ?? args.taskId,
+    baseUrl: args.baseUrl ?? context.baseUrl,
+    confirmToken: args.confirmToken,
+    confirmedBy: args.confirmedBy,
+    method: args.method ?? 'POST',
+  });
+}
+
 export function buildOnebaseWorkerEvidence(toolResult) {
   if (!toolResult || typeof toolResult !== 'object') {
     return {
@@ -424,6 +459,12 @@ export function executeOnebaseWorkerTool(toolId, args = {}, context = {}) {
       return executeOnebaseDescribeCli({ ...context, taskId: context.task?.id ?? context.taskId });
     case 'onebase.checkCli':
       return executeOnebaseCheckCli({ ...context, taskId: context.task?.id ?? context.taskId });
+    case 'onebase.restGet':
+      return executeOnebaseRestGetTool(args, context);
+    case 'onebase.restWritePrepare':
+      return prepareOnebaseRestWriteTool(args, context);
+    case 'onebase.restWriteExecute':
+      return executeOnebaseRestWriteTool(args, context);
     default:
       return {
         ok: false,

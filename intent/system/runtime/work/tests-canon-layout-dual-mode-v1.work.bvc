@@ -1,0 +1,45 @@
+#Задача_tests_canon_layout_dual_mode_v1<[
+Базис:
+  Plan plan-workgraph-canon-folder-layout-v1.md: tests-canon-layout-dual-mode-v1.
+Вектор:
+  Выполнить задачу с evidence-driven workflow.
+Цель:
+  tests/canonLayoutDualMode.test.mjs — regression обоих canon layout в одном suite.
+Проверки:
+  Dual-mode test suite покрывает root-intent repo и dot-canon fixture
+  Проверяет readWorkItemsFromRepo и resolveCanonPaths
+  node --test tests/canonLayoutDualMode.test.mjs проходит
+Анализ:
+  Отдельные тесты canonPaths и migration есть; нужен rollup regression suite для CI.
+Решение:
+  Вердикт: полезно.
+  Rollup без дублирования логики.
+
+Метки:
+  work.closed_at: 2026-06-05T15:09:02.678Z
+  atom.profile: work_item
+  intake.source_kind: plan
+  intake.source_ref: docs/plan-workgraph-canon-folder-layout-v1.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-05T15:08:50.376Z
+  work.analysis.source: plan
+  work.decision.at: 2026-06-05T15:08:50.376Z
+  work.decision.verdict: useful
+  work.department: system/runtime
+  work.depends_on: migrate-project-root-intent-to-dot-canon-v1
+  work.id: tests-canon-layout-dual-mode-v1
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: agent
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: medium
+  work.status: done
+  work.target_files: tests/canonLayoutDualMode.test.mjs
+  work.title: Regression tests root-intent и dot-canon layout
+
+Свидетельства:
+  - claim: dual-mode canon layout regression tests
+  - node --test tests/canonLayoutDualMode.test.mjs tests/canonLayoutMigration.test.mjs tests/canonPaths.test.mjs — 12/12 pass
+  - tests-canon-layout-dual-mode-v1: tests/canonLayoutDualMode.test.mjs regression for root-intent repo + dot-canon fixture. Combined canon suite 12/12 pass.
+]>

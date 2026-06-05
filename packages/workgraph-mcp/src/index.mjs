@@ -14,6 +14,7 @@ import {
   getBacklogSnapshot,
   getCurrentCycle,
   getEpicWorkScope,
+  getActiveWorkspace,
   getArchitectureSnapshot,
   getEvidenceRecord,
   getGraphRagContext,
@@ -34,6 +35,7 @@ import {
   getAnalyticsLineage,
   getWorkItem,
   getWorkItemPipeline,
+  gitSnapshot,
   listEvidenceRecords,
   listMemoryRecords,
   listWorkItems,
@@ -44,6 +46,13 @@ import {
   recordWorkItemDecisionFromMcp,
   resolveWorkGraphRoot,
   semanticSearch,
+  onebaseCheckConfig,
+  onebaseDescribeConfig,
+  onebaseListMetadata,
+  onebaseReadConfigFile,
+  onebaseRestGet,
+  onebaseRestWriteExecute,
+  onebaseRestWritePrepare,
   updateWorkItemStatus,
   validateEvidence,
 } from './handlers.mjs';
@@ -329,6 +338,19 @@ server.tool(
 );
 
 server.tool(
+  'git_snapshot',
+  'Create an opt-in scoped git commit for explicit paths (no push, no wildcards)',
+  {
+    event: z.string().optional().describe('Snapshot event id, e.g. work_item.done or analytics.created'),
+    workId: z.string().optional().describe('Optional WorkItem id for commit message'),
+    analyticsKey: z.string().optional().describe('Optional analytics key for commit message'),
+    title: z.string().optional().describe('Optional title for commit message'),
+    paths: z.array(z.string()).optional().describe('Explicit repo-relative paths to stage'),
+  },
+  async (args) => jsonText(await gitSnapshot(args, rootOptions())),
+);
+
+server.tool(
   'get_work_contract',
   'Return work-item-contract.v1 projection for a WorkItem (input/output/verification)',
   { workId: z.string().describe('WorkItem id') },
@@ -378,6 +400,8 @@ server.tool(
     status: z.string().optional().describe('Default backlog'),
     nextAction: z.string().optional().describe('work.next_action hint'),
     dependsOn: z.string().optional().describe('Comma-separated work ids'),
+    parentId: z.string().optional().describe('Parent work.id for subtasks (work.parent_id)'),
+    itemKind: z.enum(['epic', 'subtask', 'task']).optional().describe('work.item_kind: epic | subtask | task'),
     targetFiles: z.string().optional().describe('Comma-separated relative file paths'),
     checks: z.string().optional().describe('Newline-separated readiness checks'),
     analysis: z.string().optional().describe('Newline-separated «Анализ» lines; auto-generated if omitted'),
@@ -443,6 +467,19 @@ server.tool(
     force: z.boolean().optional().describe('Allow attach on non-UI tasks when true'),
   },
   async (args) => jsonText(await attachWorkItemUiReference(args, rootOptions())),
+);
+
+server.resource(
+  'workgraph-workspace-active',
+  'workgraph://workspace/active',
+  { description: 'Active multiproject workspace from registry vs MCP effective repoRoot', mimeType: 'application/json' },
+  async (uri) => ({
+    contents: [{
+      uri: uri.href,
+      mimeType: 'application/json',
+      text: JSON.stringify(await readWorkGraphResource(uri.href, rootOptions()), null, 2),
+    }],
+  }),
 );
 
 server.resource(
@@ -757,6 +794,84 @@ server.tool(
     mode: z.string().optional().describe('lexical-v1 | hybrid-lexical-bm25-v1 | hybrid-lexical-bm25-tfidf-v1'),
   },
   async (args) => jsonText(await semanticSearch(args, rootOptions())),
+);
+
+server.tool(
+  'onebase_list_metadata',
+  'List bounded OneBase metadata artifacts (catalogs, documents, registers, reports, constants, widgets)',
+  {
+    onebaseRoot: z.string().optional().describe('Optional OneBase project/root path; defaults to WORKGRAPH_ROOT / cwd'),
+  },
+  async (args) => jsonText(await onebaseListMetadata(args, rootOptions())),
+);
+
+server.tool(
+  'onebase_read_config_file',
+  'Read one bounded OneBase config artifact and extracted facts',
+  {
+    relativePath: z.string().describe('Path inside OneBase root under metadata dirs, src/*.os, or examples/'),
+    onebaseRoot: z.string().optional().describe('Optional OneBase project/root path; defaults to WORKGRAPH_ROOT / cwd'),
+    maxChars: z.number().optional().describe('Maximum returned text characters (default 32000)'),
+  },
+  async (args) => jsonText(await onebaseReadConfigFile(args, rootOptions())),
+);
+
+server.tool(
+  'onebase_describe_config',
+  'Run onebase describe --json for a bounded OneBase project and return evidence',
+  {
+    projectRoot: z.string().optional().describe('Optional OneBase project path; defaults to onebaseRoot'),
+    onebaseRoot: z.string().optional().describe('Optional OneBase root/project path'),
+    taskId: z.string().optional().describe('Evidence task id for records'),
+  },
+  async (args) => jsonText(await onebaseDescribeConfig(args, rootOptions())),
+);
+
+server.tool(
+  'onebase_check_config',
+  'Run onebase check for a bounded OneBase project and return evidence',
+  {
+    projectRoot: z.string().optional().describe('Optional OneBase project path; defaults to onebaseRoot'),
+    onebaseRoot: z.string().optional().describe('Optional OneBase root/project path'),
+    taskId: z.string().optional().describe('Evidence task id for records'),
+  },
+  async (args) => jsonText(await onebaseCheckConfig(args, rootOptions())),
+);
+
+server.tool(
+  'onebase_rest_get',
+  'Run a safe GET-only OneBase REST read against allowlisted endpoints and return evidence',
+  {
+    path: z.string().describe('Relative OneBase REST path: /catalogs/*, /documents/*, /registers/*, /reports/*, /widgets/*, /health, /status'),
+    baseUrl: z.string().optional().describe('Optional OneBase API base URL; defaults to ONEBASE_API_BASE_URL'),
+    taskId: z.string().optional().describe('Evidence task id for records'),
+  },
+  async (args) => jsonText(await onebaseRestGet(args, rootOptions())),
+);
+
+server.tool(
+  'onebase_rest_write_prepare',
+  'Prepare a narrow OneBase REST write and return a confirm token; does not mutate runtime',
+  {
+    path: z.string().describe('Allowlisted write path, e.g. /documents/<document>/<id>/post'),
+    body: z.record(z.unknown()).optional().describe('JSON request body'),
+    taskId: z.string().optional().describe('Evidence task id for records'),
+  },
+  async (args) => jsonText(await onebaseRestWritePrepare(args, rootOptions())),
+);
+
+server.tool(
+  'onebase_rest_write_execute',
+  'Execute a prepared OneBase REST write only when confirmToken matches the prepared request',
+  {
+    path: z.string().describe('Allowlisted write path, e.g. /documents/<document>/<id>/post'),
+    body: z.record(z.unknown()).optional().describe('JSON request body; must match prepare step'),
+    confirmToken: z.string().describe('Confirm token from onebase_rest_write_prepare'),
+    confirmedBy: z.string().optional().describe('Operator/user who confirmed execution'),
+    baseUrl: z.string().optional().describe('Optional OneBase API base URL; defaults to ONEBASE_API_BASE_URL'),
+    taskId: z.string().optional().describe('Evidence task id for records'),
+  },
+  async (args) => jsonText(await onebaseRestWriteExecute(args, rootOptions())),
 );
 
 for (const [name, prompt] of Object.entries(workgraphPrompts)) {

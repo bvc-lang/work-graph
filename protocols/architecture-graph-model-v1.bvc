@@ -37,7 +37,7 @@
   domain-onebase: Domain Vertical — OneBase mapping, golden path, posting scenarios, intent/domains/onebase.
   derived-projections: Derived Projections — UI board, architecture map, task dependency graph, dashboard snapshot, PVRG/graph RAG research.
 Цель:
-  Верхний уровень architecture map показывает 6–8 устойчивых блоков системы без смешения с WorkItem queue semantics.
+  Верхний уровень architecture map показывает столько L1-блоков, сколько задаёт проект в architecture/main.bvc (минимум один), без фиксированного лимита engine.
 
 Метки:
   atom.profile: architecture_decision

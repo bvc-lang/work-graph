@@ -5,7 +5,6 @@ import { describe, it } from 'node:test';
 import { fileURLToPath } from 'node:url';
 
 import {
-  ARCHITECTURE_L1_BLOCK_COUNT,
   ARCHITECTURE_L1_CANON_ID,
   loadArchitectureL1Canon,
   parseArchitectureL1CanonContent,
@@ -17,12 +16,13 @@ const repoRoot = path.resolve(testDir, '..');
 const canonPath = path.join(repoRoot, 'architecture/main.bvc');
 
 describe('architectureL1Canon', () => {
-  it('loads architecture/main.bvc with passport, 7 blocks and 8 edges', () => {
+  it('loads architecture/main.bvc with passport, blocks and edges', () => {
     const canon = loadArchitectureL1Canon(repoRoot);
 
     assert.equal(canon.passport?.id, ARCHITECTURE_L1_CANON_ID);
     assert.equal(canon.passport?.version, 1);
-    assert.equal(canon.blocks.length, ARCHITECTURE_L1_BLOCK_COUNT);
+    assert.ok(canon.blocks.length >= 1);
+    assert.equal(canon.blocks.length, 7);
     assert.equal(canon.edges.length, 8);
     assert.match(canon.digest, /^[0-9a-f]{8}$/);
     assert.ok(canon.blocks.some((block) => block.id === 'derived-projections' && block.basis.includes('ADR')));
@@ -96,5 +96,50 @@ describe('architectureL1Canon', () => {
     };
 
     assert.throws(() => validateArchitectureL1Canon(broken), /unknown block/);
+  });
+
+  it('accepts a single-block canon without edges', () => {
+    const canon = loadArchitectureL1Canon(repoRoot);
+    const single = {
+      ...canon,
+      blocks: [canon.blocks[0]],
+      edges: [],
+    };
+
+    assert.doesNotThrow(() => validateArchitectureL1Canon(single));
+  });
+
+  it('accepts canon with more than seven blocks', () => {
+    const canon = loadArchitectureL1Canon(repoRoot);
+    const extra = {
+      ...canon,
+      blocks: [
+        ...canon.blocks,
+        {
+          ...canon.blocks[0],
+          id: 'extra-domain',
+          title: 'Extra domain',
+          containers: [],
+        },
+      ],
+      edges: [
+        ...canon.edges,
+        { from: 'extra-domain', to: 'work-graph', type: 'maps_to' },
+      ],
+    };
+
+    assert.doesNotThrow(() => validateArchitectureL1Canon(extra));
+    assert.equal(extra.blocks.length, 8);
+  });
+
+  it('rejects empty canon with zero blocks', () => {
+    const canon = loadArchitectureL1Canon(repoRoot);
+    const empty = {
+      ...canon,
+      blocks: [],
+      edges: [],
+    };
+
+    assert.throws(() => validateArchitectureL1Canon(empty), /at least 1 L1 block/);
   });
 });

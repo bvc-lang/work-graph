@@ -12,3 +12,23 @@ alwaysApply: true
 - **`docs/plan-*.md` todo:** каждая строка `- [ ]` / `- [x]` должна содержать явный `work.id` в backticks (например `` `add-cursor-rule-single-backlog` ``), не абстрактные T1/T2.
 - Вопрос «что дальше?» / «проведи разбор» → `work/analytics/AN-XX.md` (секция **«Кратко»**; текст **по-русски**, без TL;DR, dogfood, source of truth, golden path, use case и прочего англоязычного жаргона в prose) + `npm run seed:analytics-record -- --body work/analytics/<file>.md`; повторная чистка: `node scripts/rusify-analytics-jargon.mjs`; **не seed эпик** без явного «создавай задачи / делай» от оператора.
 - **Seed эпика / create_work_item:** следуй **work-items-russian.mdc** и **work-item-bvc-quality.mdc** — полные Базис/Вектор/Цель/Проверки на русском; явные analysis/decision; не telegraphic English; closing-задачи — «Закрыть разбор AN-n…», не «AN-n closing: epic-…».
+
+## Канон read-only (write-boundary, AN-77)
+
+- **Читать** канон можно: `intent/**`, `.work-graph/canon/**`, `work/analytics/`, resources MCP (`workgraph://item/{id}`).
+- **Запрещено** для file-write tools (`ApplyPatch`, `Write`): создавать или менять `intent/**/work/*.work.bvc`, `work.status`, `Свидетельства:`, claim labels, analysis/decision в atom.
+- **Только через MCP/CLI:** `create_work_item`, `update_work_item_status`, `claim_work_item`, `add_work_item_evidence`, `complete_work_item`, `record_work_item_analysis`, `record_work_item_decision`.
+- Штатные записи оставляют audit marker (`work.updated_by: workgraph-mcp`); прямой patch не имеет marker — `npm run lint:canon-write-boundary` падает в CI.
+- **Исключение:** явные migration scripts в `scripts/migrate-*.mjs` / `scripts/seed-epic-*.mjs` с `work.write.migration` — не ad-hoc patch в обычной задаче.
+
+### Self-hosted WG repo (повышенный риск)
+
+Если workspace = репозиторий Work Graph (движок + `intent/` в одном дереве): канон — **control-plane**, не прикладной код. Не править work items файлами даже «для скорости». См. [ADR write-boundary](adr-workgraph-canon-write-boundary-v1.md).
+
+### Правильный flow новой инициативы
+
+1. Разбор → analytics (`work/analytics/AN-XX.md`)
+2. `create_work_item` (backlog) + analysis/decision
+3. Promote → `claim_work_item`
+4. Код / изменения в `target_files`
+5. `add_work_item_evidence` → `complete_work_item`

@@ -1,0 +1,51 @@
+#Задача_design_workgraph_host_workspace_switcher_v1<[
+Базис:
+  AN-77: self-hosted режим максимального риска, потому что код движка WG и управляющий канон лежат в одном workspace.
+  AN-40 уже рассматривал multiproject host; нужно связать его с boundary-инцидентом.
+Вектор:
+  Описать host workspace model: один WG UI/process, registry проектов, active repoRoot, project switcher в UI, MCP repoRoot alignment.
+  Зафиксировать, как это снижает смешение engine code и managed project canon.
+Цель:
+  Есть дизайн host workspace/project switcher как рекомендуемого режима для self-hosting и multi-project работы.
+Проверки:
+  Plan описывает registry проектов и active repoRoot.
+  UI switcher не полагается на cwd.
+  MCP и UI используют один project root contract.
+  Self-hosted WG repo помечен high-risk mode с рекомендацией host separation.
+Анализ:
+  Зачем: разделение engine host и managed project снижает шанс прямого обхода канона при разработке WG.
+  Контекст: AN-77 прямо рекомендует отдельный WG host для self-hosting/multiproject.
+Решение:
+  Делать как развитие AN-40, не как замену write-boundary.
+
+Метки:
+  work.closed_at: 2026-06-05T14:08:09.765Z
+  work.parent_id: epic-workgraph-canon-write-boundary-v1
+  work.item_kind: subtask
+  atom.profile: work_item
+  intake.analytics_key: AN-77
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/workgraph-agent-mcp-bypass-install-boundary-incident.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-05T12:50:04.245Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-05T12:50:04.245Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: decide-workgraph-canon-write-boundary-adr, epic-work-graph-multiproject-host
+  work.id: design-workgraph-host-workspace-switcher-v1
+  work.next_action: Расширить multiproject host plan с учётом AN-77.
+  work.owner_role: system_architect
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: docs/plan-work-graph-multiproject-host.md, docs/adr-workgraph-canon-write-boundary-v1.md, src/workGraphBacklogUiServer.mjs, src/workGraphProjectRegistry.mjs, packages/workgraph-mcp/src/index.mjs
+  work.title: Спроектировать отдельный WG host с переключателем проектов
+
+Свидетельства:
+  - Старт: расширение plan-work-graph-multiproject-host.md секцией AN-77 host workspace.
+  - docs/plan-work-graph-multiproject-host.md — секция AN-77: host separation diagram, registry contract, repoRoot invariant UI/MCP, self-hosted high-risk playbook, MCP alignment gaps, draft work items.
+  - Host workspace / project switcher design связан с AN-40 и ADR write-boundary.
+]>

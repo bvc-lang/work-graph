@@ -1,7 +1,10 @@
 import assert from 'node:assert/strict';
-import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
-import { join, resolve } from 'node:path';
+import { execSync } from 'node:child_process';
+import { accessSync, constants } from 'node:fs';
+import { mkdtemp, readFile, rm } from 'node:fs/promises';
+import { dirname, join, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
+import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 
 import {
@@ -64,6 +67,32 @@ test('resolveEngineRoot: cliModuleUrl fallback для monorepo dev', () => {
   }
 });
 
+test('buildDoctorReport проверяет vendor locales и architecture для npm CLI', () => {
+  const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
+  const cliPkgRoot = join(repoRoot, 'packages/work-graph-cli');
+  const localesPath = join(cliPkgRoot, 'vendor/locales/en/ui.json');
+  let vendorReady = false;
+  try {
+    accessSync(localesPath, constants.R_OK);
+    vendorReady = true;
+  } catch {
+    vendorReady = false;
+  }
+
+  if (!vendorReady) {
+    execSync('node scripts/sync-work-graph-cli-vendor.mjs', { cwd: repoRoot, stdio: 'pipe' });
+  }
+
+  const report = buildDoctorReport({
+    projectRoot: cliPkgRoot,
+    config: { schema: 'workgraph.project.config.v2' },
+    engineRoot: cliPkgRoot,
+  });
+
+  assert.equal(report.checks.find((item) => item.name === 'vendor-locales')?.ok, true);
+  assert.equal(report.checks.find((item) => item.name === 'starter-templates')?.ok, true);
+});
+
 test('buildDoctorReport сообщает об отсутствии config', () => {
   const report = buildDoctorReport({ projectRoot: '/tmp/x', config: null, engineRoot: null });
   assert.equal(report.ok, false);
@@ -76,6 +105,7 @@ test('init npm-first config v2 без engineRoot', async () => {
   try {
     const result = await initWorkGraphProject({
       projectRoot: join(dir, 'project'),
+      cliModuleUrl: new URL('../packages/work-graph-cli/bin/work-graph.mjs', import.meta.url).href,
       npmFirst: true,
       label: 'Npm Project',
       id: 'npm-project',

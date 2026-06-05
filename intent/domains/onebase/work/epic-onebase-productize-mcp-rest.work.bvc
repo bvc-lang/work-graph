@@ -1,0 +1,41 @@
+#Задача_epic_onebase_productize_mcp_rest<[
+Базис:
+  AN-72 фиксирует: текущая интеграция OneBase достаточна для пилота как движок планирования и верификации, но для продукта не хватает рабочего MCP-сервера OneBase и REST/write-пути.
+  Старые задачи по parity и worker-tools закрыты; этот эпик открывает следующий продуктовый слой, не переписывая уже готовую пилотную часть.
+Вектор:
+  Дотянуть OneBase-интеграцию от pilot-ready verification layer до product-ready integration surface: MCP tools, REST read/write, подтверждение мутаций, audit/evidence и минимальный e2e-пилот.
+  Сохранить принцип AN-72: детерминированные gates остаются источником done/verify, MCP и REST — agent/product access path с явными evidence records.
+Цель:
+  Пользователь может подключить OneBase-проект, увидеть/прочитать конфигурацию через MCP, выполнить безопасные REST-read операции, подготовить write-операцию только через confirm/audit, и пройти один end-to-end пилотный сценарий.
+Проверки:
+  есть зарегистрированные MCP tools OneBase в рабочем MCP-сервере
+  REST-read возвращает structured evidence без мутаций
+  REST-write невозможен без confirm и audit trail
+  e2e-пилот показывает сценарий планирование → проверка → evidence → product access path
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-72
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/onebase-integration-implementation-review.md
+  migration.strategy: port
+  trace.status: verified
+  work.department: domain-onebase
+  work.decision.verdict: useful
+  work.id: epic-onebase-productize-mcp-rest
+  work.item_kind: epic
+  work.next_action: закрыто; следующий слой — реальный пилот с live OneBase runtime
+  work.owner_role: product_engineer
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: high
+  work.status: done
+  work.target_files: packages/workgraph-mcp/src/index.mjs, packages/workgraph-mcp/src/handlers.mjs, src/onebaseWorkerTools.mjs, src/onebaseRestEvidenceAdapter.mjs, protocols/onebase-mcp-parity-v1.bvc, work/analytics/onebase-integration-implementation-review.md
+  work.title: Productize OneBase integration: рабочий MCP и REST/write путь
+
+Свидетельства:
+  - Epic scope закрыт: MCP tools metadata/read/describe/check реализованы; REST-read GET-only evidence реализован; REST-write prepare/confirm/execute с audit/evidence реализован; product pilot runbook + smoke script добавлены.
+  - Дочерние задачи done: implement-onebase-mcp-server-tools, implement-onebase-rest-read-tools, implement-onebase-rest-write-confirm-audit, onebase-product-pilot-e2e-runbook.
+  - Verification: npm run test:optional:onebase-product-pilot => ok true; npm run test:deterministic => 844/844 pass.
+]>
+

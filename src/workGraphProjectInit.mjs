@@ -9,6 +9,15 @@ import {
   importMcpServer,
   resolveEngineRoot,
 } from './workGraphEngineRoot.mjs';
+import {
+  materializeStarterKitForProject,
+} from './workGraphInitStarterKit.mjs';
+import {
+  CANON_LAYOUT_DOT_CANON,
+  CANON_LAYOUT_ROOT_INTENT,
+  DEFAULT_CANON_ROOT_REL,
+  normalizeCanonLayout,
+} from './canonPaths.mjs';
 
 export {
   buildDoctorReport,
@@ -20,33 +29,51 @@ export {
 
 const CONFIG_SCHEMA_V1 = 'workgraph.project.config.v1';
 const CONFIG_SCHEMA_V2 = 'workgraph.project.config.v2';
-const DEFAULT_CLI_VERSION = '0.2.8';
-const DEFAULT_MCP_VERSION = '0.2.5';
+const CONFIG_SCHEMA_V3 = 'workgraph.project.config.v3';
+const DEFAULT_CLI_VERSION = '0.2.14';
+const DEFAULT_MCP_VERSION = '0.2.9';
 
-const INDEX_STUB = `#Index<[
-WorkItems:
-]>
-`;
-const MAIN_BVC_STUB = `#Architecture_Main<[
-Базис:
-  Каркас architecture/main.bvc создан через work-graph init.
-]>
-`;
-
-export function buildProjectConfig({ projectRoot, engineRoot, label, id, uiPort, schemaVersion = 2 } = {}) {
+export function buildProjectConfig({
+  projectRoot,
+  engineRoot,
+  label,
+  id,
+  uiPort,
+  schemaVersion = 2,
+  canonLayout,
+} = {}) {
   const root = resolve(projectRoot);
+  const normalizedCanonLayout = normalizeCanonLayout(canonLayout);
+  const useDotCanon = normalizedCanonLayout === CANON_LAYOUT_DOT_CANON;
+  const effectiveSchemaVersion = useDotCanon ? 3 : schemaVersion;
   const config = {
-    schema: schemaVersion === 1 ? CONFIG_SCHEMA_V1 : CONFIG_SCHEMA_V2,
+    schema: effectiveSchemaVersion === 3
+      ? CONFIG_SCHEMA_V3
+      : (effectiveSchemaVersion === 1 ? CONFIG_SCHEMA_V1 : CONFIG_SCHEMA_V2),
     projectRoot: root,
     projectId: id ?? slugFromPath(root),
     label: label ?? basename(root),
     uiPort: uiPort ?? 4177,
     createdAt: new Date().toISOString(),
   };
-  if (schemaVersion === 1 && engineRoot) {
+  if (useDotCanon) {
+    config.canonLayout = CANON_LAYOUT_DOT_CANON;
+    config.canonRoot = DEFAULT_CANON_ROOT_REL;
+  } else if (effectiveSchemaVersion === 3) {
+    config.canonLayout = CANON_LAYOUT_ROOT_INTENT;
+  }
+  if (effectiveSchemaVersion === 1 && engineRoot) {
     config.engineRoot = resolve(engineRoot);
   }
   return config;
+}
+
+export function resolveInitCanonTreeRoot(projectRoot, canonLayout) {
+  const root = resolve(projectRoot);
+  if (normalizeCanonLayout(canonLayout) === CANON_LAYOUT_DOT_CANON) {
+    return join(root, DEFAULT_CANON_ROOT_REL);
+  }
+  return root;
 }
 
 export function slugFromPath(root) {
@@ -161,22 +188,33 @@ await import(pathToFileURL(resolveMcpModule(installRoot)).href);
 `;
 }
 
-export function buildCursorRuleContent({ label } = {}) {
+export function buildCursorRuleContent({ label, canonLayout } = {}) {
   const projectLabel = label ?? 'этот проект';
+  const isDotCanon = normalizeCanonLayout(canonLayout) === CANON_LAYOUT_DOT_CANON;
+  const canonPathHint = isDotCanon
+    ? '`.work-graph/canon/intent/**/work/*.work.bvc`, индекс `.work-graph/canon/intent/index.bvc`'
+    : '`intent/**/work/*.work.bvc`, индекс `intent/index.bvc`';
   return `---
-description: Work Graph — канон и бэклог в intent/ (${projectLabel})
+description: Work Graph — канон read-only, записи через MCP (${projectLabel})
 alwaysApply: true
 ---
 
 # Work Graph в проекте
 
-- Канон задач: \`intent/**/work/*.work.bvc\`, индекс \`intent/index.bvc\`.
+- Канон задач: ${canonPathHint}.
 - Trackable work — только через \`work.id\`; не дублировать в чат-todo.
-- Перед закрытием задачи — \`Свидетельства:\` в atom и проверки из \`Проверки:\`.
 - UI: \`npm run workgraph:ui\` → http://localhost:4177/
-- MCP: сервер \`workgraph\` в \`.cursor/mcp.json\` (если настроен при init).
+- MCP: сервер \`workgraph\` в \`.cursor/mcp.json\`.
 
-Установка: \`npx @work-graph/cli init .\` или «установи Work Graph в этот проект».
+## Канон read-only
+
+- Читать work items можно файлами и MCP read tools.
+- **Запрещено** \`ApplyPatch\` / \`Write\` по \`intent/**/work/*.work.bvc\` и \`.work-graph/canon/**/work/*.work.bvc\`.
+- Создание/статус/evidence/complete — только MCP: \`create_work_item\`, \`claim_work_item\`, \`update_work_item_status\`, \`add_work_item_evidence\`, \`complete_work_item\`.
+
+Flow: analytics → create_work_item → claim → код → evidence → complete.
+
+Установка: \`npx @work-graph/cli init .\`
 `;
 }
 
@@ -251,14 +289,17 @@ export async function initWorkGraphProject(options = {}) {
   const projectRoot = resolve(options.projectRoot ?? process.cwd());
   const label = options.label ?? basename(projectRoot);
   const projectId = options.id ?? slugFromPath(projectRoot);
+  const canonLayout = normalizeCanonLayout(options.canonLayout);
+  const isDotCanon = canonLayout === CANON_LAYOUT_DOT_CANON;
   const npmFirst = options.npmFirst !== false && !options.engineRoot;
   const engineRoot = options.engineRoot
     ? resolve(options.engineRoot)
     : (options.cliModuleUrl ? defaultEngineRootFromCliModule(options.cliModuleUrl) : null);
 
-  await mkdir(join(projectRoot, 'intent'), { recursive: true });
-  await mkdir(join(projectRoot, 'charter'), { recursive: true });
-  await mkdir(join(projectRoot, 'architecture'), { recursive: true });
+  const canonTreeRoot = resolveInitCanonTreeRoot(projectRoot, canonLayout);
+  await mkdir(join(canonTreeRoot, 'intent'), { recursive: true });
+  await mkdir(join(canonTreeRoot, 'charter'), { recursive: true });
+  await mkdir(join(canonTreeRoot, 'architecture'), { recursive: true });
   await mkdir(join(projectRoot, '.work-graph'), { recursive: true });
   await mkdir(join(projectRoot, '.cursor/rules'), { recursive: true });
 
@@ -269,6 +310,7 @@ export async function initWorkGraphProject(options = {}) {
     id: projectId,
     uiPort: options.uiPort,
     schemaVersion: npmFirst ? 2 : 1,
+    canonLayout,
   });
 
   const configPath = join(projectRoot, '.work-graph/config.json');
@@ -279,9 +321,18 @@ export async function initWorkGraphProject(options = {}) {
   await writeFile(runUiPath, buildRunUiScriptContent(), 'utf8');
   await writeFile(runMcpPath, buildRunMcpScriptContent(), 'utf8');
 
-  const canonWrites = [];
-  canonWrites.push(await writeIfMissing(join(projectRoot, 'intent/index.bvc'), INDEX_STUB));
-  canonWrites.push(await writeIfMissing(join(projectRoot, 'architecture/main.bvc'), MAIN_BVC_STUB));
+  const starterKit = materializeStarterKitForProject({
+    cliModuleUrl: options.cliModuleUrl,
+    engineRoot: npmFirst ? undefined : engineRoot,
+    canonTreeRoot,
+    projectRoot,
+  });
+
+  const canonWrites = starterKit.files.map((entry) => ({
+    path: entry.targetPath,
+    written: entry.written,
+    skipped: entry.skipped,
+  }));
 
   const cliVersion = options.cliVersion ?? DEFAULT_CLI_VERSION;
   const mcpVersion = options.mcpVersion ?? DEFAULT_MCP_VERSION;
@@ -313,7 +364,7 @@ export async function initWorkGraphProject(options = {}) {
   const rulePath = join(projectRoot, '.cursor/rules/work-graph-project.mdc');
   let ruleWritten = false;
   if (options.writeCursorRule !== false) {
-    const wrote = await writeIfMissing(rulePath, buildCursorRuleContent({ label }));
+    const wrote = await writeIfMissing(rulePath, buildCursorRuleContent({ label, canonLayout }));
     ruleWritten = wrote.written;
   }
 
@@ -335,6 +386,8 @@ export async function initWorkGraphProject(options = {}) {
     schema: npmFirst ? 'workgraph.cli.init.v2' : 'workgraph.cli.init.v1',
     npmFirst,
     projectRoot,
+    canonLayout,
+    canonTreeRoot,
     engineRoot: engineRoot ?? null,
     configPath,
     projectId,
@@ -343,6 +396,7 @@ export async function initWorkGraphProject(options = {}) {
     mcpWritten,
     ruleWritten,
     canonWrites,
+    starterKit,
     nextSteps,
   };
 }

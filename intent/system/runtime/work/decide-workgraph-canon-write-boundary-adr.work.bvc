@@ -1,0 +1,50 @@
+#Задача_decide_workgraph_canon_write_boundary_adr<[
+Базис:
+  AN-77 показал, что перенос канона в .workgraph сам по себе не защищает от прямых file edits.
+  Нужно зафиксировать, какие операции считаются штатными: create/update/complete/evidence только через Work Graph MCP/CLI, миграции — отдельный разрешённый режим.
+Вектор:
+  Описать ADR write-boundary: канон read-many/write-through-API; исключения для migration scripts; self-hosted WG repo как high-risk mode; связь с npm-first engine и host workspace моделью.
+Цель:
+  Есть ADR `docs/adr-workgraph-canon-write-boundary-v1.md`, который задаёт политику прямых правок канона, исключения, риски и решения для per-project/self-hosted установки.
+Проверки:
+  ADR содержит problem/context/decision/consequences.
+  ADR явно запрещает прямые agent file edits для work items/evidence/status.
+  ADR описывает migration exception и audit evidence.
+  ADR связан с AN-77 и AN-40 multiproject host.
+Анализ:
+  Зачем: без ADR отдельные правила и lint будут спорить о границе.
+  Контекст: инцидент произошёл в self-hosted режиме WG.
+Решение:
+  Сначала зафиксировать архитектурное решение, затем реализовывать lint/hook и UI/MCP изменения.
+
+Метки:
+  work.closed_at: 2026-06-05T14:00:12.898Z
+  work.parent_id: epic-workgraph-canon-write-boundary-v1
+  work.item_kind: subtask
+  atom.profile: work_item
+  intake.analytics_key: AN-77
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/workgraph-agent-mcp-bypass-install-boundary-incident.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-05T12:49:45.269Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-05T12:49:45.269Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: epic-workgraph-canon-write-boundary-v1
+  work.id: decide-workgraph-canon-write-boundary-adr
+  work.next_action: Написать ADR и сослаться на AN-77.
+  work.owner_role: integration_architect
+  work.pipeline_stage: decided
+  work.priority: critical
+  work.risk: medium
+  work.status: done
+  work.target_files: docs/adr-workgraph-canon-write-boundary-v1.md, work/analytics/workgraph-agent-mcp-bypass-install-boundary-incident.md
+  work.title: ADR: граница записи канона Work Graph
+
+Свидетельства:
+  - claim: decide-workgraph-canon-write-boundary-adr via WorkGraph MCP
+  - Создан docs/adr-workgraph-canon-write-boundary-v1.md: problem/context/decision/consequences, запрет agent file edits для work items/evidence/status, migration exception, связь AN-77 и AN-40 multiproject host, таблица read-many/write-through-API и план подзадач эпика.
+  - ADR write-boundary v1 принят в docs/adr-workgraph-canon-write-boundary-v1.md.
+]>

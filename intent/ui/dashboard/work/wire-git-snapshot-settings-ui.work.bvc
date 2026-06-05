@@ -1,0 +1,51 @@
+#Задача_wire_git_snapshot_settings_ui<[
+Базис:
+  AN-71: автокоммиты нельзя включать скрыто; оператор должен видеть настройку и понимать, что push в v1 не делается.
+Вектор:
+  Добавить UI Settings для Git Snapshot: enabled, events, recordShaInEvidence, debounceSeconds; показать предупреждение «scoped commit only, no push».
+  Настройка должна писать project config/env-compatible policy, не менять git config.
+Цель:
+  Оператор может включить/выключить git snapshot без ручного редактирования env/protocol.
+Проверки:
+  default disabled
+  UI явно говорит no auto-push
+  изменение настроек отражается в policy loader
+  нет записи в `git config`
+Анализ:
+  Зачем:
+  Settings UI для opt-in без env editing.
+  Когда:
+  /api/git-snapshot-settings + settings panel section.
+  Готово, когда:
+  default disabled, no push note visible.
+
+Метки:
+  work.closed_at: 2026-06-05T15:55:01.459Z
+  atom.profile: work_item
+  intake.analytics_key: AN-71
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-git-autocommit-on-events.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-05T15:54:24.838Z
+  work.analysis.source: cursor-mcp
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: implement-git-snapshot-core
+  work.id: wire-git-snapshot-settings-ui
+  work.item_kind: task
+  work.next_action: Cursor: record_work_item_decision (useful/harmful/defer)
+  work.owner_role: feature_engineer
+  work.parent_id: epic-workgraph-git-snapshot-v1
+  work.pipeline_stage: analyzed
+  work.priority: low
+  work.risk: medium
+  work.status: done
+  work.target_files: src/workGraphBacklogUiServer.mjs, src/appSettings.mjs, src/gitSnapshot.mjs, tests/missionControlUiClient.test.mjs
+  work.title: Добавить UI настройки Git Snapshot (opt-in, no push)
+
+Свидетельства:
+  - claim: wire-git-snapshot-settings-ui via WorkGraph MCP
+  - Settings panel Git Snapshot section + GET/PUT /api/git-snapshot-settings; writes .work-graph/git-snapshot.json.
+]>
+

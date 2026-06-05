@@ -1,0 +1,49 @@
+#Задача_document_parent_vs_depends_guideline<[
+Базис:
+  AN-75: агентам и операторам нужен простой канон: parent_id для вложенности, depends_on для порядка.
+Вектор:
+  Обновить правила/доки создания задач: в шаблоне эпика указать, что child tasks обязаны иметь `work.parent_id=<epic-id>`, а `work.depends_on` используется только для исполнения.
+Цель:
+  Новые задачи создаются корректно без знания внутренней UI-логики.
+Проверки:
+  docs/rules содержат явное правило parent_id vs depends_on
+  пример epic + две child tasks показывает оба поля
+  cursor rule/agent prompt не предлагает depends_on как замену parent_id
+Анализ:
+  Зачем:
+  Агентам и операторам нужен явный канон parent_id vs depends_on в правилах создания задач.
+  Когда:
+  После lint/create guard; обновить work-items-russian.mdc.
+  Готово, когда:
+  док с примером epic + child tasks и правилами create/subtask.
+
+Метки:
+  work.closed_at: 2026-06-05T15:47:16.630Z
+  atom.profile: work_item
+  intake.analytics_key: AN-75
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-parent-vs-depends-on-guardrails.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-05T15:46:45.774Z
+  work.analysis.source: cursor-mcp
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: lint-epic-depends-without-parent
+  work.id: document-parent-vs-depends-guideline
+  work.item_kind: task
+  work.next_action: Cursor: record_work_item_decision (useful/harmful/defer)
+  work.owner_role: technical_writer
+  work.parent_id: epic-work-item-hierarchy-guardrails-v1
+  work.pipeline_stage: analyzed
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: docs/cursor-rules/work-items-russian.mdc, docs/decision-pipeline-canon.md, rules/agent-behavior/work-item-create-analysis-decision.bvc
+  work.title: Задокументировать правило parent_id vs depends_on
+
+Свидетельства:
+  - claim: document-parent-vs-depends-guideline via WorkGraph MCP
+  - docs/cursor-rules/work-items-russian.mdc: секция parent_id vs depends_on с примером epic + child tasks и правилами create/subtask.
+]>
+

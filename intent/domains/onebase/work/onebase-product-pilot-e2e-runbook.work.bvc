@@ -1,0 +1,43 @@
+#Задача_onebase_product_pilot_e2e_runbook<[
+Базис:
+  AN-72: для пилота уже достаточно планирования и верификации, но product-readiness требует показать весь путь MCP + REST + evidence на одном понятном сценарии.
+  Без e2e runbook интеграция останется набором tools, а не пользовательским flow.
+Вектор:
+  Описать и проверить пилотный сценарий: подключить `../onebase`, просканировать metadata, прочитать документ/регистр, запустить check/describe, выполнить REST-read, подготовить write-operation через confirm (можно mocked/runtime-optional), записать evidence.
+  Зафиксировать команды, env (`ONEBASE_CLI`, `ONEBASE_PROJECT_ROOT`, `ONEBASE_API_BASE_URL`), ожидаемые blocker states и критерии ready-for-demo.
+Цель:
+  Пилотный пользователь может повторить OneBase flow по runbook без знания внутренней архитектуры Work Graph.
+Проверки:
+  runbook отделяет обязательные шаги от optional runtime steps
+  отсутствие Go/OneBase runtime фиксируется как blocked, а не failed
+  одна команда/скрипт строит summary по доступным gates
+  closing/evidence показывает, что pilot-ready surface работает
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-72
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/onebase-integration-implementation-review.md
+  migration.strategy: port
+  trace.status: verified
+  work.department: domain-onebase
+  work.decision.verdict: useful
+  work.depends_on: implement-onebase-mcp-server-tools, implement-onebase-rest-read-tools
+  work.id: onebase-product-pilot-e2e-runbook
+  work.item_kind: task
+  work.next_action: закрыто; OneBase product pilot smoke готов
+  work.owner_role: product_engineer
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: medium
+  work.status: done
+  work.target_files: docs/golden-path-pilot-runbook.md, docs/pilot-1c-user-checklist.md, scripts/run-onebase-config-check.mjs, scripts/run-onebase-verification.mjs, work/analytics/onebase-integration-implementation-review.md
+  work.title: Описать e2e runbook пилота OneBase MCP+REST+evidence
+
+Свидетельства:
+  - Расширен docs/golden-path-pilot-runbook.md разделом OneBase product pilot surface: env, metadata/read, describe/check, REST GET, write prepare/confirm/execute, blocked semantics и ready-for-demo criteria.
+  - Добавлен smoke script scripts/run-onebase-product-pilot-smoke.mjs и npm script test:optional:onebase-product-pilot.
+  - Smoke проверяет metadata/read на fixture, REST GET blocked без base URL, mocked REST GET evidence, write prepare, execute без confirm blocked, confirmed mocked POST evidence.
+  - Verification: npm run test:optional:onebase-product-pilot => ok true; npm run test:deterministic => 844/844 pass.
+]>
+

@@ -68,3 +68,34 @@ alwaysApply: true
 ## Автопроверка
 
 `npm run lint:backlog` предупреждает о коротких BVC и робототексте (`work_item_prose_jargon`). Исправляй warnings в затронутых задачах.
+
+## Иерархия: `work.parent_id` vs `work.depends_on`
+
+- **`work.parent_id`** — вложенность: подзадачи эпика, группировка в UI, rollup прогресса.
+- **`work.depends_on`** — порядок исполнения: что блокирует старт задачи.
+
+**Правило для подзадач эпика:** у каждой child task/subtask должен быть `work.parent_id=<epic-id>`.  
+`work.depends_on: <epic-id>` **не заменяет** parent_id — это только порядок, UI children строит по parent_id.
+
+**Пример (эпик + две подзадачи):**
+
+```
+Метки:
+  work.id: epic-an75
+  work.item_kind: epic
+
+Метки:
+  work.id: child-a
+  work.item_kind: task
+  work.parent_id: epic-an75
+  work.depends_on: epic-an75
+
+Метки:
+  work.id: child-b
+  work.item_kind: task
+  work.parent_id: epic-an75
+  work.depends_on: child-a
+```
+
+- `create_work_item` с `itemKind=subtask` **без** `parentId` → validation error.
+- Lint `epic_dependency_without_parent`: task зависит от epic, но `work.parent_id` пуст.

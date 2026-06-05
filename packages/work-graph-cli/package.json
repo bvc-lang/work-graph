@@ -1,6 +1,6 @@
 {
   "name": "@work-graph/cli",
-  "version": "0.2.12",
+  "version": "0.2.15",
   "description": "Work Graph CLI — install local agent work tracking, BVC work items and backlog UI in any project",
   "type": "module",
   "bin": {
@@ -9,6 +9,7 @@
   "files": [
     "bin",
     "vendor",
+    "templates",
     "README.md"
   ],
   "publishConfig": {

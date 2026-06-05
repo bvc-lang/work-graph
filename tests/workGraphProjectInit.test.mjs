@@ -13,8 +13,14 @@ import {
   mergeCursorMcpConfig,
   mergePackageJsonScripts,
   readProjectConfig,
+  resolveInitCanonTreeRoot,
   slugFromPath,
 } from '../src/workGraphProjectInit.mjs';
+import { CANON_LAYOUT_DOT_CANON } from '../src/canonPaths.mjs';
+import { readWorkItemsFromRepo } from '../src/intentTreeWorkItems.mjs';
+import { fileURLToPath } from 'node:url';
+
+const cliModuleUrl = new URL('../packages/work-graph-cli/bin/work-graph.mjs', import.meta.url).href;
 
 test('slugFromPath нормализует имя каталога', () => {
   assert.equal(slugFromPath('D:/Work/My Project'), 'my-project');
@@ -64,12 +70,66 @@ test('mergeCursorMcpConfig npm-first добавляет npx @work-graph/mcp', ()
   assert.deepEqual(cfg.mcpServers.workgraph.args, ['-y', '@work-graph/mcp']);
 });
 
+test('buildProjectConfig v3 dot-canon добавляет canonLayout и canonRoot', () => {
+  const config = buildProjectConfig({
+    projectRoot: '/tmp/alpha',
+    label: 'Alpha',
+    canonLayout: CANON_LAYOUT_DOT_CANON,
+  });
+  assert.equal(config.schema, 'workgraph.project.config.v3');
+  assert.equal(config.canonLayout, CANON_LAYOUT_DOT_CANON);
+  assert.equal(config.canonRoot, '.work-graph/canon');
+});
+
+test('resolveInitCanonTreeRoot maps dot-canon under .work-graph/canon', () => {
+  const root = resolve('/tmp/project');
+  assert.equal(resolveInitCanonTreeRoot(root, CANON_LAYOUT_DOT_CANON), join(root, '.work-graph/canon'));
+  assert.equal(resolveInitCanonTreeRoot(root, 'root-intent'), root);
+});
+
+test('initWorkGraphProject dot-canon пишет starter-kit под .work-graph/canon', async () => {
+  const dir = await mkdtemp(join(tmpdir(), 'wg-init-dot-'));
+  try {
+    const projectRoot = join(dir, 'project');
+    const result = await initWorkGraphProject({
+      projectRoot,
+      cliModuleUrl,
+      npmFirst: true,
+      label: 'Dot Canon',
+      id: 'dot-canon-project',
+      canonLayout: CANON_LAYOUT_DOT_CANON,
+      mergeMcp: false,
+      mergePackageJson: false,
+      writeCursorRule: false,
+    });
+
+    assert.equal(result.ok, true);
+    assert.equal(result.canonLayout, CANON_LAYOUT_DOT_CANON);
+    assert.equal(result.canonTreeRoot, join(projectRoot, '.work-graph/canon'));
+
+    const config = JSON.parse(await readFile(result.configPath, 'utf8'));
+    assert.equal(config.schema, 'workgraph.project.config.v3');
+    assert.equal(config.canonLayout, CANON_LAYOUT_DOT_CANON);
+
+    const indexPath = join(projectRoot, '.work-graph/canon/intent/index.bvc');
+    const archPath = join(projectRoot, '.work-graph/canon/architecture/main.bvc');
+    await readFile(indexPath, 'utf8');
+    await readFile(archPath, 'utf8');
+
+    const items = await readWorkItemsFromRepo({ repoRoot: projectRoot });
+    assert.ok(items.some((item) => item.id === 'starter-sample-task'));
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});
+
 test('initWorkGraphProject legacy создаёт engineRoot v1', async () => {
   const dir = await mkdtemp(join(tmpdir(), 'wg-init-'));
   const engine = join(dir, 'engine');
   try {
     const result = await initWorkGraphProject({
       projectRoot: join(dir, 'project'),
+      cliModuleUrl,
       engineRoot: engine,
       npmFirst: false,
       label: 'Тестовый проект',

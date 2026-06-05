@@ -90,6 +90,23 @@ Read: `list_work_items`, `get_work_item`, `get_backlog_snapshot`, `get_current_c
 
 Write: `create_work_item`, `update_work_item_status`, `add_work_item_evidence`, `claim_work_item`, `complete_work_item`
 
+## Canon write-boundary (AN-77)
+
+Work items and evidence are **read-many / write-through-MCP**:
+
+| Allowed | Forbidden for file-write tools |
+|---------|-------------------------------|
+| Read `intent/**/work/*.work.bvc`, MCP read tools | Create or patch `.work.bvc` atoms |
+| MCP write tools above | Direct edits to `work.status`, `Свидетельства:`, claim labels |
+
+Authorized MCP writes stamp atoms with `work.updated_by: workgraph-mcp` and `work.write.operation`. CI runs `npm run lint:canon-write-boundary` on changed canon files.
+
+**Agent workflow:** analytics → `create_work_item` → analysis/decision → promote → `claim_work_item` → code → `add_work_item_evidence` → `complete_work_item`.
+
+**Prompts:** `create_work_item_from_analytics`, `create_epic_subtasks`, `take_next_work_item` — see [workgraph-mcp-prompts.md](./workgraph-mcp-prompts.md).
+
+**Self-hosted WG repo:** when `WORKGRAPH_ROOT` is the Work Graph engine repo itself, treat `intent/` as control-plane — never bypass MCP with file patches. See [adr-workgraph-canon-write-boundary-v1.md](./adr-workgraph-canon-write-boundary-v1.md).
+
 ## Session primer
 
 Перед первой сессией «делай эпики» прочитай **[workgraph-session-primer-runbook.md](./workgraph-session-primer-runbook.md)** — чеклист workspace, MCP, `npm run sync:cursor-rules` и шаблон первого сообщения (без TodoWrite / dual backlog).

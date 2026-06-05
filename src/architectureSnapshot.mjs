@@ -1,7 +1,7 @@
 import {
-  ARCHITECTURE_L1_BLOCKS,
+  getArchitectureL1Blocks,
+  getArchitectureL1Edges,
   ARCHITECTURE_L1_CANON_REPO_ROOT,
-  ARCHITECTURE_L1_EDGES,
   loadArchitectureL1Canon,
   toArchitectureL1BlockProjection,
 } from './architectureL1Canon.mjs';
@@ -12,7 +12,7 @@ import {
 import { ARCHITECTURE_LAYOUT_PROFILE } from './graphCanvasLayout.mjs';
 import { classifyWorkItemBlock } from './workItemBlockClassifier.mjs';
 
-export { ARCHITECTURE_L1_BLOCKS, ARCHITECTURE_L1_EDGES };
+export { getArchitectureL1Blocks, getArchitectureL1Edges };
 export { classifyWorkItemBlock };
 
 const compareText = (left, right) => String(left).localeCompare(String(right), 'en', { sensitivity: 'variant' });

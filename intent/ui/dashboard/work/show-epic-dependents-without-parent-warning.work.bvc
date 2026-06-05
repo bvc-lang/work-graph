@@ -1,0 +1,50 @@
+#Задача_show_epic_dependents_without_parent_warning<[
+Базис:
+  AN-75: даже при линтере в существующем репозитории могут быть эпики без children, но с задачами, которые зависят от эпика.
+Вектор:
+  В backlog UI для epic row показать предупреждение, если `childIds.length === 0`, но есть tasks с `depends_on` на этот epic.
+  Текст: «Нет подзадач. Найдены задачи, которые зависят от эпика, но не привязаны как дочерние».
+Цель:
+  Оператор понимает, почему эпик пустой, и видит моделировочную ошибку прямо в UI.
+Проверки:
+  fixture epic without children + dependent task показывает warning
+  обычный epic with children warning не показывает
+  warning не меняет статусы и не создает автоматических правок
+Анализ:
+  Зачем:
+  Оператор видит, почему эпик пустой при наличии depends_on зависимых задач.
+  Когда:
+  После lint; UI warning в renderWorkflowEpicGroup.
+  Готово, когда:
+  fixture warning в HTML + i18n ru/en.
+
+Метки:
+  work.closed_at: 2026-06-05T15:47:13.332Z
+  atom.profile: work_item
+  intake.analytics_key: AN-75
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-parent-vs-depends-on-guardrails.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-05T15:46:45.072Z
+  work.analysis.source: cursor-mcp
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: lint-epic-depends-without-parent
+  work.id: show-epic-dependents-without-parent-warning
+  work.item_kind: task
+  work.next_action: Cursor: record_work_item_decision (useful/harmful/defer)
+  work.owner_role: feature_engineer
+  work.parent_id: epic-work-item-hierarchy-guardrails-v1
+  work.pipeline_stage: analyzed
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: src/workGraphBacklogUiServer.mjs, tests/workGraphBacklogUiServer.test.mjs, locales/ru/ui.json, locales/en/ui.json
+  work.title: Показать в UI предупреждение для epic dependents без parent_id
+
+Свидетельства:
+  - claim: show-epic-dependents-without-parent-warning via WorkGraph MCP
+  - src/workGraphBacklogUiServer.mjs + workflowEpicGrouping.mjs: workflow-epic-hierarchy-warning; locales ru/en; tests/workGraphBacklogUiServer.test.mjs + workflowEpicGrouping.test.mjs.
+]>
+

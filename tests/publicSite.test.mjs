@@ -37,8 +37,8 @@ describe('publicSiteContent', () => {
   it('defines public pages and machine-readable docs', () => {
     const home = getPublicSitePage('/', 'en');
     assert.match(home.title, /navigator for AI development/u);
-    assert.equal(home.documentTitle, 'Work Graph — contract platform for AI-driven development');
-    assert.equal(getPublicSitePage('/', 'ru').documentTitle, 'Work Graph — контрактная платформа для разработки с ИИ');
+    assert.equal(home.documentTitle, 'Work Graph — navigator for AI development');
+    assert.equal(getPublicSitePage('/', 'ru').documentTitle, 'Work Graph — навигатор для AI-разработки');
     assert.match(home.description, /manageable project map/u);
 
     const ruHome = getPublicSitePage('/', 'ru');
@@ -341,7 +341,7 @@ describe('public site static export', () => {
     });
     const root = join(import.meta.dirname, '..', outDir);
     const indexHtml = await readFile(join(root, 'index.html'), 'utf8');
-    assert.match(indexHtml, /<title>Work Graph — контрактная платформа для разработки с ИИ<\/title>/u);
+    assert.match(indexHtml, /<title>Work Graph — навигатор для AI-разработки<\/title>/u);
     assert.match(indexHtml, /<h1>Ваш навигатор для AI-разработки, переводит цели в исполняемый граф<\/h1>/u);
     assert.match(indexHtml, /управляемую карту проекта/u);
     assert.match(indexHtml, /Три графа — один цикл разработки/u);
@@ -351,7 +351,7 @@ describe('public site static export', () => {
     assert.match(indexHtml, /109644335/u);
     assert.doesNotMatch(indexHtml, /Decision \(AN\)/u);
     const enIndexHtml = await readFile(join(root, 'en', 'index.html'), 'utf8');
-    assert.match(enIndexHtml, /<title>Work Graph — contract platform for AI-driven development<\/title>/u);
+    assert.match(enIndexHtml, /<title>Work Graph — navigator for AI development<\/title>/u);
     assert.match(enIndexHtml, /<h1>Your navigator for AI development — turns goals into an executable graph<\/h1>/u);
     assert.match(enIndexHtml, /manageable project map/u);
     await access(join(root, 'llms.txt'));

@@ -1,0 +1,58 @@
+#Задача_epic_workgraph_canon_write_boundary_v1<[
+Базис:
+  AN-77 зафиксировал инцидент: агент изменил код и затем создал/правил work item напрямую через файловые правки, обойдя Work Graph MCP.
+  Риск повторяется при per-project install: канон лежит в рабочем дереве и выглядит для агента как обычные файлы.
+  Нужна явная граница записи: читать канон можно как файлы, писать work items/evidence/status — только через Work Graph MCP/CLI, кроме контролируемых миграций.
+Вектор:
+  Спроектировать write-boundary для канона Work Graph.
+  Усилить правила, lint/hook и audit marker, чтобы прямые изменения intent/**/*.work.bvc и будущего .work-graph/canon/** выявлялись.
+  Описать установочную модель: npm-first engine, optional .work-graph/canon, отдельный WG host с переключателем проектов для self-hosting/multiproject.
+  Добавить UI/MCP/CLI задачи, которые делают штатный путь записи удобнее прямого patch.
+Цель:
+  После эпика агентский workflow не допускает незамеченного обхода MCP при создании/изменении задач: есть ADR/plan, Cursor/project rules, audit marker для штатных записей, lint/hook против прямых edits, и backlog задач для .work-graph/canon / host workspace boundary.
+Проверки:
+  ADR фиксирует write-boundary: канон read-only для file tools, записи только MCP/CLI.
+  Plan содержит задачи и порядок внедрения из AN-77.
+  Создана политика audit marker для штатных write API.
+  Lint/hook ловит прямые изменения *.work.bvc без Work Graph marker или migration evidence.
+  Правила Cursor/project явно запрещают file edits канона.
+  Self-hosting/multiproject модель описывает отдельный host workspace и project switcher boundary.
+Анализ:
+  Зачем: AN-77 показал, что мягкие правила не остановили агента от прямых правок канона.
+  Контекст: per-project install и self-hosted WG repo оставляют intent/**/*.work.bvc обычными файлами.
+  Риск: без write-boundary Work Graph не является надёжным source of truth для агентской работы.
+Решение:
+  Вердикт: полезно и критично.
+  Стратегия: не прятать файлы как единственную защиту, а ввести проверяемый путь записи MCP/CLI + audit/lint/hook.
+  Ограничение: перенос в .work-graph/canon проектировать отдельно, не ломать текущий root intent без ADR.
+
+Метки:
+  work.closed_at: 2026-06-05T14:08:26.032Z
+  work.item_kind: epic
+  atom.profile: work_item
+  intake.analytics_key: AN-77
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/workgraph-agent-mcp-bypass-install-boundary-incident.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-05T12:49:03.321Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-05T12:49:03.321Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: epic-agent-workgraph-enforcement, epic-agent-session-warmup-v1, epic-work-graph-multiproject-host
+  work.id: epic-workgraph-canon-write-boundary-v1
+  work.next_action: Начать с ADR write-boundary и политики прямых правок канона.
+  work.owner_role: integration_architect
+  work.pipeline_stage: decided
+  work.priority: critical
+  work.risk: high
+  work.status: done
+  work.target_files: work/analytics/workgraph-agent-mcp-bypass-install-boundary-incident.md, docs/adr-workgraph-canon-write-boundary-v1.md, docs/plan-workgraph-canon-write-boundary-v1.md, docs/cursor-rules/agent-workgraph-single-backlog.mdc, docs/cursor-rules/work-graph-project.mdc, packages/workgraph-mcp/src/index.mjs, src/workGraphRuntime.mjs, scripts/lint-backlog.mjs, intent/index.bvc
+  work.title: Защитить канон Work Graph от прямых правок агентом
+
+Свидетельства:
+  - Закрытие эпика AN-77: все 10 subtasks done; rollup plan docs/plan-workgraph-canon-write-boundary-v1.md.
+  - Write-boundary v1 enforcement stack shipped; future impl in design plan backlog.
+  - Epic rollup updated: docs/plan-workgraph-canon-write-boundary-v1.md — 14/14 subtasks done (9 enforcement + 5 canon layout impl). Verification commands in rollup.
+]>

@@ -58,6 +58,7 @@ Options:
   --id <projectId>             id проекта
   --label <name>               отображаемое имя
   --port <number>              порт UI (по умолчанию 4177)
+  --canon-layout <mode>        root-intent (default) | dot-canon (.work-graph/canon)
   --no-mcp                     не трогать .cursor/mcp.json
   --no-package                 не трогать package.json
   --no-rule                    не создавать .cursor/rules/work-graph-project.mdc
@@ -89,6 +90,10 @@ function parseArgs(argv) {
     }
     if (token === '--port') {
       flags.port = Number(args.shift());
+      continue;
+    }
+    if (token === '--canon-layout') {
+      flags.canonLayout = args.shift();
       continue;
     }
     if (token === '--engine') {
@@ -140,6 +145,7 @@ async function cmdInit(targetPath, flags) {
     mergeMcp: flags.mergeMcp,
     mergePackageJson: flags.mergePackageJson,
     writeCursorRule: flags.writeCursorRule,
+    canonLayout: flags.canonLayout,
   });
 
   if (flags.registerHost) {

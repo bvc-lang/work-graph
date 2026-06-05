@@ -7,7 +7,7 @@ import { describe, it } from 'node:test';
 import { fileURLToPath } from 'node:url';
 
 import {
-  ARCHITECTURE_L1_BLOCKS,
+  getArchitectureL1Blocks,
   ARCHITECTURE_L2_MAX_NODES,
   L2_CONTAINER_HEIGHT,
   L2_CONTAINER_WIDTH,
@@ -110,7 +110,7 @@ describe('buildArchitectureSnapshot', () => {
 
     assert.equal(architectureSnapshot.schema, 'architecture.snapshot.v1');
     assert.equal(architectureSnapshot.sourceSchema, 'workgraph.snapshot.v1');
-    assert.equal(architectureSnapshot.blocks.length, ARCHITECTURE_L1_BLOCKS.length);
+    assert.equal(architectureSnapshot.blocks.length, getArchitectureL1Blocks().length);
     assert.equal(architectureSnapshot.l1Canon?.sourcePath, 'architecture/main.bvc');
     assert.ok(architectureSnapshot.blocks.every((block) => typeof block.basis === 'string'));
     assert.ok(architectureSnapshot.blocks.every((block) => typeof block.analysis === 'string'));
@@ -165,7 +165,7 @@ describe('buildArchitectureSnapshot', () => {
       const workGraphSnapshot = buildSnapshot(parseWorkItems(SAMPLE_ITEMS));
       const architectureSnapshot = buildArchitectureSnapshot(workGraphSnapshot, { repoRoot: foreignRoot });
       assert.equal(architectureSnapshot.l1Canon?.sourcePath, 'architecture/main.bvc');
-      assert.equal(architectureSnapshot.blocks.length, ARCHITECTURE_L1_BLOCKS.length);
+      assert.equal(architectureSnapshot.blocks.length, getArchitectureL1Blocks().length);
     } finally {
       await rm(foreignRoot, { recursive: true, force: true });
     }

@@ -114,3 +114,35 @@ export function summarizeArchitectureBlockForList(block) {
     doneCount,
   };
 }
+
+/**
+ * @param {{ taskCount?: number, doneCount?: number }} summary
+ */
+export function formatArchitectureBlockTasksCountLabel(summary) {
+  const taskCount = Number(summary?.taskCount ?? 0);
+  if (taskCount === 0) {
+    return '';
+  }
+
+  const doneCount = Number(summary?.doneCount ?? 0);
+  return `${doneCount}/${taskCount} ЗАДАЧ`;
+}
+
+/**
+ * @param {{ taskCount?: number, doneCount?: number }} summary
+ */
+export function resolveArchitectureBlockTasksBadgeTone(summary) {
+  const taskCount = Number(summary?.taskCount ?? 0);
+  if (taskCount === 0) {
+    return 'default';
+  }
+
+  const doneCount = Number(summary?.doneCount ?? 0);
+  if (doneCount === taskCount) {
+    return 'ok';
+  }
+  if (doneCount === 0) {
+    return 'default';
+  }
+  return 'accent';
+}

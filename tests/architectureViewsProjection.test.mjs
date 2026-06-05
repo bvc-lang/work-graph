@@ -5,7 +5,9 @@ import {
   buildArchitectureMatrixModel,
   exportArchitectureSnapshotMermaid,
   formatArchitectureBlockDisplayTitle,
+  formatArchitectureBlockTasksCountLabel,
   getArchitectureBlockGroupLabel,
+  resolveArchitectureBlockTasksBadgeTone,
   summarizeArchitectureBlockForList,
 } from '../src/architectureViewsProjection.mjs';
 
@@ -46,6 +48,14 @@ describe('architectureViewsProjection', () => {
     assert.equal(summary.blockId, 'work-graph');
     assert.equal(summary.taskCount, 2);
     assert.equal(summary.doneCount, 1);
+    assert.equal(formatArchitectureBlockTasksCountLabel(summary), '1/2 ЗАДАЧ');
+    assert.equal(resolveArchitectureBlockTasksBadgeTone(summary), 'accent');
+  });
+
+  it('uses ok tone when all block tasks are done', () => {
+    const summary = { taskCount: 14, doneCount: 14 };
+    assert.equal(formatArchitectureBlockTasksCountLabel(summary), '14/14 ЗАДАЧ');
+    assert.equal(resolveArchitectureBlockTasksBadgeTone(summary), 'ok');
   });
 
   it('keeps block title in list rows and exposes group label when set', () => {

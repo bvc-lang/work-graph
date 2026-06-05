@@ -1,0 +1,51 @@
+#Задача_document_cursor_canon_readonly_policy<[
+Базис:
+  AN-77: существующие правила говорят о single backlog, но не создают жёсткую психологическую границу для файлов канона.
+  В per-project install нужно явно писать: `intent/**`, `.work-graph/canon/**` read-only для file tools.
+Вектор:
+  Обновить Cursor rules и документацию MCP-клиентов: агент читает канон как контекст, но create/update/complete/evidence делает только через Work Graph tools.
+  Добавить отдельный self-hosted warning для разработки самого WG.
+Цель:
+  Правила проекта и runbook явно запрещают прямые file edits WorkItems/evidence/status; оператор видит primer для восстановления правильного workflow.
+Проверки:
+  Rules содержат read-only canon policy.
+  Документация показывает правильный flow: analysis -> create_work_item -> claim -> code -> evidence -> complete.
+  Есть отдельное предупреждение для self-hosted WG repo.
+  Текст синхронизирован с `sync:cursor-rules`.
+Анализ:
+  Зачем: даже с lint нужно снижать вероятность обхода до факта.
+  Контекст: Cursor-агент использует наиболее короткий путь, если boundary не проговорен.
+Решение:
+  Сделать правила явными и русскоязычными, но не считать их единственной защитой.
+
+Метки:
+  work.closed_at: 2026-06-05T14:05:25.503Z
+  work.parent_id: epic-workgraph-canon-write-boundary-v1
+  work.item_kind: subtask
+  atom.profile: work_item
+  intake.analytics_key: AN-77
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/workgraph-agent-mcp-bypass-install-boundary-incident.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-05T12:49:34.255Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-05T12:49:34.255Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: decide-workgraph-canon-write-boundary-adr
+  work.id: document-cursor-canon-readonly-policy
+  work.next_action: Обновить docs/cursor-rules и mcp clients docs после ADR.
+  work.owner_role: technical_writer
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: docs/cursor-rules/agent-workgraph-single-backlog.mdc, docs/cursor-rules/work-graph-project.mdc, docs/workgraph-mcp-clients.md, docs/golden-path-pilot-runbook.md
+  work.title: Обновить Cursor/project rules: канон read-only, записи только через MCP
+
+Свидетельства:
+  - Старт: обновление cursor rules и docs по canon read-only policy (AN-77).
+  - Обновлены docs/cursor-rules/agent-workgraph-single-backlog.mdc (read-only canon, self-hosted warning, flow), docs/cursor-rules/work-graph-project.mdc (новый), buildCursorRuleContent в init, docs/workgraph-mcp-clients.md, docs/golden-path-pilot-runbook.md. npm run sync:cursor-rules — 7 файлов в .cursor/rules.
+  - Cursor/project rules и runbook синхронизированы с ADR write-boundary.
+]>

@@ -1,7 +1,8 @@
 import { appendFile, mkdir, readFile } from 'node:fs/promises';
-import { dirname, resolve } from 'node:path';
+import { dirname, relative, resolve } from 'node:path';
 
 import { normalizeAnalyticsLineage, validateAnalyticsLineage } from './analyticsLineageProjection.mjs';
+import { GIT_SNAPSHOT_EVENTS, maybeRunGitSnapshotAfterPersist } from './gitSnapshot.mjs';
 
 const compareText = (left, right) => String(left).localeCompare(String(right), 'en', { sensitivity: 'variant' });
 
@@ -163,11 +164,36 @@ export async function appendAnalyticsRecordJournal(records, journalPath, options
     }
   }
 
+  const cwd = options.cwd ?? process.cwd();
+  const journalRelativePath = relative(cwd, resolvedPath).replace(/\\/g, '/');
+  const snapshotPaths = [
+    journalRelativePath,
+    ...records.map((record) => String(record.bodyPath ?? '').trim()).filter(Boolean),
+  ];
+
+  let gitSnapshot = null;
+  if (options.dryRun !== true && options.skipGitSnapshot !== true) {
+    gitSnapshot = await maybeRunGitSnapshotAfterPersist({
+      cwd,
+      env: options.env,
+      gitSnapshot: {
+        event: GIT_SNAPSHOT_EVENTS.ANALYTICS_CREATED,
+        analyticsKey: records[0]?.key ?? records[0]?.id ?? '',
+        title: records[0]?.title ?? records[0]?.key ?? '',
+        paths: snapshotPaths,
+      },
+      persistedResults: snapshotPaths.map((path) => ({ path })),
+      analyticsKey: records[0]?.key ?? records[0]?.id ?? '',
+      title: records[0]?.title ?? records[0]?.key ?? '',
+    });
+  }
+
   return {
     schema: ANALYTICS_RECORD_JOURNAL_APPEND_SCHEMA,
     journalPath: resolvedPath,
     appended: entries.length,
     entries,
     records: await hydrateAnalyticsRecords(entries.map((entry) => entry.record), options),
+    gitSnapshot,
   };
 }

@@ -1,0 +1,51 @@
+#Задача_lint_direct_canon_file_edits<[
+Базис:
+  AN-77: агент может создать или изменить `intent/**/*.work.bvc` напрямую через ApplyPatch.
+  Нужен hardening на уровне проверки, который видит изменения канона без штатного marker/evidence.
+Вектор:
+  Добавить lint или hook, который анализирует изменённые work-item файлы и требует marker/audit evidence для write API или явный migration mode.
+  Покрыть текущий `intent/**/*.work.bvc` и будущий `.work-graph/canon/**/*.work.bvc`.
+Цель:
+  `npm run lint:backlog` или отдельная обязательная проверка падает на прямых изменениях work items без Work Graph marker/migration evidence.
+Проверки:
+  Проверка ловит новый/изменённый *.work.bvc без authorized marker.
+  Есть allowlist для migration scripts с явным evidence.
+  Проверка покрывает intent/** и .work-graph/canon/**.
+  Тест фиксирует bypass-сценарий AN-77.
+Анализ:
+  Зачем: правила Cursor мягкие, нужен детектор нарушения boundary.
+  Контекст: hard gate в IDE невозможен полностью, но CI/lint может остановить незамеченный bypass.
+Решение:
+  Добавить lint/hook как обязательный контур после audit marker.
+
+Метки:
+  work.closed_at: 2026-06-05T14:04:52.629Z
+  work.parent_id: epic-workgraph-canon-write-boundary-v1
+  work.item_kind: subtask
+  atom.profile: work_item
+  intake.analytics_key: AN-77
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/workgraph-agent-mcp-bypass-install-boundary-incident.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-05T12:49:34.238Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-05T12:49:34.238Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: implement-workgraph-write-audit-marker
+  work.id: lint-direct-canon-file-edits
+  work.next_action: Спроектировать источник diff: git status/diff или journal marker.
+  work.owner_role: runtime_engineer
+  work.pipeline_stage: decided
+  work.priority: critical
+  work.risk: high
+  work.status: done
+  work.target_files: scripts/lint-backlog.mjs, scripts/lint-canon-write-boundary.mjs, package.json, tests/backlogSchemaLint.test.mjs, intent/system/runtime/work/*.work.bvc
+  work.title: Lint/hook: обнаруживать прямые изменения канона Work Graph
+
+Свидетельства:
+  - Старт: lint canon write boundary на git diff + AN-77 bypass regression tests.
+  - scripts/lint-canon-write-boundary.mjs + src/canonWriteBoundaryLint.mjs: git diff по intent/** и .work-graph/canon/** work.bvc; unauthorized write без work.updated_by/work.write.*; migration allowlist через work.write.migration. npm run lint:canon-write-boundary в ci:mandatory. tests/canonWriteBoundaryLint.test.mjs — AN-77 bypass сценарий.
+  - Lint canon write boundary в CI; bypass AN-77 покрыт тестом.
+]>

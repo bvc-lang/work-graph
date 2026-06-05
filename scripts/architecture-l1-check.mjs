@@ -9,7 +9,6 @@ import { resolve } from 'node:path';
 
 import { exportArchitectureSnapshotMermaid } from '../src/architectureViewsProjection.mjs';
 import {
-  ARCHITECTURE_L1_BLOCK_COUNT,
   ARCHITECTURE_L1_CANON_ID,
   loadArchitectureL1Canon,
   validateArchitectureL1Canon,
@@ -37,16 +36,15 @@ function main() {
     throw new Error(`Unexpected canon id: ${canon.passport?.id}`);
   }
 
-  if (canon.blocks.length !== ARCHITECTURE_L1_BLOCK_COUNT) {
-    throw new Error(`Expected ${ARCHITECTURE_L1_BLOCK_COUNT} blocks`);
-  }
-
   const emptySnapshot = buildSnapshot(parseWorkItems(''));
   const architectureSnapshot = buildArchitectureSnapshot(emptySnapshot, { repoRoot: options.cwd });
   const mermaid = exportArchitectureSnapshotMermaid(architectureSnapshot);
 
-  if (!mermaid.includes('step_canon') || !mermaid.includes('derived_projections')) {
-    throw new Error('Golden mermaid export missing expected L1 block ids');
+  for (const block of canon.blocks) {
+    const nodeId = block.id.replace(/[^a-zA-Z0-9_]/g, '_');
+    if (!mermaid.includes(nodeId)) {
+      throw new Error(`Mermaid export missing L1 block id: ${block.id}`);
+    }
   }
 
   console.log(JSON.stringify({

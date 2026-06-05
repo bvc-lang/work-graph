@@ -1,6 +1,27 @@
 const workflowEpicCompareText = (left, right) => String(left).localeCompare(String(right), 'en', { sensitivity: 'variant' });
 const WORKFLOW_EPIC_DONE_STATUSES = new Set(['done', 'verified']);
 
+function readWorkflowItemParentId(item) {
+  return String(item?.parentId ?? item?.labels?.['work.parent_id'] ?? '').trim();
+}
+
+export function findEpicDependentsWithoutParent(items, epicId) {
+  const epicKey = String(epicId ?? '').trim();
+  if (epicKey === '' || !Array.isArray(items)) {
+    return [];
+  }
+
+  return items.filter((item) => {
+    if (item.itemKind === 'epic') {
+      return false;
+    }
+    if (!(item.dependsOn ?? []).includes(epicKey)) {
+      return false;
+    }
+    return readWorkflowItemParentId(item) !== epicKey;
+  });
+}
+
 /**
  * @param {Array<{ id: string, title?: string, status?: string, parentId?: string, itemKind?: string }>} items
  */

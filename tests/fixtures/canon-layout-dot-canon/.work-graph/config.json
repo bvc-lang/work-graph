@@ -1,0 +1,10 @@
+{
+  "schema": "workgraph.project.config.v3",
+  "projectRoot": "FIXTURE_ROOT",
+  "projectId": "canon-layout-dot-canon",
+  "label": "dot-canon fixture",
+  "canonLayout": "dot-canon",
+  "canonRoot": ".work-graph/canon",
+  "uiPort": 4177,
+  "createdAt": "2026-06-05T00:00:00.000Z"
+}

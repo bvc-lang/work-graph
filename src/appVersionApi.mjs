@@ -1,4 +1,5 @@
-import { execFileSync } from 'node:child_process';
+import { execFile, execFileSync } from 'node:child_process';
+import { promisify } from 'node:util';
 import { accessSync, constants, readFileSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
@@ -6,10 +7,15 @@ import { dirname, join } from 'node:path';
 import { isNpmCliPackageRoot, resolveEngineRootFromNodeModules } from './workGraphEngineRoot.mjs';
 
 export const APP_VERSION_SCHEMA = 'workgraph.app-version.v1';
+export const APP_VERSION_INSTALL_SCHEMA = 'workgraph.app-version.install.v1';
 export const DEFAULT_NPM_PACKAGE = '@work-graph/cli';
+export const DEFAULT_MCP_PACKAGE = '@work-graph/mcp';
 export const NPM_VERSION_CACHE_TTL_MS = 60 * 60 * 1000;
 export const NPM_REGISTRY_FETCH_TIMEOUT_MS = 15_000;
+export const NPM_UPDATE_TIMEOUT_MS = 5 * 60 * 1000;
 export const NPM_REGISTRY_USER_AGENT = 'work-graph-app-version-check';
+
+const execFileAsync = promisify(execFile);
 
 /**
  * @param {string} packageName
@@ -252,7 +258,10 @@ export async function buildAppVersionResponse(options = {}) {
 
   if (options.checkUpdate === true) {
     try {
-      const npmResult = await fetchNpmLatestVersion(npmPackage, options);
+      const npmResult = await fetchNpmLatestVersion(npmPackage, {
+        ...options,
+        bypassCache: options.bypassCache === true,
+      });
       latestVersion = npmResult.latestVersion;
       checkedAt = npmResult.checkedAt;
       fromCache = npmResult.fromCache === true;
@@ -263,8 +272,9 @@ export async function buildAppVersionResponse(options = {}) {
     }
   }
 
-  const installCommandProject = `npm update ${npmPackage} @work-graph/mcp`;
+  const installCommandProject = `npm update ${npmPackage} ${DEFAULT_MCP_PACKAGE}`;
   const installCommandGlobal = `npm i -g ${npmPackage}@latest`;
+  const canInstallFromUi = local.source === 'npm-cli-package';
 
   return {
     ...local,
@@ -278,6 +288,87 @@ export async function buildAppVersionResponse(options = {}) {
     installCommand: installCommandProject,
     installCommandProject,
     installCommandGlobal,
+    canInstallFromUi,
+  };
+}
+
+/**
+ * @param {{
+ *   cwd?: string,
+ *   npmPackage?: string,
+ *   execFileImpl?: typeof execFile,
+ *   timeoutMs?: number,
+ * }} [options]
+ */
+export async function runAppVersionProjectUpdate(options = {}) {
+  const projectRoot = options.cwd ?? process.cwd();
+  const npmPackage = options.npmPackage ?? DEFAULT_NPM_PACKAGE;
+  const resolved = resolveCliPackageJsonPath({ cwd: projectRoot, installRoot: options.installRoot });
+  if (resolved.source !== 'npm-cli-package') {
+    throw new Error('project_update_requires_npm_install');
+  }
+
+  const args = ['update', npmPackage, DEFAULT_MCP_PACKAGE];
+  const execImpl = options.execFileImpl ?? execFileAsync;
+  const timeoutMs = options.timeoutMs ?? NPM_UPDATE_TIMEOUT_MS;
+  const { stdout, stderr } = await execImpl('npm', args, {
+    cwd: projectRoot,
+    timeout: timeoutMs,
+    env: process.env,
+    encoding: 'utf8',
+    maxBuffer: 4 * 1024 * 1024,
+  });
+
+  clearNpmVersionCache();
+  const local = await readLocalAppVersion({ cwd: projectRoot, installRoot: options.installRoot });
+
+  return {
+    schema: APP_VERSION_INSTALL_SCHEMA,
+    ok: true,
+    version: local.version,
+    npmPackage,
+    command: `npm ${args.join(' ')}`,
+    stdout: String(stdout ?? '').slice(0, 4000),
+    stderr: String(stderr ?? '').slice(0, 4000),
+    needsUiRestart: true,
+  };
+}
+
+/**
+ * @param {{
+ *   cwd?: string,
+ *   installRoot?: string,
+ *   npmPackage?: string,
+ *   execFileImpl?: typeof execFile,
+ *   fetchImpl?: typeof fetch,
+ * }} [options]
+ */
+export async function buildAppVersionInstallResponse(options = {}) {
+  const check = await buildAppVersionResponse({
+    ...options,
+    checkUpdate: true,
+    bypassCache: true,
+  });
+
+  if (check.checkError) {
+    throw new Error(check.checkError);
+  }
+  if (check.updateAvailable !== true) {
+    throw new Error('update_not_available');
+  }
+  if (check.canInstallFromUi !== true) {
+    throw new Error('project_update_requires_npm_install');
+  }
+
+  const install = await runAppVersionProjectUpdate(options);
+  const after = await readLocalAppVersion(options);
+
+  return {
+    ...install,
+    previousVersion: check.version,
+    latestVersion: check.latestVersion,
+    version: after.version,
+    updateApplied: !isVersionNewer(String(check.latestVersion ?? ''), after.version),
   };
 }
 

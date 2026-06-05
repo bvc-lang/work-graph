@@ -1,0 +1,234 @@
+#!bvc lang=ru
+
+#Architecture_Main_Canon<[
+Базис:
+  Demo architecture hub для пустого проекта после work-graph init.
+Вектор:
+  Замените starter-kit на свой L1 hub по мере роста проекта.
+Цель:
+  Показать вкладку «Архитектура» без ошибок до первого реального canon.
+
+Метки:
+  atom.profile: architecture_canon
+  architecture.canon.id: architecture-l1-blocks-v1
+  architecture.canon.version: 1
+  architecture.starter: true
+  trace.status: draft
+]>
+
+#Architecture_Block_Step_Canon<[
+Базис:
+  Demo L1-блок starter-kit для проекта после work-graph init.
+Вектор:
+  Замените этот блок своим описанием архитектуры.
+Цель:
+  Формат намерений и правила записи атомов.
+Анализ:
+  Целесообразность: Demo-контейнер блока «Канон Step/BVC» в starter-kit Work Graph показывает связь L1 с путями проекта после work-graph init без копирования production-канона upstream. Контекст и границы: один demo-контейнер; пути — заглушки; замените architecture/main.bvc при проектировании системы.
+Решение:
+  Вердикт: полезно. Demo L1-блок step-canon принят в starter-kit для пустой установки проекта.
+
+Метки:
+  atom.profile: architecture_l1_block
+  architecture.block_id: step-canon
+  architecture.layer: L1
+  architecture.title: Канон Step/BVC
+  architecture.summary: Формат намерений и правила записи атомов.
+  architecture.decision.verdict: useful
+  architecture.intent_roots: intent/demo
+  architecture.container.step-canon-demo.title: Demo Канон Step/BVC
+  architecture.container.step-canon-demo.kind: runtime
+  architecture.container.step-canon-demo.paths: README.md
+  architecture.container.step-canon-demo.analysis: Целесообразность: Demo-контейнер блока «Канон Step/BVC» в starter-kit Work Graph показывает связь L1 с путями проекта после work-graph init без копирования production-канона upstream. Контекст и границы: один demo-контейнер; пути — заглушки; замените architecture/main.bvc при проектировании системы.
+  architecture.container.step-canon-demo.decision: Вердикт: полезно. Demo L1-блок step-canon принят в starter-kit для пустой установки проекта.
+  architecture.container.step-canon-demo.decision.verdict: useful
+]>
+
+#Architecture_Block_Work_Graph<[
+Базис:
+  Demo L1-блок starter-kit для проекта после work-graph init.
+Вектор:
+  Замените этот блок своим описанием архитектуры.
+Цель:
+  Очередь work items, MCP и backlog UI.
+Анализ:
+  Целесообразность: Demo-контейнер блока «Work Graph» в starter-kit Work Graph показывает связь L1 с путями проекта после work-graph init без копирования production-канона upstream. Контекст и границы: один demo-контейнер; пути — заглушки; замените architecture/main.bvc при проектировании системы.
+Решение:
+  Вердикт: полезно. Demo L1-блок work-graph принят в starter-kit для пустой установки проекта.
+
+Метки:
+  atom.profile: architecture_l1_block
+  architecture.block_id: work-graph
+  architecture.layer: L1
+  architecture.title: Work Graph
+  architecture.summary: Очередь work items, MCP и backlog UI.
+  architecture.decision.verdict: useful
+  architecture.intent_roots: intent/demo
+  architecture.container.work-graph-demo.title: Demo Work Graph
+  architecture.container.work-graph-demo.kind: runtime
+  architecture.container.work-graph-demo.paths: README.md
+  architecture.container.work-graph-demo.analysis: Целесообразность: Demo-контейнер блока «Work Graph» в starter-kit Work Graph показывает связь L1 с путями проекта после work-graph init без копирования production-канона upstream. Контекст и границы: один demo-контейнер; пути — заглушки; замените architecture/main.bvc при проектировании системы.
+  architecture.container.work-graph-demo.decision: Вердикт: полезно. Demo L1-блок work-graph принят в starter-kit для пустой установки проекта.
+  architecture.container.work-graph-demo.decision.verdict: useful
+]>
+
+#Architecture_Block_Agent_Runtime<[
+Базис:
+  Demo L1-блок starter-kit для проекта после work-graph init.
+Вектор:
+  Замените этот блок своим описанием архитектуры.
+Цель:
+  Адаптер воркера и цикл исполнения агента.
+Анализ:
+  Целесообразность: Demo-контейнер блока «Среда агента» в starter-kit Work Graph показывает связь L1 с путями проекта после work-graph init без копирования production-канона upstream. Контекст и границы: один demo-контейнер; пути — заглушки; замените architecture/main.bvc при проектировании системы.
+Решение:
+  Вердикт: полезно. Demo L1-блок agent-runtime принят в starter-kit для пустой установки проекта.
+
+Метки:
+  atom.profile: architecture_l1_block
+  architecture.block_id: agent-runtime
+  architecture.layer: L1
+  architecture.title: Среда агента
+  architecture.summary: Адаптер воркера и цикл исполнения агента.
+  architecture.decision.verdict: useful
+  architecture.intent_roots: intent/demo
+  architecture.container.agent-runtime-demo.title: Demo Среда агента
+  architecture.container.agent-runtime-demo.kind: runtime
+  architecture.container.agent-runtime-demo.paths: README.md
+  architecture.container.agent-runtime-demo.analysis: Целесообразность: Demo-контейнер блока «Среда агента» в starter-kit Work Graph показывает связь L1 с путями проекта после work-graph init без копирования production-канона upstream. Контекст и границы: один demo-контейнер; пути — заглушки; замените architecture/main.bvc при проектировании системы.
+  architecture.container.agent-runtime-demo.decision: Вердикт: полезно. Demo L1-блок agent-runtime принят в starter-kit для пустой установки проекта.
+  architecture.container.agent-runtime-demo.decision.verdict: useful
+]>
+
+#Architecture_Block_Trace_Evidence<[
+Базис:
+  Demo L1-блок starter-kit для проекта после work-graph init.
+Вектор:
+  Замените этот блок своим описанием архитектуры.
+Цель:
+  Следы исполнения и журнал доказательств.
+Анализ:
+  Целесообразность: Demo-контейнер блока «Trace и evidence» в starter-kit Work Graph показывает связь L1 с путями проекта после work-graph init без копирования production-канона upstream. Контекст и границы: один demo-контейнер; пути — заглушки; замените architecture/main.bvc при проектировании системы.
+Решение:
+  Вердикт: полезно. Demo L1-блок trace-evidence принят в starter-kit для пустой установки проекта.
+
+Метки:
+  atom.profile: architecture_l1_block
+  architecture.block_id: trace-evidence
+  architecture.layer: L1
+  architecture.title: Trace и evidence
+  architecture.summary: Следы исполнения и журнал доказательств.
+  architecture.decision.verdict: useful
+  architecture.intent_roots: intent/demo
+  architecture.container.trace-evidence-demo.title: Demo Trace и evidence
+  architecture.container.trace-evidence-demo.kind: runtime
+  architecture.container.trace-evidence-demo.paths: README.md
+  architecture.container.trace-evidence-demo.analysis: Целесообразность: Demo-контейнер блока «Trace и evidence» в starter-kit Work Graph показывает связь L1 с путями проекта после work-graph init без копирования production-канона upstream. Контекст и границы: один demo-контейнер; пути — заглушки; замените architecture/main.bvc при проектировании системы.
+  architecture.container.trace-evidence-demo.decision: Вердикт: полезно. Demo L1-блок trace-evidence принят в starter-kit для пустой установки проекта.
+  architecture.container.trace-evidence-demo.decision.verdict: useful
+]>
+
+#Architecture_Block_Derived_Projections<[
+Базис:
+  Demo L1-блок starter-kit для проекта после work-graph init.
+Вектор:
+  Замените этот блок своим описанием архитектуры.
+Цель:
+  Read-only проекции для оператора.
+Анализ:
+  Целесообразность: Demo-контейнер блока «Проекции UI» в starter-kit Work Graph показывает связь L1 с путями проекта после work-graph init без копирования production-канона upstream. Контекст и границы: один demo-контейнер; пути — заглушки; замените architecture/main.bvc при проектировании системы.
+Решение:
+  Вердикт: полезно. Demo L1-блок derived-projections принят в starter-kit для пустой установки проекта.
+
+Метки:
+  atom.profile: architecture_l1_block
+  architecture.block_id: derived-projections
+  architecture.layer: L1
+  architecture.title: Проекции UI
+  architecture.summary: Read-only проекции для оператора.
+  architecture.decision.verdict: useful
+  architecture.intent_roots: intent/demo
+  architecture.container.derived-projections-demo.title: Demo Проекции UI
+  architecture.container.derived-projections-demo.kind: runtime
+  architecture.container.derived-projections-demo.paths: README.md
+  architecture.container.derived-projections-demo.analysis: Целесообразность: Demo-контейнер блока «Проекции UI» в starter-kit Work Graph показывает связь L1 с путями проекта после work-graph init без копирования production-канона upstream. Контекст и границы: один demo-контейнер; пути — заглушки; замените architecture/main.bvc при проектировании системы.
+  architecture.container.derived-projections-demo.decision: Вердикт: полезно. Demo L1-блок derived-projections принят в starter-kit для пустой установки проекта.
+  architecture.container.derived-projections-demo.decision.verdict: useful
+]>
+
+#Architecture_Block_Project_Memory<[
+Базис:
+  Demo L1-блок starter-kit для проекта после work-graph init.
+Вектор:
+  Замените этот блок своим описанием архитектуры.
+Цель:
+  Долговременные факты после закрытых задач.
+Анализ:
+  Целесообразность: Demo-контейнер блока «Память проекта» в starter-kit Work Graph показывает связь L1 с путями проекта после work-graph init без копирования production-канона upstream. Контекст и границы: один demo-контейнер; пути — заглушки; замените architecture/main.bvc при проектировании системы.
+Решение:
+  Вердикт: полезно. Demo L1-блок project-memory принят в starter-kit для пустой установки проекта.
+
+Метки:
+  atom.profile: architecture_l1_block
+  architecture.block_id: project-memory
+  architecture.layer: L1
+  architecture.title: Память проекта
+  architecture.summary: Долговременные факты после закрытых задач.
+  architecture.decision.verdict: useful
+  architecture.intent_roots: intent/demo
+  architecture.container.project-memory-demo.title: Demo Память проекта
+  architecture.container.project-memory-demo.kind: runtime
+  architecture.container.project-memory-demo.paths: README.md
+  architecture.container.project-memory-demo.analysis: Целесообразность: Demo-контейнер блока «Память проекта» в starter-kit Work Graph показывает связь L1 с путями проекта после work-graph init без копирования production-канона upstream. Контекст и границы: один demo-контейнер; пути — заглушки; замените architecture/main.bvc при проектировании системы.
+  architecture.container.project-memory-demo.decision: Вердикт: полезно. Demo L1-блок project-memory принят в starter-kit для пустой установки проекта.
+  architecture.container.project-memory-demo.decision.verdict: useful
+]>
+
+#Architecture_Block_Domains<[
+Базис:
+  Demo L1-блок starter-kit для проекта после work-graph init.
+Вектор:
+  Замените этот блок своим описанием архитектуры.
+Цель:
+  Продуктовые домены и интеграции.
+Анализ:
+  Целесообразность: Demo-контейнер блока «Домены» в starter-kit Work Graph показывает связь L1 с путями проекта после work-graph init без копирования production-канона upstream. Контекст и границы: один demo-контейнер; пути — заглушки; замените architecture/main.bvc при проектировании системы.
+Решение:
+  Вердикт: полезно. Demo L1-блок domains принят в starter-kit для пустой установки проекта.
+
+Метки:
+  atom.profile: architecture_l1_block
+  architecture.block_id: domains
+  architecture.layer: L1
+  architecture.title: Домены
+  architecture.summary: Продуктовые домены и интеграции.
+  architecture.decision.verdict: useful
+  architecture.intent_roots: intent/demo
+  architecture.container.domains-demo.title: Demo Домены
+  architecture.container.domains-demo.kind: runtime
+  architecture.container.domains-demo.paths: README.md
+  architecture.container.domains-demo.analysis: Целесообразность: Demo-контейнер блока «Домены» в starter-kit Work Graph показывает связь L1 с путями проекта после work-graph init без копирования production-канона upstream. Контекст и границы: один demo-контейнер; пути — заглушки; замените architecture/main.bvc при проектировании системы.
+  architecture.container.domains-demo.decision: Вердикт: полезно. Demo L1-блок domains принят в starter-kit для пустой установки проекта.
+  architecture.container.domains-demo.decision.verdict: useful
+]>
+
+#Architecture_L1_Edges<[
+Базис:
+  Demo L1-связи starter-kit.
+Вектор:
+  step-canon -> work-graph : feeds
+  work-graph -> agent-runtime : uses
+  agent-runtime -> trace-evidence : feeds
+  trace-evidence -> project-memory : feeds
+  work-graph -> derived-projections : feeds
+  trace-evidence -> derived-projections : feeds
+  domains -> work-graph : maps_to
+  agent-runtime -> domains : uses
+Цель:
+  Typed L1 graph для demo-проекта.
+
+Метки:
+  atom.profile: architecture_canon_section
+  architecture.section: l1_edges
+  protocol.id: architecture-graph-model-v1
+]>

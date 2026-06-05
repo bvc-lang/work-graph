@@ -1,0 +1,49 @@
+#Задача_epic_work_item_hierarchy_guardrails_v1<[
+Базис:
+  AN-75: задачи могут случайно связываться с эпиком через `work.depends_on`, но UI группирует подзадачи только через `work.parent_id`.
+  Такая ошибка уже проявилась в backlog: эпик раскрывался пустым, а зависимые задачи лежали отдельными карточками.
+Вектор:
+  Ввести guardrails вокруг parent/depends semantics: lint, create_work_item validation, UI-подсказка и документация шаблона.
+Цель:
+  Оператор и агент больше не путают dependency order с иерархией; эпики в UI показывают ожидаемые подзадачи.
+Проверки:
+  lint ловит задачи, которые depends_on epic без parent_id
+  subtask нельзя создать без parentId
+  UI подсвечивает epic without children but with dependents
+  документация объясняет parent_id vs depends_on
+Свидетельства:
+  promote-ready: backlog→ready via operator board
+  - claim: epic-work-item-hierarchy-guardrails-v1 via WorkGraph MCP
+  - AN-75 epic closed 4/4: lint epic_dependency_without_parent, create_work_item subtask parent guard, UI epic hierarchy warning, docs/cursor-rules/work-items-russian.mdc canon.
+Анализ:
+  Зачем:
+  AN-75 guardrails закрывают моделировочную ошибку depends_on вместо parent_id.
+  Когда:
+  Все 4 подзадачи done — lint, create guard, UI warning, docs.
+  Готово, когда:
+  эпик закрыт с rollup evidence.
+
+Метки:
+  work.closed_at: 2026-06-05T15:47:28.762Z
+  atom.profile: work_item
+  intake.analytics_key: AN-75
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-parent-vs-depends-on-guardrails.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-05T15:47:24.243Z
+  work.analysis.source: cursor-mcp
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.id: epic-work-item-hierarchy-guardrails-v1
+  work.item_kind: epic
+  work.next_action: Cursor: record_work_item_decision (useful/harmful/defer)
+  work.owner_role: runtime_engineer
+  work.pipeline_stage: analyzed
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: src/workItemHierarchy.mjs, src/workItemCreateAnalysis.mjs, packages/workgraph-mcp/src/handlers.mjs, src/workGraphBacklogUiServer.mjs, docs/cursor-rules/work-items-russian.mdc, tests/workItemHierarchy.test.mjs
+  work.title: Guardrails для parent_id vs depends_on в WorkItems
+]>
+

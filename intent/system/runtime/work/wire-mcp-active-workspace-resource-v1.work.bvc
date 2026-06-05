@@ -1,0 +1,46 @@
+#Задача_wire_mcp_active_workspace_resource_v1<[
+Базис:
+  Plan plan-work-graph-multiproject-host.md: MCP resource workgraph://workspace/active с active repoRoot из registry + effective root из env.
+Вектор:
+  Выполнить задачу с evidence-driven workflow.
+Цель:
+  MCP resource workgraph://workspace/active + buildActiveWorkspaceProjection из ~/.work-graph/workspaces.json.
+Проверки:
+  Resource workgraph://workspace/active возвращает projection v1
+  Показывает activeProjectId, activeRepoRoot, effectiveRepoRoot, alignedWithRegistry
+  Тесты activeWorkspaceProjection + MCP resource проходят
+Анализ:
+  Registry уже есть (workspaceRegistry.mjs); MCP tools используют WORKGRAPH_ROOT, но UI switcher меняет active в registry — агенту нужен read-only resource.
+Решение:
+  Вердикт: полезно.
+  Read-only resource; resolveRoot не меняем без явного env.
+
+Метки:
+  work.closed_at: 2026-06-05T14:56:51.393Z
+  atom.profile: work_item
+  intake.analytics_key: AN-77
+  intake.source_kind: plan
+  intake.source_ref: docs/plan-work-graph-multiproject-host.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-05T14:56:20.265Z
+  work.analysis.source: plan
+  work.decision.at: 2026-06-05T14:56:20.265Z
+  work.decision.verdict: useful
+  work.department: system/runtime
+  work.depends_on: implement-canon-paths-resolver-v1
+  work.id: wire-mcp-active-workspace-resource-v1
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: agent
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: src/activeWorkspaceProjection.mjs, packages/workgraph-mcp/src/handlers.mjs, packages/workgraph-mcp/src/index.mjs, tests/activeWorkspaceProjection.test.mjs
+  work.title: MCP resource active workspace из registry
+
+Свидетельства:
+  - claim: wire MCP workspace/active resource
+  - node --test tests/activeWorkspaceProjection.test.mjs tests/workgraph-mcp-contract.test.mjs — 15/15 pass
+  - wire-mcp-active-workspace-resource-v1: src/activeWorkspaceProjection.mjs + MCP resource workgraph://workspace/active (registry active vs effective WORKGRAPH_ROOT, alignedWithRegistry). Tests 15/15 pass.
+]>

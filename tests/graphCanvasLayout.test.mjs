@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
-import { ARCHITECTURE_L1_BLOCKS, ARCHITECTURE_L1_EDGES } from '../src/architectureSnapshot.mjs';
+import { getArchitectureL1Blocks, getArchitectureL1Edges } from '../src/architectureSnapshot.mjs';
 import { buildArchitectureLayout } from '../src/architectureLayout.mjs';
 import {
   ARCHITECTURE_LAYOUT_PROFILE,
@@ -30,7 +30,7 @@ describe('graphCanvasLayout', () => {
   it('computes pipeline slots as a single row', () => {
     const slots = computeNodeSlots({
       nodeIds: ARCHITECTURE_PIPELINE_LAYOUT_PROFILE.pipelineNodeIds,
-      edges: ARCHITECTURE_L1_EDGES,
+      edges: getArchitectureL1Edges(),
       layoutProfile: ARCHITECTURE_PIPELINE_LAYOUT_PROFILE,
     });
 
@@ -42,8 +42,8 @@ describe('graphCanvasLayout', () => {
 
   it('preserves architecture manual overrides for full graph', () => {
     const slots = computeNodeSlots({
-      nodeIds: ARCHITECTURE_L1_BLOCKS.map((block) => block.id),
-      edges: ARCHITECTURE_L1_EDGES.map((edge) => ({ ...edge, upstream: edge.type === 'maps_to' })),
+      nodeIds: getArchitectureL1Blocks().map((block) => block.id),
+      edges: getArchitectureL1Edges().map((edge) => ({ ...edge, upstream: edge.type === 'maps_to' })),
       layoutProfile: ARCHITECTURE_LAYOUT_PROFILE,
     });
 
@@ -84,8 +84,8 @@ describe('graphCanvasLayout', () => {
 describe('buildArchitectureLayout with layout profile', () => {
   it('includes layoutProfile metadata in layout result', () => {
     const layout = buildArchitectureLayout({
-      blocks: ARCHITECTURE_L1_BLOCKS,
-      edges: ARCHITECTURE_L1_EDGES,
+      blocks: getArchitectureL1Blocks(),
+      edges: getArchitectureL1Edges(),
     }, null, { viewMode: GRAPH_CANVAS_VIEW_FULL });
 
     assert.equal(layout.viewMode, GRAPH_CANVAS_VIEW_FULL);
@@ -95,8 +95,8 @@ describe('buildArchitectureLayout with layout profile', () => {
 
   it('filters to pipeline main path nodes', () => {
     const layout = buildArchitectureLayout({
-      blocks: ARCHITECTURE_L1_BLOCKS,
-      edges: ARCHITECTURE_L1_EDGES,
+      blocks: getArchitectureL1Blocks(),
+      edges: getArchitectureL1Edges(),
     }, null, { viewMode: GRAPH_CANVAS_VIEW_PIPELINE });
 
     assert.equal(layout.nodes.length, 5);

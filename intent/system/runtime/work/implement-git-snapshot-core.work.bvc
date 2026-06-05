@@ -1,0 +1,51 @@
+#Задача_implement_git_snapshot_core<[
+Базис:
+  AN-71 P0: нужен `src/gitSnapshot.mjs`, который умеет stage только scoped paths, commit и вернуть `{ sha, paths, skipped }`.
+Вектор:
+  Реализовать core module: resolve policy, validate repo, filter/stage allowed paths, detect empty snapshot, run `git commit` без `--no-verify`, вернуть structured result.
+  Никогда не выполнять `git add -A`; paths приходят только из persist result / explicit caller.
+Цель:
+  Runtime получает безопасную атомарную операцию snapshot, которую можно использовать из hooks, CLI и MCP.
+Проверки:
+  temp git repo: scoped file коммитится
+  dirty unrelated file не попадает в commit
+  empty snapshot => skipped, не error
+  pre-commit/commit failure возвращает failed result, не бросает destructive rollback
+Анализ:
+  Зачем:
+  Core module src/gitSnapshot.mjs — stage scoped paths, commit, structured result.
+  Когда:
+  После protocol; tests/gitSnapshot.test.mjs 8 pass.
+  Готово, когда:
+  temp repo tests: scoped commit, unrelated file excluded, empty skip.
+
+Метки:
+  work.closed_at: 2026-06-05T15:54:48.119Z
+  atom.profile: work_item
+  intake.analytics_key: AN-71
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-git-autocommit-on-events.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-05T15:54:18.119Z
+  work.analysis.source: cursor-mcp
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: design-workgraph-git-snapshot-policy-v1
+  work.id: implement-git-snapshot-core
+  work.item_kind: task
+  work.next_action: Cursor: record_work_item_decision (useful/harmful/defer)
+  work.owner_role: runtime_engineer
+  work.parent_id: epic-workgraph-git-snapshot-v1
+  work.pipeline_stage: analyzed
+  work.priority: high
+  work.risk: high
+  work.status: done
+  work.target_files: src/gitSnapshot.mjs, tests/gitSnapshot.test.mjs, protocols/workgraph-git-snapshot-v1.bvc
+  work.title: Реализовать core Git Snapshot: scoped stage + commit без push
+
+Свидетельства:
+  - claim: implement-git-snapshot-core via WorkGraph MCP
+  - src/gitSnapshot.mjs + tests/gitSnapshot.test.mjs (8 pass): scoped stage/commit, empty skip, unrelated file excluded.
+]>
+

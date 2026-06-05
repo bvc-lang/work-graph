@@ -9,6 +9,13 @@ import {
   addWorkItemEvidence,
   completeWorkItem,
   getWorkContract,
+  onebaseCheckConfig,
+  onebaseDescribeConfig,
+  onebaseListMetadata,
+  onebaseReadConfigFile,
+  onebaseRestGet,
+  onebaseRestWriteExecute,
+  onebaseRestWritePrepare,
   validateEvidence,
 } from '../packages/workgraph-mcp/src/handlers.mjs';
 
@@ -171,5 +178,163 @@ describe('work contract MCP handlers', () => {
     } finally {
       await rm(root, { recursive: true, force: true });
     }
+  });
+});
+
+describe('MCP write convenience prompts', () => {
+  it('create_work_item_from_analytics references MCP tools not file patch', async () => {
+    const { toMcpPromptResult } = await import('../packages/workgraph-mcp/src/prompts.mjs');
+    const result = toMcpPromptResult('create_work_item_from_analytics', {
+      analyticsKey: 'AN-77',
+      analyticsBodyPath: 'work/analytics/workgraph-agent-mcp-bypass-install-boundary-incident.md',
+    });
+    assert.match(result.messages[0].content.text, /create_work_item/u);
+    assert.match(result.messages[0].content.text, /do NOT edit .work.bvc/iu);
+  });
+});
+
+describe('OneBase MCP handlers', () => {
+  it('lists and reads bounded OneBase config files', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'wg-onebase-mcp-'));
+    try {
+      await mkdir(join(root, 'catalogs'), { recursive: true });
+      await writeFile(join(root, 'catalogs', 'item.yaml'), 'name: Номенклатура\n', 'utf8');
+
+      const listed = await onebaseListMetadata({ onebaseRoot: root }, { root });
+      assert.equal(listed.toolId, 'onebase.listMetadata');
+      assert.equal(listed.summary.total, 1);
+
+      const read = await onebaseReadConfigFile({
+        onebaseRoot: root,
+        relativePath: 'catalogs/item.yaml',
+      }, { root });
+      assert.equal(read.toolId, 'onebase.readConfigFile');
+      assert.equal(read.ok, true);
+      assert.match(read.text, /Номенклатура/u);
+
+      const blocked = await onebaseReadConfigFile({
+        onebaseRoot: root,
+        relativePath: '../secret.txt',
+      }, { root });
+      assert.equal(blocked.ok, false);
+      assert.match(blocked.error, /inside onebase root/u);
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
+  it('maps onebase describe/check CLI results to evidence', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'wg-onebase-mcp-cli-'));
+    const spawnSyncImpl = (_binary, args) => {
+      const subcommand = args[0];
+      if (subcommand === 'describe') {
+        return {
+          status: 0,
+          stdout: JSON.stringify({
+            documents: [{ name: 'РеализацияТоваров', posting: true }],
+            catalogs: [{ name: 'Номенклатура' }],
+            registers: [],
+            reports: [],
+            widgets: [],
+          }),
+          stderr: '',
+        };
+      }
+      return { status: 0, stdout: 'ok', stderr: '' };
+    };
+
+    try {
+      const described = await onebaseDescribeConfig({
+        onebaseRoot: root,
+        taskId: 'mcp-task',
+      }, {
+        root,
+        env: { ONEBASE_CLI: 'onebase' },
+        spawnSyncImpl,
+      });
+      assert.equal(described.toolId, 'onebase.describeCli');
+      assert.equal(described.ok, true);
+      assert.ok(described.evidenceRecords.some((record) => record.summary.includes('onebase describe')));
+
+      const checked = await onebaseCheckConfig({
+        onebaseRoot: root,
+        taskId: 'mcp-task',
+      }, {
+        root,
+        env: { ONEBASE_CLI: 'onebase' },
+        spawnSyncImpl,
+      });
+      assert.equal(checked.toolId, 'onebase.checkCli');
+      assert.equal(checked.ok, true);
+      assert.ok(checked.evidenceRecords.some((record) => record.summary.includes('onebase check passed')));
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
+  it('returns REST-read evidence through MCP handler', async () => {
+    const result = await onebaseRestGet({
+      path: '/catalogs/Номенклатура',
+      baseUrl: 'http://onebase.local',
+      taskId: 'rest-mcp-task',
+    }, {
+      root: process.cwd(),
+      fetchImpl: async (_url, options) => {
+        assert.equal(options.method, 'GET');
+        return {
+          ok: true,
+          status: 200,
+          text: async () => '{"ok":true}',
+        };
+      },
+    });
+
+    assert.equal(result.schema, 'onebase.rest-get.result.v1');
+    assert.equal(result.ok, true);
+    assert.equal(result.evidenceRecords[0].taskId, 'rest-mcp-task');
+  });
+
+  it('prepares and executes confirmed REST-write through MCP handler', async () => {
+    const body = { reason: 'mcp-test' };
+    const prepared = await onebaseRestWritePrepare({
+      path: '/documents/РеализацияТоваров/123/post',
+      body,
+      taskId: 'write-mcp-task',
+    }, { root: process.cwd() });
+
+    assert.equal(prepared.ok, true);
+    assert.match(prepared.confirmToken, /^[a-f0-9]{16}$/u);
+
+    const blocked = await onebaseRestWriteExecute({
+      path: '/documents/РеализацияТоваров/123/post',
+      body,
+      confirmToken: 'wrong-token',
+      baseUrl: 'http://onebase.local',
+      taskId: 'write-mcp-task',
+    }, { root: process.cwd() });
+    assert.equal(blocked.ok, false);
+    assert.equal(blocked.blocked, true);
+
+    const executed = await onebaseRestWriteExecute({
+      path: '/documents/РеализацияТоваров/123/post',
+      body,
+      confirmToken: prepared.confirmToken,
+      confirmedBy: 'operator',
+      baseUrl: 'http://onebase.local',
+      taskId: 'write-mcp-task',
+    }, {
+      root: process.cwd(),
+      fetchImpl: async (_url, options) => {
+        assert.equal(options.method, 'POST');
+        return {
+          ok: true,
+          status: 200,
+          text: async () => '{"posted":true}',
+        };
+      },
+    });
+
+    assert.equal(executed.ok, true);
+    assert.equal(executed.evidenceRecords[0].details.confirmedBy, 'operator');
   });
 });

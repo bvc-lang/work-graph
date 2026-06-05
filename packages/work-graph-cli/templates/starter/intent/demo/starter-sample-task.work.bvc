@@ -1,0 +1,19 @@
+#Задача_starter_sample_task<[
+Базис:
+  Demo-задача starter-kit после work-graph init.
+Вектор:
+  Замените или удалите после добавления своих work items.
+Цель:
+  Показать backlog, workflow и MCP на примере без пустого UI.
+
+Метки:
+  atom.profile: work_item
+  work.id: starter-sample-task
+  work.title: Demo: первая задача проекта
+  work.status: ready
+  work.item_kind: task
+  work.department: demo
+  work.owner_role: operator
+  intake.analytics_key: AN-DEMO-1
+  trace.status: draft
+]>

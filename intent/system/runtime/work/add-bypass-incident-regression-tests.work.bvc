@@ -1,0 +1,52 @@
+#Задача_add_bypass_incident_regression_tests<[
+Базис:
+  AN-77 описывает конкретный failure mode: реализация без work item, затем ручное создание/изменение `.work.bvc`.
+  После write-boundary и lint нужен тест, который не даст регрессировать.
+Вектор:
+  Смоделировать direct file edit work item без authorized marker.
+  Проверить, что lint/hook падает и предлагает MCP/CLI путь.
+  Проверить authorized MCP-created work item как green path.
+Цель:
+  В тестах закреплён сценарий AN-77: прямой bypass ловится, штатный MCP/CLI путь проходит.
+Проверки:
+  Red fixture: direct `.work.bvc` edit without marker fails.
+  Green fixture: MCP/CLI write with marker passes.
+  Тест проверяет intent/** и .work-graph/canon/** path variants.
+  Сообщение ошибки содержит actionable guidance.
+Анализ:
+  Зачем: инцидент должен стать executable regression, а не только markdown-разбором.
+  Контекст: Work Graph self-hosted dogfooding требует ловить такие сбои раньше оператора.
+Решение:
+  Добавить тесты после marker/lint, чтобы они проверяли реальный механизм.
+
+Метки:
+  work.closed_at: 2026-06-05T14:07:15.655Z
+  work.parent_id: epic-workgraph-canon-write-boundary-v1
+  work.item_kind: subtask
+  atom.profile: work_item
+  intake.analytics_key: AN-77
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/workgraph-agent-mcp-bypass-install-boundary-incident.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-05T12:50:24.372Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-05T12:50:24.372Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: lint-direct-canon-file-edits, improve-workgraph-mcp-write-convenience
+  work.id: add-bypass-incident-regression-tests
+  work.next_action: Добавить fixtures после реализации marker/lint.
+  work.owner_role: qa_engineer
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: tests/workgraph-mcp-contract.test.mjs, tests/backlogSchemaLint.test.mjs, scripts/lint-canon-write-boundary.mjs, fixtures/bypass-an77/
+  work.title: Добавить regression tests для bypass-инцидента AN-77
+
+Свидетельства:
+  - Regression tests: fixtures/bypass-an77/*.patch, tests/bypassAn77Regression.test.mjs, tests/canonWriteBoundaryLint.test.mjs — red bypass / green MCP path.
+  - fixtures/bypass-an77/ + tests/bypassAn77Regression.test.mjs: bypass patch fails, authorized MCP patch passes, intent и .work-graph/canon paths, lint report с create_work_item guidance.
+  - AN-77 bypass сценарий закреплён executable regression tests.
+]>

@@ -1,0 +1,44 @@
+#Задача_implement_onebase_rest_read_tools<[
+Базис:
+  AN-72: REST evidence есть как adapter для CLI describe/check, но полноценный REST-read путь к live OneBase runtime не реализован.
+  Для product surface нужно уметь безопасно читать catalogs/documents/registers через `ONEBASE_API_BASE_URL`, не превращая чтение в скрытую мутацию.
+Вектор:
+  Реализовать bounded REST-read adapter: `onebase_rest_get` для allowlist endpoint-ов OneBase (`/catalogs/*`, `/documents/*`, `/registers/*`, health/status если есть).
+  Возвращать `evidence-record.v1` с endpoint, status code, response snippet/hash и blocker при отсутствии `ONEBASE_API_BASE_URL`.
+  Подключить REST-read к MCP tools после `implement-onebase-mcp-server-tools`.
+Цель:
+  Агент и оператор могут получить live runtime evidence из OneBase без write-доступа и без Postman/manual steps.
+Проверки:
+  GET-only adapter запрещает методы кроме GET
+  endpoint allowlist блокирует произвольные URL/path traversal
+  отсутствующий runtime даёт blocked/skipped evidence, а не failed verify
+  MCP/API тесты покрывают mocked successful REST response
+
+Метки:
+  atom.profile: work_item
+  intake.analytics_key: AN-72
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/onebase-integration-implementation-review.md
+  migration.strategy: port
+  trace.status: verified
+  work.department: domain-onebase
+  work.decision.verdict: useful
+  work.depends_on: implement-onebase-mcp-server-tools
+  work.id: implement-onebase-rest-read-tools
+  work.item_kind: task
+  work.next_action: закрыто; продолжить implement-onebase-rest-write-confirm-audit
+  work.owner_role: integration_engineer
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: src/onebaseRestEvidenceAdapter.mjs, src/onebaseWorkerTools.mjs, packages/workgraph-mcp/src/handlers.mjs, packages/workgraph-mcp/src/index.mjs, tests/onebaseRestEvidenceAdapter.test.mjs, protocols/onebase-mcp-parity-v1.bvc
+  work.title: Реализовать безопасный REST-read путь OneBase с evidence
+
+Свидетельства:
+  - Реализован GET-only OneBase REST-read adapter executeOnebaseRestGet: allowlist endpoints catalogs/documents/registers/inforegs/reports/widgets/constants/health/status, blocker для missing ONEBASE_API_BASE_URL и forbidden paths, evidence-record.v1 для HTTP result.
+  - Подключено к worker tools как onebase.restGet и MCP как onebase_rest_get.
+  - Добавлены тесты в tests/onebaseRestEvidenceAdapter.test.mjs и tests/workgraph-mcp-contract.test.mjs: missing base URL, allowlist reject, mocked successful GET, MCP handler evidence.
+  - Verification: node --test tests/onebaseRestEvidenceAdapter.test.mjs tests/workgraph-mcp-contract.test.mjs tests/onebaseWorkerTools.test.mjs => 27/27 pass; npm run test:deterministic => 841/841 pass.
+]>
+

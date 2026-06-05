@@ -38,10 +38,15 @@ import {
   renderAnalyticsSortOptions,
   renderWorkflowSubtabsShell,
   renderWorkflowDisplayModeSelect,
+  renderBoardColumnModeSelect,
   renderSettingsLocaleOptions,
 } from './ui/backlogShellButtons.mjs';
-import { renderThemeIcon } from './ui/iconAssets.mjs';
-import { buildAppVersionResponse } from './appVersionApi.mjs';
+import { renderInlineIcon, renderThemeIcon } from './ui/iconAssets.mjs';
+import { buildAppVersionInstallResponse, buildAppVersionResponse } from './appVersionApi.mjs';
+import {
+  loadGitSnapshotPolicy,
+  writeGitSnapshotSettingsFile,
+} from './gitSnapshot.mjs';
 import { readRepoFilePreviewFromRequest } from './repoFilePreviewApi.mjs';
 import { computeBacklogRevision } from './backlogRevision.mjs';
 import { createBacklogUiEventsHub } from './backlogUiEventsHub.mjs';
@@ -348,6 +353,18 @@ function loadBrowserWorkItemIssueTypeSource() {
   );
 }
 
+function loadBrowserPromptRuleRowBadgeSource() {
+  return stripModuleForBrowserInline(
+    readFileSync(join(__dirname, 'ui/promptRuleRowBadge.mjs'), 'utf8'),
+  );
+}
+
+function loadBrowserMemoryRecordRowBadgeSource() {
+  return stripModuleForBrowserInline(
+    readFileSync(join(__dirname, 'ui/memoryRecordRowBadge.mjs'), 'utf8'),
+  );
+}
+
 function loadBrowserWorkItemClassifierSource() {
   return [
     stripModuleForBrowserInline(readFileSync(join(__dirname, 'workItemBlockClassifier.mjs'), 'utf8')),
@@ -391,9 +408,22 @@ const STATUS_GROUPS = [
 ];
 
 const OPERATIONAL_BOARD_GROUPS = STATUS_GROUPS.filter((group) => group.id !== 'done');
-const DONE_ARCHIVE_GROUP = { id: 'done_archive', title: 'Архив завершённых', statuses: ['done', 'verified'] };
-
 const BACKLOG_GROUP = { id: 'backlog', title: 'Бэклог', statuses: ['backlog'] };
+const DONE_ARCHIVE_GROUP = { id: 'done_archive', title: 'Архив завершённых', statuses: ['done', 'verified'] };
+const BOARD_DONE_GROUP = STATUS_GROUPS.find((group) => group.id === 'done');
+const BOARD_EXTENDED_COLUMN_GROUPS = [
+  BACKLOG_GROUP,
+  ...OPERATIONAL_BOARD_GROUPS,
+  BOARD_DONE_GROUP,
+].filter(Boolean);
+const BOARD_COMPACT_OPERATIONAL_GROUPS = OPERATIONAL_BOARD_GROUPS.filter(
+  (group) => group.id !== 'ready' && group.id !== 'blocked',
+);
+const BOARD_COMPACT_COLUMN_GROUPS = [
+  BACKLOG_GROUP,
+  ...BOARD_COMPACT_OPERATIONAL_GROUPS,
+  BOARD_DONE_GROUP,
+].filter(Boolean);
 
 export function createSnapshotFromText(backlogText) {
   return buildSnapshot(parseWorkItems(backlogText));
@@ -529,6 +559,8 @@ export function renderBacklogHtml(options = {}) {
   const kanbanBoardPatcherSource = loadBrowserKanbanBoardPatcherSource();
   const userAvatarsSource = loadBrowserUserAvatarsSource();
   const workItemIssueTypeSource = loadBrowserWorkItemIssueTypeSource();
+  const promptRuleRowBadgeSource = loadBrowserPromptRuleRowBadgeSource();
+  const memoryRecordRowBadgeSource = loadBrowserMemoryRecordRowBadgeSource();
   const workItemClassifierSource = loadBrowserWorkItemClassifierSource();
   const detailDrawerStackSource = loadBrowserDetailDrawerStackSource();
   const liveSyncCoordinatorSource = loadBrowserLiveSyncCoordinatorSource();
@@ -563,6 +595,7 @@ export function renderBacklogHtml(options = {}) {
     archive: t('workflow.tab.archive'),
   });
   const shellWorkflowDisplayModeSelect = renderWorkflowDisplayModeSelect();
+  const shellBoardColumnModeSelect = renderBoardColumnModeSelect({ t });
   const themeIconMoonHtml = renderThemeIcon('moon');
   const themeIconSunHtml = renderThemeIcon('sun');
   return `<!doctype html>
@@ -585,6 +618,23 @@ export function renderBacklogHtml(options = {}) {
       }
     })();
   </script>
+  <script id="font-scale-bootstrap">
+    (function () {
+      var key = 'workGraphFontScale';
+      var modes = {
+        'font-s': '0.875',
+        'font-m': '1',
+        'font-l': '1.125',
+        'font-xl': '1.25'
+      };
+      var mode = localStorage.getItem(key) || 'font-m';
+      if (!Object.prototype.hasOwnProperty.call(modes, mode)) {
+        mode = 'font-m';
+      }
+      document.documentElement.classList.add(mode);
+      document.documentElement.style.setProperty('--text-scale', modes[mode]);
+    })();
+  </script>
   <title>Work Graph: атомы задач</title>
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/assets/fonts/GraphikLCG/stylesheet.css">
@@ -593,6 +643,7 @@ export function renderBacklogHtml(options = {}) {
   <style>
     :root {
       color-scheme: light;
+      --text-scale: 1;
       --bg: #ffffff;
       --header-bg: #ffffff;
       --panel: #ffffff;
@@ -619,7 +670,19 @@ export function renderBacklogHtml(options = {}) {
       --sidebar-width-max: 360px;
       --sidebar-width-default: 252px;
       --sidebar-compact-ui-max: 80px;
+      --text-xs: calc(0.75rem * var(--text-scale));
+      --text-sm: calc(0.8125rem * var(--text-scale));
+      --text-base: calc(0.9375rem * var(--text-scale));
+      --text-lg: calc(1.0625rem * var(--text-scale));
+      --text-xl: calc(1.25rem * var(--text-scale));
+      --font-size-sm: var(--text-sm);
+      --font-size-base: var(--text-base);
     }
+
+    html.font-s { --text-scale: 0.875; }
+    html.font-m { --text-scale: 1; }
+    html.font-l { --text-scale: 1.125; }
+    html.font-xl { --text-scale: 1.25; }
 
     body[data-theme="dark"] {
       color-scheme: dark;
@@ -964,6 +1027,14 @@ export function renderBacklogHtml(options = {}) {
       min-height: 0;
     }
 
+    .content.is-board-workspace {
+      --board-viewport-fill: calc(100vh - 168px);
+    }
+
+    .content.is-board-workspace > #board-view:not([hidden]) {
+      min-height: var(--board-viewport-fill);
+    }
+
     .graph-workspace-view {
       height: 100%;
       overflow: hidden;
@@ -1241,8 +1312,25 @@ export function renderBacklogHtml(options = {}) {
       min-width: 180px;
     }
 
-    #board-view .kanban-board {
-      margin-bottom: 12px;
+    #board-view .board-columns-scroll {
+      overflow-x: auto;
+      overflow-y: visible;
+      -webkit-overflow-scrolling: touch;
+      transform: rotateX(180deg);
+      width: 100%;
+    }
+
+    #board-view .board-columns-scroll > #board {
+      transform: rotateX(180deg);
+    }
+
+    .board-column-mode-select {
+      flex-shrink: 0;
+      margin-left: auto;
+    }
+
+    .board-column-mode-select[hidden] {
+      display: none !important;
     }
 
     .prompt-rule-editor {
@@ -1346,8 +1434,12 @@ export function renderBacklogHtml(options = {}) {
       font-weight: 500;
     }
 
-    .settings-theme-options,
-    .settings-locale-options {
+    .settings-about-actions {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-left: auto;
+    }
       display: inline-flex;
       gap: 8px;
     }
@@ -1370,6 +1462,32 @@ export function renderBacklogHtml(options = {}) {
       color: #85b8ff;
     }
 
+    .settings-font-scale {
+      align-items: stretch;
+      display: grid;
+      gap: 8px;
+      min-width: min(100%, 320px);
+    }
+
+    .settings-font-scale-value {
+      color: var(--muted);
+      font-size: var(--text-sm);
+      text-align: right;
+    }
+
+    .settings-font-scale-slider {
+      accent-color: var(--accent);
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .settings-font-scale-ticks {
+      color: var(--muted);
+      display: flex;
+      font-size: var(--text-sm);
+      justify-content: space-between;
+    }
+
     .settings-version-value {
       font-family: var(--brand-font-mono, monospace);
       font-size: var(--text-sm);
@@ -1381,14 +1499,99 @@ export function renderBacklogHtml(options = {}) {
       margin: 0;
     }
 
-    .settings-install-command {
+    .settings-install-command-wrap {
+      display: grid;
+      gap: 6px;
+      margin: 0;
+    }
+
+    .settings-install-command-hint {
+      color: var(--muted);
+      font-size: var(--text-sm);
+      margin: 0;
+    }
+
+    .settings-install-code {
+      position: relative;
+    }
+
+    .settings-install-command-text {
       background: var(--panel-2);
       border: 1px solid var(--border);
       border-radius: 6px;
+      display: block;
       font-family: var(--brand-font-mono, monospace);
       font-size: 12px;
-      padding: 8px 10px;
+      line-height: 1.45;
+      padding: 10px 44px 10px 10px;
+      white-space: pre-wrap;
       word-break: break-all;
+    }
+
+    .settings-install-copy-btn {
+      align-items: center;
+      background: transparent;
+      border: 0;
+      border-radius: 6px;
+      color: var(--muted);
+      cursor: pointer;
+      display: inline-flex;
+      height: 32px;
+      justify-content: center;
+      padding: 0;
+      position: absolute;
+      right: 4px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 32px;
+    }
+
+    .settings-install-copy-btn:hover,
+    .settings-install-copy-btn.is-copied {
+      background: color-mix(in srgb, var(--accent) 14%, var(--panel-2));
+      color: var(--accent);
+    }
+
+    .settings-install-copy-btn-text {
+      border: 0;
+      clip: rect(0 0 0 0);
+      height: 1px;
+      margin: -1px;
+      overflow: hidden;
+      padding: 0;
+      position: absolute;
+      white-space: nowrap;
+      width: 1px;
+    }
+
+    .settings-install-copy-icon {
+      display: block;
+      flex: none;
+    }
+
+    .settings-install-copy-icon polyline,
+    .settings-install-copy-icon rect {
+      stroke: currentColor;
+    }
+
+    .settings-git-snapshot-note {
+      color: var(--muted);
+      font-size: var(--text-sm);
+      margin: 0 0 12px;
+    }
+
+    .settings-git-snapshot-events {
+      border: 0;
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+    }
+
+    .settings-git-snapshot-events label {
+      align-items: center;
+      display: inline-flex;
+      gap: 8px;
     }
 
     .wg-notice-stack {
@@ -1787,12 +1990,35 @@ export function renderBacklogHtml(options = {}) {
     }
 
     .board {
-      display: grid;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
       gap: 12px;
-      grid-template-columns: repeat(4, minmax(272px, 1fr));
-      overflow-x: auto;
-      overflow-y: visible;
-      padding-bottom: 8px;
+    }
+
+    .board.is-extended {
+      min-width: min-content;
+      width: max-content;
+    }
+
+    .board.is-extended .column {
+      flex: 0 0 350px;
+      min-width: 350px;
+      width: 350px;
+    }
+
+    .board.is-compact {
+      align-items: stretch;
+      min-height: 100%;
+      min-width: min-content;
+      width: 100%;
+    }
+
+    .board.is-compact .column {
+      flex: 1 1 0;
+      min-height: 100%;
+      min-width: 350px;
+      width: auto;
     }
 
     .column {
@@ -1958,14 +2184,6 @@ export function renderBacklogHtml(options = {}) {
       display: flex;
       gap: 5px;
       min-width: 0;
-    }
-
-    .issue-closed-at {
-      color: var(--muted);
-      flex: 0 0 auto;
-      font-size: 11px;
-      line-height: 1.2;
-      white-space: nowrap;
     }
 
     .issue-key-chip {
@@ -2506,6 +2724,17 @@ export function renderBacklogHtml(options = {}) {
       color: var(--muted);
       font-size: var(--text-sm);
       padding: 8px 12px 8px 28px;
+    }
+
+    .workflow-epic-hierarchy-warning {
+      background: color-mix(in srgb, #ffab00 12%, var(--panel));
+      border: 1px dashed color-mix(in srgb, #ffab00 55%, var(--border));
+      border-radius: 3px;
+      color: var(--text);
+      font-size: var(--text-sm);
+      line-height: 1.4;
+      margin: 0 12px 8px;
+      padding: 8px 10px;
     }
 
     .list-row,
@@ -3718,7 +3947,10 @@ export function renderBacklogHtml(options = {}) {
       font-size: var(--font-size-sm);
     }
 
-    .issue-footer-left .wg-badge[data-testid="analytics-related-tasks-count"] {
+    .issue-footer-left .wg-badge[data-testid="analytics-related-tasks-count"],
+    .issue-footer-left .wg-badge[data-testid="architecture-block-tasks-count"],
+    .issue-footer-left .wg-badge[data-testid="prompt-rule-validation-badge"],
+    .issue-footer-left .wg-badge[data-testid="memory-record-status-badge"] {
       flex-shrink: 0;
       max-width: none;
       text-transform: uppercase;
@@ -4369,7 +4601,9 @@ export function renderBacklogHtml(options = {}) {
     }
 
     @media (max-width: 900px) {
-      .board { grid-template-columns: minmax(260px, 1fr); }
+      .board.is-extended .column,
+      .board.is-compact .column { min-width: 350px; }
+      .board.is-extended .column { flex-basis: 350px; width: 350px; }
       .detail-drawer { width: 100vw; }
     }
     ${MISSION_CONTROL_CSS}
@@ -4575,6 +4809,7 @@ export function renderBacklogHtml(options = {}) {
           ${shellIntentDomainClear}
           ${shellWorkflowDisplayModeSelect}
         </div>
+        ${shellBoardColumnModeSelect}
       </section>
       <section id="verification-view" class="view" aria-live="polite" hidden>
         <article id="verification-panel" class="verification-panel">
@@ -4702,6 +4937,19 @@ export function renderBacklogHtml(options = {}) {
                 <button type="button" class="wg-btn wg-btn--secondary wg-btn--sm" id="settings-theme-dark" data-settings-theme="dark">${t('settings.appearance.themeDark')}</button>
               </div>
             </div>
+            <div class="settings-row">
+              <label for="settings-font-scale">${t('settings.appearance.fontSize')}</label>
+              <div class="settings-font-scale" data-testid="settings-font-scale-control">
+                <span id="settings-font-scale-value" class="settings-font-scale-value" aria-live="polite">${t('settings.appearance.fontSizeNormal')}</span>
+                <input type="range" min="0" max="3" step="1" value="1" class="settings-font-scale-slider" id="settings-font-scale" data-testid="settings-font-scale-slider" aria-describedby="settings-font-scale-value" aria-label="${t('settings.appearance.fontSize')}">
+                <div class="settings-font-scale-ticks" aria-hidden="true">
+                  <span>${t('settings.appearance.fontSizeSmall')}</span>
+                  <span>${t('settings.appearance.fontSizeNormal')}</span>
+                  <span>${t('settings.appearance.fontSizeLarge')}</span>
+                  <span>${t('settings.appearance.fontSizeXLarge')}</span>
+                </div>
+              </div>
+            </div>
           </article>
           <article class="settings-section" aria-labelledby="settings-language-title">
             <h2 id="settings-language-title">${t('settings.language.title')}</h2>
@@ -4712,6 +4960,26 @@ export function renderBacklogHtml(options = {}) {
               </div>
             </div>
           </article>
+          <article class="settings-section" aria-labelledby="settings-git-snapshot-title">
+            <h2 id="settings-git-snapshot-title">${t('settings.gitSnapshot.title')}</h2>
+            <p class="settings-git-snapshot-note">${t('settings.gitSnapshot.noPushNote')}</p>
+            <div class="settings-row">
+              <label for="settings-git-snapshot-enabled">${t('settings.gitSnapshot.enabled')}</label>
+              <input type="checkbox" id="settings-git-snapshot-enabled" data-testid="settings-git-snapshot-enabled">
+            </div>
+            <div class="settings-row">
+              <label for="settings-git-snapshot-record-sha">${t('settings.gitSnapshot.recordSha')}</label>
+              <input type="checkbox" id="settings-git-snapshot-record-sha" data-testid="settings-git-snapshot-record-sha">
+            </div>
+            <fieldset class="settings-row settings-git-snapshot-events">
+              <legend>${t('settings.gitSnapshot.events')}</legend>
+              <label><input type="checkbox" value="work_item.done" data-settings-git-event> done</label>
+              <label><input type="checkbox" value="work_item.status" data-settings-git-event> status</label>
+              <label><input type="checkbox" value="work_item.created" data-settings-git-event> created</label>
+              <label><input type="checkbox" value="analytics.created" data-settings-git-event> analytics</label>
+            </fieldset>
+            <p id="settings-git-snapshot-status" class="settings-update-status" data-testid="settings-git-snapshot-status" hidden></p>
+          </article>
           <article class="settings-section" aria-labelledby="settings-about-title">
             <h2 id="settings-about-title">${t('settings.about.title')}</h2>
             <div class="settings-row">
@@ -4719,16 +4987,29 @@ export function renderBacklogHtml(options = {}) {
               <span id="settings-version-value" class="settings-version-value" data-testid="settings-version-value">—</span>
             </div>
             <div class="settings-row">
-              <button type="button" class="wg-btn wg-btn--secondary wg-btn--sm" id="settings-check-update" data-testid="settings-check-update">${t('settings.about.checkUpdate')}</button>
+              <div class="settings-about-actions">
+                <button type="button" class="wg-btn wg-btn--secondary wg-btn--sm" id="settings-check-update" data-testid="settings-check-update">${t('settings.about.checkUpdate')}</button>
+                <button type="button" class="wg-btn wg-btn--primary wg-btn--sm" id="settings-install-update" data-testid="settings-install-update" hidden>${t('settings.about.installUpdate')}</button>
+              </div>
             </div>
             <p id="settings-update-status" class="settings-update-status" data-testid="settings-update-status" hidden></p>
-            <code id="settings-install-command" class="settings-install-command" data-testid="settings-install-command" hidden></code>
+            <div id="settings-install-command" class="settings-install-command-wrap" data-testid="settings-install-command" hidden>
+              <p class="settings-install-command-hint">${t('settings.about.installHint')}</p>
+              <div class="settings-install-code">
+                <code id="settings-install-command-text" class="settings-install-command-text" data-testid="settings-install-command-text"></code>
+                <button type="button" class="settings-install-copy-btn" id="settings-install-copy-btn" data-testid="settings-install-copy-btn" aria-label="${t('settings.about.copy')}" title="${t('settings.about.copy')}">
+                  ${renderInlineIcon('copy-bold.svg', { className: 'settings-install-copy-icon', size: 18 })}
+                  <span class="settings-install-copy-btn-text">${t('settings.about.copy')}</span>
+                </button>
+              </div>
+            </div>
           </article>
         </div>
       </section>
       <section id="board-view" class="view" aria-live="polite" hidden>
-        <div id="kanban-board" class="board kanban-board" data-testid="kanban-board-panel" aria-label="Kanban planning columns"></div>
-        <div id="board" class="board"></div>
+        <div class="board-columns-scroll" data-testid="board-columns-scroll">
+          <div id="board" class="board" data-testid="kanban-board-panel" aria-label="Board columns"></div>
+        </div>
       </section>
       <section id="workflow-view" class="view" aria-live="polite" hidden>
         ${shellWorkflowSubtabs}
@@ -4808,6 +5089,8 @@ export function renderBacklogHtml(options = {}) {
     ${kanbanBoardPatcherSource}
     ${userAvatarsSource}
     ${workItemIssueTypeSource}
+    ${promptRuleRowBadgeSource}
+    ${memoryRecordRowBadgeSource}
     ${workItemClassifierSource}
     ${detailDrawerStackSource}
     ${liveSyncCoordinatorSource}
@@ -4828,6 +5111,8 @@ export function renderBacklogHtml(options = {}) {
     }
     const statusGroups = ${JSON.stringify(STATUS_GROUPS)};
     const operationalBoardGroups = ${JSON.stringify(OPERATIONAL_BOARD_GROUPS)};
+    const boardExtendedColumnGroups = ${JSON.stringify(BOARD_EXTENDED_COLUMN_GROUPS)};
+    const boardCompactColumnGroups = ${JSON.stringify(BOARD_COMPACT_COLUMN_GROUPS)};
     const doneArchiveGroup = ${JSON.stringify(DONE_ARCHIVE_GROUP)};
     const doneArchiveCap = ${DEFAULT_DONE_ARCHIVE_CAP};
     const workflowPageSize = doneArchiveCap;
@@ -4846,6 +5131,9 @@ export function renderBacklogHtml(options = {}) {
     ${workflowTreeProjectionSource}
     ${missionControlClientSource}
     const themeStorageKey = 'workGraphBacklogTheme';
+    const fontScaleStorageKey = 'workGraphFontScale';
+    const fontScaleModes = ['font-s', 'font-m', 'font-l', 'font-xl'];
+    const fontScaleValues = { 'font-s': '0.875', 'font-m': '1', 'font-l': '1.125', 'font-xl': '1.25' };
     const i18nBootstrap = ${i18nBootstrapScript};
     window.__WG_LOCALE__ = i18nBootstrap.locale;
     window.__WG_I18N__ = i18nBootstrap.messages;
@@ -4858,6 +5146,12 @@ export function renderBacklogHtml(options = {}) {
       }
       return text;
     }
+    const fontScaleLabels = {
+      'font-s': t('settings.appearance.fontSizeSmall'),
+      'font-m': t('settings.appearance.fontSizeNormal'),
+      'font-l': t('settings.appearance.fontSizeLarge'),
+      'font-xl': t('settings.appearance.fontSizeXLarge'),
+    };
     function localizedKanbanColumnTitle(columnId, fallback) {
       const key = 'kanban.col.' + columnId;
       const value = t(key);
@@ -4893,6 +5187,7 @@ export function renderBacklogHtml(options = {}) {
     const SIDEBAR_COMPACT_UI_MAX = 80;
     const graphCanvasModeStorageKey = 'workGraphGraphCanvasMode';
     const workflowDisplayModeStorageKey = 'workGraphWorkflowDisplayMode';
+    const boardColumnModeStorageKey = 'workGraphBoardColumnMode';
     const collapsedWorkflowTreeIdsStorageKey = 'workGraphWorkflowTreeCollapsed.v1';
     localStorage.removeItem('workGraphArchitectureMatrixFilter');
 
@@ -4948,6 +5243,7 @@ export function renderBacklogHtml(options = {}) {
     let activeAnalyticsTab = readStoredAnalyticsTab();
     let activeAnalyticsSort = readStoredAnalyticsSort();
     let workflowDisplayMode = readStoredWorkflowDisplayMode();
+    let boardColumnMode = readStoredBoardColumnMode();
     let collapsedWorkflowTreeIds = new Set(JSON.parse(localStorage.getItem(collapsedWorkflowTreeIdsStorageKey) || '[]'));
     let backlogPage = Math.max(1, Number(localStorage.getItem(backlogPageStorageKey)) || 1);
     let archivePage = Math.max(1, Number(localStorage.getItem(archivePageStorageKey)) || 1);
@@ -4961,6 +5257,7 @@ export function renderBacklogHtml(options = {}) {
     const architectureView = document.querySelector('#architecture-view');
     const architectureBlocksList = document.querySelector('#architecture-blocks-list');
     const workflowDisplayModeSelect = document.querySelector('#workflow-display-mode');
+    const boardColumnModeSelect = document.querySelector('#board-column-mode');
     const intentGraphView = document.querySelector('#intent-graph-view');
     const intentRoadmapBody = document.querySelector('#intent-roadmap-body');
     const contentRoot = document.querySelector('.content');
@@ -4981,7 +5278,6 @@ export function renderBacklogHtml(options = {}) {
     const workflowSubtabs = [...document.querySelectorAll('[data-workflow-tab]')];
     const workflowView = document.querySelector('#workflow-view');
     const board = document.querySelector('#board');
-    const kanbanBoard = document.querySelector('#kanban-board');
     const boardView = document.querySelector('#board-view');
     const layoutRoot = document.querySelector('#layout-root');
     const agentRunDock = document.querySelector('#agent-run-dock');
@@ -5036,11 +5332,20 @@ export function renderBacklogHtml(options = {}) {
     const settingsView = document.querySelector('#settings-view');
     const settingsThemeLight = document.querySelector('#settings-theme-light');
     const settingsThemeDark = document.querySelector('#settings-theme-dark');
+    const settingsFontScale = document.querySelector('#settings-font-scale');
+    const settingsFontScaleValue = document.querySelector('#settings-font-scale-value');
     const settingsLocaleButtons = [...document.querySelectorAll('[data-settings-locale]')];
     const settingsVersionValue = document.querySelector('#settings-version-value');
     const settingsCheckUpdate = document.querySelector('#settings-check-update');
+    const settingsInstallUpdate = document.querySelector('#settings-install-update');
     const settingsUpdateStatus = document.querySelector('#settings-update-status');
     const settingsInstallCommand = document.querySelector('#settings-install-command');
+    const settingsInstallCommandText = document.querySelector('#settings-install-command-text');
+    const settingsInstallCopyBtn = document.querySelector('#settings-install-copy-btn');
+    const settingsGitSnapshotEnabled = document.querySelector('#settings-git-snapshot-enabled');
+    const settingsGitSnapshotRecordSha = document.querySelector('#settings-git-snapshot-record-sha');
+    const settingsGitSnapshotEvents = [...document.querySelectorAll('[data-settings-git-event]')];
+    const settingsGitSnapshotStatus = document.querySelector('#settings-git-snapshot-status');
     const wgNoticeStack = document.querySelector('#wg-notice-stack');
     const codeGapSummary = document.querySelector('#code-gap-summary');
     const codeGapList = document.querySelector('#code-gap-list');
@@ -5076,6 +5381,7 @@ export function renderBacklogHtml(options = {}) {
     const intentDomainClear = document.querySelector('#intent-domain-clear');
 
     applyTheme(readStoredTheme());
+    applyFontScale(readStoredFontScale());
     applyStoredSidebarWidth();
     applyStoredDetailDrawerWidth();
     applyStoredDetailSubDrawerWidth();
@@ -5120,6 +5426,9 @@ export function renderBacklogHtml(options = {}) {
     applyAnalyticsSortUi(activeAnalyticsSort);
     if (workflowDisplayModeSelect) {
       workflowDisplayModeSelect.value = workflowDisplayMode;
+    }
+    if (boardColumnModeSelect) {
+      boardColumnModeSelect.value = boardColumnMode;
     }
     initMissionControlUi();
     liveSync.forceTick('home');
@@ -5344,6 +5653,15 @@ export function renderBacklogHtml(options = {}) {
       });
     }
 
+    if (boardColumnModeSelect) {
+      boardColumnModeSelect.addEventListener('change', () => {
+        boardColumnMode = boardColumnModeSelect.value === 'compact' ? 'compact' : 'extended';
+        localStorage.setItem(boardColumnModeStorageKey, boardColumnMode);
+        kanbanColumnVisibleCounts = Object.create(null);
+        render();
+      });
+    }
+
     workflowSubtabs.forEach((tab) => {
       tab.addEventListener('click', () => {
         activeWorkflowTab = tab.dataset.workflowTab === 'archive' ? 'archive' : 'backlog';
@@ -5392,6 +5710,13 @@ export function renderBacklogHtml(options = {}) {
         localStorage.setItem(themeStorageKey, 'dark');
       });
     }
+    if (settingsFontScale) {
+      settingsFontScale.addEventListener('input', () => {
+        const mode = fontScaleModes[Number(settingsFontScale.value)] || 'font-m';
+        applyFontScale(mode);
+        localStorage.setItem(fontScaleStorageKey, mode);
+      });
+    }
     if (settingsLocaleButtons.length) {
       function applySettingsLocaleUi(nextLocale) {
         settingsLocaleButtons.forEach((button) => {
@@ -5429,14 +5754,56 @@ export function renderBacklogHtml(options = {}) {
           settingsUpdateStatus.hidden = false;
           settingsUpdateStatus.textContent = t('settings.about.checking');
         }
-        renderSettingsPanel({ checkUpdate: true }).finally(() => {
+        renderSettingsPanel({ checkUpdate: true, fresh: true }).finally(() => {
           settingsCheckUpdate.disabled = false;
         });
       });
     }
+    if (settingsInstallUpdate) {
+      settingsInstallUpdate.addEventListener('click', () => {
+        installAppVersionUpdate().catch(() => undefined);
+      });
+    }
+    if (settingsInstallCopyBtn) {
+      let settingsInstallCopyFeedbackTimer = null;
+      settingsInstallCopyBtn.addEventListener('click', () => {
+        const text = settingsInstallCopyBtn.dataset.copyText
+          || settingsInstallCommandText?.textContent
+          || '';
+        if (!text) {
+          return;
+        }
+        copyTextToClipboard(text).then(() => {
+          const copiedLabel = t('settings.about.copied');
+          const copyLabel = t('settings.about.copy');
+          settingsInstallCopyBtn.classList.add('is-copied');
+          settingsInstallCopyBtn.setAttribute('aria-label', copiedLabel);
+          settingsInstallCopyBtn.setAttribute('title', copiedLabel);
+          if (settingsInstallCopyFeedbackTimer) {
+            clearTimeout(settingsInstallCopyFeedbackTimer);
+          }
+          settingsInstallCopyFeedbackTimer = window.setTimeout(() => {
+            settingsInstallCopyBtn.classList.remove('is-copied');
+            settingsInstallCopyBtn.setAttribute('aria-label', copyLabel);
+            settingsInstallCopyBtn.setAttribute('title', copyLabel);
+          }, 1600);
+        }).catch(() => undefined);
+      });
+    }
+    [settingsGitSnapshotEnabled, settingsGitSnapshotRecordSha, ...settingsGitSnapshotEvents].forEach((node) => {
+      if (!node) return;
+      node.addEventListener('change', () => {
+        persistGitSnapshotSettingsFromForm().catch(() => undefined);
+      });
+    });
 
     function readStoredTheme() {
       return localStorage.getItem(themeStorageKey) === 'dark' ? 'dark' : 'light';
+    }
+
+    function readStoredFontScale() {
+      const mode = localStorage.getItem(fontScaleStorageKey) || 'font-m';
+      return fontScaleModes.includes(mode) ? mode : 'font-m';
     }
 
     function readStoredView() {
@@ -5505,6 +5872,22 @@ export function renderBacklogHtml(options = {}) {
         return storedMode;
       }
       return 'epic-groups';
+    }
+
+    function readStoredBoardColumnMode() {
+      const storedMode = localStorage.getItem(boardColumnModeStorageKey);
+      return storedMode === 'extended' ? 'extended' : 'compact';
+    }
+
+    function getActiveBoardColumnGroups() {
+      return boardColumnMode === 'compact' ? boardCompactColumnGroups : boardExtendedColumnGroups;
+    }
+
+    function localizedBoardColumnTitle(group) {
+      if (group.id === 'backlog' || group.id === 'done') {
+        return localizedKanbanColumnTitle(group.id, group.title);
+      }
+      return localizedBoardGroupTitle(group.id, group.title);
     }
 
     function applyAnalyticsTab(tab) {
@@ -5832,8 +6215,80 @@ export function renderBacklogHtml(options = {}) {
       }
     }
 
-    async function loadSettingsVersionInfo(checkUpdate) {
-      const query = checkUpdate ? '?checkUpdate=1' : '';
+    function applyFontScale(mode) {
+      const nextMode = fontScaleModes.includes(mode) ? mode : 'font-m';
+      fontScaleModes.forEach((candidate) => {
+        document.documentElement.classList.toggle(candidate, candidate === nextMode);
+      });
+      document.documentElement.style.setProperty('--text-scale', fontScaleValues[nextMode] || '1');
+      if (settingsFontScale) {
+        settingsFontScale.value = String(Math.max(0, fontScaleModes.indexOf(nextMode)));
+      }
+      if (settingsFontScaleValue) {
+        settingsFontScaleValue.textContent = fontScaleLabels[nextMode] || nextMode;
+      }
+    }
+
+    async function loadGitSnapshotSettings() {
+      const response = await fetch('/api/git-snapshot-settings');
+      if (!response.ok) {
+        throw new Error('git-snapshot-settings ' + response.status);
+      }
+      return response.json();
+    }
+
+    async function saveGitSnapshotSettings(payload) {
+      const response = await fetch('/api/git-snapshot-settings', {
+        method: 'PUT',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!response.ok) {
+        throw new Error('git-snapshot-settings ' + response.status);
+      }
+      return response.json();
+    }
+
+    function applyGitSnapshotSettingsToForm(settings) {
+      if (settingsGitSnapshotEnabled) {
+        settingsGitSnapshotEnabled.checked = settings.enabled === true;
+      }
+      if (settingsGitSnapshotRecordSha) {
+        settingsGitSnapshotRecordSha.checked = settings.recordShaInEvidence !== false;
+      }
+      const enabledEvents = new Set(Array.isArray(settings.events) ? settings.events : []);
+      settingsGitSnapshotEvents.forEach((input) => {
+        input.checked = enabledEvents.has(input.value);
+      });
+    }
+
+    function readGitSnapshotSettingsFromForm() {
+      return {
+        enabled: settingsGitSnapshotEnabled?.checked === true,
+        recordShaInEvidence: settingsGitSnapshotRecordSha?.checked !== false,
+        events: settingsGitSnapshotEvents.filter((input) => input.checked).map((input) => input.value),
+        push: 'never',
+      };
+    }
+
+    async function persistGitSnapshotSettingsFromForm() {
+      const payload = readGitSnapshotSettingsFromForm();
+      await saveGitSnapshotSettings(payload);
+      if (settingsGitSnapshotStatus) {
+        settingsGitSnapshotStatus.hidden = false;
+        settingsGitSnapshotStatus.textContent = t('settings.gitSnapshot.saved');
+      }
+    }
+
+    async function loadSettingsVersionInfo(checkUpdate, options = {}) {
+      const params = new URLSearchParams();
+      if (checkUpdate) {
+        params.set('checkUpdate', '1');
+        if (options.fresh === true) {
+          params.set('fresh', '1');
+        }
+      }
+      const query = params.size > 0 ? ('?' + params.toString()) : '';
       const response = await fetch('/api/app-version' + query);
       if (!response.ok) {
         throw new Error('app-version ' + response.status);
@@ -5841,10 +6296,65 @@ export function renderBacklogHtml(options = {}) {
       return response.json();
     }
 
+    function applySettingsUpdateActions(info) {
+      if (!settingsInstallUpdate) {
+        return;
+      }
+      const canShow = info?.updateAvailable === true && info?.canInstallFromUi === true;
+      settingsInstallUpdate.hidden = !canShow;
+    }
+
+    async function installAppVersionUpdate() {
+      if (settingsInstallUpdate) {
+        settingsInstallUpdate.disabled = true;
+      }
+      if (settingsCheckUpdate) {
+        settingsCheckUpdate.disabled = true;
+      }
+      if (settingsUpdateStatus) {
+        settingsUpdateStatus.hidden = false;
+        settingsUpdateStatus.textContent = t('settings.about.installing');
+      }
+      try {
+        const response = await fetch('/api/app-version/install', { method: 'POST' });
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          throw new Error(payload.message || payload.error || ('install ' + response.status));
+        }
+        if (settingsVersionValue) {
+          settingsVersionValue.textContent = payload.version + ' · @work-graph/cli';
+        }
+        if (settingsUpdateStatus) {
+          settingsUpdateStatus.textContent = t('settings.about.installSuccess', { version: payload.version });
+        }
+        if (settingsInstallCommand) {
+          settingsInstallCommand.hidden = true;
+        }
+        applySettingsUpdateActions({ updateAvailable: false });
+      } catch (error) {
+        if (settingsUpdateStatus) {
+          settingsUpdateStatus.textContent = t('settings.about.installFailed');
+        }
+      } finally {
+        if (settingsInstallUpdate) {
+          settingsInstallUpdate.disabled = false;
+        }
+        if (settingsCheckUpdate) {
+          settingsCheckUpdate.disabled = false;
+        }
+      }
+    }
+
     async function renderSettingsPanel(options = {}) {
       if (!settingsView) return;
       try {
-        const info = await loadSettingsVersionInfo(options.checkUpdate === true);
+        const gitSettings = await loadGitSnapshotSettings().catch(() => null);
+        if (gitSettings?.settings) {
+          applyGitSnapshotSettingsToForm(gitSettings.settings);
+        }
+        const info = await loadSettingsVersionInfo(options.checkUpdate === true, {
+          fresh: options.fresh === true,
+        });
         if (settingsVersionValue) {
           settingsVersionValue.textContent = info.version + ' · ' + info.npmPackage;
         }
@@ -5852,24 +6362,36 @@ export function renderBacklogHtml(options = {}) {
         if (options.checkUpdate !== true) {
           settingsUpdateStatus.hidden = true;
           if (settingsInstallCommand) settingsInstallCommand.hidden = true;
+          applySettingsUpdateActions(null);
           return;
         }
         settingsUpdateStatus.hidden = false;
         if (info.checkError) {
           settingsUpdateStatus.textContent = t('settings.about.checkFailed');
           if (settingsInstallCommand) settingsInstallCommand.hidden = true;
+          applySettingsUpdateActions(null);
           return;
         }
         if (info.updateAvailable) {
           settingsUpdateStatus.textContent = t('settings.about.updateAvailable', { latest: info.latestVersion });
+          const installCommand = info.installCommand || info.installCommandProject || '';
           if (settingsInstallCommand) {
-            settingsInstallCommand.hidden = false;
-            settingsInstallCommand.textContent = t('settings.about.installHint') + ' ' + (info.installCommand || info.installCommandProject);
+            settingsInstallCommand.hidden = info.canInstallFromUi === true;
           }
+          if (settingsInstallCommandText) {
+            settingsInstallCommandText.textContent = installCommand;
+          }
+          if (settingsInstallCopyBtn) {
+            settingsInstallCopyBtn.dataset.copyText = installCommand;
+          }
+          applySettingsUpdateActions(info);
           return;
         }
-        settingsUpdateStatus.textContent = t('settings.about.upToDate');
+        settingsUpdateStatus.textContent = t('settings.about.upToDate', {
+          latest: info.latestVersion || info.version,
+        });
         if (settingsInstallCommand) settingsInstallCommand.hidden = true;
+        applySettingsUpdateActions(null);
       } catch (error) {
         if (settingsUpdateStatus && options.checkUpdate === true) {
           settingsUpdateStatus.hidden = false;
@@ -5940,8 +6462,13 @@ export function renderBacklogHtml(options = {}) {
 
     async function checkAppVersionAndMaybeNotify() {
       const info = await loadSettingsVersionInfo(true);
-      if (settingsVersionValue && activeView !== 'settings') {
+      if (settingsVersionValue) {
         settingsVersionValue.textContent = info.version + ' · ' + info.npmPackage;
+      }
+      if (activeView === 'settings' && settingsUpdateStatus && info.updateAvailable) {
+        settingsUpdateStatus.hidden = false;
+        settingsUpdateStatus.textContent = t('settings.about.updateAvailable', { latest: info.latestVersion });
+        applySettingsUpdateActions(info);
       }
       showUpdateAvailableNotice(info);
       return info;
@@ -6231,10 +6758,17 @@ export function renderBacklogHtml(options = {}) {
       const isSettings = view === 'settings';
       if (contentRoot) {
         contentRoot.classList.remove('is-graph-workspace');
+        contentRoot.classList.toggle('is-board-workspace', view === 'board');
       }
       workflowFilters.hidden = !(view === 'board' || isWorkflow);
       if (workflowDisplayModeSelect) {
         workflowDisplayModeSelect.hidden = !isWorkflow;
+      }
+      if (boardColumnModeSelect) {
+        boardColumnModeSelect.hidden = view !== 'board';
+      }
+      if (view === 'board') {
+        applyBoardColumnModeClass();
       }
       if (viewToolbar) viewToolbar.hidden = !(view === 'board' || isWorkflow);
       boardView.hidden = isWorkflow || isVerification || isIntent || isPrompts || isMemory || isAnalytics || isArchitecture || isSettings;
@@ -6297,7 +6831,6 @@ export function renderBacklogHtml(options = {}) {
             const items = getFilteredItems();
             renderIntentDomainFilter();
             renderNavigationCounts(items);
-            renderKanbanBoard(items);
             renderBoard(items);
           }
           await reconcileDetailDrawerOnRemotePatch();
@@ -6309,7 +6842,7 @@ export function renderBacklogHtml(options = {}) {
     }
 
     function patchKanbanBoardIncremental(prevProjection) {
-      if (!kanbanBoard || !prevProjection || !shouldUseKanbanIncrementalPatch()) {
+      if (!board || !prevProjection || !shouldUseKanbanIncrementalPatch()) {
         return false;
       }
       const nextProjection = operatorShellSnapshot?.kanbanBoard ?? null;
@@ -6322,7 +6855,7 @@ export function renderBacklogHtml(options = {}) {
       }
       const itemsById = new Map((snapshot?.items ?? []).map((item) => [item.id, item]));
       const doneColumn = nextProjection.columns.find((column) => column.id === 'done');
-      const result = applyKanbanBoardPatch(kanbanBoard, delta, {
+      const result = applyKanbanBoardPatch(board, delta, {
         renderCard: (item, options) => renderTaskAtomCard(item, 'kanban-card', options),
         emptyColumnHtml: '<div class="empty">' + escapeHtml(t('empty.noTasks')) + '</div>',
         itemsById,
@@ -6383,7 +6916,6 @@ export function renderBacklogHtml(options = {}) {
       const items = getFilteredItems();
       renderIntentDomainFilter();
       renderNavigationCounts(items);
-      renderKanbanBoard(items);
       renderBoard(items);
       renderArchive(items);
       renderBacklog(items);
@@ -6797,6 +7329,33 @@ export function renderBacklogHtml(options = {}) {
       });
     }
 
+    function renderPromptRuleValidationBadge(rule) {
+      return renderClientUiBadge({
+        label: formatPromptRuleValidationBadgeLabel(rule),
+        tone: resolvePromptRuleValidationBadgeTone(rule),
+        testId: 'prompt-rule-validation-badge',
+        title: rule.validationStatus === 'valid'
+          ? 'Правило прошло валидацию'
+          : 'Правило не прошло валидацию',
+      });
+    }
+
+    function renderPromptRuleListRow(rule) {
+      return renderListRow({
+        title: rule.name,
+        lines: [
+          escapeHtml(rule.filePath),
+          escapeHtml(preview(rule.basis || rule.vector || rule.goal || '')),
+        ],
+        footerLeft: renderWorkItemIssueKeyChip(
+          { key: rule.id, itemKind: 'story', id: rule.id },
+          { type: 'story' },
+        ) + renderPromptRuleValidationBadge(rule),
+        selected: selectedPromptRuleId === rule.id,
+        attrs: { 'data-prompt-rule-id': rule.id },
+      });
+    }
+
     function renderPromptsPanel() {
       if (!promptsProjection) {
         if (promptsSummary) promptsSummary.innerHTML = '';
@@ -6823,18 +7382,7 @@ export function renderBacklogHtml(options = {}) {
       }
 
       promptsList.innerHTML = pagination.items.length
-        ? pagination.items.map((rule) =>
-          renderListRow({
-            title: rule.name,
-            lines: [
-              '<span class="list-row-tag is-' + escapeHtml(rule.validationStatus) + '">' + escapeHtml(rule.validationStatus) + '</span> · ' + escapeHtml(rule.filePath),
-              escapeHtml(preview(rule.basis || rule.vector || rule.goal || '')),
-            ],
-            footerLeft: '<span class="id">' + escapeHtml(rule.id) + '</span>',
-            selected: selectedPromptRuleId === rule.id,
-            attrs: { 'data-prompt-rule-id': rule.id },
-          })
-        ).join('')
+        ? pagination.items.map((rule) => renderPromptRuleListRow(rule)).join('')
         : '<div class="empty">Prompt rules не найдены для текущего фильтра.</div>';
       renderWorkflowPagination(promptsPagination, pagination, 'prompts');
     }
@@ -6850,6 +7398,7 @@ export function renderBacklogHtml(options = {}) {
       }
 
       const haystack = [
+        record.key,
         record.id,
         record.type,
         record.status,
@@ -6862,6 +7411,35 @@ export function renderBacklogHtml(options = {}) {
       ].join(' ').toLowerCase();
 
       return haystack.includes(query);
+    }
+
+    function renderMemoryRecordStatusBadge(record) {
+      return renderClientUiBadge({
+        label: formatMemoryRecordStatusBadgeLabel(record),
+        tone: resolveMemoryRecordStatusBadgeTone(record),
+        testId: 'memory-record-status-badge',
+        title: record.summary || record.id,
+      });
+    }
+
+    function renderMemoryRecordListRow(record) {
+      const owner = record.sourceWorkItem || record.type || 'WG';
+      return renderListRow({
+        title: record.summary,
+        lines: [
+          escapeHtml(record.type) + ' · confidence: ' + escapeHtml(record.confidence),
+          escapeHtml((record.relatedFiles ?? []).join(', ') || 'no related files'),
+        ],
+        footerLeft: renderMemoryRecordKeyChip(record) +
+          renderWorkItemIssueKeyChip(
+            { id: record.sourceWorkItem, key: record.sourceWorkItem, itemKind: 'task' },
+            { type: 'task' },
+          ) +
+          renderMemoryRecordStatusBadge(record),
+        footerRight: renderOwnerAvatar(owner, { title: owner }),
+        selected: selectedMemoryRecordId === record.id,
+        attrs: { 'data-memory-record-id': record.id },
+      });
     }
 
     function renderMemoryPanel() {
@@ -6890,20 +7468,7 @@ export function renderBacklogHtml(options = {}) {
       }
 
       memoryList.innerHTML = pagination.items.length
-        ? pagination.items.map((record) => {
-          const owner = record.sourceWorkItem || record.type || 'WG';
-          return renderListRow({
-            title: record.summary,
-            lines: [
-              escapeHtml(record.type) + ' · ' + escapeHtml(record.status) + ' · confidence: ' + escapeHtml(record.confidence),
-              escapeHtml((record.relatedFiles ?? []).join(', ') || 'no related files'),
-            ],
-            footerLeft: '<span class="id">' + escapeHtml(record.id) + '</span>',
-            footerRight: renderOwnerAvatar(owner, { title: owner }),
-            selected: selectedMemoryRecordId === record.id,
-            attrs: { 'data-memory-record-id': record.id },
-          });
-        }).join('')
+        ? pagination.items.map((record) => renderMemoryRecordListRow(record)).join('')
         : '<div class="empty">Memory records не найдены для текущего фильтра.</div>';
       renderWorkflowPagination(memoryPagination, pagination, 'memory');
     }
@@ -6926,9 +7491,11 @@ export function renderBacklogHtml(options = {}) {
 
     function openMemoryRecordDetails(record) {
       detailTitle.textContent = record.summary;
-      detailId.textContent = record.id;
+      detailId.textContent = record.key || record.id;
       detailBody.innerHTML =
         renderDetailBackButton('← К памяти') +
+        renderDetailText('Key', record.key || '—') +
+        renderDetailText('Id', record.id) +
         renderDetailText('Type', record.type) +
         renderDetailText('Status', record.status) +
         renderDetailText('Confidence', record.confidence) +
@@ -8096,10 +8663,13 @@ export function renderBacklogHtml(options = {}) {
         return;
       }
       kanbanColumnVisibleCounts[columnId] = Math.min(current + kanbanColumnPageSize, total);
-      renderKanbanBoard(getFilteredItems());
+      renderBoard(getFilteredItems());
     }
 
     function shouldUseKanbanIncrementalPatch() {
+      if (boardColumnMode !== 'extended') {
+        return false;
+      }
       const projection = operatorShellSnapshot?.kanbanBoard;
       if (!projection?.columns) {
         return false;
@@ -8112,7 +8682,7 @@ export function renderBacklogHtml(options = {}) {
         kanbanColumnObserver.disconnect();
         kanbanColumnObserver = null;
       }
-      if (!kanbanBoard || activeView !== 'board') {
+      if (!board || activeView !== 'board') {
         return;
       }
       kanbanColumnObserver = new IntersectionObserver((entries) => {
@@ -8131,7 +8701,7 @@ export function renderBacklogHtml(options = {}) {
           }
         }
       }, { root: null, rootMargin: '160px 0px', threshold: 0 });
-      kanbanBoard.querySelectorAll('[data-kanban-column-sentinel]').forEach((node) => {
+      board.querySelectorAll('[data-kanban-column-sentinel]').forEach((node) => {
         kanbanColumnObserver.observe(node);
       });
     }
@@ -8244,75 +8814,109 @@ export function renderBacklogHtml(options = {}) {
       return entries;
     }
 
-    function renderKanbanBoard(items) {
-      if (!kanbanBoard) {
+    function resolveBoardColumnItems(group, items, allItems, projection) {
+      if (projection && (group.id === 'backlog' || group.id === 'done')) {
+        const column = projection.columns.find((candidate) => candidate.id === group.id);
+        if (column) {
+          return column.workIds
+            .map((workId) => items.find((item) => item.id === workId) ?? allItems.find((item) => item.id === workId))
+            .filter(Boolean);
+        }
+      }
+      const filtered = items.filter((item) => group.statuses.includes(item.status));
+      return group.id === 'done' ? sortDoneArchiveItems(filtered) : filtered;
+    }
+
+    function renderBoardColumnCards(group, columnItems, allItems, items) {
+      const supportsLazyLoad = (group.id === 'backlog' || group.id === 'done')
+        && (boardColumnMode === 'extended' || boardColumnMode === 'compact');
+      const total = columnItems.length;
+      const visibleLimit = supportsLazyLoad ? getKanbanColumnVisibleLimit(group.id, total) : total;
+      const visibleItems = columnItems.slice(0, visibleLimit);
+      const hasMore = supportsLazyLoad && total > visibleLimit;
+
+      if (group.id === 'ready') {
+        const entries = collectReadyColumnEntries(allItems, items);
+        if (!entries.length) {
+          return '<div class="empty">' + escapeHtml(t('empty.noTaskAtoms')) + '</div>';
+        }
+        return entries.map((entry) => renderTaskAtomCard(entry.item, '', {
+          queueKind: entry.queueKind,
+          promoteEligible: entry.queueKind === 'planned',
+        })).join('');
+      }
+
+      const cardClass = group.id === 'backlog' || group.id === 'done' ? 'kanban-card' : '';
+      const cards = visibleItems
+        .map((item) => renderTaskAtomCard(item, cardClass))
+        .join('');
+      const cardsHtml = cards || '<div class="empty">' + escapeHtml(
+        group.id === 'backlog' || group.id === 'done' ? t('empty.noTasks') : t('empty.noTaskAtoms'),
+      ) + '</div>';
+
+      if (!supportsLazyLoad) {
+        return cardsHtml;
+      }
+
+      return '<div class="kanban-column-body" data-kanban-column-body="' + escapeHtml(group.id) + '">' +
+        cardsHtml +
+        (hasMore ? '<div class="kanban-column-sentinel" data-kanban-column-sentinel="' + escapeHtml(group.id) + '" aria-hidden="true"></div>' : '') +
+        '</div>' +
+        (hasMore
+          ? '<div class="kanban-column-more-hint" data-testid="kanban-col-more-' + escapeHtml(group.id) + '">' +
+            escapeHtml(t('kanban.column.shown', { shown: visibleLimit, total })) +
+            '</div>'
+          : '');
+    }
+
+    function applyBoardColumnModeClass() {
+      if (!board) {
+        return;
+      }
+      board.className = 'board is-' + (boardColumnMode === 'compact' ? 'compact' : 'extended');
+    }
+
+    function renderBoard(items) {
+      if (!board) {
         return;
       }
 
-      const projection = operatorShellSnapshot?.kanbanBoard
-        ?? null;
+      applyBoardColumnModeClass();
 
-      if (!projection) {
-        kanbanBoard.innerHTML = '<div class="empty">' + escapeHtml(t('empty.kanbanNotLoaded')) + '</div>';
+      const allItems = snapshot.items;
+      const projection = operatorShellSnapshot?.kanbanBoard ?? null;
+      const groups = getActiveBoardColumnGroups();
+      const operational = items.filter((item) => operationalBoardGroups.some((group) => group.statuses.includes(item.status)));
+
+      if (boardColumnMode === 'extended' && !projection) {
+        board.innerHTML = '<div class="empty">' + escapeHtml(t('empty.kanbanNotLoaded')) + '</div>';
         return;
       }
 
-      kanbanBoard.innerHTML = projection.columns.map((column) => {
-        const columnItems = column.workIds
-          .map((workId) => items.find((item) => item.id === workId) ?? snapshot.items.find((item) => item.id === workId))
-          .filter(Boolean);
-        const total = columnItems.length;
-        const visibleLimit = getKanbanColumnVisibleLimit(column.id, total);
-        const visibleItems = columnItems.slice(0, visibleLimit);
-        const hasMore = total > visibleLimit;
+      board.innerHTML = groups.map((group) => {
+        const columnItems = group.id === 'ready'
+          ? []
+          : group.id === 'backlog' || group.id === 'done'
+            ? resolveBoardColumnItems(group, items, allItems, projection)
+            : operational.filter((item) => group.statuses.includes(item.status));
 
-        const cards = visibleItems
-          .map((item) => renderTaskAtomCard(item, 'kanban-card'))
-          .join('');
+        const count = group.id === 'ready'
+          ? collectReadyColumnEntries(allItems, items).length
+          : columnItems.length;
+        const countTestId = group.id === 'backlog' || group.id === 'done'
+          ? 'kanban-col-count-' + group.id
+          : 'board-col-count-' + group.id;
 
-        const cardsHtml = cards || '<div class="empty">' + escapeHtml(t('empty.noTasks')) + '</div>';
-
-        return '<article class="column" data-kanban-column="' + escapeHtml(column.id) + '">' +
-          '<h2>' + escapeHtml(localizedKanbanColumnTitle(column.id, column.title)) + renderClientUiBadge({ label: String(column.count), tone: 'default', testId: 'kanban-col-count-' + column.id }) + '</h2>' +
-          '<div class="kanban-column-body" data-kanban-column-body="' + escapeHtml(column.id) + '">' +
-          cardsHtml +
-          (hasMore ? '<div class="kanban-column-sentinel" data-kanban-column-sentinel="' + escapeHtml(column.id) + '" aria-hidden="true"></div>' : '') +
-          '</div>' +
-          (hasMore
-            ? '<div class="kanban-column-more-hint" data-testid="kanban-col-more-' + escapeHtml(column.id) + '">' +
-              escapeHtml(t('kanban.column.shown', { shown: visibleLimit, total })) +
-              '</div>'
-            : '') +
+        return '<article class="column" data-kanban-column="' + escapeHtml(group.id) + '" data-board-column="' + escapeHtml(group.id) + '">' +
+          '<h2>' + escapeHtml(localizedBoardColumnTitle(group)) + renderClientUiBadge({ label: String(count), tone: 'default', testId: countTestId }) + '</h2>' +
+          renderBoardColumnCards(group, columnItems, allItems, items) +
           '</article>';
       }).join('');
 
       setupKanbanColumnLazyLoad();
     }
 
-    function renderBoard(items) {
-      const allItems = snapshot.items;
-      const operational = items.filter((item) => operationalBoardGroups.some((group) => group.statuses.includes(item.status)));
-
-      board.innerHTML = operationalBoardGroups.map((group) => {
-        const groupEntries = group.id === 'ready'
-          ? collectReadyColumnEntries(allItems, items)
-          : operational
-            .filter((item) => group.statuses.includes(item.status))
-            .map((item) => ({ item, queueKind: null }));
-
-        return '<article class="column">' +
-          '<h2>' + escapeHtml(localizedBoardGroupTitle(group.id, group.title)) + renderClientUiBadge({ label: String(groupEntries.length), tone: 'default', testId: 'board-col-count-' + group.id }) + '</h2>' +
-          (groupEntries.length
-            ? groupEntries.map((entry) => renderTaskAtomCard(entry.item, '', {
-              queueKind: entry.queueKind,
-              promoteEligible: entry.queueKind === 'planned',
-            })).join('')
-            : '<div class="empty">' + escapeHtml(t('empty.noTaskAtoms')) + '</div>') +
-          '</article>';
-      }).join('');
-    }
-
-    function renderWorkflowEpicGroup(group) {
+    function renderWorkflowEpicGroup(group, allItems) {
       const epic = group.epic;
       const collapsed = collapsedEpicIds.has(epic.id);
       const progress = group.childCount > 0
@@ -8327,12 +8931,21 @@ export function renderBacklogHtml(options = {}) {
         rowTag: hasChildren ? 'div' : 'button',
         leadingHtml: hasChildren ? renderWorkflowExpandToggle(epic.id, collapsed) : '',
       });
+      const orphanedDependents = group.childCount === 0
+        ? findEpicDependentsWithoutParent(allItems, epic.id)
+        : [];
+      const hierarchyWarningHtml = orphanedDependents.length > 0
+        ? '<div class="workflow-epic-hierarchy-warning" data-testid="workflow-epic-hierarchy-warning-' + escapeHtml(epic.id) + '">' +
+          escapeHtml(t('workflow.epicDependentsWithoutParent', { count: orphanedDependents.length })) +
+          '</div>'
+        : '';
       const childrenHtml = group.children.length
         ? group.children.map((child) => renderWorkflowTaskListRow(child, { extraClass: 'workflow-epic-child-row' })).join('')
         : '<div class="empty workflow-epic-empty">' + escapeHtml(t('empty.noSubtasks')) + '</div>';
 
       return '<article class="workflow-epic-group" data-testid="workflow-epic-' + escapeHtml(epic.id) + '">' +
         epicRow +
+        hierarchyWarningHtml +
         (collapsed ? '' : '<div class="workflow-epic-children">' + childrenHtml + '</div>') +
       '</article>';
     }
@@ -8387,7 +9000,7 @@ export function renderBacklogHtml(options = {}) {
       const html = pagination.items.length
         ? pagination.items.map((unit) => {
           if (unit.type === 'epic') {
-            return renderWorkflowEpicGroup(unit.group);
+            return renderWorkflowEpicGroup(unit.group, items);
           }
           if (unit.type === 'tree-root') {
             return renderWorkflowTreeNode(unit.root);
@@ -8677,9 +9290,22 @@ export function renderBacklogHtml(options = {}) {
       renderSchematic();
     }
 
+    function renderArchitectureBlockTasksBadge(summary) {
+      const label = formatArchitectureBlockTasksCountLabel(summary);
+      if (!label) {
+        return '';
+      }
+
+      return renderClientUiBadge({
+        label,
+        tone: resolveArchitectureBlockTasksBadgeTone(summary),
+        testId: 'architecture-block-tasks-count',
+        title: summary.doneCount + ' из ' + summary.taskCount + ' задач завершено',
+      });
+    }
+
     function renderArchitectureBlockListRow(block) {
       const summary = summarizeArchitectureBlockForList(block);
-      const statsNote = summary.taskCount + ' задач · в работе ' + summary.activeCount + ' · завершено ' + summary.doneCount;
       const lines = [
         summary.summary ? escapeHtml(summary.summary) : '',
         summary.groupLabel ? escapeHtml(summary.groupLabel) : '',
@@ -8687,7 +9313,10 @@ export function renderBacklogHtml(options = {}) {
       return renderListRow({
         title: summary.title,
         lines,
-        footerLeft: '<span class="id">' + escapeHtml(block.id) + '</span> · ' + escapeHtml(statsNote),
+        footerLeft: renderWorkItemIssueKeyChip(
+          { key: block.id, itemKind: 'story', id: block.id },
+          { type: 'story' },
+        ) + renderArchitectureBlockTasksBadge(summary),
         extraClass: 'architecture-block-row',
         selected: focusedBlockId === block.id,
         attrs: {
@@ -10697,41 +11326,11 @@ export function renderBacklogHtml(options = {}) {
         '</div>';
     }
 
-    function formatWorkItemClosedAt(item) {
-      const raw = item?.closedAt ?? item?.labels?.['work.closed_at'] ?? '';
-      const parsed = Date.parse(String(raw));
-      if (!Number.isFinite(parsed)) {
-        return '';
-      }
-      const localeTag = window.__WG_LOCALE__ === 'ru'
-        ? 'ru-RU'
-        : (window.__WG_LOCALE__ === 'en' ? 'en-GB' : (window.__WG_LOCALE__ || 'ru-RU'));
-      return new Date(parsed).toLocaleDateString(localeTag, {
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric',
-      });
-    }
-
-    function renderClosedAtMeta(item, { surface = 'default' } = {}) {
-      if (surface !== 'board' || (item.status !== 'done' && item.status !== 'verified')) {
-        return '';
-      }
-      const dateLabel = formatWorkItemClosedAt(item);
-      if (!dateLabel) {
-        return '';
-      }
-      return '<span class="issue-closed-at" data-testid="issue-closed-at">' +
-        escapeHtml(t('task.closedAt', { date: dateLabel })) +
-        '</span>';
-    }
-
     function renderIssueFooter(item, { queueKind = null, surface = 'default' } = {}) {
       const secondaryBadge = surface === 'board'
         ? renderWorkItemClassifierBadge(item)
         : ((item.status || queueKind) ? renderStatusBadge(item.status, queueKind) : '');
-      const closedAtMeta = renderClosedAtMeta(item, { surface });
-      const leftTags = renderWorkItemIssueKeyChip(item) + secondaryBadge + closedAtMeta;
+      const leftTags = renderWorkItemIssueKeyChip(item) + secondaryBadge;
       const owner = item.ownerRole || item.department || 'WG';
       return '<div class="issue-footer">' +
         '<div class="issue-footer-left">' + leftTags + '</div>' +
@@ -11457,15 +12056,73 @@ export function createBacklogUiServer(options = {}) {
       try {
         const checkUpdate = url.searchParams.get('checkUpdate') === '1'
           || url.searchParams.get('checkUpdate') === 'true';
+        const bypassCache = url.searchParams.get('fresh') === '1'
+          || url.searchParams.get('fresh') === 'true';
         const payload = await buildAppVersionResponse({
           cwd,
           installRoot: WG_INSTALL_ROOT,
           checkUpdate,
+          bypassCache,
         });
         sendJson(response, 200, payload);
       } catch (error) {
         sendJson(response, 500, {
           error: 'failed_to_read_app_version',
+          message: error instanceof Error ? error.message : String(error),
+        });
+      }
+      return;
+    }
+
+    if (url.pathname === '/api/app-version/install' && method === 'POST') {
+      try {
+        const payload = await buildAppVersionInstallResponse({
+          cwd,
+          installRoot: WG_INSTALL_ROOT,
+        });
+        sendJson(response, 200, payload);
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        const status = message === 'update_not_available' || message === 'project_update_requires_npm_install'
+          ? 409
+          : 500;
+        sendJson(response, status, {
+          error: 'failed_to_install_app_version',
+          code: message,
+          message,
+        });
+      }
+      return;
+    }
+
+    if (url.pathname === '/api/git-snapshot-settings' && method === 'GET') {
+      try {
+        const settings = await loadGitSnapshotPolicy({ cwd, env: process.env });
+        sendJson(response, 200, {
+          schema: 'workgraph.git-snapshot.settings.v1',
+          settings,
+        });
+      } catch (error) {
+        sendJson(response, 500, {
+          error: 'failed_to_read_git_snapshot_settings',
+          message: error instanceof Error ? error.message : String(error),
+        });
+      }
+      return;
+    }
+
+    if (url.pathname === '/api/git-snapshot-settings' && method === 'PUT') {
+      try {
+        const body = await readJsonBody(request);
+        const saved = await writeGitSnapshotSettingsFile(cwd, body ?? {});
+        sendJson(response, 200, {
+          schema: 'workgraph.git-snapshot.settings.v1',
+          settings: saved.settings,
+          path: saved.path,
+        });
+      } catch (error) {
+        sendJson(response, 500, {
+          error: 'failed_to_write_git_snapshot_settings',
           message: error instanceof Error ? error.message : String(error),
         });
       }
@@ -11841,6 +12498,22 @@ export async function startBacklogUiServer(options = {}) {
   });
 
   return { server, host, port };
+}
+
+function readJsonBody(request) {
+  return new Promise((resolve, reject) => {
+    const chunks = [];
+    request.on('data', (chunk) => chunks.push(chunk));
+    request.on('end', () => {
+      try {
+        const text = Buffer.concat(chunks).toString('utf8').trim();
+        resolve(text === '' ? {} : JSON.parse(text));
+      } catch (error) {
+        reject(error);
+      }
+    });
+    request.on('error', reject);
+  });
 }
 
 function sendJson(response, statusCode, payload, extraHeaders = {}) {

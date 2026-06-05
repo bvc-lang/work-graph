@@ -19,7 +19,7 @@ Account: `diflux` (same as `@bvc-lang`).
 Before a code/runtime release, check that these sources are clean or intentionally changed:
 
 ```bash
-git status --short -- src public packages/workgraph-mcp packages/bvc-dialects packages/design-tokens/generated packages/work-graph-cli
+git status --short -- src public architecture locales packages/workgraph-mcp packages/bvc-dialects packages/design-tokens/generated packages/work-graph-cli
 ```
 
 If runtime files are dirty and the release is docs/metadata-only, do **not** run the vendor sync; publish from the current package contents with `--ignore-scripts` after checking `npm pack --dry-run --ignore-scripts`.

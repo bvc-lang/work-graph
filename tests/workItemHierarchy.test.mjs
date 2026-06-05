@@ -4,7 +4,9 @@ import { describe, it } from 'node:test';
 import {
   attachDerivedWorkItemHierarchy,
   evaluateParentCloseGate,
+  findEpicDependentsWithoutParent,
   lintWorkItemHierarchyIssues,
+  validateWorkItemCreateHierarchy,
 } from '../src/workItemHierarchy.mjs';
 import { parseWorkItems, transitionStatus } from '../src/workGraphRuntime.mjs';
 import { lintBacklogItems } from '../src/backlogSchemaLint.mjs';
@@ -33,6 +35,47 @@ describe('workItemHierarchy', () => {
     assert.ok(issues.some((issue) => issue.code === 'missing_parent'));
     assert.ok(issues.some((issue) => issue.code === 'parent_cycle'));
     assert.ok(issues.some((issue) => issue.code === 'parent_depends_on_child'));
+  });
+
+  it('warns when task depends_on epic without work.parent_id', () => {
+    const issues = lintWorkItemHierarchyIssues([
+      { id: 'epic-a', status: 'backlog', dependsOn: [], labels: { 'work.item_kind': 'epic' } },
+      { id: 'orphan-task', status: 'backlog', dependsOn: ['epic-a'], labels: { 'work.item_kind': 'task' } },
+      {
+        id: 'child-task',
+        status: 'backlog',
+        dependsOn: ['epic-a'],
+        labels: { 'work.item_kind': 'task', 'work.parent_id': 'epic-a' },
+      },
+      { id: 'blocked-task', status: 'blocked', dependsOn: ['ready-task'], labels: { 'work.item_kind': 'task' } },
+      { id: 'ready-task', status: 'ready', dependsOn: [], labels: { 'work.item_kind': 'task' } },
+    ]);
+
+    assert.ok(issues.some((issue) => issue.code === 'epic_dependency_without_parent' && issue.workId === 'orphan-task'));
+    assert.ok(!issues.some((issue) => issue.code === 'epic_dependency_without_parent' && issue.workId === 'child-task'));
+    assert.ok(!issues.some((issue) => issue.code === 'epic_dependency_without_parent' && issue.workId === 'blocked-task'));
+  });
+
+  it('finds epic dependents that are not nested under the epic', () => {
+    const dependents = findEpicDependentsWithoutParent([
+      { id: 'epic-a', status: 'backlog', dependsOn: [], itemKind: 'epic' },
+      { id: 'orphan-task', status: 'backlog', dependsOn: ['epic-a'], itemKind: 'task' },
+      { id: 'child-task', status: 'backlog', dependsOn: ['epic-a'], itemKind: 'task', parentId: 'epic-a' },
+    ], 'epic-a');
+
+    assert.deepEqual(dependents.map((item) => item.id), ['orphan-task']);
+  });
+
+  it('requires parentId when creating subtask', () => {
+    const invalid = validateWorkItemCreateHierarchy({ itemKind: 'subtask' });
+    assert.equal(invalid.ok, false);
+    assert.equal(invalid.code, 'subtask_requires_parent_id');
+
+    const valid = validateWorkItemCreateHierarchy({ itemKind: 'subtask', parentId: 'epic-a' });
+    assert.equal(valid.ok, true);
+
+    const task = validateWorkItemCreateHierarchy({ itemKind: 'task' });
+    assert.equal(task.ok, true);
   });
 
   it('blocks parent close until children are done', () => {

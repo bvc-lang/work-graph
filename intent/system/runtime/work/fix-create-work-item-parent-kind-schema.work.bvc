@@ -1,0 +1,52 @@
+#Задача_fix_create_work_item_parent_kind_schema<[
+Базис:
+  При создании эпика AN-77 обнаружен drift: `handlers.mjs` читает `parentId/itemKind`, но `packages/workgraph-mcp/src/index.mjs` и MCP descriptor их не объявляют.
+  В результате штатный MCP create_work_item создаёт `epic-*` как `work.item_kind: task`, а parent-child связь нельзя проставить без прямого patch.
+Вектор:
+  Добавить `parentId` и `itemKind` в schema `create_work_item` и descriptor.
+  Покрыть тестом создание epic и subtask с parent.
+  После этого добавить safe migration/update для уже созданного `epic-workgraph-canon-write-boundary-v1`.
+Цель:
+  Через MCP можно создать epic/subtask без прямой правки `.work.bvc`: `work.item_kind` и `work.parent_id` корректно попадают в atom и projection.
+Проверки:
+  create_work_item schema содержит parentId и itemKind.
+  Descriptor MCP обновлён.
+  Тест создаёт itemKind=epic и parentId child.
+  Projection get_work_item показывает itemKind/parentId.
+Анализ:
+  Зачем: AN-77 требует не обходить MCP; но текущий MCP не даёт создать правильную иерархию.
+  Контекст: эпик AN-77 создан штатным MCP, но получил item_kind task из-за schema drift.
+Решение:
+  Исправить MCP surface как часть write-boundary hardening.
+
+Метки:
+  work.closed_at: 2026-06-05T13:59:51.836Z
+  work.parent_id: epic-workgraph-canon-write-boundary-v1
+  work.item_kind: subtask
+  atom.profile: work_item
+  intake.analytics_key: AN-77
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/workgraph-agent-mcp-bypass-install-boundary-incident.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-05T12:51:01.649Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-05T12:51:01.649Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: epic-workgraph-canon-write-boundary-v1
+  work.id: fix-create-work-item-parent-kind-schema
+  work.next_action: Обновить index.mjs schema и контрактный тест MCP descriptor.
+  work.owner_role: runtime_engineer
+  work.pipeline_stage: decided
+  work.priority: critical
+  work.risk: medium
+  work.status: done
+  work.target_files: packages/workgraph-mcp/src/index.mjs, packages/workgraph-mcp/src/handlers.mjs, tests/workgraph-mcp-contract.test.mjs, C:/Users/Admin/.cursor/projects/d-Work-IDE-work-graph/mcps/user-workgraph/tools/create_work_item.json
+  work.title: Исправить MCP schema create_work_item для parentId и itemKind
+
+Свидетельства:
+  - Начата реализация: публикация parentId/itemKind в MCP schema create_work_item.
+  - Добавлены parentId/itemKind в create_work_item schema (index.mjs), prompt и тесты handler+stdio. Миграция scripts/migrate-an77-epic-hierarchy.mjs проставила work.item_kind/parent_id для epic AN-77 и 9 subtasks. node --test tests/workgraph-mcp.test.mjs tests/workgraph-mcp-stdio.test.mjs — 13/13 pass.
+  - MCP create_work_item публикует parentId/itemKind; handler и projection проверены тестами; AN-77 epic hierarchy мигрирована.
+]>

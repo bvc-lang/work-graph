@@ -1,0 +1,51 @@
+#Задача_wire_git_snapshot_workitem_persist_hook<[
+Базис:
+  AN-71: точка встраивания для WorkItem событий — после успешного `persistWorkItemUpdateToRepo`, не до записи файлов.
+Вектор:
+  Подключить opt-in hook после WorkItem persist: события `work_item.done`, `work_item.status`, `work_item.created`.
+  Использовать только paths из persist result; при git snapshot failure записывать evidence/skipped, но не ломать статус задачи.
+Цель:
+  Закрытие/создание/обновление WorkItem может автоматически создать scoped git commit, если policy включена.
+Проверки:
+  default policy disabled не вызывает git
+  done event вызывает snapshot при enabled
+  unrelated dirty file не staged
+  failure не откатывает done/update
+Анализ:
+  Зачем:
+  Opt-in hook после WorkItem persist без отката done.
+  Когда:
+  intentTreeWorkItems.mjs wired with maybeRunGitSnapshotAfterPersist.
+  Готово, когда:
+  default disabled; batch persist single snapshot.
+
+Метки:
+  work.closed_at: 2026-06-05T15:54:56.400Z
+  atom.profile: work_item
+  intake.analytics_key: AN-71
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-git-autocommit-on-events.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-05T15:54:19.717Z
+  work.analysis.source: cursor-mcp
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: implement-git-snapshot-core
+  work.id: wire-git-snapshot-workitem-persist-hook
+  work.item_kind: task
+  work.next_action: Cursor: record_work_item_decision (useful/harmful/defer)
+  work.owner_role: runtime_engineer
+  work.parent_id: epic-workgraph-git-snapshot-v1
+  work.pipeline_stage: analyzed
+  work.priority: high
+  work.risk: high
+  work.status: done
+  work.target_files: src/intentTreeWorkItems.mjs, src/gitSnapshot.mjs, tests/gitSnapshot.test.mjs, tests/workGraphRuntime.test.mjs
+  work.title: Подключить opt-in git snapshot hook к WorkItem persist
+
+Свидетельства:
+  - claim: wire-git-snapshot-workitem-persist-hook via WorkGraph MCP
+  - src/intentTreeWorkItems.mjs: maybeRunGitSnapshotAfterPersist on persist/create; default disabled; failures non-throwing.
+]>
+

@@ -287,6 +287,22 @@ export function renderWorkflowDisplayModeSelect() {
   });
 }
 
+/**
+ * @param {{ t: (key: string) => string }} props
+ */
+export function renderBoardColumnModeSelect({ t }) {
+  return renderUiSelect({
+    id: 'board-column-mode',
+    className: 'wg-select--compact board-column-mode-select',
+    testId: 'board-column-mode',
+    ariaLabel: t('board.columnMode.label'),
+    options: [
+      { value: 'compact', label: t('board.columnMode.compact'), selected: true },
+      { value: 'extended', label: t('board.columnMode.extended') },
+    ],
+  });
+}
+
 export function renderArchitectureGraphModeToggle() {
   return (
     '<div class="graph-canvas-mode-toggle" role="group" aria-label="Режим графа">' +

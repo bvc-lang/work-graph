@@ -1,0 +1,32 @@
+---
+description: Work Graph в проекте — канон read-only, записи только через MCP
+alwaysApply: true
+---
+
+# Work Graph в проекте
+
+- Канон задач: `intent/**/work/*.work.bvc`, индекс `intent/index.bvc` (будущий путь: `.work-graph/canon/intent/`).
+- Trackable work — только через `work.id`; не дублировать в чат-todo.
+- UI: `npm run workgraph:ui` → http://localhost:4177/
+- MCP: сервер `workgraph` в `.cursor/mcp.json` (если настроен при init).
+
+## Канон read-only для file tools
+
+- **Читать** work items, snapshot, analytics — можно файлами и через MCP read tools.
+- **Запрещено** создавать или править work items через `ApplyPatch` / `Write` по путям `intent/**/work/*.work.bvc` и `.work-graph/canon/**/work/*.work.bvc`.
+- **Только MCP:** `create_work_item`, `claim_work_item`, `update_work_item_status`, `add_work_item_evidence`, `complete_work_item`.
+
+## Workflow агента
+
+1. Разбор / analytics при необходимости
+2. `create_work_item` → backlog
+3. `record_work_item_analysis` + `record_work_item_decision` (если ещё нет)
+4. Promote ready → `claim_work_item`
+5. Работа в коде (`target_files`)
+6. Evidence → `complete_work_item`
+
+Перед claim см. **work-item-claim-context.mdc** (`get_pvrg_task_scope`, `get_graph_rag_context`).
+
+Установка: `npx @work-graph/cli init .` или «установи Work Graph в этот проект».
+
+См. [ADR write-boundary](../adr-workgraph-canon-write-boundary-v1.md), [MCP clients](../workgraph-mcp-clients.md).

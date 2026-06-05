@@ -1,0 +1,15 @@
+#Задача_dot_canon_fixture_task<[
+Базис:
+  Fixture task for dot-canon layout resolver tests.
+Вектор:
+  Verify readWorkItemsFromRepo resolves canon under .work-graph/canon.
+Цель:
+  Resolver returns items from dot-canon tree, not repo root intent/.
+Проверки:
+  readWorkItemsFromRepo finds dot-canon-fixture-task.
+
+Метки:
+  work.id: dot-canon-fixture-task
+  work.status: backlog
+  atom.profile: work_item
+]>

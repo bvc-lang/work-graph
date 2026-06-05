@@ -11,6 +11,8 @@ const TOOL_RULES = [
   'Analysis and decision are written only from the connected agent (MCP client LLM): you read the task, reason, then call record_work_item_analysis / record_work_item_decision. WorkGraph server never calls LLM.',
   'Do not mark a WorkItem done without concrete evidence.',
   'Keep dashboard/kanban work in WorkGraph UI; MCP is the agent client bridge.',
+  'Canon write-boundary (AN-77): NEVER use ApplyPatch/Write on intent/**/work/*.work.bvc or .work-graph/canon/** — read-only for file tools. Use create_work_item, claim_work_item, update_work_item_status, add_work_item_evidence, complete_work_item.',
+  'Epic/subtask hierarchy: create_work_item with itemKind=epic|subtask and parentId for children — do not patch parent_id manually.',
 ].join('\n');
 
 export const WORK_ITEM_ANALYSIS_SECTIONS = [
@@ -78,11 +80,61 @@ Requested title: ${title || '<fill title>'}
 Target intent: ${intent || '<choose intent>'}
 
 Workflow:
-1. Call create_work_item with workId, title, department, dependsOn, targetFiles, and when intake from analytics — intakeSourceKind=analytics-record, intakeSourceRef, analyticsKey.
+1. Call create_work_item with workId, title, department, dependsOn, targetFiles, itemKind (epic|subtask|task), parentId for subtasks, and when intake from analytics — intakeSourceKind=analytics-record, intakeSourceRef, analyticsKey.
    The tool creates intent/**/work/{workId}.work.bvc (canonical BVC); never *.work.bvc for new items.
 2. Write basis/vector/goal/checks/analysis/decision in Russian (full sentences, min lengths — see repo .cursor/rules/work-items-russian.mdc). Pass them explicitly; do not rely on English template defaults.
 3. Refine later with record_work_item_analysis / record_work_item_decision only if scope changed — not to fix empty or robotic create.
 4. For new protocols outside the intent tree, prefer *.bvc paths; use bvc format / @bvc-lang/cli when normalizing legacy .bvc.
+
+Tool rules:
+${TOOL_RULES}`,
+  },
+  create_work_item_from_analytics: {
+    description: 'Intake from analytics: create backlog WorkItem via MCP after analysis (never file patch).',
+    argsSchema: {
+      analyticsKey: 'Analytics key e.g. AN-77',
+      analyticsBodyPath: 'Path to analytics markdown e.g. work/analytics/foo.md',
+      title: 'Short WorkItem title',
+    },
+    text: ({ analyticsKey, analyticsBodyPath, title }) => `Create a WorkGraph WorkItem from analytics intake — **before any code changes**.
+
+Analytics key: ${analyticsKey || '<AN-XX>'}
+Body path: ${analyticsBodyPath || 'work/analytics/<file>.md'}
+Title: ${title || '<title>'}
+
+Workflow (do NOT edit .work.bvc files directly):
+1. Read the analytics markdown and extract basis/vector/goal for the new item.
+2. Write pre-execution analysis (feasibility) — sections from analyze_work_item prompt.
+3. Call create_work_item with:
+   - workId, title, basis, vector, goal, checks, analysis, decision (Russian prose)
+   - intakeSourceKind=analytics-record, intakeSourceRef=\${analyticsBodyPath}, analyticsKey=\${analyticsKey}
+   - status=backlog (default), department, targetFiles, dependsOn as needed
+   - itemKind=epic for epics; itemKind=subtask + parentId for subtasks
+4. Leave status backlog until operator says to implement; then promote → claim_work_item → code → evidence → complete_work_item.
+
+If creating an epic with subtasks: create epic first (itemKind=epic), then each subtask with parentId=<epic-work-id>.
+
+Tool rules:
+${TOOL_RULES}`,
+  },
+  create_epic_subtasks: {
+    description: 'Create epic and subtasks with itemKind/parentId via MCP (canonical hierarchy).',
+    argsSchema: {
+      epicWorkId: 'Epic work.id slug e.g. epic-foo-v1',
+      epicTitle: 'Epic human title',
+    },
+    text: ({ epicWorkId, epicTitle }) => `Create an epic and its subtasks through WorkGraph MCP only.
+
+Epic id: ${epicWorkId || 'epic-<slug>-v1'}
+Epic title: ${epicTitle || '<title>'}
+
+Workflow:
+1. create_work_item with itemKind=epic, workId=\${epicWorkId}, title, basis/vector/goal/checks, analysis/decision in Russian.
+2. For each subtask: create_work_item with itemKind=subtask, parentId=\${epicWorkId}, dependsOn if needed.
+3. Verify with get_work_item that itemKind and parentId are set — never patch labels via file tools.
+4. Promote/claim subtasks only after analysis+verdict useful on each item.
+
+Example MCP args: { workId: "my-sub", title: "...", itemKind: "subtask", parentId: "${epicWorkId || 'epic-foo-v1'}", department: "agent-platform" }
 
 Tool rules:
 ${TOOL_RULES}`,

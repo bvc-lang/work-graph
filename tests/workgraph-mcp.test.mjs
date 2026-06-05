@@ -144,6 +144,10 @@ describe('workgraph MCP handlers', () => {
       const claimed = await claimWorkItem({ workId: 'ready-task' }, { root });
       assert.equal(claimed.newStatus, 'doing');
 
+      const claimedAtom = await readFile(join(root, 'intent/system/runtime/work/ready-task.work.bvc'), 'utf8');
+      assert.match(claimedAtom, /work\.updated_by: workgraph-mcp/u);
+      assert.match(claimedAtom, /work\.write\.operation: claim/u);
+
       const evidence = await addWorkItemEvidence({ workId: 'ready-task', evidence: 'mcp evidence line' }, { root });
       assert.equal(evidence.evidenceCount, 2);
 
@@ -206,11 +210,74 @@ describe('workgraph MCP handlers', () => {
       assert.match(atomText, /Решение:/u);
       assert.match(atomText, /work\.decision\.verdict: useful/u);
 
+      assert.match(atomText, /work\.updated_by: workgraph-mcp/u);
+      assert.match(atomText, /work\.write\.operation: create/u);
+      assert.match(atomText, /work\.write\.at:/u);
+
       const items = await listWorkItems({}, { root });
       assert.ok(items.some((item) => item.id === 'mcp-created-task'));
 
       const indexText = await readFile(join(root, 'intent/index.bvc'), 'utf8');
       assert.match(indexText, /mcp-created-task/u);
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
+  it('creates epic and subtask with itemKind and parentId in atom and projection', async () => {
+    const root = await createFixture();
+    try {
+      await createWorkItem({
+        workId: 'mcp-hierarchy-epic',
+        title: 'MCP hierarchy epic',
+        itemKind: 'epic',
+        department: 'agent-platform',
+      }, { root });
+
+      await createWorkItem({
+        workId: 'mcp-hierarchy-sub',
+        title: 'MCP hierarchy subtask',
+        itemKind: 'subtask',
+        parentId: 'mcp-hierarchy-epic',
+        department: 'agent-platform',
+      }, { root });
+
+      const epicAtom = await readFile(
+        join(root, 'intent/system/runtime/work/mcp-hierarchy-epic.work.bvc'),
+        'utf8',
+      );
+      assert.match(epicAtom, /work\.item_kind: epic/u);
+
+      const subAtom = await readFile(
+        join(root, 'intent/system/runtime/work/mcp-hierarchy-sub.work.bvc'),
+        'utf8',
+      );
+      assert.match(subAtom, /work\.item_kind: subtask/u);
+      assert.match(subAtom, /work\.parent_id: mcp-hierarchy-epic/u);
+
+      const epicItem = await getWorkItem({ workId: 'mcp-hierarchy-epic' }, { root });
+      assert.equal(epicItem.itemKind, 'epic');
+
+      const subItem = await getWorkItem({ workId: 'mcp-hierarchy-sub' }, { root });
+      assert.equal(subItem.itemKind, 'subtask');
+      assert.equal(subItem.parentId, 'mcp-hierarchy-epic');
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
+  it('rejects subtask create_work_item without parentId', async () => {
+    const root = await createFixture();
+    try {
+      await assert.rejects(
+        () => createWorkItem({
+          workId: 'mcp-orphan-subtask',
+          title: 'Orphan subtask',
+          itemKind: 'subtask',
+          department: 'agent-platform',
+        }, { root }),
+        (error) => error.code === 'subtask_requires_parent_id',
+      );
     } finally {
       await rm(root, { recursive: true, force: true });
     }
@@ -309,7 +376,9 @@ describe('workgraph MCP handlers', () => {
       'add_evidence',
       'analyze_work_item',
       'close_work_item',
+      'create_epic_subtasks',
       'create_work_item',
+      'create_work_item_from_analytics',
       'show_blockers',
       'summarize_current_cycle',
       'take_next_work_item',
@@ -323,6 +392,18 @@ describe('workgraph MCP handlers', () => {
     assert.match(analyze.messages[0].content.text, /Целесообразность:/u);
     assert.match(analyze.messages[0].content.text, /NOT a post-factum/u);
     assert.match(analyze.messages[0].content.text, /present\/decision/u);
+
+    const fromAnalytics = toMcpPromptResult('create_work_item_from_analytics', {
+      analyticsKey: 'AN-77',
+      analyticsBodyPath: 'work/analytics/foo.md',
+      title: 'Test',
+    });
+    assert.match(fromAnalytics.messages[0].content.text, /create_work_item/u);
+    assert.match(fromAnalytics.messages[0].content.text, /do NOT edit .work.bvc/iu);
+
+    const epicSub = toMcpPromptResult('create_epic_subtasks', { epicWorkId: 'epic-test-v1' });
+    assert.match(epicSub.messages[0].content.text, /itemKind=epic/u);
+    assert.match(epicSub.messages[0].content.text, /parentId/u);
   });
 
   it('get_analytics_lineage resolves AN-50.1 parent from repo journal', async () => {

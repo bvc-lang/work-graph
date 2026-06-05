@@ -1,0 +1,50 @@
+#Задача_require_parent_for_subtask_create<[
+Базис:
+  AN-75: при создании задач агентом/оператором легко указать dependency, но забыть parent_id.
+Вектор:
+  В `create_work_item` / StepAtomDraft creation path добавить guard: если `itemKind=subtask`, `parentId` обязателен.
+  Для batch создания epic+tasks обеспечить helper/default, который автоматически проставляет `work.parent_id` детям.
+Цель:
+  Новые подзадачи не появляются «сиротами» в backlog.
+Проверки:
+  create_work_item с itemKind=subtask без parentId возвращает validation error
+  create_work_item с parentId пишет `work.parent_id`
+  существующий task без subtask kind не ломается
+Анализ:
+  Зачем:
+  Блокирует создание subtask-сирот через MCP до попадания в backlog.
+  Когда:
+  После lint rule; validateWorkItemCreateHierarchy в createWorkItem path.
+  Готово, когда:
+  subtask без parentId → validation error; тест workgraph-mcp.
+
+Метки:
+  work.closed_at: 2026-06-05T15:47:09.488Z
+  atom.profile: work_item
+  intake.analytics_key: AN-75
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-parent-vs-depends-on-guardrails.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-05T15:46:44.291Z
+  work.analysis.source: cursor-mcp
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: lint-epic-depends-without-parent
+  work.id: require-parent-for-subtask-create
+  work.item_kind: task
+  work.next_action: Cursor: record_work_item_decision (useful/harmful/defer)
+  work.owner_role: runtime_engineer
+  work.parent_id: epic-work-item-hierarchy-guardrails-v1
+  work.pipeline_stage: analyzed
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: packages/workgraph-mcp/src/handlers.mjs, src/stepAtomDraftValidation.mjs, src/workItemCreateAnalysis.mjs, tests/workgraph-mcp-contract.test.mjs, tests/stepAtomDraftValidation.test.mjs
+  work.title: Требовать parentId при создании subtask
+
+Свидетельства:
+  - claim: require-parent-for-subtask-create via WorkGraph MCP
+  - packages/workgraph-mcp/src/handlers.mjs: validateWorkItemCreateHierarchy before persist; tests/workgraph-mcp.test.mjs rejects subtask without parentId.
+]>
+

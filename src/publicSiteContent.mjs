@@ -172,7 +172,7 @@ const COPY = {
     localeLabel: 'Language',
     hero: {
       title: 'Your navigator for AI development — turns goals into an executable graph',
-      documentTitle: 'Work Graph — contract platform for AI-driven development',
+      documentTitle: 'Work Graph — navigator for AI development',
       body: 'Work Graph links intent, execution and memory into one loop. The path from idea to outcome becomes a manageable project map.',
       primary: 'How to install',
       secondary: 'Read llms.txt',
@@ -223,7 +223,7 @@ const COPY = {
     localeLabel: 'Язык',
     hero: {
       title: 'Ваш навигатор для AI-разработки, переводит цели в исполняемый граф',
-      documentTitle: 'Work Graph — контрактная платформа для разработки с ИИ',
+      documentTitle: 'Work Graph — навигатор для AI-разработки',
       body: 'Work Graph связывает намерение, исполнение и память в единый контур. Путь от идеи до результата превращается в управляемую карту проекта.',
       primary: 'Как установить',
       secondary: 'Открыть llms.txt',

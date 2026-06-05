@@ -26,11 +26,21 @@ function main() {
   );
   copyDir(join(repoRoot, 'packages/workgraph-mcp'), join(vendorDir, 'packages/workgraph-mcp'));
   copyDir(join(repoRoot, 'packages/bvc-dialects'), join(vendorDir, 'packages/bvc-dialects'));
+  copyDir(join(repoRoot, 'locales'), join(vendorDir, 'locales'));
+  copyDir(join(repoRoot, 'packages/work-graph-cli/templates'), join(vendorDir, 'templates'));
 
   console.log(JSON.stringify({
     schema: 'workgraph.sync-work-graph-cli-vendor.v1',
     vendorDir,
-    copied: ['src', 'public', 'packages/design-tokens/generated', 'packages/workgraph-mcp', 'packages/bvc-dialects'],
+    copied: [
+      'src',
+      'public',
+      'packages/design-tokens/generated',
+      'packages/workgraph-mcp',
+      'packages/bvc-dialects',
+      'locales',
+      'templates',
+    ],
   }, null, 2));
 }
 

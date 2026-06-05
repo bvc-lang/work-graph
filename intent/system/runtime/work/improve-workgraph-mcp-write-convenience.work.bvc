@@ -1,0 +1,52 @@
+#Задача_improve_workgraph_mcp_write_convenience<[
+Базис:
+  AN-77: агент выбрал короткий путь через file edits, потому что штатный create_work_item flow не был самым очевидным.
+  Write-boundary будет работать лучше, если MCP/CLI путь быстрый, discoverable и покрывает нужные операции.
+Вектор:
+  Проверить tool prompts и UX create/update/evidence.
+  Добавить недостающие guarded write operations или prompts для typical flow: create from analysis, create subtask, add evidence, complete.
+  Сделать ошибки прямого обхода объясняющими правильную команду.
+Цель:
+  Агенту и оператору проще создать/обновить задачу через MCP/CLI, чем руками патчить `.work.bvc`.
+Проверки:
+  Есть prompt/tool flow для create-from-analysis.
+  Есть понятный flow для subtask/parent или documented workaround.
+  Ошибки lint указывают на MCP/CLI команду.
+  Контрактные тесты покрывают write path.
+Анализ:
+  Зачем: hardening без удобного API приведёт к сопротивлению и новым обходам.
+  Контекст: инцидент начался с выполнения работы до корректного WorkItem intake.
+Решение:
+  Усилить DX штатного пути вместе с запретом прямого patch.
+
+Метки:
+  work.closed_at: 2026-06-05T14:07:09.741Z
+  work.parent_id: epic-workgraph-canon-write-boundary-v1
+  work.item_kind: subtask
+  atom.profile: work_item
+  intake.analytics_key: AN-77
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/workgraph-agent-mcp-bypass-install-boundary-incident.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-05T12:50:15.242Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-05T12:50:15.242Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: decide-workgraph-canon-write-boundary-adr
+  work.id: improve-workgraph-mcp-write-convenience
+  work.next_action: Аудит текущих MCP prompts и write tools.
+  work.owner_role: developer_experience_engineer
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: packages/workgraph-mcp/src/index.mjs, packages/workgraph-mcp/src/prompts.mjs, docs/workgraph-mcp-clients.md, packages/workgraph-cli, tests/workgraph-mcp-contract.test.mjs
+  work.title: Сделать MCP/CLI write path удобнее прямого patch для задач
+
+Свидетельства:
+  - Старт: улучшение MCP write DX — prompts, lint guidance, create-from-analysis flow.
+  - Добавлены MCP prompts create_work_item_from_analytics и create_epic_subtasks; TOOL_RULES про canon read-only; lint violations содержат fix hint с MCP командами; docs/workgraph-mcp-prompts.md и workgraph-mcp-clients.md обновлены. Тесты prompts + bypass fixtures.
+  - MCP write path discoverable через новые prompts; lint указывает create_work_item/claim/evidence/complete.
+]>

@@ -1,0 +1,50 @@
+#Задача_lint_epic_depends_without_parent<[
+Базис:
+  AN-75: `depends_on` на epic без `work.parent_id` почти всегда означает, что подзадачу забыли вложить в эпик.
+Вектор:
+  Добавить lint rule в hierarchy lint: если task/subtask зависит от itemKind=epic и не имеет parent_id, выдать warning или error с кодом `epic_dependency_without_parent`.
+  Не ругаться, если это сознательная cross-epic dependency и есть явная метка исключения (если такая политика понадобится позже).
+Цель:
+  Ошибка иерархии ловится до того, как UI показывает пустой эпик.
+Проверки:
+  тест на задачу depends_on epic без parent_id
+  тест на корректную child task с parent_id
+  тест на обычную dependency task→task без предупреждения
+Анализ:
+  Зачем:
+  AN-75: depends_on на epic без parent_id — типичная моделировочная ошибка; UI показывает пустой эпик.
+  Когда:
+  Можно делать сразу — расширяет существующий lintWorkItemHierarchyIssues без breaking changes.
+  Готово, когда:
+  lint rule epic_dependency_without_parent + unit tests + интеграция в lintBacklogItems.
+
+Метки:
+  work.closed_at: 2026-06-05T15:47:05.157Z
+  atom.profile: work_item
+  intake.analytics_key: AN-75
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/work-graph-parent-vs-depends-on-guardrails.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-05T15:46:44.065Z
+  work.analysis.source: cursor-mcp
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: epic-work-item-hierarchy-guardrails-v1
+  work.id: lint-epic-depends-without-parent
+  work.item_kind: task
+  work.next_action: Cursor: record_work_item_decision (useful/harmful/defer)
+  work.owner_role: runtime_engineer
+  work.parent_id: epic-work-item-hierarchy-guardrails-v1
+  work.pipeline_stage: analyzed
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: src/workItemHierarchy.mjs, tests/workItemHierarchy.test.mjs, tests/backlogSchemaLint.test.mjs
+  work.title: Линтить depends_on epic без work.parent_id
+
+Свидетельства:
+  - claim: lint-epic-depends-without-parent via WorkGraph MCP
+  - src/workItemHierarchy.mjs: lint rule epic_dependency_without_parent + findEpicDependentsWithoutParent; tests/workItemHierarchy.test.mjs (46 tests pass).
+]>
+

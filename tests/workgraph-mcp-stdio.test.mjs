@@ -80,6 +80,12 @@ describe('workgraph MCP stdio integration', () => {
       assert.ok(toolNames.includes('list_evidence_records'));
       assert.ok(toolNames.includes('get_step_graph_slice'));
 
+      const createTool = tools.tools.find((tool) => tool.name === 'create_work_item');
+      assert.ok(createTool, 'create_work_item tool must be listed');
+      const createProps = createTool.inputSchema?.properties ?? {};
+      assert.ok('parentId' in createProps, 'create_work_item schema must expose parentId');
+      assert.ok('itemKind' in createProps, 'create_work_item schema must expose itemKind');
+
       const cycleResult = await client.callTool({ name: 'get_current_cycle', arguments: {} });
       const cycleText = cycleResult.content?.[0]?.text ?? '';
       const cycle = JSON.parse(cycleText);
