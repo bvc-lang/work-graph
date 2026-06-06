@@ -1451,7 +1451,6 @@ export function renderBacklogHtml(options = {}) {
       display: none !important;
     }
 
-    #settings-install-update[hidden],
     #settings-install-command[hidden] {
       display: none !important;
     }
@@ -5007,7 +5006,6 @@ export function renderBacklogHtml(options = {}) {
             <div class="settings-row">
               <div class="settings-about-actions">
                 <button type="button" class="wg-btn wg-btn--secondary wg-btn--sm" id="settings-check-update" data-testid="settings-check-update">${t('settings.about.checkUpdate')}</button>
-                <button type="button" class="wg-btn wg-btn--primary wg-btn--sm" id="settings-install-update" data-testid="settings-install-update" hidden>${t('settings.about.installUpdate')}</button>
               </div>
             </div>
             <p id="settings-update-status" class="settings-update-status" data-testid="settings-update-status" hidden></p>
@@ -5357,7 +5355,6 @@ export function renderBacklogHtml(options = {}) {
     const settingsLocaleButtons = [...document.querySelectorAll('[data-settings-locale]')];
     const settingsVersionValue = document.querySelector('#settings-version-value');
     const settingsCheckUpdate = document.querySelector('#settings-check-update');
-    const settingsInstallUpdate = document.querySelector('#settings-install-update');
     const settingsUpdateStatus = document.querySelector('#settings-update-status');
     const settingsInstallCommand = document.querySelector('#settings-install-command');
     const settingsInstallCommandText = document.querySelector('#settings-install-command-text');
@@ -5820,11 +5817,6 @@ export function renderBacklogHtml(options = {}) {
         renderSettingsPanel({ checkUpdate: true, fresh: true }).finally(() => {
           settingsCheckUpdate.disabled = false;
         });
-      });
-    }
-    if (settingsInstallUpdate) {
-      settingsInstallUpdate.addEventListener('click', () => {
-        installAppVersionUpdate().catch(() => undefined);
       });
     }
     if (settingsInstallCopyBtn) {
@@ -6363,24 +6355,12 @@ export function renderBacklogHtml(options = {}) {
       return Boolean(settingsUpdateStatus && !settingsUpdateStatus.hidden);
     }
 
-    let lastSettingsAboutVersionInfo = null;
-
     function applySettingsAboutUpdateUi(info) {
       const updateAvailable = info?.updateAvailable === true;
-      const canInstallFromUi = info?.canInstallFromUi === true;
       const installCommand = String(info?.installCommand || info?.installCommandProject || '').trim();
       const userChecked = settingsUpdateCheckWasPerformed();
-      const showCommandFallback = info?.showInstallCommandFallback === true;
+      const showInstallCommand = installCommand !== '' && userChecked && updateAvailable;
 
-      if (settingsInstallUpdate) {
-        settingsInstallUpdate.hidden = showCommandFallback
-          || !(updateAvailable && canInstallFromUi && userChecked);
-      }
-
-      const showInstallCommand = installCommand !== '' && userChecked && (
-        showCommandFallback
-        || (updateAvailable && !canInstallFromUi)
-      );
       if (settingsInstallCommand) {
         settingsInstallCommand.hidden = !showInstallCommand;
       }
@@ -6389,53 +6369,6 @@ export function renderBacklogHtml(options = {}) {
       }
       if (settingsInstallCopyBtn) {
         settingsInstallCopyBtn.dataset.copyText = showInstallCommand ? installCommand : '';
-      }
-    }
-
-    async function installAppVersionUpdate() {
-      if (settingsInstallUpdate) {
-        settingsInstallUpdate.disabled = true;
-      }
-      if (settingsCheckUpdate) {
-        settingsCheckUpdate.disabled = true;
-      }
-      if (settingsUpdateStatus) {
-        settingsUpdateStatus.hidden = false;
-        settingsUpdateStatus.textContent = t('settings.about.installing');
-      }
-      try {
-        const response = await fetch('/api/app-version/install', { method: 'POST' });
-        const payload = await response.json().catch(() => ({}));
-        if (!response.ok) {
-          throw new Error(payload.message || payload.error || ('install ' + response.status));
-        }
-        if (settingsVersionValue) {
-          settingsVersionValue.textContent = payload.version + ' · @work-graph/cli';
-        }
-        if (settingsUpdateStatus) {
-          settingsUpdateStatus.textContent = t('settings.about.installSuccess', { version: payload.version });
-        }
-        if (settingsInstallCommand) {
-          settingsInstallCommand.hidden = true;
-        }
-        applySettingsAboutUpdateUi({ updateAvailable: false });
-      } catch (error) {
-        if (settingsUpdateStatus) {
-          settingsUpdateStatus.textContent = t('settings.about.installFailed');
-        }
-        if (lastSettingsAboutVersionInfo) {
-          applySettingsAboutUpdateUi({
-            ...lastSettingsAboutVersionInfo,
-            showInstallCommandFallback: true,
-          });
-        }
-      } finally {
-        if (settingsInstallUpdate) {
-          settingsInstallUpdate.disabled = false;
-        }
-        if (settingsCheckUpdate) {
-          settingsCheckUpdate.disabled = false;
-        }
       }
     }
 
@@ -6464,7 +6397,6 @@ export function renderBacklogHtml(options = {}) {
           applySettingsAboutUpdateUi(null);
           return;
         }
-        lastSettingsAboutVersionInfo = info;
         if (info.updateAvailable) {
           settingsUpdateStatus.textContent = t('settings.about.updateAvailable', { latest: info.latestVersion });
           applySettingsAboutUpdateUi(info);

@@ -40,7 +40,7 @@
   "settings.gitSnapshot.saved": "Настройки Git Snapshot сохранены",
   "settings.about.checking": "Проверка…",
   "settings.about.upToDate": "Установлена актуальная версия (npm: {latest}).",
-  "settings.about.updateAvailable": "Доступно обновление: {latest}",
+  "settings.about.updateAvailable": "Доступно обновление: {latest}. Выполните команду ниже в терминале.",
   "settings.about.installHint": "В терминале:",
   "settings.about.copy": "Копировать",
   "settings.about.copied": "Скопировано",

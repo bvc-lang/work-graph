@@ -40,7 +40,7 @@
   "settings.gitSnapshot.saved": "Git Snapshot settings saved",
   "settings.about.checking": "Checking…",
   "settings.about.upToDate": "You are on the latest version (npm: {latest}).",
-  "settings.about.updateAvailable": "Update available: {latest}",
+  "settings.about.updateAvailable": "Update available: {latest}. Run the command below in your terminal.",
   "settings.about.installHint": "Run in terminal:",
   "settings.about.copy": "Copy",
   "settings.about.copied": "Copied",
