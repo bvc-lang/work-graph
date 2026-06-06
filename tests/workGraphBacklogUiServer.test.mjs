@@ -160,6 +160,7 @@ describe('renderBacklogHtml', () => {
     assert.match(html, /localStorage\.getItem\(key\)/);
     assert.match(html, /aria-label="Аналитика"/);
     assert.match(html, /class="header-theme-toggle-icon"/);
+    assert.match(html, /\.header-theme-toggle-icon path \{\s*fill: currentColor;/);
     assert.match(html, /viewBox="0 0 256 256"/);
     assert.match(html, /class="nav-tab-icon" width="22"/);
     assert.match(html, /wg-btn/);
@@ -460,6 +461,8 @@ describe('renderBacklogHtml', () => {
     assert.match(html, /promptsView\.hidden = !isPrompts/);
     assert.match(html, /function applyPromptsNavVisibility\(total\)/);
     assert.match(html, /function loadPromptsNavVisibility\(\)/);
+    assert.match(html, /const promptsNavVisibilityTask = loadPromptsNavVisibility\(\)/);
+    assert.match(html, /tab\.dataset\.view === 'prompts' && !promptsNavAvailable/);
     assert.match(html, /data-view="prompts"[^>]*hidden/);
   });
 

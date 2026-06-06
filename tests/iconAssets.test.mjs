@@ -38,6 +38,7 @@ describe('iconAssets', () => {
   it('renders theme toggle icons', () => {
     assert.match(renderThemeIcon('moon'), /class="header-theme-toggle-icon"/u);
     assert.match(renderThemeIcon('sun'), /class="header-theme-toggle-icon"/u);
+    assert.match(renderThemeIcon('sun'), /fill="currentColor"/u);
   });
 
   it('renderInlineIcon uses currentColor strokes from asset pack', () => {

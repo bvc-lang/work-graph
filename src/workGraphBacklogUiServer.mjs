@@ -1397,6 +1397,11 @@ export function renderBacklogHtml(options = {}) {
 
     .header-theme-toggle-icon {
       display: block;
+      fill: currentColor;
+    }
+
+    .header-theme-toggle-icon path {
+      fill: currentColor;
     }
 
     .settings-panel {
@@ -5371,6 +5376,39 @@ export function renderBacklogHtml(options = {}) {
     const promptsList = document.querySelector('#prompts-list');
     const promptsSummary = document.querySelector('#prompts-summary');
     const promptsPanelCount = document.querySelector('#prompts-panel-count');
+
+    function applyPromptsNavVisibility(total) {
+      promptsNavAvailable = Number(total) > 0;
+      if (promptsNavTab) {
+        promptsNavTab.hidden = !promptsNavAvailable;
+      }
+      if (!promptsNavAvailable && activeView === 'prompts') {
+        activeView = 'analytics';
+        localStorage.setItem(viewStorageKey, activeView);
+        applyView(activeView);
+      }
+    }
+
+    function loadPromptsNavVisibility() {
+      return fetch('/api/prompt-rules-projection')
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error('prompt rules projection ' + response.status);
+          }
+          return response.json();
+        })
+        .then((data) => {
+          applyPromptsNavVisibility(data?.summary?.total ?? 0);
+          return data;
+        })
+        .catch(() => {
+          applyPromptsNavVisibility(0);
+          return null;
+        });
+    }
+
+    const promptsNavVisibilityTask = loadPromptsNavVisibility();
+
     const intentView = document.querySelector('#intent-view');
     const intentComposerChat = document.querySelector('#intent-composer-chat');
     const intentComposerInput = document.querySelector('#intent-composer-input');
@@ -5481,36 +5519,6 @@ export function renderBacklogHtml(options = {}) {
       return Promise.resolve().then(task).finally(() => hidePageLoader());
     }
 
-    function applyPromptsNavVisibility(total) {
-      promptsNavAvailable = Number(total) > 0;
-      if (promptsNavTab) {
-        promptsNavTab.hidden = !promptsNavAvailable;
-      }
-      if (!promptsNavAvailable && activeView === 'prompts') {
-        activeView = 'analytics';
-        localStorage.setItem(viewStorageKey, activeView);
-        applyView(activeView);
-      }
-    }
-
-    function loadPromptsNavVisibility() {
-      return fetch('/api/prompt-rules-projection')
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error('prompt rules projection ' + response.status);
-          }
-          return response.json();
-        })
-        .then((data) => {
-          applyPromptsNavVisibility(data?.summary?.total ?? 0);
-          return data;
-        })
-        .catch(() => {
-          applyPromptsNavVisibility(0);
-          return null;
-        });
-    }
-
     function isLazyViewPending(view) {
       if (view === 'prompts') return !promptsPanelLoaded;
       if (view === 'verification') return !codeGapPanelLoaded || !daemonAuditPanelLoaded;
@@ -5577,7 +5585,7 @@ export function renderBacklogHtml(options = {}) {
         }
         return refreshHomeSnapshot()
           .catch(() => undefined)
-          .then(() => loadPromptsNavVisibility())
+          .then(() => promptsNavVisibilityTask)
           .then(() => loadActiveViewData(activeView === 'prompts' && !promptsNavAvailable ? 'analytics' : activeView));
       })
       .catch((error) => {
@@ -5587,6 +5595,7 @@ export function renderBacklogHtml(options = {}) {
         verificationMatrixWrap.innerHTML = message;
         verificationEvidenceList.innerHTML = '';
         verificationTierBadges.innerHTML = '';
+        promptsNavVisibilityTask.catch(() => undefined);
       })
       .finally(() => hidePageLoader());
 
@@ -5678,6 +5687,9 @@ export function renderBacklogHtml(options = {}) {
     navTabs.forEach((tab) => {
       tab.addEventListener('click', () => {
         if (tab.hidden) {
+          return;
+        }
+        if (tab.dataset.view === 'prompts' && !promptsNavAvailable) {
           return;
         }
         activeView = ['workflow', 'verification', 'prompts', 'memory', 'analytics', 'board', 'architecture', 'settings'].includes(tab.dataset.view)
@@ -6828,6 +6840,7 @@ export function renderBacklogHtml(options = {}) {
       if (view === 'prompts' && !promptsNavAvailable) {
         view = 'analytics';
         activeView = 'analytics';
+        localStorage.setItem(viewStorageKey, activeView);
       }
       const isWorkflow = view === 'workflow';
       const isVerification = view === 'verification';
@@ -6994,6 +7007,10 @@ export function renderBacklogHtml(options = {}) {
 
     function render() {
       if (!snapshot) return;
+      if (activeView === 'prompts' && !promptsNavAvailable) {
+        applyView('analytics');
+        return;
+      }
       const items = getFilteredItems();
       renderIntentDomainFilter();
       renderNavigationCounts(items);

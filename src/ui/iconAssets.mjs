@@ -53,10 +53,11 @@ export function readPublicIconSvg(fileName, variant = 'bold') {
  * @param {{ className?: string, size?: number }} [options]
  * @returns {string}
  */
-export function normalizeInlineSvg(rawSvg, { className = 'wg-icon', size = 18 } = {}) {
+export function normalizeInlineSvg(rawSvg, { className = 'wg-icon', size = 18, fill = null } = {}) {
+  const fillAttr = fill ? ` fill="${fill}"` : '';
   return rawSvg.replace(
     /^<svg\b/u,
-    `<svg class="${className}" width="${size}" height="${size}" aria-hidden="true" focusable="false"`,
+    `<svg class="${className}" width="${size}" height="${size}" aria-hidden="true" focusable="false"${fillAttr}`,
   );
 }
 
@@ -92,11 +93,13 @@ export function renderNavViewIcon(view, options = {}) {
  */
 export function renderThemeIcon(kind, options = {}) {
   const fileName = THEME_ICON_FILES[kind];
-  return renderInlineIcon(fileName, {
+  const raw = readPublicIconSvg(fileName, 'fill');
+  return normalizeInlineSvg(raw, {
     className: 'header-theme-toggle-icon',
     size: 18,
+    fill: 'currentColor',
     ...options,
-  }, 'fill');
+  });
 }
 
 export function getPublicIconsRoot() {
