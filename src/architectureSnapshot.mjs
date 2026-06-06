@@ -10,10 +10,22 @@ import {
   mergeOnebaseGraphIntoBlockL2Graph,
 } from './onebasePvrgGraphNodes.mjs';
 import { ARCHITECTURE_LAYOUT_PROFILE } from './graphCanvasLayout.mjs';
-import { classifyWorkItemBlock } from './workItemBlockClassifier.mjs';
+import {
+  UNCLASSIFIED_BLOCK_ID,
+  buildCanonBlockPathIndex,
+  classifyWorkItemBlock,
+  classifyWorkItemBlockIdForCanon,
+  classifyWorkItemForCanon,
+} from './workItemBlockClassifier.mjs';
 
 export { getArchitectureL1Blocks, getArchitectureL1Edges };
-export { classifyWorkItemBlock };
+export {
+  UNCLASSIFIED_BLOCK_ID,
+  buildCanonBlockPathIndex,
+  classifyWorkItemBlock,
+  classifyWorkItemBlockIdForCanon,
+  classifyWorkItemForCanon,
+};
 
 const compareText = (left, right) => String(left).localeCompare(String(right), 'en', { sensitivity: 'variant' });
 
@@ -26,10 +38,10 @@ function countTasksByStatus(taskIds, itemById) {
   return Object.fromEntries(Object.entries(counts).sort(([left], [right]) => compareText(left, right)));
 }
 
-function collectArtifactPaths(blockId, items) {
+function collectArtifactPaths(blockId, items, canon, pathIndex) {
   const paths = new Set();
   for (const item of items) {
-    if (classifyWorkItemBlock(item) !== blockId) {
+    if (classifyWorkItemBlockIdForCanon(item, canon, { pathIndex }) !== blockId) {
       continue;
     }
     for (const path of item.targetFiles ?? []) {
@@ -325,11 +337,19 @@ export function buildArchitectureSnapshot(workGraphSnapshot, options = {}) {
   const items = [...workGraphSnapshot.items].sort((left, right) => compareText(left.id, right.id));
   const itemById = new Map(items.map((item) => [item.id, item]));
   const tasksByBlock = new Map(l1Blocks.map((block) => [block.id, []]));
+  const unclassifiedTaskIds = [];
+  const pathIndex = buildCanonBlockPathIndex(canon);
 
   for (const item of items) {
-    const blockId = classifyWorkItemBlock(item);
+    const { blockId } = classifyWorkItemForCanon(item, canon, { pathIndex });
+    if (blockId === UNCLASSIFIED_BLOCK_ID) {
+      unclassifiedTaskIds.push(item.id);
+      continue;
+    }
     tasksByBlock.get(blockId)?.push(item.id);
   }
+
+  unclassifiedTaskIds.sort(compareText);
 
   for (const taskIds of tasksByBlock.values()) {
     taskIds.sort(compareText);
@@ -358,7 +378,7 @@ export function buildArchitectureSnapshot(workGraphSnapshot, options = {}) {
         ...container,
         paths: [...container.paths].sort(compareText),
       })),
-      artifactPaths: collectArtifactPaths(block.id, items),
+      artifactPaths: collectArtifactPaths(block.id, items, canon, pathIndex),
     };
     blockSnapshot.l2Graph = layoutArchitectureL2Graph(
       buildArchitectureBlockL2Graph(blockSnapshot, blockItems),
@@ -409,11 +429,16 @@ export function buildArchitectureSnapshot(workGraphSnapshot, options = {}) {
     blocks,
     edges,
     layoutProfile: options.layoutProfile ?? ARCHITECTURE_LAYOUT_PROFILE,
+    unclassified: {
+      taskIds: unclassifiedTaskIds,
+      taskCounts: countTasksByStatus(unclassifiedTaskIds, itemById),
+    },
     counts: {
       blocks: blocks.length,
       edges: edges.length,
       tasks: items.length,
       containers: containerCount,
+      unclassified: unclassifiedTaskIds.length,
     },
   };
 }

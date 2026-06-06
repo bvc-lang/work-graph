@@ -1,0 +1,55 @@
+#Задача_epic_canon_aware_work_item_block_classifier_v1<[
+Базис:
+  classifyWorkItemBlock() возвращает id starter-kit WG (domains, derived-projections), не блоки канона проекта.
+  AN-80: в Gripe у всех 7 L1 taskIds пустые — рассинхрон классификатора и architecture/main.bvc.
+  npm-first WG требует классификации без правки движка под каждый репозиторий.
+Вектор:
+  P0: classifyWorkItemForCanon(item, canon) — block_id override → path match → starter legacy → unclassified.
+  P0: индекс intent_roots + architecture.container.*.paths per L1 block.
+  P0: buildArchitectureSnapshot использует канон-резолвер, не хардкод id.
+  P1: dynamic badges из canon.blocks; doctor/lint unclassified (v1).
+Цель:
+  Вкладка «Архитектура» показывает taskIds для Gripe, WG-engine и starter без ручного патча classifyWorkItemBlock.
+Проверки:
+  tests/architectureSnapshot.test.mjs — Gripe-like fixture: catalog-pipeline получает facet tasks
+  WG-engine tests: starter legacy не ломается
+  architecture.snapshot.v1 содержит unclassified или пустой bucket для meta-задач вне L1
+  npm run test:deterministic green
+Анализ:
+  Зачем: перенести источник block id с хардкода на loadArchitectureL1Canon().
+  Контекст: AN-80, AN-78; epic-architecture-main-bvc-canon закрыт — loader готов.
+Решение:
+  Вердикт: полезно
+  MVP: path index + explicit architecture.block_id + architecture.starter fallback.
+
+Метки:
+  work.closed_at: 2026-06-06T08:08:56.059Z
+  atom.profile: work_item
+  intake.analytics_key: AN-81
+  intake.source_kind: analytics-record
+  intake.source_ref: analytics:canon-aware-work-item-block-classifier
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-06T08:01:27.781Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-06T08:01:27.781Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: extract-work-item-block-classifier
+  work.id: epic-canon-aware-work-item-block-classifier-v1
+  work.item_kind: epic
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: src/workItemBlockClassifier.mjs, src/architectureSnapshot.mjs, src/ui/workItemClassifierBadge.mjs, src/architectureL1Canon.mjs, tests/architectureSnapshot.test.mjs, tests/workItemClassifierBadge.test.mjs, work/analytics/canon-aware-work-item-block-classifier.md
+  work.title: Canon-aware classifier v1: задачи на L1 любого проекта из architecture/main.bvc
+  work.updated_by: workgraph-mcp
+  work.write.at: 2026-06-06T08:08:56.059Z
+  work.write.operation: complete
+
+Свидетельства:
+  - All 6 subtasks done: classifyWorkItemForCanon wired to snapshot/badges/operator shell; Gripe-like fixture tests; npm run test:deterministic 912/912 pass. AN-81 resolved.
+]>

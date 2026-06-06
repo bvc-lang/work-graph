@@ -1,4 +1,4 @@
-import { classifyWorkItemBlock } from './architectureSnapshot.mjs';
+import { classifyWorkItemBlock, classifyWorkItemBlockIdForCanon } from './workItemBlockClassifier.mjs';
 import {
   buildBm25Index,
   scoreBm25,
@@ -52,8 +52,15 @@ function scoreDocument(tokens, parts) {
   return score;
 }
 
-function buildWorkItemDocument(item) {
-  const architectureBlockId = classifyWorkItemBlock(item);
+function resolveArchitectureBlockId(item, options = {}) {
+  if (options.canon) {
+    return classifyWorkItemBlockIdForCanon(item, options.canon);
+  }
+  return classifyWorkItemBlock(item);
+}
+
+function buildWorkItemDocument(item, options = {}) {
+  const architectureBlockId = resolveArchitectureBlockId(item, options);
   const traceRefs = [`work:${item.id}`];
 
   return {
@@ -79,7 +86,7 @@ function buildWorkItemDocument(item) {
   };
 }
 
-function buildFileArtifactDocuments(item) {
+function buildFileArtifactDocuments(item, options = {}) {
   return (item.targetFiles ?? []).map((filePath) => ({
     id: `file:${filePath}`,
     kind: 'file_artifact',
@@ -87,7 +94,7 @@ function buildFileArtifactDocuments(item) {
     summary: `Файл из задачи ${item.id}`,
     workId: item.id,
     filePath,
-    architectureBlockId: classifyWorkItemBlock(item),
+    architectureBlockId: resolveArchitectureBlockId(item, options),
     traceRefs: [`file:${filePath}`, `work:${item.id}`],
     parts: [
       { text: filePath, weight: 4 },
@@ -106,9 +113,9 @@ export function buildSemanticSearchDocuments(items, options = {}) {
   const documents = [];
 
   for (const item of items) {
-    documents.push(buildWorkItemDocument(item));
+    documents.push(buildWorkItemDocument(item, options));
     if (includeFileArtifacts) {
-      documents.push(...buildFileArtifactDocuments(item));
+      documents.push(...buildFileArtifactDocuments(item, options));
     }
   }
 

@@ -17,9 +17,13 @@ import {
   L2_ROW_GAP,
   buildArchitectureBlockL2Graph,
   buildArchitectureSnapshot,
+  buildCanonBlockPathIndex,
   classifyWorkItemBlock,
+  classifyWorkItemForCanon,
   layoutArchitectureL2Graph,
+  UNCLASSIFIED_BLOCK_ID,
 } from '../src/architectureSnapshot.mjs';
+import { loadArchitectureL1Canon } from '../src/architectureL1Canon.mjs';
 import { buildSnapshot, parseWorkItems } from '../src/workGraphRuntime.mjs';
 
 const testDir = path.dirname(fileURLToPath(import.meta.url));
@@ -266,6 +270,142 @@ function resolveRef(schema, rootSchema) {
   const defName = schema.$ref.slice(prefix.length);
   return rootSchema.$defs[defName];
 }
+
+const GRIPE_LIKE_FIXTURE = 'tests/fixtures/architecture-gripe-like/main.bvc';
+
+const GRIPE_LIKE_ITEMS = `#Задача_facet<[
+Базис: Facets.
+Вектор: Facets.
+Цель: Facets.
+Метки:
+  atom.profile: work_item
+  work.id: import-zhivotnye-catalog-facets
+  work.title: Import zhivotnye facets
+  work.status: backlog
+  work.department: domain-onebase
+  work.target_files: config/catalog-facets.php, app/Support/Avito/AvitoFacetsConfigMerger.php
+  trace.status: pending
+]>
+
+#Задача_ui<[
+Базис: UI kit.
+Вектор: UI kit.
+Цель: UI kit.
+Метки:
+  atom.profile: work_item
+  work.id: ui-kit-theme-preview-switcher
+  work.title: Theme preview switcher
+  work.status: backlog
+  work.department: frontend-ui
+  work.target_files: resources/css/tokens.css, src/ui/theme-preview.mjs
+  trace.status: pending
+]>
+
+#Задача_hub<[
+Базис: Hub.
+Вектор: Hub.
+Цель: Hub.
+Метки:
+  atom.profile: work_item
+  work.id: resolve-facets-hub-template-conflict
+  work.title: Resolve hub template conflict
+  work.status: backlog
+  work.department: domain-onebase
+  work.target_files: packages/marketplace-core/src/Support/CatalogCategoryFacets.php
+  trace.status: pending
+]>
+`;
+
+describe('canon-aware work item block classifier', () => {
+  it('maps Gripe-like tasks to catalog-pipeline, presentation, marketplace-core via path index', () => {
+    const canon = loadArchitectureL1Canon(repoRoot, { canonPath: GRIPE_LIKE_FIXTURE });
+    const pathIndex = buildCanonBlockPathIndex(canon);
+    const items = parseWorkItems(GRIPE_LIKE_ITEMS);
+
+    const facet = items.find((item) => item.id === 'import-zhivotnye-catalog-facets');
+    const ui = items.find((item) => item.id === 'ui-kit-theme-preview-switcher');
+    const hub = items.find((item) => item.id === 'resolve-facets-hub-template-conflict');
+
+    assert.equal(classifyWorkItemForCanon(facet, canon, { pathIndex }).blockId, 'catalog-pipeline');
+    assert.equal(classifyWorkItemForCanon(ui, canon, { pathIndex }).blockId, 'presentation');
+    assert.equal(classifyWorkItemForCanon(hub, canon, { pathIndex }).blockId, 'marketplace-core');
+  });
+
+  it('returns unclassified for domain-onebase task without matching canon paths', () => {
+    const canon = loadArchitectureL1Canon(repoRoot, { canonPath: GRIPE_LIKE_FIXTURE });
+    const orphan = `#Задача_orphan<[
+Базис: Orphan.
+Вектор: Orphan.
+Цель: Orphan.
+Метки:
+  atom.profile: work_item
+  work.id: gripe-meta-analytics-only
+  work.title: Analytics only
+  work.status: backlog
+  work.department: domain-onebase
+  work.target_files: work/analytics/some-note.md
+  trace.status: pending
+]>`;
+    const [item] = parseWorkItems(orphan);
+    assert.equal(classifyWorkItemForCanon(item, canon).blockId, UNCLASSIFIED_BLOCK_ID);
+  });
+
+  it('builds architecture snapshot with Gripe-like fixture taskIds on L1 blocks', () => {
+    const workGraphSnapshot = buildSnapshot(parseWorkItems(GRIPE_LIKE_ITEMS));
+    const architectureSnapshot = buildArchitectureSnapshot(workGraphSnapshot, {
+      repoRoot,
+      canonPath: GRIPE_LIKE_FIXTURE,
+    });
+
+    const catalog = architectureSnapshot.blocks.find((block) => block.id === 'catalog-pipeline');
+    const presentation = architectureSnapshot.blocks.find((block) => block.id === 'presentation');
+    const core = architectureSnapshot.blocks.find((block) => block.id === 'marketplace-core');
+
+    assert.ok(catalog?.taskIds.includes('import-zhivotnye-catalog-facets'));
+    assert.ok(presentation?.taskIds.includes('ui-kit-theme-preview-switcher'));
+    assert.ok(core?.taskIds.includes('resolve-facets-hub-template-conflict'));
+    assert.equal(catalog.taskIds.includes('ui-kit-theme-preview-switcher'), false);
+    assert.equal(architectureSnapshot.counts.unclassified, 0);
+    assert.deepEqual(architectureSnapshot.unclassified.taskIds, []);
+  });
+
+  it('exposes unclassified bucket and counts for tasks outside L1 canon paths', () => {
+    const orphan = `#Задача_orphan<[
+Базис: Orphan.
+Вектор: Orphan.
+Цель: Orphan.
+Метки:
+  atom.profile: work_item
+  work.id: gripe-meta-analytics-only
+  work.title: Analytics only
+  work.status: backlog
+  work.department: domain-onebase
+  work.target_files: work/analytics/some-note.md
+  trace.status: pending
+]>`;
+    const workGraphSnapshot = buildSnapshot(parseWorkItems(`${GRIPE_LIKE_ITEMS}\n${orphan}`));
+    const architectureSnapshot = buildArchitectureSnapshot(workGraphSnapshot, {
+      repoRoot,
+      canonPath: GRIPE_LIKE_FIXTURE,
+    });
+
+    assert.equal(architectureSnapshot.counts.unclassified, 1);
+    assert.deepEqual(architectureSnapshot.unclassified.taskIds, ['gripe-meta-analytics-only']);
+    assert.equal(architectureSnapshot.unclassified.taskCounts.backlog, 1);
+  });
+
+  it('keeps WG-engine snapshot classification via legacy ids present in canon', () => {
+    const workGraphSnapshot = buildSnapshot(parseWorkItems(SAMPLE_ITEMS));
+    const architectureSnapshot = buildArchitectureSnapshot(workGraphSnapshot, { repoRoot });
+
+    assert.ok(architectureSnapshot.blocks.some((block) => block.id === 'derived-projections' && block.taskIds.includes('design-workgraph-backlog-ui')));
+    assert.ok(architectureSnapshot.blocks.some((block) => block.id === 'domains' && block.taskIds.includes('onebase-artifact-mapping')));
+    const runtimeBlockIds = architectureSnapshot.blocks
+      .filter((block) => block.taskIds.includes('implement-workgraph-minimal-runtime'))
+      .map((block) => block.id);
+    assert.ok(runtimeBlockIds.some((id) => id === 'work-graph' || id === 'trace-evidence'));
+  });
+});
 
 describe('buildArchitectureBlockL2Graph', () => {
   it('builds scoped L2 nodes and edges without depends_on', () => {

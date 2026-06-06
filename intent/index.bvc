@@ -40,6 +40,7 @@ WorkItems:
   - author-plan-iohasc-heritage-reuse-v1: intent/system/runtime/work/author-plan-iohasc-heritage-reuse-v1.work.bvc
   - author-plan-iohasc-project-bvc-bridge: intent/system/runtime/work/author-plan-iohasc-project-bvc-bridge.work.bvc
   - backlog-default-gripe-theme-wireup: intent/ui/dashboard/work/backlog-default-gripe-theme-wireup.work.bvc
+  - build-canon-block-path-index: intent/ui/dashboard/work/build-canon-block-path-index.work.bvc
   - bvc-dialect-registry-en-ru: intent/system/runtime/work/bvc-dialect-registry-en-ru.work.bvc
   - bvc-multilingual-conformance-tests: intent/system/runtime/work/bvc-multilingual-conformance-tests.work.bvc
   - bvc-multilingual-detect-or-declare: intent/system/runtime/work/bvc-multilingual-detect-or-declare.work.bvc
@@ -155,6 +156,7 @@ WorkItems:
   - document-rebuild-scope-replace-decisions: intent/system/runtime/work/document-rebuild-scope-replace-decisions.work.bvc
   - document-session-primer-runbook: intent/system/runtime/work/document-session-primer-runbook.work.bvc
   - document-worker-orchestrator-boundary: intent/system/runtime/work/document-worker-orchestrator-boundary.work.bvc
+  - dynamic-classifier-badges-from-l1-canon: intent/ui/dashboard/work/dynamic-classifier-badges-from-l1-canon.work.bvc
   - epic-agent-session-warmup-v1: intent/system/runtime/work/epic-agent-session-warmup-v1.work.bvc
   - epic-agent-workgraph-enforcement: intent/system/runtime/work/epic-agent-workgraph-enforcement.work.bvc
   - epic-analytics-record-lineage-v1: intent/ui/dashboard/work/epic-analytics-record-lineage-v1.work.bvc
@@ -163,6 +165,7 @@ WorkItems:
   - epic-architecture-main-bvc-canon: intent/system/runtime/work/epic-architecture-main-bvc-canon.work.bvc
   - epic-architecture-views-v1: intent/ui/dashboard/work/epic-architecture-views-v1.work.bvc
   - epic-bvc-open-format-tail-v1: intent/system/runtime/work/epic-bvc-open-format-tail-v1.work.bvc
+  - epic-canon-aware-work-item-block-classifier-v1: intent/ui/dashboard/work/epic-canon-aware-work-item-block-classifier-v1.work.bvc
   - epic-chat-work-scope-readonly: intent/system/runtime/work/epic-chat-work-scope-readonly.work.bvc
   - epic-cursor-mcp-context-surface-v1: intent/system/runtime/work/epic-cursor-mcp-context-surface-v1.work.bvc
   - epic-decision-pipeline-canonization: intent/system/runtime/work/epic-decision-pipeline-canonization.work.bvc
@@ -241,6 +244,7 @@ WorkItems:
   - implement-bvc-format-cli: intent/system/runtime/work/implement-bvc-format-cli.work.bvc
   - implement-canon-paths-resolver-v1: intent/system/runtime/work/implement-canon-paths-resolver-v1.work.bvc
   - implement-charter-preflight-promote-gate: intent/system/runtime/work/implement-charter-preflight-promote-gate.work.bvc
+  - implement-classify-work-item-for-canon: intent/ui/dashboard/work/implement-classify-work-item-for-canon.work.bvc
   - implement-claude-sdk-api-worker-provider: intent/system/runtime/work/implement-claude-sdk-api-worker-provider.work.bvc
   - implement-closing-analysis-after-epic-done: intent/system/runtime/work/implement-closing-analysis-after-epic-done.work.bvc
   - implement-cmd-k-palette: intent/ui/dashboard/work/implement-cmd-k-palette.work.bvc
@@ -453,6 +457,7 @@ WorkItems:
   - port-unified-linkage-serialization: intent/research/pvrg/work/port-unified-linkage-serialization.work.bvc
   - port-vector-dsl-codegen-from-iohasc-v1: intent/system/runtime/work/port-vector-dsl-codegen-from-iohasc-v1.work.bvc
   - post-full-roadmap-provider-rollout: intent/system/storage/work/post-full-roadmap-provider-rollout.work.bvc
+  - preserve-starter-kit-legacy-classifier: intent/ui/dashboard/work/preserve-starter-kit-legacy-classifier.work.bvc
   - publish-bvc-lang-cli-npm: intent/system/runtime/work/publish-bvc-lang-cli-npm.work.bvc
   - publish-bvc-open-standard-pack-an42: intent/system/runtime/work/publish-bvc-open-standard-pack-an42.work.bvc
   - publish-ir-richir-public-spec-an42: intent/system/runtime/work/publish-ir-richir-public-spec-an42.work.bvc
@@ -496,6 +501,7 @@ WorkItems:
   - tests-architecture-domains-l1-hierarchy: intent/system/runtime/work/tests-architecture-domains-l1-hierarchy.work.bvc
   - tests-architecture-main-bvc-canon: intent/system/runtime/work/tests-architecture-main-bvc-canon.work.bvc
   - tests-architecture-views-v1: intent/ui/dashboard/work/tests-architecture-views-v1.work.bvc
+  - tests-canon-aware-classifier-fixtures: intent/ui/dashboard/work/tests-canon-aware-classifier-fixtures.work.bvc
   - tests-canon-layout-dual-mode-v1: intent/system/runtime/work/tests-canon-layout-dual-mode-v1.work.bvc
   - tests-gripe-visual-default-wave3: intent/ui/dashboard/work/tests-gripe-visual-default-wave3.work.bvc
   - tests-work-graph-multiproject-host: intent/system/runtime/work/tests-work-graph-multiproject-host.work.bvc
@@ -564,6 +570,7 @@ WorkItems:
   - wire-sidebar-nav-icons: intent/ui/dashboard/work/wire-sidebar-nav-icons.work.bvc
   - wire-sidebar-settings-nav-bottom: intent/ui/dashboard/work/wire-sidebar-settings-nav-bottom.work.bvc
   - wire-sidebar-width-persist: intent/ui/dashboard/work/wire-sidebar-width-persist.work.bvc
+  - wire-snapshot-canon-aware-classifier: intent/ui/dashboard/work/wire-snapshot-canon-aware-classifier.work.bvc
   - wire-task-hierarchy-stack-navigation: intent/ui/dashboard/work/wire-task-hierarchy-stack-navigation.work.bvc
   - wire-unified-linkage-operator-drilldown: intent/system/runtime/work/wire-unified-linkage-operator-drilldown.work.bvc
   - wire-update-notice-from-app-version: intent/ui/dashboard/work/wire-update-notice-from-app-version.work.bvc

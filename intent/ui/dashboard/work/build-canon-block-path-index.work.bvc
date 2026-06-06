@@ -1,0 +1,55 @@
+#Задача_build_canon_block_path_index<[
+Базис:
+  Нет структуры longest-prefix match по путям канона.
+Вектор:
+  buildCanonBlockPathIndex(canon) → Map<blockId, normalized path prefixes>.
+  Нормализация: repo-relative, forward slashes, без ведущего ./
+Цель:
+  Детерминированный индекс для classifyWorkItemForCanon.
+Проверки:
+  unit test: Gripe fixture index содержит config/catalog-facets.php → catalog-pipeline
+Анализ:
+  Зачем:
+  Нет структуры longest-prefix match по путям канона.
+  Контекст: buildCanonBlockPathIndex(canon) → Map<blockId, normalized path prefixes>.
+  Когда:
+  После готовности: epic-canon-aware-work-item-block-classifier-v1.
+  Готово, когда:
+  Детерминированный индекс для classifyWorkItemForCanon.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: epic-canon-aware-work-item-block-classifier-v1.
+
+Метки:
+  work.closed_at: 2026-06-06T08:08:29.795Z
+  atom.profile: work_item
+  intake.analytics_key: AN-81
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/canon-aware-work-item-block-classifier.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-06T08:01:27.796Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-06T08:01:27.796Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: epic-canon-aware-work-item-block-classifier-v1
+  work.id: build-canon-block-path-index
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.parent_id: epic-canon-aware-work-item-block-classifier-v1
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: low
+  work.status: done
+  work.target_files: src/workItemBlockClassifier.mjs, tests/architectureSnapshot.test.mjs
+  work.title: Runtime: индекс путей L1 из intent_roots и container.paths
+  work.updated_by: workgraph-mcp
+  work.write.at: 2026-06-06T08:08:29.796Z
+  work.write.operation: complete
+
+Свидетельства:
+  - buildCanonBlockPathIndex + normalizeCanonPath in src/workItemBlockClassifier.mjs; tests/architectureSnapshot.test.mjs
+]>

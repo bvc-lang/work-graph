@@ -1,8 +1,9 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
+import { cp, mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { describe, it } from 'node:test';
 
 import {
@@ -12,6 +13,8 @@ import {
   renderBacklogHtml,
 } from '../src/workGraphBacklogUiServer.mjs';
 import { appendDaemonAuditJournal, buildDaemonTickAuditRecord } from '../src/workGraphDaemonTick.mjs';
+
+const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 
 const SAMPLE_BACKLOG = `#Задача_done_task<[
 Базис:
@@ -698,6 +701,11 @@ describe('createBacklogUiServer', () => {
   it('serves HTML and JSON snapshot without external dependencies', async () => {
     const cwd = await mkdtemp(join(tmpdir(), 'workgraph-ui-'));
     await writeFile(join(cwd, 'backlog.bvc'), SAMPLE_BACKLOG, 'utf8');
+    await mkdir(join(cwd, 'architecture'), { recursive: true });
+    await cp(
+      join(repoRoot, 'packages/work-graph-cli/templates/starter/architecture/main.bvc'),
+      join(cwd, 'architecture/main.bvc'),
+    );
     await mkdir(join(cwd, 'charter'), { recursive: true });
     await writeFile(join(cwd, 'charter/main.bvc'), `#Устав_Ui_Test<[
 Базис:
@@ -728,7 +736,6 @@ describe('createBacklogUiServer', () => {
       'utf8',
     );
     await mkdir(join(cwd, 'work'), { recursive: true });
-    const repoRoot = join(import.meta.dirname, '..');
     await mkdir(join(cwd, 'work', 'analytics'), { recursive: true });
     await writeFile(
       join(cwd, 'work', 'analytics-records.jsonl'),
@@ -1219,7 +1226,11 @@ describe('readArchitectureSnapshot', () => {
     await writeFile(join(cwd, 'backlog.bvc'), SAMPLE_BACKLOG, 'utf8');
 
     try {
-      const architectureSnapshot = await readArchitectureSnapshot({ cwd, backlogPath: 'backlog.bvc' });
+      const architectureSnapshot = await readArchitectureSnapshot({
+        cwd,
+        backlogPath: 'backlog.bvc',
+        repoRoot,
+      });
       assert.equal(architectureSnapshot.schema, 'architecture.snapshot.v1');
       assert.equal(architectureSnapshot.counts.tasks, 4);
     } finally {

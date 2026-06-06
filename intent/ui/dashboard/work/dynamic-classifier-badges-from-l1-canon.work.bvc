@@ -1,0 +1,55 @@
+#Задача_dynamic_classifier_badges_from_l1_canon<[
+Базис:
+  ARCHITECTURE_BLOCK_BADGES знает только starter id; Gripe block_id не отображается.
+Вектор:
+  resolveWorkItemClassifierBadge принимает canon или block title lookup.
+  Tone: по kind блока или default accent; label = architecture.title short.
+Цель:
+  Kanban lozenge показывает catalog-pipeline / presentation для Gripe.
+Проверки:
+  tests/workItemClassifierBadge.test.mjs с canon fixture
+Анализ:
+  Зачем:
+  ARCHITECTURE_BLOCK_BADGES знает только starter id; Gripe block_id не отображается.
+  Контекст: resolveWorkItemClassifierBadge принимает canon или block title lookup.
+  Когда:
+  После готовности: implement-classify-work-item-for-canon.
+  Готово, когда:
+  Kanban lozenge показывает catalog-pipeline / presentation для Gripe.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: implement-classify-work-item-for-canon.
+
+Метки:
+  work.closed_at: 2026-06-06T08:08:51.700Z
+  atom.profile: work_item
+  intake.analytics_key: AN-81
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/canon-aware-work-item-block-classifier.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-06T08:01:27.825Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-06T08:01:27.825Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: implement-classify-work-item-for-canon
+  work.id: dynamic-classifier-badges-from-l1-canon
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.parent_id: epic-canon-aware-work-item-block-classifier-v1
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: src/ui/workItemClassifierBadge.mjs, tests/workItemClassifierBadge.test.mjs, src/workGraphBacklogUiServer.mjs
+  work.title: UI: бейджи классификатора из L1 канона, не ARCHITECTURE_BLOCK_BADGES
+  work.updated_by: workgraph-mcp
+  work.write.at: 2026-06-06T08:08:51.700Z
+  work.write.operation: complete
+
+Свидетельства:
+  - workItemClassifierBadge.mjs buildArchitectureBlockBadgeLookup(canon) with dynamic L1 titles from canon blocks
+]>

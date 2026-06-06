@@ -1,4 +1,5 @@
-import { classifyWorkItemBlock } from './architectureSnapshot.mjs';
+import { loadArchitectureL1Canon } from './architectureL1Canon.mjs';
+import { classifyWorkItemBlock, classifyWorkItemBlockIdForCanon } from './workItemBlockClassifier.mjs';
 import { buildIntentHierarchySnapshot } from './intentHierarchy.mjs';
 import { buildOperatorDashboardSnapshot } from './workGraphRuntime.mjs';
 import { buildRunnerQueueProjectionFromItems } from './workGraphRunnerQueueProjection.mjs';
@@ -18,14 +19,25 @@ export const STARTUP_BUDGET_V1 = {
   deferUntilVisible: true,
 };
 
-export function buildSemanticCrossHighlightMap(items) {
+export function buildSemanticCrossHighlightMap(items, options = {}) {
+  let canon = options.canon ?? null;
+  if (!canon && options.repoRoot) {
+    try {
+      canon = loadArchitectureL1Canon(options.repoRoot, { canonPath: options.canonPath });
+    } catch {
+      canon = null;
+    }
+  }
+
   return [...items]
     .sort((left, right) => compareText(left.id, right.id))
     .map((item) => ({
       workId: item.id,
       title: item.title,
       status: item.status,
-      architectureBlockId: classifyWorkItemBlock(item),
+      architectureBlockId: canon
+        ? classifyWorkItemBlockIdForCanon(item, canon)
+        : classifyWorkItemBlock(item),
       intentPath: item.labels?.['intent.path'] ?? null,
       targetFiles: [...(item.targetFiles ?? [])],
     }));
@@ -51,7 +63,11 @@ export function buildOperatorShellSnapshotV2(workGraphSnapshot, options = {}) {
     currentCycle: options.currentCycle,
   });
   const intentSidebar = buildIntentHierarchySnapshot(items.map((item) => ({ item })));
-  const semanticCrossHighlight = buildSemanticCrossHighlightMap(items);
+  const semanticCrossHighlight = buildSemanticCrossHighlightMap(items, {
+    repoRoot: options.repoRoot,
+    canonPath: options.canonPath,
+    canon: options.canon,
+  });
   const runnerQueue = buildRunnerQueueProjectionFromItems(items, {
     workerRuns: options.workerRuns ?? [],
     recordedAt: options.recordedAt,

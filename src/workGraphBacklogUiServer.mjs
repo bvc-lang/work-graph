@@ -507,6 +507,7 @@ export async function readOperatorShellSnapshot(options = {}) {
     cycleId: options.cycleId,
     doneArchiveCap: options.doneArchiveCap ?? DEFAULT_DONE_ARCHIVE_CAP,
     recordedAt: options.recordedAt,
+    repoRoot: options.repoRoot ?? options.cwd,
   });
 }
 
@@ -1440,8 +1441,10 @@ export function renderBacklogHtml(options = {}) {
       gap: 8px;
       margin-left: auto;
     }
-      display: inline-flex;
-      gap: 8px;
+
+    #settings-install-update[hidden],
+    #settings-install-command[hidden] {
+      display: none !important;
     }
 
     .settings-theme-options .wg-btn.is-active,
@@ -1512,6 +1515,9 @@ export function renderBacklogHtml(options = {}) {
     }
 
     .settings-install-code {
+      align-items: stretch;
+      display: flex;
+      min-height: 42px;
       position: relative;
     }
 
@@ -1519,10 +1525,13 @@ export function renderBacklogHtml(options = {}) {
       background: var(--panel-2);
       border: 1px solid var(--border);
       border-radius: 6px;
+      box-sizing: border-box;
       display: block;
+      flex: 1 1 auto;
       font-family: var(--brand-font-mono, monospace);
       font-size: 12px;
       line-height: 1.45;
+      min-height: 42px;
       padding: 10px 44px 10px 10px;
       white-space: pre-wrap;
       word-break: break-all;
@@ -6296,12 +6305,30 @@ export function renderBacklogHtml(options = {}) {
       return response.json();
     }
 
-    function applySettingsUpdateActions(info) {
-      if (!settingsInstallUpdate) {
-        return;
+    function settingsUpdateCheckWasPerformed() {
+      return Boolean(settingsUpdateStatus && !settingsUpdateStatus.hidden);
+    }
+
+    function applySettingsAboutUpdateUi(info) {
+      const updateAvailable = info?.updateAvailable === true;
+      const canInstallFromUi = info?.canInstallFromUi === true;
+      const installCommand = String(info?.installCommand || info?.installCommandProject || '').trim();
+      const userChecked = settingsUpdateCheckWasPerformed();
+
+      if (settingsInstallUpdate) {
+        settingsInstallUpdate.hidden = !(updateAvailable && canInstallFromUi && userChecked);
       }
-      const canShow = info?.updateAvailable === true && info?.canInstallFromUi === true;
-      settingsInstallUpdate.hidden = !canShow;
+
+      const showInstallCommand = updateAvailable && !canInstallFromUi && userChecked && installCommand !== '';
+      if (settingsInstallCommand) {
+        settingsInstallCommand.hidden = !showInstallCommand;
+      }
+      if (settingsInstallCommandText) {
+        settingsInstallCommandText.textContent = showInstallCommand ? installCommand : '';
+      }
+      if (settingsInstallCopyBtn) {
+        settingsInstallCopyBtn.dataset.copyText = showInstallCommand ? installCommand : '';
+      }
     }
 
     async function installAppVersionUpdate() {
@@ -6330,7 +6357,7 @@ export function renderBacklogHtml(options = {}) {
         if (settingsInstallCommand) {
           settingsInstallCommand.hidden = true;
         }
-        applySettingsUpdateActions({ updateAvailable: false });
+        applySettingsAboutUpdateUi({ updateAvailable: false });
       } catch (error) {
         if (settingsUpdateStatus) {
           settingsUpdateStatus.textContent = t('settings.about.installFailed');
@@ -6361,37 +6388,24 @@ export function renderBacklogHtml(options = {}) {
         if (!settingsUpdateStatus) return;
         if (options.checkUpdate !== true) {
           settingsUpdateStatus.hidden = true;
-          if (settingsInstallCommand) settingsInstallCommand.hidden = true;
-          applySettingsUpdateActions(null);
+          applySettingsAboutUpdateUi(null);
           return;
         }
         settingsUpdateStatus.hidden = false;
         if (info.checkError) {
           settingsUpdateStatus.textContent = t('settings.about.checkFailed');
-          if (settingsInstallCommand) settingsInstallCommand.hidden = true;
-          applySettingsUpdateActions(null);
+          applySettingsAboutUpdateUi(null);
           return;
         }
         if (info.updateAvailable) {
           settingsUpdateStatus.textContent = t('settings.about.updateAvailable', { latest: info.latestVersion });
-          const installCommand = info.installCommand || info.installCommandProject || '';
-          if (settingsInstallCommand) {
-            settingsInstallCommand.hidden = info.canInstallFromUi === true;
-          }
-          if (settingsInstallCommandText) {
-            settingsInstallCommandText.textContent = installCommand;
-          }
-          if (settingsInstallCopyBtn) {
-            settingsInstallCopyBtn.dataset.copyText = installCommand;
-          }
-          applySettingsUpdateActions(info);
+          applySettingsAboutUpdateUi(info);
           return;
         }
         settingsUpdateStatus.textContent = t('settings.about.upToDate', {
           latest: info.latestVersion || info.version,
         });
-        if (settingsInstallCommand) settingsInstallCommand.hidden = true;
-        applySettingsUpdateActions(null);
+        applySettingsAboutUpdateUi(info);
       } catch (error) {
         if (settingsUpdateStatus && options.checkUpdate === true) {
           settingsUpdateStatus.hidden = false;
@@ -6465,10 +6479,17 @@ export function renderBacklogHtml(options = {}) {
       if (settingsVersionValue) {
         settingsVersionValue.textContent = info.version + ' · ' + info.npmPackage;
       }
-      if (activeView === 'settings' && settingsUpdateStatus && info.updateAvailable) {
-        settingsUpdateStatus.hidden = false;
-        settingsUpdateStatus.textContent = t('settings.about.updateAvailable', { latest: info.latestVersion });
-        applySettingsUpdateActions(info);
+      applySettingsAboutUpdateUi(info);
+      if (activeView === 'settings' && settingsUpdateStatus && !settingsUpdateStatus.hidden) {
+        if (info.checkError) {
+          settingsUpdateStatus.textContent = t('settings.about.checkFailed');
+        } else if (info.updateAvailable) {
+          settingsUpdateStatus.textContent = t('settings.about.updateAvailable', { latest: info.latestVersion });
+        } else if (info.checkedAt) {
+          settingsUpdateStatus.textContent = t('settings.about.upToDate', {
+            latest: info.latestVersion || info.version,
+          });
+        }
       }
       showUpdateAvailableNotice(info);
       return info;
@@ -9345,12 +9366,16 @@ export function renderBacklogHtml(options = {}) {
       }
 
       const blocks = architectureSnapshot.blocks ?? [];
+      const unclassifiedCount = architectureSnapshot.counts?.unclassified ?? architectureSnapshot.unclassified?.taskIds?.length ?? 0;
       if (architecturePanelCount) {
         architecturePanelCount.textContent = String(blocks.length);
       }
-      architectureBlocksList.innerHTML = blocks.length
-        ? renderArchitectureBlocksListHtml(blocks)
-        : '<div class="empty">Нет блоков архитектуры</div>';
+      const unclassifiedNote = unclassifiedCount > 0
+        ? '<p class="architecture-unclassified-note" data-testid="architecture-unclassified-note">Вне L1: ' + unclassifiedCount + ' задач</p>'
+        : '';
+      architectureBlocksList.innerHTML = (blocks.length
+        ? unclassifiedNote + renderArchitectureBlocksListHtml(blocks)
+        : unclassifiedNote + '<div class="empty">Нет блоков архитектуры</div>');
     }
 
     function architectureBlockBackLabel() {

@@ -442,5 +442,39 @@ export async function runWorkGraphDoctor(options = {}) {
   } catch {
     engineRoot = null;
   }
-  return buildDoctorReport({ projectRoot, config, engineRoot });
+  const report = buildDoctorReport({ projectRoot, config, engineRoot });
+
+  if (config) {
+    try {
+      const { lintBacklogFile } = await import('./backlogSchemaLint.mjs');
+      const backlogLint = await lintBacklogFile({ cwd: projectRoot });
+      report.backlogLint = backlogLint;
+      report.checks.push({
+        name: 'backlog-lint',
+        ok: backlogLint.ok,
+        detail: `${backlogLint.errorCount} errors, ${backlogLint.warningCount} warnings (${backlogLint.itemCount} items)`,
+      });
+    } catch (error) {
+      report.checks.push({
+        name: 'backlog-lint',
+        ok: false,
+        detail: error instanceof Error ? error.message : String(error),
+      });
+    }
+
+    const architectureWarnings = (report.backlogLint?.issues ?? []).filter(
+      (issue) => issue.code === 'architecture_unclassified' || issue.code === 'architecture_invalid_block_id',
+    );
+    const unclassifiedCount = architectureWarnings.filter((issue) => issue.code === 'architecture_unclassified').length;
+    report.checks.push({
+      name: 'architecture-classification',
+      ok: true,
+      detail: unclassifiedCount === 0
+        ? 'all active tasks mapped to L1 blocks'
+        : `${unclassifiedCount} active tasks unclassified to L1 (warning)`,
+    });
+  }
+
+  report.ok = report.checks.every((check) => check.ok);
+  return report;
 }

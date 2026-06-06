@@ -1,0 +1,104 @@
+#!bvc lang=ru
+
+#Architecture_Main_Canon<[
+Базис:
+  Fixture canon for canon-aware classifier tests (Gripe-like subset).
+Вектор:
+  Three L1 blocks with path roots for catalog, marketplace core, presentation.
+Цель:
+  Regression fixture for AN-81 epic.
+
+Метки:
+  atom.profile: architecture_canon
+  architecture.canon.id: architecture-l1-blocks-v1
+  architecture.canon.version: 1
+  architecture.starter: false
+  trace.status: draft
+]>
+
+#Architecture_Block_Catalog_Pipeline<[
+Базис:
+  Catalog facets and Avito import pipeline.
+Вектор:
+  config/catalog-facets.php, app/Support/Avito/
+Цель:
+  Facet coverage tasks attach here.
+
+Метки:
+  atom.profile: architecture_l1_block
+  architecture.block_id: catalog-pipeline
+  architecture.layer: L1
+  architecture.title: Конвейер каталога
+  architecture.summary: Facets, Avito capture, catalog import.
+  architecture.decision.verdict: useful
+  architecture.intent_roots: config/catalog-facets.php,app/Support/Avito
+  architecture.container.pipeline.title: Facet pipeline
+  architecture.container.pipeline.kind: runtime
+  architecture.container.pipeline.paths: config/catalog-facets.php,config/avito-capture.php
+  architecture.container.pipeline.analysis: Целесообразность: fixture container for catalog pipeline path matching in classifier tests. Контекст и границы: config and Avito support paths only; not marketplace-core HTTP runtime; used by AN-81 regression fixture to verify longest-prefix path match routes facet import tasks to catalog-pipeline L1 block.
+  architecture.container.pipeline.decision: Вердикт: полезно. Fixture L2 catalog-pipeline container accepted for classifier regression and longest-prefix path routing tests in AN-81.
+  architecture.container.pipeline.decision.verdict: useful
+]>
+
+#Architecture_Block_Marketplace_Core<[
+Базис:
+  Shared marketplace package runtime.
+Вектор:
+  packages/marketplace-core/
+Цель:
+  Hub and marketplace-core tasks attach here.
+
+Метки:
+  atom.profile: architecture_l1_block
+  architecture.block_id: marketplace-core
+  architecture.layer: L1
+  architecture.title: Ядро маркетплейса
+  architecture.summary: packages/marketplace-core runtime.
+  architecture.decision.verdict: useful
+  architecture.intent_roots: packages/marketplace-core
+  architecture.container.core.title: Core runtime
+  architecture.container.core.kind: runtime
+  architecture.container.core.paths: packages/marketplace-core/src/
+  architecture.container.core.analysis: Целесообразность: fixture container for marketplace-core path matching in classifier tests. Контекст и границы: package src paths only; not catalog-facets config; used by AN-81 regression fixture to verify hub-related target_files map to marketplace-core L1.
+  architecture.container.core.decision: Вердикт: полезно. Fixture L2 marketplace-core container accepted for classifier regression and hub path routing tests in AN-81 epic.
+  architecture.container.core.decision.verdict: useful
+]>
+
+#Architecture_Block_Presentation<[
+Базис:
+  UI tokens and theme preview.
+Вектор:
+  resources/css/,packages/presentation/
+Цель:
+  Presentation and design-token tasks attach here.
+
+Метки:
+  atom.profile: architecture_l1_block
+  architecture.block_id: presentation
+  architecture.layer: L1
+  architecture.title: Презентация
+  architecture.summary: UI tokens, theme, CSS.
+  architecture.decision.verdict: useful
+  architecture.intent_roots: resources/css,packages/presentation
+  architecture.container.ui.title: Theme UI
+  architecture.container.ui.kind: ui
+  architecture.container.ui.paths: resources/css/tokens.css,src/ui/
+  architecture.container.ui.analysis: Целесообразность: fixture container for presentation path matching in classifier tests. Контекст и границы: CSS and ui kit paths; not catalog pipeline; used by AN-81 regression fixture to verify ui-kit tasks map to presentation L1.
+  architecture.container.ui.decision: Вердикт: полезно. Fixture L2 presentation container accepted for classifier regression and theme token path routing tests in AN-81.
+  architecture.container.ui.decision.verdict: useful
+]>
+
+#Architecture_Canon_Section_L1_Edges<[
+Базис:
+  Fixture L1 edges for gripe-like classifier tests.
+Вектор:
+  catalog-pipeline -> marketplace-core : feeds
+  marketplace-core -> presentation : uses
+Цель:
+  Satisfy canon validation for multi-block fixture.
+
+Метки:
+  atom.profile: architecture_canon_section
+  architecture.section: l1_edges
+  trace.status: draft
+]>

@@ -12,6 +12,7 @@
     "blocks",
     "edges",
     "focusBlockId",
+    "unclassified",
     "counts"
   ],
   "properties": {
@@ -33,15 +34,28 @@
       "type": "array",
       "items": { "$ref": "#/$defs/edge" }
     },
+    "unclassified": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["taskIds", "taskCounts"],
+      "properties": {
+        "taskIds": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "taskCounts": { "$ref": "#/$defs/countMap" }
+      }
+    },
     "counts": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["blocks", "edges", "tasks", "containers"],
+      "required": ["blocks", "edges", "tasks", "containers", "unclassified"],
       "properties": {
         "blocks": { "type": "integer", "minimum": 0 },
         "edges": { "type": "integer", "minimum": 0 },
         "tasks": { "type": "integer", "minimum": 0 },
-        "containers": { "type": "integer", "minimum": 0 }
+        "containers": { "type": "integer", "minimum": 0 },
+        "unclassified": { "type": "integer", "minimum": 0 }
       }
     },
     "layoutProfile": {

@@ -2,10 +2,14 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
 import { renderClientUiBadge } from '../src/ui/atoms/badgeClient.mjs';
+import { loadArchitectureL1Canon } from '../src/architectureL1Canon.mjs';
 import {
+  buildArchitectureBlockBadgeLookup,
   resolveWorkItemClassifierBadge,
   renderWorkItemClassifierBadge,
 } from '../src/ui/workItemClassifierBadge.mjs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 globalThis.renderClientUiBadge = renderClientUiBadge;
 
@@ -55,6 +59,21 @@ describe('workItemClassifierBadge', () => {
     assert.equal(resolveWorkItemClassifierBadge({ itemKind: 'epic', title: 'Planning' }).label, 'EPIC');
     assert.equal(resolveWorkItemClassifierBadge({ itemKind: 'subtask', title: 'Sub' }).label, 'SUBTASK');
     assert.equal(resolveWorkItemClassifierBadge({ itemKind: 'task', title: 'Plain task' }).label, 'WORK GRAPH');
+  });
+
+  it('uses canon block titles for custom L1 ids', () => {
+    const testDir = path.dirname(fileURLToPath(import.meta.url));
+    const canon = loadArchitectureL1Canon(path.resolve(testDir, '..'), {
+      canonPath: 'tests/fixtures/architecture-gripe-like/main.bvc',
+    });
+    const badge = resolveWorkItemClassifierBadge({
+      id: 'import-zhivotnye-catalog-facets',
+      department: 'domain-onebase',
+      targetFiles: ['config/catalog-facets.php'],
+    }, { canon });
+    assert.equal(badge.sourceId, 'catalog-pipeline');
+    assert.match(badge.label, /КОНВЕЙЕР/);
+    assert.ok(buildArchitectureBlockBadgeLookup(canon)['presentation']);
   });
 
   it('renders Jira lozenge markup via renderClientUiBadge', () => {

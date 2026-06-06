@@ -1,0 +1,55 @@
+#Задача_preserve_starter_kit_legacy_classifier<[
+Базис:
+  Пустой/starter проект после init должен сохранить demo-классификацию.
+Вектор:
+  Если canon.labels architecture.starter === true → fallback на текущий classifyWorkItemBlock.
+  Документировать в packages/work-graph-cli/templates/starter README snippet.
+Цель:
+  Обратная совместимость npm init и WG-engine repo tests.
+Проверки:
+  tests/architectureSnapshot.test.mjs starter template unchanged behavior
+Анализ:
+  Зачем:
+  Пустой/starter проект после init должен сохранить demo-классификацию.
+  Контекст: Если canon.labels architecture.starter === true → fallback на текущий classifyWorkItemBlock.
+  Когда:
+  После готовности: implement-classify-work-item-for-canon.
+  Готово, когда:
+  Обратная совместимость npm init и WG-engine repo tests.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: implement-classify-work-item-for-canon.
+
+Метки:
+  work.closed_at: 2026-06-06T08:08:53.581Z
+  atom.profile: work_item
+  intake.analytics_key: AN-81
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/canon-aware-work-item-block-classifier.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-06T08:01:27.834Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-06T08:01:27.834Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: implement-classify-work-item-for-canon
+  work.id: preserve-starter-kit-legacy-classifier
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.parent_id: epic-canon-aware-work-item-block-classifier-v1
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: src/workItemBlockClassifier.mjs, packages/work-graph-cli/templates/starter/architecture/main.bvc, tests/architectureSnapshot.test.mjs
+  work.title: Runtime: legacy classifyWorkItemBlock при architecture.starter: true
+  work.updated_by: workgraph-mcp
+  work.write.at: 2026-06-06T08:08:53.581Z
+  work.write.operation: complete
+
+Свидетельства:
+  - isStarterArchitectureCanon + legacy classifyWorkItemBlock fallback for WG starter kit; tests pass on starter canon
+]>

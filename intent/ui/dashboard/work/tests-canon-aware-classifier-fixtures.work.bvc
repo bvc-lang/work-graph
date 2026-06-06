@@ -1,0 +1,56 @@
+#Задача_tests_canon_aware_classifier_fixtures<[
+Базис:
+  Нет regression fixture для per-project L1 ids.
+Вектор:
+  tests/fixtures/architecture-gripe-like/main.bvc — урезанный 3-block canon.
+  Work items: facet import → catalog-pipeline; ui-kit → presentation.
+  Snapshot golden: taskIds per block.
+Цель:
+  CI ловит рассинхрон классификатора и канона (AN-80 class regressions).
+Проверки:
+  npm run test:deterministic green
+Анализ:
+  Зачем:
+  Нет regression fixture для per-project L1 ids.
+  Контекст: tests/fixtures/architecture-gripe-like/main.bvc — урезанный 3-block canon.
+  Когда:
+  После готовности: wire-snapshot-canon-aware-classifier, preserve-starter-kit-legacy-classifier.
+  Готово, когда:
+  CI ловит рассинхрон классификатора и канона (AN-80 class regressions).
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: wire-snapshot-canon-aware-classifier, preserve-starter-kit-legacy-classifier.
+
+Метки:
+  work.closed_at: 2026-06-06T08:08:51.858Z
+  atom.profile: work_item
+  intake.analytics_key: AN-81
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/canon-aware-work-item-block-classifier.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-06T08:01:27.843Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-06T08:01:27.843Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: wire-snapshot-canon-aware-classifier, preserve-starter-kit-legacy-classifier
+  work.id: tests-canon-aware-classifier-fixtures
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.parent_id: epic-canon-aware-work-item-block-classifier-v1
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: low
+  work.status: done
+  work.target_files: tests/architectureSnapshot.test.mjs, tests/fixtures/architecture-gripe-like/main.bvc, tests/workItemClassifierBadge.test.mjs
+  work.title: Tests: fixtures WG-engine + Gripe-like canon, deterministic classifier
+  work.updated_by: workgraph-mcp
+  work.write.at: 2026-06-06T08:08:51.858Z
+  work.write.operation: complete
+
+Свидетельства:
+  - tests/fixtures/architecture-gripe-like/main.bvc + architectureSnapshot.test.mjs + workItemClassifierBadge.test.mjs; npm run test:deterministic 912/912 pass
+]>

@@ -1,0 +1,56 @@
+#Задача_wire_snapshot_canon_aware_classifier<[
+Базис:
+  tasksByBlock вызывает classifyWorkItemBlock(item) без canon.
+Вектор:
+  Передать canon в classifyWorkItemForCanon в цикле snapshot.
+  Не пушить в block.taskIds если blockId unclassified или не в l1Blocks.
+  counts.unclassified в architecture.snapshot.v1 (если schema bump нужен — минимально).
+Цель:
+  Gripe UI architecture tab показывает задачи на L1 блоках.
+Проверки:
+  integration test Gripe fixture: taskIds не пустые на catalog-pipeline
+Анализ:
+  Зачем:
+  tasksByBlock вызывает classifyWorkItemBlock(item) без canon.
+  Контекст: Передать canon в classifyWorkItemForCanon в цикле snapshot.
+  Когда:
+  После готовности: implement-classify-work-item-for-canon.
+  Готово, когда:
+  Gripe UI architecture tab показывает задачи на L1 блоках.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: implement-classify-work-item-for-canon.
+
+Метки:
+  work.closed_at: 2026-06-06T08:08:51.532Z
+  atom.profile: work_item
+  intake.analytics_key: AN-81
+  intake.source_kind: analytics-record
+  intake.source_ref: work/analytics/canon-aware-work-item-block-classifier.md
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-06T08:01:27.816Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-06T08:01:27.816Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.depends_on: implement-classify-work-item-for-canon
+  work.id: wire-snapshot-canon-aware-classifier
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.parent_id: epic-canon-aware-work-item-block-classifier-v1
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: src/architectureSnapshot.mjs, tests/architectureSnapshot.test.mjs
+  work.title: Runtime: buildArchitectureSnapshot — canon classifier + unclassified
+  work.updated_by: workgraph-mcp
+  work.write.at: 2026-06-06T08:08:51.532Z
+  work.write.operation: complete
+
+Свидетельства:
+  - architectureSnapshot.mjs uses classifyWorkItemForCanon; unclassified tasks omitted from L1 taskIds
+]>

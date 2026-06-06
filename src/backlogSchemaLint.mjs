@@ -7,6 +7,7 @@ import { parseWorkItems } from './workGraphRuntime.mjs';
 import { evaluateWorkItemBvcQuality } from './workItemBvcQuality.mjs';
 import { evaluateWorkItemProseLint } from './workItemProseLint.mjs';
 import { validateStructuredEvidenceShape } from './structuredEvidenceV1.mjs';
+import { lintArchitectureWorkItemClassification } from './architectureWorkItemClassificationLint.mjs';
 
 export const ALLOWED_MIGRATION_STRATEGIES = new Set(['port', 'rebuild', 'replace', 'defer']);
 
@@ -178,6 +179,18 @@ export function lintBacklogItems(items, options = {}) {
     issues.push(pipelineIssue);
   }
 
+  if (options.repoRoot) {
+    const architectureLint = lintArchitectureWorkItemClassification(items, {
+      repoRoot: options.repoRoot,
+      canonPath: options.canonPath,
+    });
+    if (!architectureLint.skipped) {
+      for (const architectureIssue of architectureLint.issues) {
+        issues.push(architectureIssue);
+      }
+    }
+  }
+
   const errors = issues.filter((issue) => issue.severity === 'error');
   const warnings = issues.filter((issue) => issue.severity === 'warning');
 
@@ -212,5 +225,7 @@ export async function lintBacklogFile(options = {}) {
   });
   return lintBacklogItems(items, {
     strictBvc: options.strictBvc === true,
+    repoRoot: resolve(options.cwd ?? process.cwd()),
+    canonPath: options.canonPath,
   });
 }

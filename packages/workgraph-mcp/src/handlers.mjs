@@ -74,6 +74,7 @@ import {
 } from '../../../src/workItemReadyForDone.mjs';
 import { prepareWorkItemEvidenceAppend } from '../../../src/structuredEvidenceV1.mjs';
 import { buildAnalyticsPanelProjection } from '../../../src/analyticsPanelProjection.mjs';
+import { suggestArchitectureBlockIdForWorkItem } from '../../../src/architectureWorkItemClassificationLint.mjs';
 import { findAnalyticsRecordByKeyOrId } from '../../../src/analyticsLineageProjection.mjs';
 import { buildActiveWorkspaceProjection } from '../../../src/activeWorkspaceProjection.mjs';
 import {
@@ -977,9 +978,22 @@ export async function createWorkItem(args = {}, options = {}) {
     },
   };
 
+  const repoOptions = resolveRepoReadOptions(options);
+  const architectureBlockHint = suggestArchitectureBlockIdForWorkItem(
+    {
+      id: workId,
+      title,
+      department,
+      targetFiles,
+      labels: draft.labels,
+      sourcePath: args.path,
+    },
+    { repoRoot: repoOptions.repoRoot ?? repoOptions.cwd },
+  );
+
   const atomText = formatStepAtomDraft(draft);
   const persisted = await appendWorkItemAtomToIntentTree(atomText, {
-    ...resolveRepoReadOptions(options),
+    ...repoOptions,
     path: args.path,
   });
 
@@ -989,6 +1003,7 @@ export async function createWorkItem(args = {}, options = {}) {
     status,
     path: persisted.path,
     indexPath: persisted.indexPath,
+    ...(architectureBlockHint ? { architectureBlockHint } : {}),
   };
 }
 

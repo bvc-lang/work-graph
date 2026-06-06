@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
-import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
-import { join } from 'node:path';
+import { cp, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { tmpdir } from 'node:os';
 import { describe, it } from 'node:test';
 
@@ -197,6 +198,8 @@ describe('workgraph MCP handlers', () => {
 
       assert.equal(created.ok, true);
       assert.equal(created.workId, 'mcp-created-task');
+      assert.equal(created.architectureBlockHint?.status, 'suggested');
+      assert.equal(created.architectureBlockHint?.blockId, 'work-graph');
 
       const atomText = await readFile(
         join(root, 'intent/system/runtime/work/mcp-created-task.work.bvc'),
@@ -451,9 +454,18 @@ describe('workgraph MCP handlers', () => {
   });
 });
 
+const testDir = dirname(fileURLToPath(import.meta.url));
+const repoRoot = join(testDir, '..');
+const starterArchitectureCanon = join(
+  repoRoot,
+  'packages/work-graph-cli/templates/starter/architecture/main.bvc',
+);
+
 async function createFixture() {
   const root = await mkdtemp(join(tmpdir(), 'wg-mcp-'));
   const base = join(root, 'intent/system/runtime/work');
+  await mkdir(join(root, 'architecture'), { recursive: true });
+  await cp(starterArchitectureCanon, join(root, 'architecture/main.bvc'));
   await mkdir(base, { recursive: true });
   await writeFile(join(root, 'intent/index.bvc'), `#Индекс_Intent_Tree_WorkItems<[
 WorkItems:
