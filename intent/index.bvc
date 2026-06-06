@@ -39,6 +39,7 @@ WorkItems:
   - author-plan-intent-information-semantic-planes-v1: intent/system/runtime/work/author-plan-intent-information-semantic-planes-v1.work.bvc
   - author-plan-iohasc-heritage-reuse-v1: intent/system/runtime/work/author-plan-iohasc-heritage-reuse-v1.work.bvc
   - author-plan-iohasc-project-bvc-bridge: intent/system/runtime/work/author-plan-iohasc-project-bvc-bridge.work.bvc
+  - auto-close-parent-epic-when-children-done: intent/system/runtime/work/auto-close-parent-epic-when-children-done.work.bvc
   - backlog-default-gripe-theme-wireup: intent/ui/dashboard/work/backlog-default-gripe-theme-wireup.work.bvc
   - build-canon-block-path-index: intent/ui/dashboard/work/build-canon-block-path-index.work.bvc
   - bvc-dialect-registry-en-ru: intent/system/runtime/work/bvc-dialect-registry-en-ru.work.bvc
@@ -221,6 +222,7 @@ WorkItems:
   - golden-path-test: intent/domains/onebase/work/golden-path-test.work.bvc
   - graph-pipeline-default-compact-nodes: intent/ui/dashboard/work/graph-pipeline-default-compact-nodes.work.bvc
   - gripe-dark-default-theme-json-and-css: intent/ui/dashboard/work/gripe-dark-default-theme-json-and-css.work.bvc
+  - hide-prompts-nav-when-empty: intent/ui/dashboard/work/hide-prompts-nav-when-empty.work.bvc
   - identify-first-1c-pilot-user: intent/system/runtime/work/identify-first-1c-pilot-user.work.bvc
   - implement-agent-chat-ui-with-nlux: intent/ui/dashboard/work/implement-agent-chat-ui-with-nlux.work.bvc
   - implement-agent-run-backlog-persist: intent/ui/dashboard/work/implement-agent-run-backlog-persist.work.bvc

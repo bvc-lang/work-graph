@@ -458,6 +458,9 @@ describe('renderBacklogHtml', () => {
     assert.match(html, /fetch\('\/api\/code-gap-intake\/apply'/);
     assert.match(html, /function submitCodeGapIntakeProposal\(suggestedWorkId\)/);
     assert.match(html, /promptsView\.hidden = !isPrompts/);
+    assert.match(html, /function applyPromptsNavVisibility\(total\)/);
+    assert.match(html, /function loadPromptsNavVisibility\(\)/);
+    assert.match(html, /data-view="prompts"[^>]*hidden/);
   });
 
   it('does not expose intent composer as a sidebar tab', () => {

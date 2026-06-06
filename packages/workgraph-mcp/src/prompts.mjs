@@ -13,6 +13,7 @@ const TOOL_RULES = [
   'Keep dashboard/kanban work in WorkGraph UI; MCP is the agent client bridge.',
   'Canon write-boundary (AN-77): NEVER use ApplyPatch/Write on intent/**/work/*.work.bvc or .work-graph/canon/** — read-only for file tools. Use create_work_item, claim_work_item, update_work_item_status, add_work_item_evidence, complete_work_item.',
   'Epic/subtask hierarchy: create_work_item with itemKind=epic|subtask and parentId for children — do not patch parent_id manually.',
+  'Epic rollup: complete_work_item on the last open child auto-closes the direct parent epic when all siblings are done; check rolledUpParentIds in the response.',
 ].join('\n');
 
 export const WORK_ITEM_ANALYSIS_SECTIONS = [

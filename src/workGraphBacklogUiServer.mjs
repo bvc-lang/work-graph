@@ -576,7 +576,7 @@ export function renderBacklogHtml(options = {}) {
   const shellNavVerification = renderNavTab({ view: 'verification', label: t('nav.verification'), selected: false });
   const shellNavMemory = renderNavTab({ view: 'memory', label: t('nav.memory'), selected: false });
   const shellNavArchitecture = renderNavTab({ view: 'architecture', label: t('nav.architecture'), selected: false });
-  const shellNavPrompts = renderNavTab({ view: 'prompts', label: t('nav.prompts'), selected: false });
+  const shellNavPrompts = renderNavTab({ view: 'prompts', label: t('nav.prompts'), selected: false, hidden: true });
   const shellSettingsNav = renderSettingsNavTab({ label: t('nav.settings') });
   const shellHeaderThemeToggle = renderHeaderThemeToggleButton({ ariaLabel: t('theme.toggleAria') });
   const shellSettingsLocaleOptions = renderSettingsLocaleOptions({ locale, t });
@@ -1440,6 +1440,10 @@ export function renderBacklogHtml(options = {}) {
       flex-wrap: wrap;
       gap: 8px;
       margin-left: auto;
+    }
+
+    .nav-tab[data-view="prompts"][hidden] {
+      display: none !important;
     }
 
     #settings-install-update[hidden],
@@ -5218,6 +5222,7 @@ export function renderBacklogHtml(options = {}) {
     let detailInspectorState = { workId: null, draft: null, mode: 'view' };
     let promptsProjection = null;
     let promptsPanelLoaded = false;
+    let promptsNavAvailable = false;
     let selectedPromptRuleId = null;
     let codeGapProjection = null;
     let codeGapPanelLoaded = false;
@@ -5322,6 +5327,7 @@ export function renderBacklogHtml(options = {}) {
     const sidebarResizeHandle = document.querySelector('#sidebar-resize-handle');
     const detailTitle = document.querySelector('#detail-title');
     const navTabs = [...document.querySelectorAll('.nav-tab[data-view]')];
+    const promptsNavTab = document.querySelector('.nav-tab[data-view="prompts"]');
     const search = document.querySelector('#search');
     const searchMode = document.querySelector('#search-mode');
     const themeToggle = document.querySelector('#theme-toggle');
@@ -5475,6 +5481,36 @@ export function renderBacklogHtml(options = {}) {
       return Promise.resolve().then(task).finally(() => hidePageLoader());
     }
 
+    function applyPromptsNavVisibility(total) {
+      promptsNavAvailable = Number(total) > 0;
+      if (promptsNavTab) {
+        promptsNavTab.hidden = !promptsNavAvailable;
+      }
+      if (!promptsNavAvailable && activeView === 'prompts') {
+        activeView = 'analytics';
+        localStorage.setItem(viewStorageKey, activeView);
+        applyView(activeView);
+      }
+    }
+
+    function loadPromptsNavVisibility() {
+      return fetch('/api/prompt-rules-projection')
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error('prompt rules projection ' + response.status);
+          }
+          return response.json();
+        })
+        .then((data) => {
+          applyPromptsNavVisibility(data?.summary?.total ?? 0);
+          return data;
+        })
+        .catch(() => {
+          applyPromptsNavVisibility(0);
+          return null;
+        });
+    }
+
     function isLazyViewPending(view) {
       if (view === 'prompts') return !promptsPanelLoaded;
       if (view === 'verification') return !codeGapPanelLoaded || !daemonAuditPanelLoaded;
@@ -5539,7 +5575,10 @@ export function renderBacklogHtml(options = {}) {
         if (revisionPayload?.revision) {
           backlogRevision = revisionPayload.revision;
         }
-        return refreshHomeSnapshot().catch(() => undefined).then(() => loadActiveViewData(activeView));
+        return refreshHomeSnapshot()
+          .catch(() => undefined)
+          .then(() => loadPromptsNavVisibility())
+          .then(() => loadActiveViewData(activeView === 'prompts' && !promptsNavAvailable ? 'analytics' : activeView));
       })
       .catch((error) => {
         const message = '<div class="error">Не удалось загрузить срез backlog: ' + escapeHtml(error.message) + '</div>';
@@ -5638,6 +5677,9 @@ export function renderBacklogHtml(options = {}) {
     codeGapList.addEventListener('click', handleCodeGapIntakeClick);
     navTabs.forEach((tab) => {
       tab.addEventListener('click', () => {
+        if (tab.hidden) {
+          return;
+        }
         activeView = ['workflow', 'verification', 'prompts', 'memory', 'analytics', 'board', 'architecture', 'settings'].includes(tab.dataset.view)
           ? tab.dataset.view
           : 'analytics';
@@ -6769,6 +6811,10 @@ export function renderBacklogHtml(options = {}) {
     }
 
     function applyView(view) {
+      if (view === 'prompts' && !promptsNavAvailable) {
+        view = 'analytics';
+        activeView = 'analytics';
+      }
       const isWorkflow = view === 'workflow';
       const isVerification = view === 'verification';
       const isArchitecture = view === 'architecture';
@@ -6955,6 +7001,7 @@ export function renderBacklogHtml(options = {}) {
         }).then((data) => {
           promptsProjection = data;
           promptsPanelLoaded = true;
+          applyPromptsNavVisibility(data?.summary?.total ?? 0);
         });
       }
 

@@ -1,0 +1,55 @@
+#Задача_auto_close_parent_epic_when_children_done<[
+Базис:
+  Сейчас асимметрия: complete_work_item закрывает эпик → каскадом закрывает открытых детей (implement-epic-close-cascade-subtasks, done), но закрытие последней подзадачи НЕ поднимает rollup — эпик остаётся open. В .cursor/rules/work-graph-project.mdc и MCP flow нет дисциплины «закрой эпик»; агенты стабильно забывают.
+Вектор:
+  После successful complete_work_item(subtask): если work.parent_id → epic и все direct children в done/verified — автоматически complete parent epic с rollup evidence (например epic rollup: all N children done).
+  Расширить transitionWorkItemWithEpicCascade или sibling helper; вернуть rolledUpParentIds[] в MCP response.
+  Опционально: lint epic_open_all_children_done + reconcile script для drift.
+  Обновить close_work_item MCP prompt и buildCursorRuleContent одной строкой про auto-rollup.
+  Тесты: последний child done → parent epic done; epic с открытым child не трогаем; nested parent chain v1 — только direct parent.
+Цель:
+  Оператору и агенту не нужно вручную вызывать complete_work_item на эпике после закрытия всех подзадач; доска и rollup в UI сходятся без agent discipline.
+Проверки:
+  tests/workItemEpicCascade.test.mjs: child complete rolls up parent epic
+  complete_work_item response includes rolledUpParentIds when applicable
+  npm run test:deterministic green
+Анализ:
+  Зачем:
+  Сейчас асимметрия: complete_work_item закрывает эпик → каскадом закрывает открытых детей (implement-epic-close-cascade-subtasks, done), но закрытие последней подзадачи НЕ поднимает rollup — эпик остаётся open. В .cursor/rules/work-graph-project.mdc и MCP flow нет дисциплины «закрой эпик»; агенты стабильно забывают.
+  Контекст: После successful complete_work_item(subtask): если work.parent_id → epic и все direct children в done/verified — автоматически complete parent epic с rollup evidence (например epic rollup: all N children done).
+  Когда:
+  После готовности: implement-epic-close-cascade-subtasks.
+  Готово, когда:
+  Оператору и агенту не нужно вручную вызывать complete_work_item на эпике после закрытия всех подзадач; доска и rollup в UI сходятся без agent discipline.
+Решение:
+  Вердикт:
+  полезно
+  Брать в работу после закрытия зависимостей: implement-epic-close-cascade-subtasks.
+
+Метки:
+  work.closed_at: 2026-06-06T08:47:03.448Z
+  atom.profile: work_item
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-06T08:43:25.126Z
+  work.analysis.source: create_work_item
+  work.decision.at: 2026-06-06T08:43:25.126Z
+  work.decision.verdict: useful
+  work.department: system-runtime
+  work.depends_on: implement-epic-close-cascade-subtasks
+  work.id: auto-close-parent-epic-when-children-done
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: integration_architect
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: src/workItemEpicCascade.mjs, packages/workgraph-mcp/src/handlers.mjs, tests/workItemEpicCascade.test.mjs, src/workGraphProjectInit.mjs, packages/workgraph-mcp/src/prompts.mjs, protocols/work-item-hierarchy-v1.bvc
+  work.title: Runtime: автозакрытие эпика, когда все direct children done
+  work.updated_by: workgraph-mcp
+  work.write.at: 2026-06-06T08:47:03.449Z
+  work.write.operation: complete
+
+Свидетельства:
+  - rollupCloseParentEpicsWhenChildrenDone + applyWorkItemStatusTransitionWithEpicEffects; complete_work_item/updateWorkItemStatus return rolledUpParentIds; lint epic_open_all_children_done; tests/workItemEpicCascade.test.mjs; npm run test:deterministic 920/920
+]>

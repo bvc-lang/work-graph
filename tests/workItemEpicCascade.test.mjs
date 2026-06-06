@@ -2,9 +2,11 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
 import {
+  applyWorkItemStatusTransitionWithEpicEffects,
   closeOpenDescendantsForDoneEpic,
   collectOpenDescendantWorkItems,
   findDoneEpicsWithOpenDescendants,
+  rollupCloseParentEpicsWhenChildrenDone,
   transitionWorkItemWithEpicCascade,
 } from '../src/workItemEpicCascade.mjs';
 import { transitionStatus } from '../src/workGraphRuntime.mjs';
@@ -61,6 +63,74 @@ describe('workItemEpicCascade', () => {
     assert.equal(result.items.find((item) => item.id === 'sub-b')?.status, 'done');
     assert.equal(result.items.find((item) => item.id === 'epic-a')?.status, 'done');
     assert.ok(result.items.find((item) => item.id === 'sub-b')?.evidence.some((line) => line.includes('cascade:')));
+  });
+
+  it('rolls up parent epic when the last direct child is completed', () => {
+    const items = [
+      {
+        ...baseItem,
+        id: 'epic-parent',
+        status: 'verify',
+        labels: { 'work.item_kind': 'epic' },
+      },
+      {
+        ...baseItem,
+        id: 'sub-done',
+        status: 'done',
+        evidence: ['child done'],
+        parentId: 'epic-parent',
+        labels: { 'work.parent_id': 'epic-parent', 'work.item_kind': 'subtask' },
+      },
+      {
+        ...baseItem,
+        id: 'sub-last',
+        status: 'verify',
+        parentId: 'epic-parent',
+        labels: { 'work.parent_id': 'epic-parent', 'work.item_kind': 'subtask' },
+      },
+    ];
+
+    const result = applyWorkItemStatusTransitionWithEpicEffects(items, items[2], 'done', {
+      evidence: 'last child delivered',
+    });
+
+    assert.deepEqual(result.rolledUpParentIds, ['epic-parent']);
+    assert.equal(result.items.find((item) => item.id === 'sub-last')?.status, 'done');
+    assert.equal(result.items.find((item) => item.id === 'epic-parent')?.status, 'done');
+    assert.ok(
+      result.items.find((item) => item.id === 'epic-parent')?.evidence
+        .some((line) => line.includes('epic rollup:')),
+    );
+  });
+
+  it('does not roll up parent epic while a direct child remains open', () => {
+    const items = [
+      {
+        ...baseItem,
+        id: 'epic-parent',
+        status: 'backlog',
+        labels: { 'work.item_kind': 'epic' },
+      },
+      {
+        ...baseItem,
+        id: 'sub-open',
+        status: 'ready',
+        parentId: 'epic-parent',
+        labels: { 'work.parent_id': 'epic-parent' },
+      },
+      {
+        ...baseItem,
+        id: 'sub-done',
+        status: 'done',
+        evidence: ['done'],
+        parentId: 'epic-parent',
+        labels: { 'work.parent_id': 'epic-parent' },
+      },
+    ];
+
+    const rollup = rollupCloseParentEpicsWhenChildrenDone(items, 'sub-done');
+    assert.deepEqual(rollup.rolledUpParentIds, []);
+    assert.equal(rollup.items.find((item) => item.id === 'epic-parent')?.status, 'backlog');
   });
 
   it('finds done epics with open descendants and reconciles children only', () => {

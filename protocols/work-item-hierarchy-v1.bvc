@@ -6,7 +6,7 @@
   work.parent_id: один родитель на WorkItem; children выводятся scan по snapshot.
   work.item_kind: epic | task | subtask (default task).
   lint: missing parent, self-parent, parent cycle, parent depends_on child, invalid item_kind; warning epic без children.
-  lifecycle: parent нельзя закрыть (done/verified), пока все derived children не done/verified; depends_on остаётся для execution order.
+  lifecycle: parent нельзя закрыть (done/verified), пока все derived children не done/verified; complete_work_item последнего child автоматически закрывает direct parent epic (rollup evidence); depends_on остаётся для execution order.
   MCP create_work_item: parentId/itemKind → labels work.parent_id / work.item_kind.
   linkage: parent_of edges в unified-linkage.projection.v1 рядом с depends_on.
 Цель:

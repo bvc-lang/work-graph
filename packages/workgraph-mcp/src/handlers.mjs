@@ -15,7 +15,7 @@ import {
   recordEvidence,
   transitionStatus,
 } from '../../../src/workGraphRuntime.mjs';
-import { transitionWorkItemWithEpicCascade } from '../../../src/workItemEpicCascade.mjs';
+import { applyWorkItemStatusTransitionWithEpicEffects } from '../../../src/workItemEpicCascade.mjs';
 import { executeSemanticSearchFromRepo } from '../../../src/semanticSearchWorkflow.mjs';
 import {
   buildWorkItemCreateAnalysisDecision,
@@ -439,7 +439,7 @@ export async function updateWorkItemStatus(args = {}, options = {}) {
   if (statusChangeRequiresExecutionGate(status)) {
     assertWorkItemExecutionAllowed(item);
   }
-  const updated = transitionWorkItemWithEpicCascade(items, item, status, {
+  const updated = applyWorkItemStatusTransitionWithEpicEffects(items, item, status, {
     reason: args.reason,
     blocker: args.reason,
     evidence: args.evidence,
@@ -462,6 +462,7 @@ export async function updateWorkItemStatus(args = {}, options = {}) {
     previousStatus: item.status,
     newStatus: primary?.status ?? status,
     cascadedChildIds: updated.cascadedChildIds,
+    rolledUpParentIds: updated.rolledUpParentIds ?? [],
     paths: persisted.map((entry) => entry.path),
     path: persisted.find((entry) => entry.workId === workId)?.path ?? persisted.at(-1)?.path,
     gitSnapshot: persisted.gitSnapshot ?? null,
@@ -628,7 +629,7 @@ export async function completeWorkItem(args = {}, options = {}) {
     };
   }
 
-  const updated = transitionWorkItemWithEpicCascade(items, item, 'done', { evidence });
+  const updated = applyWorkItemStatusTransitionWithEpicEffects(items, item, 'done', { evidence });
   const persisted = await persistUpdatedWorkItems(updated.updatedItems, options, {
     operation: 'complete',
     gitSnapshot: {
@@ -645,6 +646,7 @@ export async function completeWorkItem(args = {}, options = {}) {
     previousStatus: item.status,
     newStatus: primary?.status ?? 'done',
     cascadedChildIds: updated.cascadedChildIds,
+    rolledUpParentIds: updated.rolledUpParentIds ?? [],
     paths: persisted.map((entry) => entry.path),
     path: persisted.find((entry) => entry.workId === workId)?.path ?? persisted.at(-1)?.path,
     gitSnapshot: persisted.gitSnapshot ?? null,

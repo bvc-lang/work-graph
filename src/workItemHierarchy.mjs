@@ -195,6 +195,19 @@ export function lintWorkItemHierarchyIssues(items) {
       });
     }
 
+    if (itemKind === 'epic' && !DONE_STATUSES.has(String(item.status ?? '').trim())) {
+      const rollup = summarizeWorkItemHierarchyRollup(item, items);
+      if (rollup.childCount > 0 && !rollup.closeBlocked) {
+        issues.push({
+          severity: 'warning',
+          code: 'epic_open_all_children_done',
+          message: `Epic ${item.id} remains open while all child WorkItems are done (${rollup.doneChildCount}/${rollup.childCount})`,
+          workId: item.id,
+          childCount: rollup.childCount,
+        });
+      }
+    }
+
     if (itemKind === 'epic' && DONE_STATUSES.has(String(item.status ?? '').trim())) {
       const rollup = summarizeWorkItemHierarchyRollup(item, items);
       if (rollup.openChildIds.length > 0) {

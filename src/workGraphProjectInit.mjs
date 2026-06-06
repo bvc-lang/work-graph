@@ -214,6 +214,8 @@ alwaysApply: true
 
 Flow: analytics → create_work_item → claim → код → evidence → complete.
 
+Epic rollup: при \`complete_work_item\` последней подзадачи runtime автоматически закрывает parent epic, если все direct children done.
+
 Установка: \`npx @work-graph/cli init .\`
 `;
 }

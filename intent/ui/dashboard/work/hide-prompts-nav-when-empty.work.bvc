@@ -1,0 +1,56 @@
+#Задача_hide_prompts_nav_when_empty<[
+Базис:
+  AN-82: вкладка «Промпты» — read-only просмотр prompt_rule из protocols/ и rules/; в продуктовых репо после init пустая, но nav виден.
+Вектор:
+  При prompt-rules-projection.summary.total === 0 скрыть nav tab и не активировать prompts view.
+  При total > 0 — текущее поведение.
+  Обработать repoRoot switch и stale localStorage activeView.
+  Тест: fixture без rules — tab hidden; fixture с prompt_rule — tab visible.
+Цель:
+  Оператор в Gripe/продуктовых репо не видит пустую вкладку «Промпты»; WG-engine с rules/agent-behavior без регрессии.
+Проверки:
+  npm run test:deterministic green
+  fixture без rules: nav prompts hidden
+  fixture с prompt_rule: nav prompts visible
+Анализ:
+  Зачем:
+  AN-82: вкладка «Промпты» — read-only просмотр prompt_rule из protocols/ и rules/; в продуктовых репо после init пустая, но nav виден.
+  Контекст: При prompt-rules-projection.summary.total === 0 скрыть nav tab и не активировать prompts view.
+  Когда:
+  Можно начинать, когда оператор перевёл задачу в ready.
+  Готово, когда:
+  Оператор в Gripe/продуктовых репо не видит пустую вкладку «Промпты»; WG-engine с rules/agent-behavior без регрессии.
+Решение:
+  Вердикт:
+  полезно
+  Можно брать в работу после перевода в ready.
+
+Метки:
+  work.closed_at: 2026-06-06T08:47:03.388Z
+  atom.profile: work_item
+  intake.analytics_key: AN-82
+  intake.source_kind: analytics-record
+  intake.source_ref: analytics:prompts-nav-purpose-and-hide-when-empty
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-06T08:42:51.641Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-06T08:42:51.641Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.id: hide-prompts-nav-when-empty
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: src/workGraphBacklogUiServer.mjs, tests/workGraphBacklogUiServer.test.mjs, work/analytics/prompts-nav-purpose-and-hide-when-empty.md
+  work.title: UI: скрывать вкладку «Промпты», если в репо нет prompt_rule
+  work.updated_by: workgraph-mcp
+  work.write.at: 2026-06-06T08:47:03.389Z
+  work.write.operation: complete
+
+Свидетельства:
+  - Nav Промпты hidden by default; applyPromptsNavVisibility/loadPromptsNavVisibility on bootstrap; tab shown only when prompt-rules-projection.summary.total > 0; stale prompts view falls back to analytics; npm run test:deterministic 920/920
+]>

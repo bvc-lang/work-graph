@@ -14,7 +14,7 @@ function renderNavTabLabelHtml(view, label) {
  * Sidebar nav tab (Gripe DS unstyled shell — keeps .nav-tab CSS).
  * @param {{ view: string, label: string, selected?: boolean, disabled?: boolean }} props
  */
-export function renderNavTab({ view, label, selected = false, disabled = false }) {
+export function renderNavTab({ view, label, selected = false, disabled = false, hidden = false }) {
   return renderUiButton({
     unstyled: true,
     className: 'nav-tab',
@@ -24,6 +24,7 @@ export function renderNavTab({ view, label, selected = false, disabled = false }
     attrs: {
       'data-view': view,
       'aria-selected': selected ? 'true' : 'false',
+      ...(hidden ? { hidden: 'hidden' } : {}),
     },
   });
 }

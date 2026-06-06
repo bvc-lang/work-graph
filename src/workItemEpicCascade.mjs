@@ -2,6 +2,8 @@ import {
   attachDerivedWorkItemHierarchy,
   DONE_STATUSES,
   readWorkItemKind,
+  readWorkItemParentId,
+  summarizeWorkItemHierarchyRollup,
 } from './workItemHierarchy.mjs';
 import { transitionStatus } from './workGraphRuntime.mjs';
 
@@ -164,6 +166,98 @@ export function closeOpenDescendantsForDoneEpic(items, epicId, options = {}) {
 /**
  * @param {Array<import('./workGraphRuntime.mjs').WorkItem>} items
  */
+/**
+ * When a child WorkItem reaches done/verified, close direct parent epic if all siblings are done.
+ *
+ * @param {Array<import('./workGraphRuntime.mjs').WorkItem>} items
+ * @param {string} completedWorkId
+ * @param {{ rollupEvidence?: string, cascadeEvidence?: string }} [options]
+ */
+export function rollupCloseParentEpicsWhenChildrenDone(items, completedWorkId, options = {}) {
+  const completed = items.find((entry) => entry.id === completedWorkId);
+  if (!completed) {
+    return {
+      items,
+      updatedItems: [],
+      rolledUpParentIds: [],
+    };
+  }
+
+  const parentId = readWorkItemParentId(completed);
+  if (!parentId) {
+    return {
+      items,
+      updatedItems: [],
+      rolledUpParentIds: [],
+    };
+  }
+
+  const parent = items.find((entry) => entry.id === parentId);
+  if (
+    !parent
+    || readWorkItemKind(parent) !== 'epic'
+    || DONE_STATUSES.has(String(parent.status ?? '').trim())
+  ) {
+    return {
+      items,
+      updatedItems: [],
+      rolledUpParentIds: [],
+    };
+  }
+
+  const rollup = summarizeWorkItemHierarchyRollup(parent, items);
+  if (rollup.closeBlocked || rollup.childCount === 0) {
+    return {
+      items,
+      updatedItems: [],
+      rolledUpParentIds: [],
+    };
+  }
+
+  const rollupEvidence = String(
+    options.rollupEvidence ?? `epic rollup: all ${rollup.childCount} children done (last: ${completedWorkId})`,
+  ).trim();
+  const parentResult = transitionWorkItemWithEpicCascade(items, parent, 'done', {
+    evidence: rollupEvidence,
+    cascadeEvidence: options.cascadeEvidence,
+  });
+
+  return {
+    items: parentResult.items,
+    updatedItems: parentResult.updatedItems.filter((entry) => entry.id === parentId),
+    rolledUpParentIds: [parentId],
+  };
+}
+
+/**
+ * @param {Array<import('./workGraphRuntime.mjs').WorkItem>} items
+ * @param {import('./workGraphRuntime.mjs').WorkItem} item
+ * @param {string} targetStatus
+ * @param {{ evidence?: string, cascadeEvidence?: string, rollupEvidence?: string, reason?: string, blocker?: string }} [options]
+ */
+export function applyWorkItemStatusTransitionWithEpicEffects(items, item, targetStatus, options = {}) {
+  const updated = transitionWorkItemWithEpicCascade(items, item, targetStatus, options);
+  if (!DONE_STATUSES.has(String(targetStatus ?? '').trim())) {
+    return {
+      ...updated,
+      rolledUpParentIds: [],
+    };
+  }
+
+  const rollup = rollupCloseParentEpicsWhenChildrenDone(updated.items, item.id, options);
+  const updatedById = new Map(updated.updatedItems.map((entry) => [entry.id, entry]));
+  for (const entry of rollup.updatedItems) {
+    updatedById.set(entry.id, entry);
+  }
+
+  return {
+    items: rollup.items,
+    updatedItems: [...updatedById.values()],
+    cascadedChildIds: updated.cascadedChildIds,
+    rolledUpParentIds: rollup.rolledUpParentIds,
+  };
+}
+
 export function findDoneEpicsWithOpenDescendants(items) {
   return attachDerivedWorkItemHierarchy(items)
     .filter((item) => readWorkItemKind(item) === 'epic' && DONE_STATUSES.has(String(item.status ?? '').trim()))
