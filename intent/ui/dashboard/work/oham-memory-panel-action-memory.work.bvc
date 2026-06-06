@@ -1,0 +1,46 @@
+#Задача_oham_memory_panel_action_memory<[
+Базис:
+  Project Memory v1 должна быть видна оператору после done задач.
+Вектор:
+  implement-operator-memory-panel-mvp + implement-memory-record-dashboard-projection + MCP list_memory_records.
+Цель:
+  Memory panel показывает записи с provenance, не chat dump.
+Проверки:
+  /api/memory-records
+  memory-view в UI
+Анализ:
+  Memory panel и MCP tools уже done.
+Решение:
+  Вердикт: полезно — закрыть subtask как done.
+
+Метки:
+  work.closed_at: 2026-06-06T09:49:30.057Z
+  atom.profile: work_item
+  intake.source_kind: chat-session
+  intake.source_ref: cursor:7ecada15-change-history-action-memory
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-06T09:49:22.465Z
+  work.analysis.source: chat-session
+  work.decision.at: 2026-06-06T09:49:22.465Z
+  work.decision.verdict: useful
+  work.department: ui-dashboard
+  work.depends_on: epic-operator-change-history-action-memory-v1, implement-operator-memory-panel-mvp
+  work.id: oham-memory-panel-action-memory
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: frontend_architect
+  work.parent_id: epic-operator-change-history-action-memory-v1
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: src/memoryRecordWriter.mjs, protocols/project-memory-v1.bvc, src/workGraphBacklogUiServer.mjs
+  work.title: Память действий: вкладка Память и memory records
+  work.updated_by: workgraph-mcp
+  work.write.at: 2026-06-06T09:49:30.057Z
+  work.write.operation: complete
+
+Свидетельства:
+  - Upstream done: implement-operator-memory-panel-mvp, implement-memory-record-dashboard-projection, implement-mcp-memory-records-tools; memory-view + /api/memory-records.
+]>

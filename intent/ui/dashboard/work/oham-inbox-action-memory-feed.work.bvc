@@ -1,0 +1,46 @@
+#Задача_oham_inbox_action_memory_feed<[
+Базис:
+  Agent-run journal, daemon audit и analytics events разрозненны.
+Вектор:
+  implement-inbox-event-stream: inbox.events.v1 read model + GET /api/inbox-events + mark-read.
+Цель:
+  Оператор видит свежие действия одной лентой с unread badge.
+Проверки:
+  inbox.events.v1 schema
+  mark-read обнуляет unread
+Анализ:
+  implement-inbox-event-stream уже done.
+Решение:
+  Вердикт: полезно — закрыть subtask как done.
+
+Метки:
+  work.closed_at: 2026-06-06T09:49:29.972Z
+  atom.profile: work_item
+  intake.source_kind: chat-session
+  intake.source_ref: cursor:7ecada15-change-history-action-memory
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-06T09:49:21.751Z
+  work.analysis.source: chat-session
+  work.decision.at: 2026-06-06T09:49:21.751Z
+  work.decision.verdict: useful
+  work.department: ui-dashboard
+  work.depends_on: epic-operator-change-history-action-memory-v1, implement-inbox-event-stream
+  work.id: oham-inbox-action-memory-feed
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: frontend_architect
+  work.parent_id: epic-operator-change-history-action-memory-v1
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: src/inboxEventStream.mjs, tests/inboxEventStream.test.mjs
+  work.title: Память действий: единая лента inbox events
+  work.updated_by: workgraph-mcp
+  work.write.at: 2026-06-06T09:49:29.972Z
+  work.write.operation: complete
+
+Свидетельства:
+  - Upstream done: implement-inbox-event-stream; src/inboxEventStream.mjs + GET /api/inbox-events + tests/inboxEventStream.test.mjs.
+]>

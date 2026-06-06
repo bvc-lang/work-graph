@@ -173,12 +173,14 @@ WorkItems:
   - epic-detail-drawer-stack-v1: intent/ui/dashboard/work/epic-detail-drawer-stack-v1.work.bvc
   - epic-drawer-repo-file-preview-v1: intent/ui/dashboard/work/epic-drawer-repo-file-preview-v1.work.bvc
   - epic-gripe-ds-adoption-phase2: intent/system/runtime/work/epic-gripe-ds-adoption-phase2.work.bvc
+  - epic-gripe-ds-controls-parity-wave4: intent/ui/dashboard/work/epic-gripe-ds-controls-parity-wave4.work.bvc
   - epic-gripe-ds-visual-default-wave3: intent/ui/dashboard/work/epic-gripe-ds-visual-default-wave3.work.bvc
   - epic-intent-information-semantic-planes-v1: intent/system/runtime/work/epic-intent-information-semantic-planes-v1.work.bvc
   - epic-iohasc-heritage-reuse-v1: intent/system/runtime/work/epic-iohasc-heritage-reuse-v1.work.bvc
   - epic-iohasc-positioning-reference-v1: intent/system/runtime/work/epic-iohasc-positioning-reference-v1.work.bvc
   - epic-marketplace-shared-design-system: intent/system/runtime/work/epic-marketplace-shared-design-system.work.bvc
   - epic-onebase-productize-mcp-rest: intent/domains/onebase/work/epic-onebase-productize-mcp-rest.work.bvc
+  - epic-operator-change-history-action-memory-v1: intent/ui/dashboard/work/epic-operator-change-history-action-memory-v1.work.bvc
   - epic-work-graph-bvc-contract-verification-v1: intent/system/runtime/work/epic-work-graph-bvc-contract-verification-v1.work.bvc
   - epic-work-graph-multiproject-host: intent/system/runtime/work/epic-work-graph-multiproject-host.work.bvc
   - epic-work-graph-npm-first-distribution: intent/system/runtime/work/epic-work-graph-npm-first-distribution.work.bvc
@@ -416,6 +418,10 @@ WorkItems:
   - migrate-project-root-intent-to-dot-canon-v1: intent/system/runtime/work/migrate-project-root-intent-to-dot-canon-v1.work.bvc
   - migrate-repo-step-files-to-bvc-bulk: intent/system/runtime/work/migrate-repo-step-files-to-bvc-bulk.work.bvc
   - migrate-schematic-view-lit-flow: intent/ui/dashboard/work/migrate-schematic-view-lit-flow.work.bvc
+  - oham-audit-journal-change-history: intent/ui/dashboard/work/oham-audit-journal-change-history.work.bvc
+  - oham-git-snapshot-change-history: intent/system/runtime/work/oham-git-snapshot-change-history.work.bvc
+  - oham-inbox-action-memory-feed: intent/ui/dashboard/work/oham-inbox-action-memory-feed.work.bvc
+  - oham-memory-panel-action-memory: intent/ui/dashboard/work/oham-memory-panel-action-memory.work.bvc
   - onebase-artifact-mapping: intent/domains/onebase/work/onebase-artifact-mapping.work.bvc
   - onebase-catalog-facets-listing-form-bridge: intent/domains/onebase/work/onebase-catalog-facets-listing-form-bridge.work.bvc
   - onebase-implement-gross-profit-warehouse-dimension: intent/domains/onebase/work/onebase-implement-gross-profit-warehouse-dimension.work.bvc
@@ -505,6 +511,7 @@ WorkItems:
   - tests-architecture-views-v1: intent/ui/dashboard/work/tests-architecture-views-v1.work.bvc
   - tests-canon-aware-classifier-fixtures: intent/ui/dashboard/work/tests-canon-aware-classifier-fixtures.work.bvc
   - tests-canon-layout-dual-mode-v1: intent/system/runtime/work/tests-canon-layout-dual-mode-v1.work.bvc
+  - tests-gripe-controls-wave4-regression: intent/ui/dashboard/work/tests-gripe-controls-wave4-regression.work.bvc
   - tests-gripe-visual-default-wave3: intent/ui/dashboard/work/tests-gripe-visual-default-wave3.work.bvc
   - tests-work-graph-multiproject-host: intent/system/runtime/work/tests-work-graph-multiproject-host.work.bvc
   - tests-work-graph-npm-first-distribution: intent/system/runtime/work/tests-work-graph-npm-first-distribution.work.bvc
@@ -533,6 +540,7 @@ WorkItems:
   - wg-ui-wave3-kanban-cards-atoms: intent/ui/dashboard/work/wg-ui-wave3-kanban-cards-atoms.work.bvc
   - wg-ui-wave3-status-badges-atoms: intent/ui/dashboard/work/wg-ui-wave3-status-badges-atoms.work.bvc
   - wg-ui-wave3-view-toolbar-atoms: intent/ui/dashboard/work/wg-ui-wave3-view-toolbar-atoms.work.bvc
+  - wg-ui-wave4-shell-controls-unification: intent/ui/dashboard/work/wg-ui-wave4-shell-controls-unification.work.bvc
   - wire-analytics-drawer-lineage-sections: intent/ui/dashboard/work/wire-analytics-drawer-lineage-sections.work.bvc
   - wire-analytics-list-lineage-badges: intent/ui/dashboard/work/wire-analytics-list-lineage-badges.work.bvc
   - wire-analytics-related-task-sub-drawer: intent/ui/dashboard/work/wire-analytics-related-task-sub-drawer.work.bvc

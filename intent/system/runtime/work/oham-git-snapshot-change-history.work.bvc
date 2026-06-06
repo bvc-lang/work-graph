@@ -1,0 +1,46 @@
+#Задача_oham_git_snapshot_change_history<[
+Базис:
+  Закрытие задач и analytics должны оставлять git-след без ручного commit.
+Вектор:
+  epic-workgraph-git-snapshot-v1 + wire-git-snapshot-settings-ui + hooks на work_item/analytics events.
+Цель:
+  Opt-in git snapshot фиксирует изменения с SHA в evidence.
+Проверки:
+  Settings Git Snapshot toggles
+  /api/git-snapshot-settings
+Анализ:
+  Уже реализовано: epic-workgraph-git-snapshot-v1 done, settings UI done.
+Решение:
+  Вердикт: полезно — закрыть subtask как done (rollup).
+
+Метки:
+  work.closed_at: 2026-06-06T09:49:30.007Z
+  atom.profile: work_item
+  intake.source_kind: chat-session
+  intake.source_ref: cursor:7ecada15-change-history-action-memory
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-06T09:49:20.837Z
+  work.analysis.source: chat-session
+  work.decision.at: 2026-06-06T09:49:20.837Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: epic-operator-change-history-action-memory-v1, epic-workgraph-git-snapshot-v1
+  work.id: oham-git-snapshot-change-history
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: integration_architect
+  work.parent_id: epic-operator-change-history-action-memory-v1
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: src/gitSnapshot.mjs, protocols/workgraph-git-snapshot-v1.bvc, intent/ui/dashboard/work/wire-git-snapshot-settings-ui.work.bvc
+  work.title: История изменений: git snapshot на события Work Graph
+  work.updated_by: workgraph-mcp
+  work.write.at: 2026-06-06T09:49:30.007Z
+  work.write.operation: complete
+
+Свидетельства:
+  - Upstream done: epic-workgraph-git-snapshot-v1, wire-git-snapshot-settings-ui, implement-git-snapshot-core; Settings panel toggles + /api/git-snapshot-settings.
+]>

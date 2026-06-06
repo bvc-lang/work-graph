@@ -1,0 +1,45 @@
+#Задача_tests_gripe_controls_wave4_regression<[
+Базис:
+  Новые атомы должны быть зафиксированы в renderBacklogHtml тестах и ui-kit.
+Вектор:
+  Assert filter-chip, wg-textarea, ui-swagger-label, wg-input--search в HTML; uiKitPage регистрирует checkbox/filter-chip/toggle/textarea.
+Цель:
+  Регрессия wave 4 не ломает shell contract.
+Проверки:
+  npm run test:deterministic зелёный
+Анализ:
+  Тесты обновлены и прогон успешен.
+Решение:
+  Вердикт: полезно — done.
+
+Метки:
+  work.closed_at: 2026-06-06T09:49:28.398Z
+  atom.profile: work_item
+  intake.source_kind: chat-session
+  intake.source_ref: cursor:7ecada15-gripe-ds-controls-unification
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-06T09:49:16.045Z
+  work.analysis.source: chat-session
+  work.decision.at: 2026-06-06T09:49:16.045Z
+  work.decision.verdict: useful
+  work.department: ui-dashboard
+  work.depends_on: wg-ui-wave4-shell-controls-unification
+  work.id: tests-gripe-controls-wave4-regression
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: frontend_architect
+  work.parent_id: epic-gripe-ds-controls-parity-wave4
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: tests/workGraphBacklogUiServer.test.mjs, src/ui/pages/uiKitPage.mjs
+  work.title: Tests: Gripe controls wave 4 regression
+  work.updated_by: workgraph-mcp
+  work.write.at: 2026-06-06T09:49:28.398Z
+  work.write.operation: complete
+
+Свидетельства:
+  - tests/workGraphBacklogUiServer.test.mjs asserts filter-chip/wg-textarea/ui-swagger/wg-input--search; uiKitPage registers new atoms; npm run test:deterministic exit 0.
+]>

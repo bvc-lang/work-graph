@@ -1,8 +1,12 @@
 import { renderUiBadge, UI_BADGE_CSS } from '../atoms/badge.mjs';
 import { renderUiButton, UI_BUTTON_CSS } from '../atoms/button.mjs';
+import { renderUiCheckbox, UI_CHECKBOX_CSS } from '../atoms/checkbox.mjs';
+import { renderUiFilterChip, renderUiFilterChipGroup, UI_FILTER_CHIP_CSS } from '../atoms/filterChip.mjs';
 import { renderUiIcon, UI_ICON_CSS } from '../atoms/icon.mjs';
 import { renderUiTextInput, UI_INPUT_CSS } from '../atoms/input.mjs';
 import { renderUiSelect, UI_SELECT_CSS } from '../atoms/select.mjs';
+import { renderUiTextarea, UI_TEXTAREA_CSS } from '../atoms/textarea.mjs';
+import { renderUiToggle, UI_TOGGLE_CSS } from '../atoms/toggle.mjs';
 import { renderUiModal, UI_MODAL_CSS } from '../atoms/modal.mjs';
 import { renderUiRating, UI_RATING_CSS } from '../molecules/rating.mjs';
 import { renderUiTabsGroup, UI_TABS_CSS } from '../molecules/tabs.mjs';
@@ -50,6 +54,37 @@ export const UI_ATOM_REGISTRY = [
     renderPreview: () => renderUiTextInput({ placeholder: 'Placeholder', testId: 'ui-kit-input' }),
   },
   {
+    id: 'textarea',
+    layer: 'atom',
+    title: 'Textarea',
+    renderPreview: () => renderUiTextarea({ placeholder: 'Multiline', rows: 3, testId: 'ui-kit-textarea' }),
+  },
+  {
+    id: 'checkbox',
+    layer: 'atom',
+    title: 'Checkbox',
+    renderPreview: () =>
+      `<label class="ui-checkable-label">${renderUiCheckbox({ testId: 'ui-kit-checkbox' })} ${escapeHtml('Remember')}</label>`,
+  },
+  {
+    id: 'filter-chip',
+    layer: 'atom',
+    title: 'Filter chip',
+    renderPreview: () => renderUiFilterChipGroup({
+      testId: 'ui-kit-filter-chips',
+      chips: [
+        { label: 'All', pressed: true },
+        { label: 'Active', pressed: false },
+      ],
+    }),
+  },
+  {
+    id: 'toggle',
+    layer: 'atom',
+    title: 'Toggle',
+    renderPreview: () => renderUiToggle({ label: 'Enabled', testId: 'ui-kit-toggle' }),
+  },
+  {
     id: 'icon',
     layer: 'atom',
     title: 'Icon',
@@ -95,7 +130,20 @@ export const UI_MOLECULE_REGISTRY = [
 export const UI_COMPONENT_REGISTRY = [...UI_ATOM_REGISTRY, ...UI_MOLECULE_REGISTRY];
 
 export function renderUiKitComponentCss() {
-  return [UI_BUTTON_CSS, UI_BADGE_CSS, UI_SELECT_CSS, UI_INPUT_CSS, UI_ICON_CSS, UI_MODAL_CSS, UI_RATING_CSS, UI_TABS_CSS].join('\n');
+  return [
+    UI_BUTTON_CSS,
+    UI_BADGE_CSS,
+    UI_SELECT_CSS,
+    UI_INPUT_CSS,
+    UI_TEXTAREA_CSS,
+    UI_CHECKBOX_CSS,
+    UI_FILTER_CHIP_CSS,
+    UI_TOGGLE_CSS,
+    UI_ICON_CSS,
+    UI_MODAL_CSS,
+    UI_RATING_CSS,
+    UI_TABS_CSS,
+  ].join('\n');
 }
 
 export function renderUiKitPageHtml() {

@@ -1,6 +1,10 @@
 import { escapeHtml } from './htmlEscape.mjs';
 import { renderUiButton } from './atoms/button.mjs';
 import { renderUiSelect } from './atoms/select.mjs';
+import { renderUiTextInput } from './atoms/input.mjs';
+import { renderUiTextarea } from './atoms/textarea.mjs';
+import { renderUiFilterChip, renderUiFilterChipGroup } from './atoms/filterChip.mjs';
+import { renderUiToggle } from './atoms/toggle.mjs';
 import { renderNavViewIcon, renderThemeIcon } from './iconAssets.mjs';
 import { renderUiTabsGroup } from './molecules/tabs.mjs';
 
@@ -64,22 +68,69 @@ export function renderThemeToggleButton() {
  * @param {{ locale: string, t: (key: string) => string }} props
  */
 export function renderSettingsLocaleOptions({ locale, t }) {
-  const options = [
-    { id: 'ru', label: t('settings.language.ru') },
-    { id: 'en', label: t('settings.language.en') },
-  ];
-  return options.map(({ id, label }) => renderUiButton({
-    variant: 'secondary',
-    size: 'sm',
-    id: `settings-locale-${id}`,
-    className: locale === id ? 'is-active' : '',
-    label,
-    testId: id === 'ru' ? 'settings-locale-ru' : undefined,
-    attrs: {
-      'data-settings-locale': id,
-      'aria-pressed': locale === id ? 'true' : 'false',
-    },
-  })).join('\n                ');
+  return renderUiFilterChipGroup({
+    className: 'settings-locale-options',
+    testId: 'settings-locale-options',
+    ariaLabel: t('settings.language.label'),
+    chips: [
+      { id: 'settings-locale-ru', label: t('settings.language.ru'), pressed: locale === 'ru', testId: 'settings-locale-ru', attrs: { 'data-settings-locale': 'ru' } },
+      { id: 'settings-locale-en', label: t('settings.language.en'), pressed: locale === 'en', attrs: { 'data-settings-locale': 'en' } },
+    ],
+  });
+}
+
+/**
+ * @param {{ theme?: string, t: (key: string) => string }} props
+ */
+export function renderSettingsThemeOptions({ theme = 'light', t }) {
+  return renderUiFilterChipGroup({
+    className: 'settings-theme-options',
+    ariaLabel: t('settings.appearance.theme'),
+    chips: [
+      { id: 'settings-theme-light', label: t('settings.appearance.themeLight'), pressed: theme === 'light', attrs: { 'data-settings-theme': 'light' } },
+      { id: 'settings-theme-dark', label: t('settings.appearance.themeDark'), pressed: theme === 'dark', attrs: { 'data-settings-theme': 'dark' } },
+    ],
+  });
+}
+
+export function renderToolbarSearchInput({ placeholder, t }) {
+  return renderUiTextInput({
+    id: 'search',
+    type: 'search',
+    className: 'wg-input--toolbar',
+    placeholder: placeholder ?? t('search.placeholder'),
+    testId: 'semantic-search-input',
+    autocomplete: 'off',
+  });
+}
+
+export function renderIntentComposerTextarea() {
+  return renderUiTextarea({
+    id: 'intent-composer-input',
+    placeholder: 'Например: добавить вкладку памяти с журналом записей',
+    rows: 3,
+    testId: 'intent-composer-input',
+  });
+}
+
+/**
+ * @param {{ t: (key: string) => string }} props
+ */
+export function renderGitSnapshotSettingsToggles({ t }) {
+  const enabled = renderUiToggle({
+    id: 'settings-git-snapshot-enabled',
+    label: t('settings.gitSnapshot.enabled'),
+    testId: 'settings-git-snapshot-enabled',
+  });
+  const recordSha = renderUiToggle({
+    id: 'settings-git-snapshot-record-sha',
+    label: t('settings.gitSnapshot.recordSha'),
+    testId: 'settings-git-snapshot-record-sha',
+  });
+  return [
+    `<div class="settings-row settings-row--toggle">${enabled}</div>`,
+    `<div class="settings-row settings-row--toggle">${recordSha}</div>`,
+  ].join('\n            ');
 }
 
 export function renderDetailCloseButton() {
@@ -157,12 +208,12 @@ export function renderIntentComposerActionButtons() {
 }
 
 export function renderIntentDomainClearButton() {
-  return renderUiButton({
-    unstyled: true,
+  return renderUiFilterChip({
     id: 'intent-domain-clear',
-    className: 'board-tab',
     label: 'Сброс домена',
+    pressed: false,
     hidden: true,
+    attrs: { 'data-intent-domain-clear': 'true' },
   });
 }
 
@@ -232,20 +283,15 @@ export function renderAnalyticsSubtabsShell() {
  * @param {{ t: (key: string) => string, sort?: string }} props
  */
 export function renderAnalyticsSortOptions({ t, sort = 'created-desc' }) {
-  const options = [
-    { id: 'created-desc', label: t('analytics.sort.createdDesc') },
-    { id: 'key-desc', label: t('analytics.sort.keyDesc') },
-  ];
-  return `<div class="analytics-sort-options" role="group" aria-label="${escapeHtml(t('analytics.sort.label'))}" data-testid="analytics-sort-options">${options.map(({ id, label }) => renderUiButton({
-    variant: 'secondary',
-    size: 'sm',
-    className: sort === id ? 'is-active' : '',
-    label,
-    attrs: {
-      'data-analytics-sort': id,
-      'aria-pressed': sort === id ? 'true' : 'false',
-    },
-  })).join('')}</div>`;
+  return renderUiFilterChipGroup({
+    className: 'analytics-sort-options',
+    testId: 'analytics-sort-options',
+    ariaLabel: t('analytics.sort.label'),
+    chips: [
+      { label: t('analytics.sort.createdDesc'), pressed: sort === 'created-desc', attrs: { 'data-analytics-sort': 'created-desc' } },
+      { label: t('analytics.sort.keyDesc'), pressed: sort === 'key-desc', attrs: { 'data-analytics-sort': 'key-desc' } },
+    ],
+  });
 }
 
 export function renderWorkflowSubtabsShell(labels = {}) {
@@ -305,19 +351,12 @@ export function renderBoardColumnModeSelect({ t }) {
 }
 
 export function renderArchitectureGraphModeToggle() {
-  return (
-    '<div class="graph-canvas-mode-toggle" role="group" aria-label="Режим графа">' +
-    renderUiButton({
-      unstyled: true,
-      label: 'Конвейер',
-      className: 'is-active',
-      attrs: { 'data-graph-canvas-mode': 'pipeline', 'aria-pressed': 'true' },
-    }) +
-    renderUiButton({
-      unstyled: true,
-      label: 'Полный',
-      attrs: { 'data-graph-canvas-mode': 'full', 'aria-pressed': 'false' },
-    }) +
-    '</div>'
-  );
+  return renderUiFilterChipGroup({
+    className: 'graph-canvas-mode-toggle',
+    ariaLabel: 'Режим графа',
+    chips: [
+      { label: 'Конвейер', pressed: true, attrs: { 'data-graph-canvas-mode': 'pipeline' } },
+      { label: 'Полный', pressed: false, attrs: { 'data-graph-canvas-mode': 'full' } },
+    ],
+  });
 }

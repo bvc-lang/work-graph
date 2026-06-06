@@ -9,6 +9,7 @@ import {
   renderNavViewIcon,
   renderThemeIcon,
 } from '../src/ui/iconAssets.mjs';
+import { renderUiCheckbox } from '../src/ui/atoms/checkbox.mjs';
 
 describe('iconAssets', () => {
   it('reads bold SVG icons from public/assets/icons', () => {
@@ -39,6 +40,10 @@ describe('iconAssets', () => {
     assert.match(renderThemeIcon('moon'), /class="header-theme-toggle-icon"/u);
     assert.match(renderThemeIcon('sun'), /class="header-theme-toggle-icon"/u);
     assert.match(renderThemeIcon('sun'), /fill="currentColor"/u);
+  });
+
+  it('renders checkbox with Gripe form-native-checkable class', () => {
+    assert.match(renderUiCheckbox({ testId: 'demo' }), /class="form-native-checkable"/u);
   });
 
   it('renderInlineIcon uses currentColor strokes from asset pack', () => {

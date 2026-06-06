@@ -20,7 +20,12 @@ import { buildEpicWorkScopeSlice } from './epicWorkScope.mjs';
 import { renderUiKitPageHtml } from './ui/pages/uiKitPage.mjs';
 import { UI_BUTTON_CSS } from './ui/atoms/button.mjs';
 import { UI_BADGE_CSS } from './ui/atoms/badge.mjs';
+import { UI_CHECKBOX_CSS } from './ui/atoms/checkbox.mjs';
+import { UI_FILTER_CHIP_CSS } from './ui/atoms/filterChip.mjs';
+import { UI_INPUT_CSS } from './ui/atoms/input.mjs';
 import { UI_SELECT_CSS } from './ui/atoms/select.mjs';
+import { UI_TEXTAREA_CSS } from './ui/atoms/textarea.mjs';
+import { UI_TOGGLE_CSS } from './ui/atoms/toggle.mjs';
 import {
   renderNavTab,
   renderHeaderThemeToggleButton,
@@ -40,6 +45,10 @@ import {
   renderWorkflowDisplayModeSelect,
   renderBoardColumnModeSelect,
   renderSettingsLocaleOptions,
+  renderSettingsThemeOptions,
+  renderToolbarSearchInput,
+  renderIntentComposerTextarea,
+  renderGitSnapshotSettingsToggles,
 } from './ui/backlogShellButtons.mjs';
 import { renderInlineIcon, renderThemeIcon } from './ui/iconAssets.mjs';
 import { buildAppVersionInstallResponse, buildAppVersionResponse } from './appVersionApi.mjs';
@@ -580,6 +589,10 @@ export function renderBacklogHtml(options = {}) {
   const shellSettingsNav = renderSettingsNavTab({ label: t('nav.settings') });
   const shellHeaderThemeToggle = renderHeaderThemeToggleButton({ ariaLabel: t('theme.toggleAria') });
   const shellSettingsLocaleOptions = renderSettingsLocaleOptions({ locale, t });
+  const shellSettingsThemeOptions = renderSettingsThemeOptions({ theme: 'light', t });
+  const shellToolbarSearchInput = renderToolbarSearchInput({ t });
+  const shellIntentComposerTextarea = renderIntentComposerTextarea();
+  const shellGitSnapshotSettingsToggles = renderGitSnapshotSettingsToggles({ t });
   const shellDetailClose = renderDetailCloseButton();
   const shellDetailSubClose = renderDetailSubCloseButton();
   const shellAgentDockClose = renderAgentRunDockCloseButton();
@@ -600,7 +613,7 @@ export function renderBacklogHtml(options = {}) {
   const themeIconMoonHtml = renderThemeIcon('moon');
   const themeIconSunHtml = renderThemeIcon('sun');
   return `<!doctype html>
-<html lang="${locale}" data-iohasc-theme="workgraph-dark">
+<html lang="${locale}" data-iohasc-theme="gripe-dark-default">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -640,7 +653,7 @@ export function renderBacklogHtml(options = {}) {
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/assets/fonts/GraphikLCG/stylesheet.css">
   <link rel="stylesheet" href="/assets/graph-canvas-lit-flow.css">
-  <link rel="stylesheet" href="/assets/design-tokens-workgraph-dark.css">
+  <link rel="stylesheet" href="/assets/design-tokens-gripe-dark-default.css">
   <style>
     :root {
       color-scheme: light;
@@ -654,8 +667,21 @@ export function renderBacklogHtml(options = {}) {
       --border: #dfe1e6;
       --text: #172b4d;
       --muted: #5e6c84;
-      --accent: #0052cc;
-      --accent-soft: #deebff;
+      --accent: rgb(var(--ui-accent-rgb, 0 0 0));
+      --accent-soft: rgb(var(--ui-control-bg-hover-rgb, 226 232 240));
+      --ui-control-bg-rgb: 242 242 242;
+      --ui-control-bg-hover-rgb: 226 232 240;
+      --ui-control-checked-rgb: 0 0 0;
+      --ui-control-checked-foreground-rgb: 255 255 255;
+      --ui-text-rgb: 15 23 42;
+      --ui-muted-rgb: 100 116 139;
+      --ui-accent-rgb: 0 0 0;
+      --ui-accent-hover-rgb: 38 38 38;
+      --ui-accent-foreground-rgb: 255 255 255;
+      --ui-focus-ring-rgb: 0 0 0;
+      --ui-radius-control: 0.75rem;
+      --ui-radius-control-lg: 1rem;
+      --ui-radius-control-sm: 0.5rem;
       --warn: #9a6700;
       --danger: #d1242f;
       --ok: #1a7f37;
@@ -687,6 +713,17 @@ export function renderBacklogHtml(options = {}) {
 
     body[data-theme="dark"] {
       color-scheme: dark;
+      --ui-control-bg-rgb: 45 45 48;
+      --ui-control-bg-hover-rgb: 60 60 60;
+      --ui-control-checked-rgb: 245 158 11;
+      --ui-control-checked-foreground-rgb: 17 17 17;
+      --ui-accent-rgb: 245 158 11;
+      --ui-accent-hover-rgb: 217 119 6;
+      --ui-accent-foreground-rgb: 17 17 17;
+      --ui-focus-ring-rgb: 245 158 11;
+      --ui-radius-control: 0.375rem;
+      --ui-radius-control-lg: 0.5rem;
+      --ui-radius-control-sm: 0.25rem;
       --bg: rgb(var(--brand-bg-rgb, 29 33 37));
       --header-bg: rgb(22 26 29);
       --panel: rgb(var(--ui-surface-rgb, 44 51 56));
@@ -1193,31 +1230,6 @@ export function renderBacklogHtml(options = {}) {
       margin-bottom: 12px;
     }
 
-    .workflow-subtab {
-      background: transparent;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      color: var(--text);
-      cursor: pointer;
-      font: inherit;
-      font-size: var(--font-size-sm);
-      padding: 6px 12px;
-    }
-
-    .workflow-subtab.is-active,
-    .workflow-subtab[aria-selected="true"] {
-      background: var(--accent-soft);
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-
-    body[data-theme="dark"] .workflow-subtab.is-active,
-    body[data-theme="dark"] .workflow-subtab[aria-selected="true"] {
-      background: #092957;
-      border-color: #388bff;
-      color: #85b8ff;
-    }
-
     .workflow-panel[hidden] {
       display: none !important;
     }
@@ -1274,28 +1286,6 @@ export function renderBacklogHtml(options = {}) {
       display: none !important;
     }
 
-    .board-tab {
-      background: transparent;
-      border: 0;
-      border-radius: 3px;
-      color: var(--muted);
-      font: inherit;
-      font-size: var(--text-sm);
-      padding: 6px 8px;
-    }
-
-    .board-tab.is-active {
-      background: #deebff;
-      color: #0747a6;
-      font-weight: 600;
-    }
-
-    body[data-theme="dark"] .board-tab.is-active {
-      background: #092957;
-      border-color: #388bff;
-      color: #85b8ff;
-    }
-
     .toolbar {
       align-items: center;
       display: flex;
@@ -1306,11 +1296,6 @@ export function renderBacklogHtml(options = {}) {
 
     .toolbar[hidden] {
       display: none !important;
-    }
-
-    .search {
-      flex: 0 1 280px;
-      min-width: 180px;
     }
 
     #board-view .board-columns-scroll {
@@ -1337,18 +1322,6 @@ export function renderBacklogHtml(options = {}) {
     .prompt-rule-editor {
       display: grid;
       gap: 8px;
-    }
-
-    .prompt-rule-editor textarea {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 3px;
-      color: var(--text);
-      font-family: var(--mono, Consolas, monospace);
-      font-size: var(--text-sm);
-      min-height: 220px;
-      padding: 10px;
-      width: 100%;
     }
 
     .prompt-rule-editor-errors {
@@ -1455,22 +1428,8 @@ export function renderBacklogHtml(options = {}) {
       display: none !important;
     }
 
-    .settings-theme-options .wg-btn.is-active,
-    .settings-locale-options .wg-btn.is-active {
-      border-color: var(--accent);
-    }
-
-    body:not([data-theme="dark"]) .settings-theme-options .wg-btn--secondary.is-active,
-    body:not([data-theme="dark"]) .settings-locale-options .wg-btn--secondary.is-active {
-      background: var(--accent-soft);
-      color: var(--accent);
-    }
-
-    body[data-theme="dark"] .settings-theme-options .wg-btn--secondary.is-active,
-    body[data-theme="dark"] .settings-locale-options .wg-btn--secondary.is-active {
-      background: #092957;
-      border-color: #388bff;
-      color: #85b8ff;
+    .settings-row--toggle {
+      display: block;
     }
 
     .settings-font-scale {
@@ -1487,6 +1446,7 @@ export function renderBacklogHtml(options = {}) {
     }
 
     .settings-font-scale-slider {
+      accent-color: rgb(var(--ui-control-checked-rgb, 0 0 0));
       accent-color: var(--accent);
       cursor: pointer;
       width: 100%;
@@ -1546,27 +1506,14 @@ export function renderBacklogHtml(options = {}) {
     }
 
     .settings-install-copy-btn {
-      align-items: center;
-      background: transparent;
-      border: 0;
-      border-radius: 6px;
-      color: var(--muted);
-      cursor: pointer;
-      display: inline-flex;
       height: 32px;
-      justify-content: center;
+      min-height: 32px;
       padding: 0;
       position: absolute;
       right: 4px;
       top: 50%;
       transform: translateY(-50%);
       width: 32px;
-    }
-
-    .settings-install-copy-btn:hover,
-    .settings-install-copy-btn.is-copied {
-      background: color-mix(in srgb, var(--accent) 14%, var(--panel-2));
-      color: var(--accent);
     }
 
     .settings-install-copy-btn-text {
@@ -1868,51 +1815,10 @@ export function renderBacklogHtml(options = {}) {
       gap: 8px;
     }
 
-    .intent-composer-input-row textarea {
-      background: var(--panel-2);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      color: var(--text);
-      font-family: inherit;
-      font-size: var(--text-sm);
-      min-height: 88px;
-      padding: 10px;
-      resize: vertical;
-    }
-
     .intent-composer-actions {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-    }
-
-    .intent-composer-actions button {
-      background: var(--panel-2);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      color: var(--text);
-      cursor: pointer;
-      font-size: var(--text-sm);
-      padding: 8px 12px;
-    }
-
-    .intent-composer-actions button[data-action="propose"] {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: #fff;
-      font-weight: 600;
-    }
-
-    .intent-composer-actions button[data-action="apply"] {
-      background: #1f6f43;
-      border-color: #1f6f43;
-      color: #fff;
-      font-weight: 600;
-    }
-
-    .intent-composer-actions button[disabled] {
-      cursor: wait;
-      opacity: .65;
     }
 
     .intent-composer-preview,
@@ -1983,13 +1889,6 @@ export function renderBacklogHtml(options = {}) {
       flex-wrap: wrap;
       gap: 6px;
       margin-left: auto;
-    }
-
-    body:not([data-theme="dark"]) .analytics-sort-options .wg-btn--secondary.is-active,
-    body[data-theme="dark"] .analytics-sort-options .wg-btn--secondary.is-active {
-      background: var(--accent-soft);
-      border-color: var(--accent);
-      color: var(--accent);
     }
 
     .pill {
@@ -2507,43 +2406,10 @@ export function renderBacklogHtml(options = {}) {
       margin-bottom: 4px;
     }
 
-    .atom-inspector-field input,
-    .atom-inspector-field select,
-    .atom-inspector-field textarea {
-      background: var(--panel-2);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      color: var(--text);
-      font: inherit;
-      padding: 8px;
-      width: 100%;
-    }
-
-    .atom-inspector-field textarea {
-      min-height: 72px;
-      resize: vertical;
-    }
-
     .atom-inspector-actions {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-    }
-
-    .atom-inspector-actions button {
-      background: var(--panel-2);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      color: var(--text);
-      cursor: pointer;
-      font-size: var(--font-size-sm);
-      padding: 8px 10px;
-    }
-
-    .atom-inspector-actions button[data-action="apply"] {
-      background: var(--cursor-accent, #0066ff);
-      border-color: var(--cursor-accent, #0066ff);
-      color: #fff;
     }
 
     .atom-inspector-preview,
@@ -2829,50 +2695,6 @@ export function renderBacklogHtml(options = {}) {
       color: var(--muted);
       font-size: var(--font-size-sm);
       text-align: center;
-    }
-
-    .workflow-page-btn {
-      background: transparent;
-      border: 1px solid var(--border);
-      border-radius: 3px;
-      color: var(--text);
-      cursor: pointer;
-      font: inherit;
-      font-size: var(--font-size-sm);
-      padding: 6px 10px;
-    }
-
-    .workflow-page-btn:hover:not(:disabled) {
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-
-    .workflow-page-btn:disabled {
-      cursor: not-allowed;
-      opacity: .45;
-    }
-
-    .graph-canvas-mode-toggle {
-      display: inline-flex;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      overflow: hidden;
-      flex-shrink: 0;
-    }
-
-    .graph-canvas-mode-toggle button {
-      border: 0;
-      background: var(--panel-2);
-      color: var(--muted);
-      padding: 6px 12px;
-      font-size: var(--text-sm);
-      cursor: pointer;
-    }
-
-    .graph-canvas-mode-toggle button.is-active {
-      background: var(--accent-soft);
-      color: var(--accent);
-      font-weight: 600;
     }
 
     .schematic-panel-header {
@@ -4641,47 +4463,17 @@ export function renderBacklogHtml(options = {}) {
       border-color: var(--border);
     }
     ${UI_BADGE_CSS}
+    ${UI_INPUT_CSS}
     ${UI_SELECT_CSS}
+    ${UI_CHECKBOX_CSS}
+    ${UI_FILTER_CHIP_CSS}
+    ${UI_TEXTAREA_CSS}
+    ${UI_TOGGLE_CSS}
     ${UI_TABS_CSS}
-    .toolbar .search,
-    .toolbar .wg-select {
-      box-sizing: border-box;
-      height: 36px;
-      min-height: 36px;
-      border: 1px solid var(--border);
-      border-radius: 3px;
-      background-color: var(--panel-2);
-      color: var(--text);
-      font-size: var(--text-sm);
-      line-height: 1.2;
-    }
-    .toolbar .search {
-      flex: 0 1 280px;
-      min-width: 180px;
-      padding: 0 10px;
-    }
-    .toolbar .wg-select {
-      padding: 0 28px 0 10px;
-      appearance: none;
-      -webkit-appearance: none;
-      background-repeat: no-repeat;
-      background-size: 12px 12px;
-      background-position: right 8px center;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%235e6c84' d='M2.5 4.5 6 8l3.5-3.5'/%3E%3C/svg%3E");
-    }
-    body[data-theme="dark"] .toolbar .wg-select {
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%239d9d9d' d='M2.5 4.5 6 8l3.5-3.5'/%3E%3C/svg%3E");
-    }
-    .toolbar .search:hover,
-    .toolbar .wg-select:hover {
-      background-color: var(--panel);
-    }
-    .toolbar .search:focus,
-    .toolbar .wg-select:focus {
-      background-color: var(--panel);
-      border-color: var(--accent);
-      box-shadow: 0 0 0 1px var(--accent);
-      outline: none;
+    .atom-inspector-field input:not(.form-native-checkable),
+    .atom-inspector-field select,
+    .atom-inspector-field textarea {
+      width: 100%;
     }
     .column h2 .wg-badge { flex-shrink: 0; text-transform: none; }
     .code-gap-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
@@ -4818,7 +4610,7 @@ export function renderBacklogHtml(options = {}) {
         </div>
       </div>
       <section id="view-toolbar" class="toolbar" hidden>
-        <input id="search" class="search" type="search" placeholder="${t('search.placeholder')}" autocomplete="off">
+        ${shellToolbarSearchInput}
         ${shellSearchModeSelect}
         <div id="workflow-filters" class="workflow-filters" aria-label="Фильтры потока">
           ${shellCycleFilterSelect}
@@ -4886,7 +4678,7 @@ export function renderBacklogHtml(options = {}) {
           </div>
           <div class="intent-composer-input-row">
             <label for="intent-composer-input">Намерение</label>
-            <textarea id="intent-composer-input" data-testid="intent-composer-input" placeholder="Например: добавить вкладку памяти с журналом записей"></textarea>
+            ${shellIntentComposerTextarea}
           </div>
           <div class="intent-composer-actions">
             ${shellIntentComposerActions}
@@ -4949,10 +4741,7 @@ export function renderBacklogHtml(options = {}) {
             <h2 id="settings-appearance-title">${t('settings.appearance.title')}</h2>
             <div class="settings-row">
               <label for="settings-theme-light">${t('settings.appearance.theme')}</label>
-              <div class="settings-theme-options" role="group" aria-label="${t('settings.appearance.theme')}">
-                <button type="button" class="wg-btn wg-btn--secondary wg-btn--sm" id="settings-theme-light" data-settings-theme="light">${t('settings.appearance.themeLight')}</button>
-                <button type="button" class="wg-btn wg-btn--secondary wg-btn--sm" id="settings-theme-dark" data-settings-theme="dark">${t('settings.appearance.themeDark')}</button>
-              </div>
+              ${shellSettingsThemeOptions}
             </div>
             <div class="settings-row">
               <label for="settings-font-scale">${t('settings.appearance.fontSize')}</label>
@@ -4972,28 +4761,19 @@ export function renderBacklogHtml(options = {}) {
             <h2 id="settings-language-title">${t('settings.language.title')}</h2>
             <div class="settings-row">
               <span id="settings-language-label">${t('settings.language.label')}</span>
-              <div class="settings-locale-options" role="group" aria-labelledby="settings-language-label" data-testid="settings-locale-options">
-                ${shellSettingsLocaleOptions}
-              </div>
+              ${shellSettingsLocaleOptions}
             </div>
           </article>
           <article class="settings-section" aria-labelledby="settings-git-snapshot-title">
             <h2 id="settings-git-snapshot-title">${t('settings.gitSnapshot.title')}</h2>
             <p class="settings-git-snapshot-note">${t('settings.gitSnapshot.noPushNote')}</p>
-            <div class="settings-row">
-              <label for="settings-git-snapshot-enabled">${t('settings.gitSnapshot.enabled')}</label>
-              <input type="checkbox" id="settings-git-snapshot-enabled" data-testid="settings-git-snapshot-enabled">
-            </div>
-            <div class="settings-row">
-              <label for="settings-git-snapshot-record-sha">${t('settings.gitSnapshot.recordSha')}</label>
-              <input type="checkbox" id="settings-git-snapshot-record-sha" data-testid="settings-git-snapshot-record-sha">
-            </div>
+            ${shellGitSnapshotSettingsToggles}
             <fieldset class="settings-row settings-git-snapshot-events">
               <legend>${t('settings.gitSnapshot.events')}</legend>
-              <label><input type="checkbox" value="work_item.done" data-settings-git-event> done</label>
-              <label><input type="checkbox" value="work_item.status" data-settings-git-event> status</label>
-              <label><input type="checkbox" value="work_item.created" data-settings-git-event> created</label>
-              <label><input type="checkbox" value="analytics.created" data-settings-git-event> analytics</label>
+              <label class="ui-checkable-label"><input type="checkbox" class="form-native-checkable" value="work_item.done" data-settings-git-event> done</label>
+              <label class="ui-checkable-label"><input type="checkbox" class="form-native-checkable" value="work_item.status" data-settings-git-event> status</label>
+              <label class="ui-checkable-label"><input type="checkbox" class="form-native-checkable" value="work_item.created" data-settings-git-event> created</label>
+              <label class="ui-checkable-label"><input type="checkbox" class="form-native-checkable" value="analytics.created" data-settings-git-event> analytics</label>
             </fieldset>
             <p id="settings-git-snapshot-status" class="settings-update-status" data-testid="settings-git-snapshot-status" hidden></p>
           </article>
@@ -5013,7 +4793,7 @@ export function renderBacklogHtml(options = {}) {
               <p class="settings-install-command-hint">${t('settings.about.installHint')}</p>
               <div class="settings-install-code">
                 <code id="settings-install-command-text" class="settings-install-command-text" data-testid="settings-install-command-text"></code>
-                <button type="button" class="settings-install-copy-btn" id="settings-install-copy-btn" data-testid="settings-install-copy-btn" aria-label="${t('settings.about.copy')}" title="${t('settings.about.copy')}">
+                <button type="button" class="wg-btn wg-btn--flat settings-install-copy-btn" id="settings-install-copy-btn" data-testid="settings-install-copy-btn" aria-label="${t('settings.about.copy')}" title="${t('settings.about.copy')}">
                   ${renderInlineIcon('copy-bold.svg', { className: 'settings-install-copy-icon', size: 18 })}
                   <span class="settings-install-copy-btn-text">${t('settings.about.copy')}</span>
                 </button>
@@ -5091,7 +4871,7 @@ export function renderBacklogHtml(options = {}) {
   <div id="wg-notice-stack" class="wg-notice-stack" data-testid="wg-notice-stack" role="status" aria-live="polite" aria-atomic="true"></div>
   <div id="cmd-k-overlay" data-testid="cmd-k-overlay" aria-hidden="true">
     <div id="cmd-k-panel" role="dialog" aria-label="Палитра команд">
-      <input id="cmd-k-input" type="search" placeholder="task: / an: / cmd: / run:" autocomplete="off">
+      <input id="cmd-k-input" class="wg-input wg-input--search" type="search" placeholder="task: / an: / cmd: / run:" autocomplete="off">
       <div id="cmd-k-results"></div>
     </div>
   </div>
@@ -5781,7 +5561,6 @@ export function renderBacklogHtml(options = {}) {
       function applySettingsLocaleUi(nextLocale) {
         settingsLocaleButtons.forEach((button) => {
           const isActive = button.dataset.settingsLocale === nextLocale;
-          button.classList.toggle('is-active', isActive);
           button.setAttribute('aria-pressed', String(isActive));
         });
       }
@@ -5916,7 +5695,6 @@ export function renderBacklogHtml(options = {}) {
     function applyAnalyticsSortUi(sort) {
       analyticsSortButtons.forEach((button) => {
         const selected = normalizeAnalyticsRecordSortMode(button.dataset.analyticsSort) === sort;
-        button.classList.toggle('is-active', selected);
         button.setAttribute('aria-pressed', String(selected));
       });
     }
@@ -6251,7 +6029,7 @@ export function renderBacklogHtml(options = {}) {
 
     function applyTheme(theme) {
       document.documentElement.dataset.theme = theme;
-      document.documentElement.dataset.iohascTheme = 'workgraph-dark';
+      document.documentElement.dataset.iohascTheme = 'gripe-dark-default';
       document.body.dataset.theme = theme;
       const isDark = theme === 'dark';
       if (themeToggle) {
@@ -6263,10 +6041,10 @@ export function renderBacklogHtml(options = {}) {
         themeToggle.setAttribute('aria-label', t(isDark ? 'theme.light' : 'theme.dark'));
       }
       if (settingsThemeLight) {
-        settingsThemeLight.classList.toggle('is-active', theme === 'light');
+        settingsThemeLight.setAttribute('aria-pressed', String(theme === 'light'));
       }
       if (settingsThemeDark) {
-        settingsThemeDark.classList.toggle('is-active', theme === 'dark');
+        settingsThemeDark.setAttribute('aria-pressed', String(theme === 'dark'));
       }
     }
 
@@ -8154,9 +7932,9 @@ export function renderBacklogHtml(options = {}) {
         '<section class="detail-section prompt-rule-editor" data-testid="prompt-rule-editor">' +
           '<h3>Редактирование</h3>' +
           '<p>Bounded save: только <code>rules/agent-behavior/*.bvc</code>.</p>' +
-          '<textarea id="prompt-rule-source" data-testid="prompt-rule-source" spellcheck="false" disabled>Загрузка...</textarea>' +
+          '<textarea id="prompt-rule-source" class="wg-textarea wg-textarea--mono" data-testid="prompt-rule-source" spellcheck="false" disabled>Загрузка...</textarea>' +
           '<div id="prompt-rule-editor-errors" class="prompt-rule-editor-errors" data-testid="prompt-rule-editor-errors" hidden></div>' +
-          '<button type="button" id="prompt-rule-save" data-testid="prompt-rule-save" disabled>Сохранить</button>' +
+          '<button type="button" class="wg-btn wg-btn--primary wg-btn--sm" id="prompt-rule-save" data-testid="prompt-rule-save" disabled>Сохранить</button>' +
         '</section>';
       openDetailDrawer();
       bindDetailNavBack(() => {
@@ -8796,7 +8574,7 @@ export function renderBacklogHtml(options = {}) {
       const prevDisabled = pagination.page <= 1;
       const nextDisabled = pagination.page >= pagination.totalPages;
       container.innerHTML =
-        renderClientUiButton({ label: t('pagination.prev'), variant: 'secondary', className: 'workflow-page-btn', disabled: prevDisabled, attrs: { 'data-workflow-page': kind, 'data-page-action': 'prev' } }) +
+        renderClientUiButton({ label: t('pagination.prev'), variant: 'secondary', disabled: prevDisabled, attrs: { 'data-workflow-page': kind, 'data-page-action': 'prev' } }) +
         '<span class="workflow-page-meta">' + escapeHtml(t('pagination.meta', {
           page: pagination.page,
           totalPages: pagination.totalPages,
@@ -8804,7 +8582,7 @@ export function renderBacklogHtml(options = {}) {
           to: pagination.to,
           total: pagination.total,
         })) + '</span>' +
-        renderClientUiButton({ label: t('pagination.next'), variant: 'secondary', className: 'workflow-page-btn', disabled: nextDisabled, attrs: { 'data-workflow-page': kind, 'data-page-action': 'next' } });
+        renderClientUiButton({ label: t('pagination.next'), variant: 'secondary', disabled: nextDisabled, attrs: { 'data-workflow-page': kind, 'data-page-action': 'next' } });
     }
 
     function handleWorkflowPaginationClick(event) {
@@ -9309,7 +9087,6 @@ export function renderBacklogHtml(options = {}) {
       schematicModel = resolveSchematicModel();
       document.querySelectorAll('.graph-canvas-mode-toggle button[data-graph-canvas-mode]').forEach((button) => {
         const isActive = button.dataset.graphCanvasMode === graphCanvasViewMode;
-        button.classList.toggle('is-active', isActive);
         button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
       });
     }
@@ -10862,24 +10639,24 @@ export function renderBacklogHtml(options = {}) {
 
       return '<form id="atom-inspector-form" class="atom-inspector-form" data-testid="atom-inspector-form">' +
         warningHtml +
-        '<div class="atom-inspector-field"><label>Atom name<span class="atom-inspector-lang-badge" data-testid="atom-inspector-lang-badge">' + escapeHtml(lang) + '</span></label><input name="name" value="' + escapeHtml(draft.name ?? '') + '" readonly></div>' +
-        '<div class="atom-inspector-field"><label>' + escapeHtml(atomSectionTitle(lang, 'basis')) + '</label><textarea name="basis">' + escapeHtml((draft.basis ?? []).join('\\n')) + '</textarea></div>' +
-        '<div class="atom-inspector-field"><label>' + escapeHtml(atomSectionTitle(lang, 'vector')) + '</label><textarea name="vector">' + escapeHtml((draft.vector ?? []).join('\\n')) + '</textarea></div>' +
-        '<div class="atom-inspector-field"><label>' + escapeHtml(atomSectionTitle(lang, 'goal')) + '</label><textarea name="goal">' + escapeHtml((draft.goal ?? []).join('\\n')) + '</textarea></div>' +
-        '<div class="atom-inspector-field"><label>work.status</label><select name="work.status">' + statusOptions + '</select></div>' +
-        '<div class="atom-inspector-field"><label>work.owner_role</label><input name="work.owner_role" value="' + escapeHtml(labels['work.owner_role'] ?? '') + '"></div>' +
-        '<div class="atom-inspector-field"><label>work.department</label><input name="work.department" value="' + escapeHtml(labels['work.department'] ?? '') + '"></div>' +
-        '<div class="atom-inspector-field"><label>work.priority</label><input name="work.priority" value="' + escapeHtml(labels['work.priority'] ?? '') + '"></div>' +
-        '<div class="atom-inspector-field"><label>work.risk</label><input name="work.risk" value="' + escapeHtml(labels['work.risk'] ?? '') + '"></div>' +
-        '<div class="atom-inspector-field"><label>work.next_action</label><input name="work.next_action" value="' + escapeHtml(labels['work.next_action'] ?? '') + '"></div>' +
-        '<div class="atom-inspector-field"><label>work.blocker</label><input name="work.blocker" value="' + escapeHtml(labels['work.blocker'] ?? '') + '"></div>' +
-        '<div class="atom-inspector-field"><label>work.depends_on</label><input name="work.depends_on" value="' + escapeHtml(labels['work.depends_on'] ?? '') + '"></div>' +
-        '<div class="atom-inspector-field"><label>work.target_files</label><input name="work.target_files" value="' + escapeHtml(labels['work.target_files'] ?? '') + '"></div>' +
-        '<div class="atom-inspector-field"><label>' + escapeHtml(atomSectionTitle(lang, 'checks')) + '</label><textarea name="checks">' + escapeHtml((draft.checks ?? []).join('\\n')) + '</textarea></div>' +
-        '<div class="atom-inspector-field"><label>' + escapeHtml(atomSectionTitle(lang, 'evidence')) + '</label><textarea name="evidence">' + escapeHtml((draft.evidence ?? []).join('\\n')) + '</textarea></div>' +
+        '<div class="atom-inspector-field"><label>Atom name<span class="atom-inspector-lang-badge" data-testid="atom-inspector-lang-badge">' + escapeHtml(lang) + '</span></label><input class="wg-input" name="name" value="' + escapeHtml(draft.name ?? '') + '" readonly></div>' +
+        '<div class="atom-inspector-field"><label>' + escapeHtml(atomSectionTitle(lang, 'basis')) + '</label><textarea class="wg-textarea" name="basis">' + escapeHtml((draft.basis ?? []).join('\\n')) + '</textarea></div>' +
+        '<div class="atom-inspector-field"><label>' + escapeHtml(atomSectionTitle(lang, 'vector')) + '</label><textarea class="wg-textarea" name="vector">' + escapeHtml((draft.vector ?? []).join('\\n')) + '</textarea></div>' +
+        '<div class="atom-inspector-field"><label>' + escapeHtml(atomSectionTitle(lang, 'goal')) + '</label><textarea class="wg-textarea" name="goal">' + escapeHtml((draft.goal ?? []).join('\\n')) + '</textarea></div>' +
+        '<div class="atom-inspector-field"><label>work.status</label><select class="wg-select" name="work.status">' + statusOptions + '</select></div>' +
+        '<div class="atom-inspector-field"><label>work.owner_role</label><input class="wg-input" name="work.owner_role" value="' + escapeHtml(labels['work.owner_role'] ?? '') + '"></div>' +
+        '<div class="atom-inspector-field"><label>work.department</label><input class="wg-input" name="work.department" value="' + escapeHtml(labels['work.department'] ?? '') + '"></div>' +
+        '<div class="atom-inspector-field"><label>work.priority</label><input class="wg-input" name="work.priority" value="' + escapeHtml(labels['work.priority'] ?? '') + '"></div>' +
+        '<div class="atom-inspector-field"><label>work.risk</label><input class="wg-input" name="work.risk" value="' + escapeHtml(labels['work.risk'] ?? '') + '"></div>' +
+        '<div class="atom-inspector-field"><label>work.next_action</label><input class="wg-input" name="work.next_action" value="' + escapeHtml(labels['work.next_action'] ?? '') + '"></div>' +
+        '<div class="atom-inspector-field"><label>work.blocker</label><input class="wg-input" name="work.blocker" value="' + escapeHtml(labels['work.blocker'] ?? '') + '"></div>' +
+        '<div class="atom-inspector-field"><label>work.depends_on</label><input class="wg-input" name="work.depends_on" value="' + escapeHtml(labels['work.depends_on'] ?? '') + '"></div>' +
+        '<div class="atom-inspector-field"><label>work.target_files</label><input class="wg-input" name="work.target_files" value="' + escapeHtml(labels['work.target_files'] ?? '') + '"></div>' +
+        '<div class="atom-inspector-field"><label>' + escapeHtml(atomSectionTitle(lang, 'checks')) + '</label><textarea class="wg-textarea" name="checks">' + escapeHtml((draft.checks ?? []).join('\\n')) + '</textarea></div>' +
+        '<div class="atom-inspector-field"><label>' + escapeHtml(atomSectionTitle(lang, 'evidence')) + '</label><textarea class="wg-textarea" name="evidence">' + escapeHtml((draft.evidence ?? []).join('\\n')) + '</textarea></div>' +
         '<div class="atom-inspector-actions">' +
-          '<button type="button" data-action="proposal" data-testid="atom-inspector-propose">Preview proposal</button>' +
-          '<button type="button" data-action="apply" data-testid="atom-inspector-apply">Apply to backlog</button>' +
+          renderClientUiButton({ label: 'Preview proposal', variant: 'secondary', testId: 'atom-inspector-propose', attrs: { 'data-action': 'proposal' } }) +
+          renderClientUiButton({ label: 'Apply to backlog', variant: 'primary', testId: 'atom-inspector-apply', attrs: { 'data-action': 'apply' } }) +
         '</div>' +
         '</form>';
     }

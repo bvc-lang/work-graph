@@ -114,8 +114,15 @@ describe('renderBacklogHtml', () => {
     assert.match(html, /--bg: #ffffff/);
     assert.match(html, /body\[data-theme="dark"\]/);
     assert.match(html, /--bg: rgb\(var\(--brand-bg-rgb/);
-    assert.match(html, /design-tokens-workgraph-dark\.css/);
-    assert.match(html, /data-iohasc-theme="workgraph-dark"/);
+    assert.match(html, /design-tokens-gripe-dark-default\.css/);
+    assert.match(html, /data-iohasc-theme="gripe-dark-default"/);
+    assert.match(html, /class="wg-input wg-input--toolbar"/);
+    assert.match(html, /class="wg-textarea"/);
+    assert.match(html, /class="filter-chip"/);
+    assert.match(html, /class="ui-swagger-label"/);
+    assert.match(html, /id="settings-theme-light"/);
+    assert.match(html, /class="wg-input wg-input--search"/);
+    assert.match(html, /form-native-checkable/);
     assert.match(html, /wg-select/);
     assert.match(html, /id="search-mode"/);
     assert.match(html, /\/assets\/fonts\/GraphikLCG\/stylesheet\.css/);
@@ -824,10 +831,10 @@ describe('createBacklogUiServer', () => {
       assert.match(avatarIcon.headers.get('content-type') || '', /image\/svg\+xml/);
       assert.match(await avatarIcon.text(), /viewBox="0 0 32 32"/);
 
-      const designTokensCss = await fetch(`${baseUrl}/assets/design-tokens-workgraph-dark.css`);
+      const designTokensCss = await fetch(`${baseUrl}/assets/design-tokens-gripe-dark-default.css`);
       assert.equal(designTokensCss.status, 200);
       const cssText = await designTokensCss.text();
-      assert.match(cssText, /--brand-font-sans: 'Graphik LCG'/);
+      assert.match(cssText, /--ui-accent-rgb: 245 158 11/);
       assert.match(cssText, /--text-sm: 0\.8125rem/);
       assert.match(cssText, /--text-base: 0\.9375rem/);
 

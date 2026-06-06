@@ -1,0 +1,47 @@
+#Задача_wg_ui_wave4_shell_controls_unification<[
+Базис:
+  workGraphBacklogUiServer.mjs содержал inline HTML и legacy CSS поверх частичных атомов wave 3.
+Вектор:
+  Wire shellToolbarSearchInput, shellSettingsThemeOptions, shellGitSnapshotSettingsToggles, shellIntentComposerTextarea; inject UI_FILTER_CHIP_CSS/UI_TOGGLE_CSS/UI_TEXTAREA_CSS; client applyTheme/applyAnalyticsSortUi на aria-pressed; atom inspector и prompt editor на wg-* классы.
+Цель:
+  Backlog shell рендерит контролы только через атомы Gripe DS.
+Проверки:
+  settings theme/locale — filter-chip
+  git snapshot — ui-swagger toggles
+  cmd-k — wg-input--search
+Анализ:
+  Реализовано в сессии унификации стилей.
+Решение:
+  Вердикт: полезно — закрыть как done с evidence test:deterministic.
+
+Метки:
+  work.closed_at: 2026-06-06T09:49:28.441Z
+  atom.profile: work_item
+  intake.source_kind: chat-session
+  intake.source_ref: cursor:7ecada15-gripe-ds-controls-unification
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-06T09:49:15.208Z
+  work.analysis.source: chat-session
+  work.decision.at: 2026-06-06T09:49:15.208Z
+  work.decision.verdict: useful
+  work.department: ui-dashboard
+  work.depends_on: epic-gripe-ds-controls-parity-wave4
+  work.id: wg-ui-wave4-shell-controls-unification
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: frontend_architect
+  work.parent_id: epic-gripe-ds-controls-parity-wave4
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: low
+  work.status: done
+  work.target_files: src/workGraphBacklogUiServer.mjs, src/ui/backlogShellButtons.mjs, src/missionControlServerHandlers.mjs
+  work.title: Wave 4: shell controls → Gripe atoms (filter-chip, toggle, textarea)
+  work.updated_by: workgraph-mcp
+  work.write.at: 2026-06-06T09:49:28.442Z
+  work.write.operation: complete
+
+Свидетельства:
+  - Shell wired: filter-chip theme/locale/analytics sort, ui-swagger git toggles, wg-textarea intent composer, wg-input--search cmd-k; legacy CSS removed; missionControl cmd-k conflict fixed.
+]>

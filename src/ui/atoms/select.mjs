@@ -49,48 +49,47 @@ export function renderUiSelect(props = {}) {
   return `<select ${attrs}>${optionsHtml}</select>`;
 }
 
-export const UI_SELECT_CHEVRON_LIGHT = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%235e6c84' d='M2.5 4.5 6 8l3.5-3.5'/%3E%3C/svg%3E\")";
-export const UI_SELECT_CHEVRON_DARK = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%239d9d9d' d='M2.5 4.5 6 8l3.5-3.5'/%3E%3C/svg%3E\")";
+export const UI_SELECT_CHEVRON = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M2.5 4.5 6 8l3.5-3.5'/%3E%3C/svg%3E\")";
 
 export const UI_SELECT_CSS = `
 .wg-select {
-  box-sizing: border-box;
-  border: 1px solid var(--border);
-  border-radius: var(--ui-radius-control-sm, 0.25rem);
-  background-color: var(--panel-2);
-  color: var(--text);
-  padding: 8px 28px 8px 10px;
-  font: inherit;
-  font-size: 14px;
-  line-height: 1.2;
   appearance: none;
   -webkit-appearance: none;
-  color-scheme: light;
-  background-image: ${UI_SELECT_CHEVRON_LIGHT};
+  background-color: rgb(var(--ui-control-bg-rgb, 242 242 242));
+  background-image: ${UI_SELECT_CHEVRON};
+  background-position: right 12px center;
   background-repeat: no-repeat;
   background-size: 12px 12px;
-  background-position: right 8px center;
+  border: 2px solid transparent;
+  border-radius: var(--ui-radius-control, 0.75rem);
+  box-sizing: border-box;
+  color: rgb(var(--ui-text-rgb, 15 23 42));
   cursor: pointer;
+  font: inherit;
+  font-size: var(--text-base, 0.9375rem);
+  line-height: 1.5;
+  min-height: 48px;
+  padding: 10px 36px 10px 20px;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
 }
-.wg-select:hover {
-  background-color: var(--panel);
+.wg-select:hover:not(:disabled) {
+  border-color: rgb(var(--ui-accent-rgb, 0 0 0));
 }
 .wg-select:focus {
+  background-color: rgb(var(--ui-control-bg-rgb, 242 242 242));
+  border-color: rgb(var(--ui-accent-rgb, 0 0 0));
+  box-shadow: none;
   outline: none;
-  border-color: var(--accent);
-  background-color: var(--panel);
-  box-shadow: 0 0 0 1px var(--accent);
 }
 .wg-select:disabled {
-  opacity: 0.55;
   cursor: not-allowed;
+  opacity: 0.55;
 }
 .wg-select--compact {
+  font-size: var(--text-sm, 0.8125rem);
   max-width: 160px;
-}
-body[data-theme="dark"] .wg-select {
-  color-scheme: dark;
-  background-image: ${UI_SELECT_CHEVRON_DARK};
+  min-height: 40px;
+  padding: 8px 32px 8px 14px;
 }
 .toolbar .wg-select {
   flex-shrink: 0;

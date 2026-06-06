@@ -1,0 +1,48 @@
+#Задача_epic_gripe_ds_controls_parity_wave4<[
+Базис:
+  Wave 3 мигрировал кнопки и badges, но inputs/selects/checkboxes оставались native HTML с legacy CSS (--accent #0052cc, 3px radius). Пользователь в Gripe не видит единый стиль контролов.
+Вектор:
+  Подключить gripe-dark-default tokens, атомы filter-chip/toggle/textarea/checkbox/input/select, убрать конфликтующий inline CSS, обновить shell renderers и client JS (aria-pressed).
+Цель:
+  Все используемые контролы backlog UI в одном стиле Gripe DS.
+Проверки:
+  shell использует wg-input/filter-chip/ui-swagger-toggle/wg-textarea
+  legacy CSS для board-tab/workflow-page-btn/intent-composer buttons удалён
+  test:deterministic зелёный
+Анализ:
+  Целесообразность: да — завершает визуальный паритет Gripe для форм и настроек.
+  Критерии: единые атомы на search, theme/locale chips, git toggles, intent composer, cmd-k, atom inspector.
+Решение:
+  Вердикт: полезно
+  Исполнять как wave 4 после закрытия epic-gripe-ds-visual-default-wave3.
+
+Метки:
+  work.closed_at: 2026-06-06T09:49:32.754Z
+  atom.profile: work_item
+  intake.source_kind: chat-session
+  intake.source_ref: cursor:7ecada15-gripe-ds-controls-unification
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-06T09:49:14.147Z
+  work.analysis.source: chat-session
+  work.decision.at: 2026-06-06T09:49:14.147Z
+  work.decision.verdict: useful
+  work.department: ui-dashboard
+  work.depends_on: epic-gripe-ds-visual-default-wave3
+  work.id: epic-gripe-ds-controls-parity-wave4
+  work.item_kind: epic
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: frontend_architect
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: low
+  work.status: done
+  work.target_files: src/workGraphBacklogUiServer.mjs, src/ui/backlogShellButtons.mjs, src/ui/atoms/filterChip.mjs, src/ui/atoms/toggle.mjs, src/ui/atoms/textarea.mjs, src/ui/pages/uiKitPage.mjs, tests/workGraphBacklogUiServer.test.mjs
+  work.title: Gripe DS: полная унификация контролов backlog UI (wave 4)
+  work.updated_by: workgraph-mcp
+  work.write.at: 2026-06-06T09:49:32.754Z
+  work.write.operation: complete
+
+Свидетельства:
+  - Children done: wg-ui-wave4-shell-controls-unification, tests-gripe-controls-wave4-regression; Gripe DS controls parity shipped in main.
+]>

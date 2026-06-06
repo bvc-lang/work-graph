@@ -1,0 +1,47 @@
+#Задача_epic_operator_change_history_action_memory_v1<[
+Базис:
+  Оператору нужна прослеживаемость: что изменилось в репо/бэклоге и какие действия агентов/демона уже происходили. Разрозненные journal sources без единой модели затрудняют обзор.
+Вектор:
+  Track A — история изменений: git snapshot на события Work Graph, daemon audit journal, evidence timeline.
+  Track B — память действий: Project Memory records, memory panel, inbox event stream, agent-run journal.
+Цель:
+  Оператор видит историю изменений и память действий без чтения raw JSONL/chat transcript.
+Проверки:
+  git snapshot settings UI
+  verification: daemon audit list
+  memory panel + /api/memory-records
+  inbox events API
+Анализ:
+  Большая часть трека уже реализована отдельными задачами (git-snapshot epic, memory panel, inbox stream, audit journal). Эпик фиксирует umbrella и закрывает rollup.
+Решение:
+  Вердикт: полезно — эпик для учёта и closing; подзадачи done где код уже в main.
+
+Метки:
+  work.closed_at: 2026-06-06T09:49:34.517Z
+  atom.profile: work_item
+  intake.source_kind: chat-session
+  intake.source_ref: cursor:7ecada15-change-history-action-memory
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-06T09:49:20.033Z
+  work.analysis.source: chat-session
+  work.decision.at: 2026-06-06T09:49:20.033Z
+  work.decision.verdict: useful
+  work.department: ui-dashboard
+  work.id: epic-operator-change-history-action-memory-v1
+  work.item_kind: epic
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: integration_architect
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: src/gitSnapshot.mjs, src/inboxEventStream.mjs, src/memoryRecordWriter.mjs, src/workGraphBacklogUiServer.mjs, work/daemon-audit.jsonl
+  work.title: История изменений и память действий оператора
+  work.updated_by: workgraph-mcp
+  work.write.at: 2026-06-06T09:49:34.517Z
+  work.write.operation: complete
+
+Свидетельства:
+  - Rollup children done: oham-git-snapshot-change-history, oham-audit-journal-change-history, oham-inbox-action-memory-feed, oham-memory-panel-action-memory; upstream epics already in main.
+]>

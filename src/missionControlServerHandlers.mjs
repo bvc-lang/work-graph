@@ -186,7 +186,6 @@ export const MISSION_CONTROL_CSS = `
       box-shadow: var(--shadow-card);
       color: var(--text);
     }
-    #cmd-k-input { width: 100%; box-sizing: border-box; border: none; background: transparent; color: var(--text); padding: 14px 16px; font-size: 15px; outline: none; }
     #cmd-k-results { max-height: 320px; overflow: auto; border-top: 1px solid var(--border); }
     .cmd-k-row { padding: 10px 16px; cursor: pointer; color: var(--text); }
     .cmd-k-row.is-active, .cmd-k-row:hover { background: var(--accent-soft); }

@@ -1,0 +1,45 @@
+#Задача_oham_audit_journal_change_history<[
+Базис:
+  Scheduler tick/recovery должен быть виден оператору.
+Вектор:
+  wire-audit-journal-operator-dashboard: daemon-audit-list в verification view.
+Цель:
+  Последние tick-события планировщика читаются из audit journal.
+Проверки:
+  daemon-audit-list в verification UI
+Анализ:
+  wire-audit-journal-operator-dashboard уже done.
+Решение:
+  Вердикт: полезно — закрыть subtask как done.
+
+Метки:
+  work.closed_at: 2026-06-06T09:49:30.136Z
+  atom.profile: work_item
+  intake.source_kind: chat-session
+  intake.source_ref: cursor:7ecada15-change-history-action-memory
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-06T09:49:23.578Z
+  work.analysis.source: chat-session
+  work.decision.at: 2026-06-06T09:49:23.578Z
+  work.decision.verdict: useful
+  work.department: ui-dashboard
+  work.depends_on: epic-operator-change-history-action-memory-v1, wire-audit-journal-operator-dashboard
+  work.id: oham-audit-journal-change-history
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: integration_architect
+  work.parent_id: epic-operator-change-history-action-memory-v1
+  work.pipeline_stage: decided
+  work.priority: medium
+  work.risk: low
+  work.status: done
+  work.target_files: work/daemon-audit.jsonl, src/workGraphBacklogUiServer.mjs, intent/ui/dashboard/work/wire-audit-journal-operator-dashboard.work.bvc
+  work.title: История изменений: daemon audit journal в Verification
+  work.updated_by: workgraph-mcp
+  work.write.at: 2026-06-06T09:49:30.136Z
+  work.write.operation: complete
+
+Свидетельства:
+  - Upstream done: wire-audit-journal-operator-dashboard; verification-view #daemon-audit-list reads work/daemon-audit.jsonl tail.
+]>

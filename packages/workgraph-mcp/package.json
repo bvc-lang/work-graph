@@ -1,6 +1,6 @@
 {
   "name": "@work-graph/mcp",
-  "version": "0.2.16",
+  "version": "0.2.17",
   "description": "MCP server for Work Graph — work items in intent/**/*.work.bvc",
   "type": "module",
   "bin": {
@@ -16,7 +16,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@work-graph/cli": "^0.2.20",
+    "@work-graph/cli": "^0.2.21",
     "@modelcontextprotocol/sdk": "^1.29.0",
     "zod": "^3.25.76"
   },
