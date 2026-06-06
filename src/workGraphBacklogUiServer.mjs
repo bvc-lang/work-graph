@@ -6351,17 +6351,24 @@ export function renderBacklogHtml(options = {}) {
       return Boolean(settingsUpdateStatus && !settingsUpdateStatus.hidden);
     }
 
+    let lastSettingsAboutVersionInfo = null;
+
     function applySettingsAboutUpdateUi(info) {
       const updateAvailable = info?.updateAvailable === true;
       const canInstallFromUi = info?.canInstallFromUi === true;
       const installCommand = String(info?.installCommand || info?.installCommandProject || '').trim();
       const userChecked = settingsUpdateCheckWasPerformed();
+      const showCommandFallback = info?.showInstallCommandFallback === true;
 
       if (settingsInstallUpdate) {
-        settingsInstallUpdate.hidden = !(updateAvailable && canInstallFromUi && userChecked);
+        settingsInstallUpdate.hidden = showCommandFallback
+          || !(updateAvailable && canInstallFromUi && userChecked);
       }
 
-      const showInstallCommand = updateAvailable && !canInstallFromUi && userChecked && installCommand !== '';
+      const showInstallCommand = installCommand !== '' && userChecked && (
+        showCommandFallback
+        || (updateAvailable && !canInstallFromUi)
+      );
       if (settingsInstallCommand) {
         settingsInstallCommand.hidden = !showInstallCommand;
       }
@@ -6404,6 +6411,12 @@ export function renderBacklogHtml(options = {}) {
         if (settingsUpdateStatus) {
           settingsUpdateStatus.textContent = t('settings.about.installFailed');
         }
+        if (lastSettingsAboutVersionInfo) {
+          applySettingsAboutUpdateUi({
+            ...lastSettingsAboutVersionInfo,
+            showInstallCommandFallback: true,
+          });
+        }
       } finally {
         if (settingsInstallUpdate) {
           settingsInstallUpdate.disabled = false;
@@ -6439,6 +6452,7 @@ export function renderBacklogHtml(options = {}) {
           applySettingsAboutUpdateUi(null);
           return;
         }
+        lastSettingsAboutVersionInfo = info;
         if (info.updateAvailable) {
           settingsUpdateStatus.textContent = t('settings.about.updateAvailable', { latest: info.latestVersion });
           applySettingsAboutUpdateUi(info);

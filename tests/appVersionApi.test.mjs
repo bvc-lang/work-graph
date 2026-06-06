@@ -7,6 +7,7 @@ import { describe, it, afterEach } from 'node:test';
 import {
   buildAppVersionInstallResponse,
   buildAppVersionResponse,
+  buildNpmExecInvocation,
   buildNpmRegistryLatestUrl,
   clearNpmVersionCache,
   fetchNpmLatestVersion,
@@ -19,6 +20,19 @@ import {
 } from '../src/appVersionApi.mjs';
 
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
+
+describe('buildNpmExecInvocation', () => {
+  it('uses shell on Windows so npm resolves from PATH', () => {
+    const invocation = buildNpmExecInvocation(['update', '@work-graph/cli']);
+    assert.equal(invocation.file, 'npm');
+    assert.deepEqual(invocation.args, ['update', '@work-graph/cli']);
+    if (process.platform === 'win32') {
+      assert.equal(invocation.options.shell, true);
+    } else {
+      assert.equal(invocation.options.shell, undefined);
+    }
+  });
+});
 
 describe('buildNpmRegistryLatestUrl', () => {
   it('uses scoped package path for @work-graph/cli', () => {
@@ -178,8 +192,11 @@ describe('runAppVersionProjectUpdate / buildAppVersionInstallResponse', () => {
     try {
       const result = await runAppVersionProjectUpdate({
         cwd: tempRoot,
-        execFileImpl: async (file, args) => {
+        execFileImpl: async (file, args, execOptions = {}) => {
           command = `${file} ${args.join(' ')}`;
+          if (process.platform === 'win32') {
+            assert.equal(execOptions.shell, true);
+          }
           await writeFile(
             join(tempRoot, 'node_modules', '@work-graph', 'cli', 'package.json'),
             JSON.stringify({ name: '@work-graph/cli', version: '0.2.14' }),

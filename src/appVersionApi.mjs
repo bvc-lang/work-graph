@@ -18,6 +18,26 @@ export const NPM_REGISTRY_USER_AGENT = 'work-graph-app-version-check';
 const execFileAsync = promisify(execFile);
 
 /**
+ * @param {string[]} args
+ * @returns {{ file: string, args: string[], options: { shell?: boolean } }}
+ */
+export function buildNpmExecInvocation(args) {
+  const npmArgs = Array.isArray(args) ? args : [];
+  if (process.platform === 'win32') {
+    return {
+      file: 'npm',
+      args: npmArgs,
+      options: { shell: true },
+    };
+  }
+  return {
+    file: 'npm',
+    args: npmArgs,
+    options: {},
+  };
+}
+
+/**
  * @param {string} packageName
  * @param {string} [registryBase]
  */
@@ -42,11 +62,13 @@ export function buildNpmRegistryLatestUrl(packageName, registryBase = process.en
 export function fetchNpmLatestVersionViaCli(packageName, options = {}) {
   const execImpl = options.execFileSyncImpl ?? execFileSync;
   const timeoutMs = options.timeoutMs ?? NPM_REGISTRY_FETCH_TIMEOUT_MS;
-  const raw = execImpl('npm', ['view', packageName, 'version', '--json'], {
+  const npmView = buildNpmExecInvocation(['view', packageName, 'version', '--json']);
+  const raw = execImpl(npmView.file, npmView.args, {
     encoding: 'utf8',
     timeout: timeoutMs,
     env: process.env,
     stdio: ['ignore', 'pipe', 'pipe'],
+    ...npmView.options,
   });
   const parsed = JSON.parse(String(raw).trim());
   const latestVersion = typeof parsed === 'string' ? parsed : String(parsed?.version ?? parsed ?? '');
@@ -308,15 +330,16 @@ export async function runAppVersionProjectUpdate(options = {}) {
     throw new Error('project_update_requires_npm_install');
   }
 
-  const args = ['update', npmPackage, DEFAULT_MCP_PACKAGE];
+  const npmUpdate = buildNpmExecInvocation(['update', npmPackage, DEFAULT_MCP_PACKAGE]);
   const execImpl = options.execFileImpl ?? execFileAsync;
   const timeoutMs = options.timeoutMs ?? NPM_UPDATE_TIMEOUT_MS;
-  const { stdout, stderr } = await execImpl('npm', args, {
+  const { stdout, stderr } = await execImpl(npmUpdate.file, npmUpdate.args, {
     cwd: projectRoot,
     timeout: timeoutMs,
     env: process.env,
     encoding: 'utf8',
     maxBuffer: 4 * 1024 * 1024,
+    ...npmUpdate.options,
   });
 
   clearNpmVersionCache();
@@ -327,7 +350,7 @@ export async function runAppVersionProjectUpdate(options = {}) {
     ok: true,
     version: local.version,
     npmPackage,
-    command: `npm ${args.join(' ')}`,
+    command: `npm ${npmUpdate.args.join(' ')}`,
     stdout: String(stdout ?? '').slice(0, 4000),
     stderr: String(stderr ?? '').slice(0, 4000),
     needsUiRestart: true,
