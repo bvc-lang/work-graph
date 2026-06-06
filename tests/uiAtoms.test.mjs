@@ -39,7 +39,10 @@ describe('ui atoms', () => {
   it('renders badge, input, icon, modal', () => {
     assert.match(renderUiBadge({ label: 'ready', tone: 'accent' }), /wg-badge--accent/);
     assert.match(renderUiTextInput({ placeholder: 'x', testId: 'inp' }), /data-testid="inp"/);
-    assert.match(renderUiSelect({ testId: 'sel', options: [{ value: 'a', label: 'A' }] }), /class="wg-select"/);
+    const selectHtml = renderUiSelect({ testId: 'sel', options: [{ value: 'a', label: 'A' }] });
+    assert.match(selectHtml, /data-wg-select-combobox/);
+    assert.match(selectHtml, /class="wg-select-trigger"/);
+    assert.match(selectHtml, /class="ui-drop-list"/);
     assert.match(renderUiIcon({ name: 'dot' }), /data-icon="dot"/);
     assert.match(renderUiModal({ title: 'T' }), /data-testid="ui-modal"/);
   });

@@ -9,7 +9,7 @@ import {
   renderNavViewIcon,
   renderThemeIcon,
 } from '../src/ui/iconAssets.mjs';
-import { renderUiCheckbox } from '../src/ui/atoms/checkbox.mjs';
+import { renderUiCheckbox, UI_CHECKBOX_CSS } from '../src/ui/atoms/checkbox.mjs';
 
 describe('iconAssets', () => {
   it('reads bold SVG icons from public/assets/icons', () => {
@@ -44,6 +44,9 @@ describe('iconAssets', () => {
 
   it('renders checkbox with Gripe form-native-checkable class', () => {
     assert.match(renderUiCheckbox({ testId: 'demo' }), /class="form-native-checkable"/u);
+    assert.match(UI_CHECKBOX_CSS, /appearance: none/);
+    assert.match(UI_CHECKBOX_CSS, /border-radius: var\(--ui-radius-control-sm/);
+    assert.match(UI_CHECKBOX_CSS, /background-color: rgb\(0 0 0\)/);
   });
 
   it('renderInlineIcon uses currentColor strokes from asset pack', () => {

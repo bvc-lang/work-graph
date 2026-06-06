@@ -71,15 +71,19 @@ export const UI_TABS_CSS = `
   border-bottom: 2px solid transparent;
   border-radius: 0;
   color: rgb(var(--ui-muted-rgb, 100 116 139));
-  font-weight: 500;
+  cursor: pointer;
+  font-weight: 600;
   padding: 8px 10px;
 }
 .wg-tabs__trigger:hover:not(:disabled) {
   color: rgb(var(--ui-text-rgb, 15 23 42));
 }
+.wg-tabs__trigger:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
 .wg-tabs__trigger.is-active {
   border-bottom-color: rgb(var(--ui-control-checked-rgb, 0 0 0));
   color: rgb(var(--ui-text-rgb, 15 23 42));
-  font-weight: 600;
 }
 `;

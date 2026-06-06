@@ -56,6 +56,7 @@ export function resolveInstallLayout({ moduleUrl, installRootOverride } = {}) {
     GRAPH_CANVAS_LIT_FLOW_CSS_PATH: join(publicRoot, 'graph-canvas-lit-flow.css'),
     WORKGRAPH_LOGO_SVG_PATH: join(publicRoot, 'assets/workgraph-logo.svg'),
     WORKGRAPH_EMBLEM_SVG_PATH: join(publicRoot, 'assets/workgraph-emblem.svg'),
+    WORKGRAPH_WORDMARK_SVG_PATH: join(publicRoot, 'assets/workgraph-wordmark.svg'),
     PUBLIC_ROOT: publicRoot,
     DESIGN_TOKENS_GRIPE_CSS_PATH: join(designTokensRoot, 'gripe-dark-default.css'),
     DESIGN_TOKENS_WG_CSS_PATH: join(designTokensRoot, 'workgraph-dark.css'),

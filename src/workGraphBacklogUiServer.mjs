@@ -35,9 +35,7 @@ import {
   renderAgentRunDockCloseButton,
   renderAgentRunFooterButtons,
   renderIntentComposerActionButtons,
-  renderIntentDomainClearButton,
   renderSearchModeSelect,
-  renderCycleFilterSelect,
   renderIntentDomainFilterSelect,
   renderAnalyticsSubtabsShell,
   renderAnalyticsSortOptions,
@@ -45,10 +43,13 @@ import {
   renderWorkflowDisplayModeSelect,
   renderBoardColumnModeSelect,
   renderSettingsLocaleOptions,
+  renderSettingsFontScaleOptions,
   renderSettingsThemeOptions,
   renderToolbarSearchInput,
   renderIntentComposerTextarea,
   renderGitSnapshotSettingsToggles,
+  renderSettingsCheckUpdateButton,
+  DETAIL_BACK_ICON_HTML,
 } from './ui/backlogShellButtons.mjs';
 import { renderInlineIcon, renderThemeIcon } from './ui/iconAssets.mjs';
 import { buildAppVersionInstallResponse, buildAppVersionResponse } from './appVersionApi.mjs';
@@ -131,6 +132,7 @@ const {
   GRAPH_CANVAS_LIT_FLOW_CSS_PATH,
   WORKGRAPH_LOGO_SVG_PATH,
   WORKGRAPH_EMBLEM_SVG_PATH,
+  WORKGRAPH_WORDMARK_SVG_PATH,
   PUBLIC_ROOT,
   DESIGN_TOKENS_GRIPE_CSS_PATH,
   DESIGN_TOKENS_WG_CSS_PATH,
@@ -323,6 +325,12 @@ function loadBrowserWorkflowTreeProjectionSource() {
 function loadBrowserUiButtonClientSource() {
   return stripModuleForBrowserInline(
     readFileSync(join(__dirname, 'ui/atoms/buttonClient.mjs'), 'utf8'),
+  );
+}
+
+function loadBrowserSelectComboboxClientSource() {
+  return stripModuleForBrowserInline(
+    readFileSync(join(__dirname, 'ui/atoms/selectComboboxClient.mjs'), 'utf8'),
   );
 }
 
@@ -563,6 +571,7 @@ export function renderBacklogHtml(options = {}) {
   const workflowTreeProjectionSource = loadBrowserWorkflowTreeProjectionSource();
   const missionControlClientSource = loadBrowserMissionControlClientSource();
   const uiButtonClientSource = loadBrowserUiButtonClientSource();
+  const selectComboboxClientSource = loadBrowserSelectComboboxClientSource();
   const uiBadgeClientSource = loadBrowserUiBadgeClientSource();
   const workItemStatusToneSource = loadBrowserWorkItemStatusToneSource();
   const kanbanBoardDeltaSource = loadBrowserKanbanBoardDeltaSource();
@@ -590,17 +599,17 @@ export function renderBacklogHtml(options = {}) {
   const shellHeaderThemeToggle = renderHeaderThemeToggleButton({ ariaLabel: t('theme.toggleAria') });
   const shellSettingsLocaleOptions = renderSettingsLocaleOptions({ locale, t });
   const shellSettingsThemeOptions = renderSettingsThemeOptions({ theme: 'light', t });
+  const shellSettingsFontScaleOptions = renderSettingsFontScaleOptions({ fontMode: 'font-m', t });
   const shellToolbarSearchInput = renderToolbarSearchInput({ t });
   const shellIntentComposerTextarea = renderIntentComposerTextarea();
   const shellGitSnapshotSettingsToggles = renderGitSnapshotSettingsToggles({ t });
+  const shellSettingsCheckUpdateButton = renderSettingsCheckUpdateButton({ t });
   const shellDetailClose = renderDetailCloseButton();
   const shellDetailSubClose = renderDetailSubCloseButton();
   const shellAgentDockClose = renderAgentRunDockCloseButton();
   const shellAgentRunFooter = renderAgentRunFooterButtons();
   const shellIntentComposerActions = renderIntentComposerActionButtons();
-  const shellIntentDomainClear = renderIntentDomainClearButton();
-  const shellSearchModeSelect = renderSearchModeSelect();
-  const shellCycleFilterSelect = renderCycleFilterSelect();
+  const shellSearchModeSelect = renderSearchModeSelect({ t });
   const shellIntentDomainFilterSelect = renderIntentDomainFilterSelect();
   const shellAnalyticsSubtabs = renderAnalyticsSubtabsShell();
   const shellAnalyticsSortOptions = renderAnalyticsSortOptions({ t, sort: 'created-desc' });
@@ -657,6 +666,7 @@ export function renderBacklogHtml(options = {}) {
   <style>
     :root {
       color-scheme: light;
+      --brand-font-sans: 'Graphik LCG', ui-sans-serif, system-ui, sans-serif;
       --text-scale: 1;
       --bg: #ffffff;
       --header-bg: #ffffff;
@@ -675,10 +685,17 @@ export function renderBacklogHtml(options = {}) {
       --ui-control-checked-foreground-rgb: 255 255 255;
       --ui-text-rgb: 15 23 42;
       --ui-muted-rgb: 100 116 139;
+      --ui-surface-rgb: 255 255 255;
+      --ui-surface-muted-rgb: 248 250 252;
+      --ui-surface-hover-rgb: 241 245 249;
+      --ui-border-rgb: 226 232 240;
       --ui-accent-rgb: 0 0 0;
       --ui-accent-hover-rgb: 38 38 38;
       --ui-accent-foreground-rgb: 255 255 255;
       --ui-focus-ring-rgb: 0 0 0;
+      --ui-link-rgb: 0 0 0;
+      --ui-link-hover-rgb: 38 38 38;
+      --ui-danger-rgb: 209 36 47;
       --ui-radius-control: 0.75rem;
       --ui-radius-control-lg: 1rem;
       --ui-radius-control-sm: 0.5rem;
@@ -711,40 +728,51 @@ export function renderBacklogHtml(options = {}) {
     html.font-l { --text-scale: 1.125; }
     html.font-xl { --text-scale: 1.25; }
 
+    html[data-theme="dark"],
     body[data-theme="dark"] {
       color-scheme: dark;
+      --brand-font-sans: 'Graphik LCG', ui-sans-serif, system-ui, sans-serif;
       --ui-control-bg-rgb: 45 45 48;
       --ui-control-bg-hover-rgb: 60 60 60;
-      --ui-control-checked-rgb: 245 158 11;
-      --ui-control-checked-foreground-rgb: 17 17 17;
-      --ui-accent-rgb: 245 158 11;
-      --ui-accent-hover-rgb: 217 119 6;
-      --ui-accent-foreground-rgb: 17 17 17;
-      --ui-focus-ring-rgb: 245 158 11;
+      --ui-control-checked-rgb: 29 122 252;
+      --ui-control-checked-foreground-rgb: 255 255 255;
+      --ui-text-rgb: 212 212 212;
+      --ui-muted-rgb: 157 157 157;
+      --ui-surface-rgb: 37 37 38;
+      --ui-surface-muted-rgb: 45 45 48;
+      --ui-surface-hover-rgb: 45 45 48;
+      --ui-border-rgb: 60 60 60;
+      --ui-accent-rgb: 29 122 252;
+      --ui-accent-hover-rgb: 56 139 255;
+      --ui-accent-foreground-rgb: 255 255 255;
+      --ui-focus-ring-rgb: 29 122 252;
+      --ui-link-rgb: 29 122 252;
+      --ui-link-hover-rgb: 56 139 255;
+      --ui-danger-rgb: 241 76 76;
       --ui-radius-control: 0.375rem;
       --ui-radius-control-lg: 0.5rem;
       --ui-radius-control-sm: 0.25rem;
-      --bg: rgb(var(--brand-bg-rgb, 29 33 37));
-      --header-bg: rgb(22 26 29);
-      --panel: rgb(var(--ui-surface-rgb, 44 51 56));
-      --panel-2: rgb(var(--ui-surface-muted-rgb, 56 65 74));
-      --column-bg: rgb(22 26 29);
-      --card: rgb(40 46 51);
-      --border: rgb(var(--brand-border-rgb, 61 71 77));
-      --text: rgb(var(--ui-text-rgb, 199 209 219));
-      --muted: rgb(var(--ui-muted-rgb, 159 173 188));
-      --accent: rgb(var(--ui-accent-rgb, 133 184 255));
-      --accent-soft: rgba(9, 41, 87, 0.72);
+      --bg: rgb(var(--brand-bg-rgb, 30 30 30));
+      --header-bg: rgb(22 22 22);
+      --panel: rgb(var(--ui-surface-rgb, 37 37 38));
+      --panel-2: rgb(var(--ui-surface-muted-rgb, 45 45 48));
+      --column-bg: rgb(22 22 22);
+      --card: rgb(40 40 42);
+      --border: rgb(var(--brand-border-rgb, 60 60 60));
+      --text: rgb(var(--ui-text-rgb, 212 212 212));
+      --muted: rgb(var(--ui-muted-rgb, 157 157 157));
+      --accent: rgb(var(--ui-accent-rgb, 29 122 252));
+      --accent-soft: rgb(var(--ui-control-bg-hover-rgb, 60 60 60));
       --warn: #e2b203;
-      --danger: rgb(var(--ui-danger-rgb, 255 156 143));
+      --danger: rgb(var(--ui-danger-rgb, 241 76 76));
       --ok: #4bce97;
       --shadow-card: 0 1px 1px rgba(0, 0, 0, .32);
       --scrollbar-track: var(--bg);
-      --scrollbar-thumb: rgba(161, 189, 217, 0.22);
-      --scrollbar-thumb-hover: rgba(161, 189, 217, 0.34);
+      --scrollbar-thumb: rgba(255, 255, 255, 0.22);
+      --scrollbar-thumb-hover: rgba(255, 255, 255, 0.34);
       --scrollbar-thumb-active: var(--accent);
-      --cursor-accent: rgb(var(--ui-accent-rgb, 133 184 255));
-      --cursor-accent-hover: rgb(var(--ui-accent-hover-rgb, 87 157 255));
+      --cursor-accent: rgb(var(--ui-accent-rgb, 29 122 252));
+      --cursor-accent-hover: rgb(var(--ui-accent-hover-rgb, 56 139 255));
     }
 
     * { box-sizing: border-box; }
@@ -881,21 +909,36 @@ export function renderBacklogHtml(options = {}) {
       padding: 10px 4px 12px;
     }
 
-    .project-logo {
+    .project-logo-lockup {
+      align-items: center;
+      display: flex;
+      gap: 10px;
+    }
+
+    .project-logo-emblem-mark,
+    .project-logo-wordmark,
+    .project-logo-emblem {
       display: block;
+      width: auto;
+    }
+
+    .project-logo-emblem-mark,
+    .project-logo-wordmark {
       height: 24px;
       max-width: 100%;
-      width: auto;
+    }
+
+    .project-logo-emblem-mark {
+      flex-shrink: 0;
     }
 
     .project-logo-emblem {
       display: none;
       height: 22px;
       margin: 0 auto;
-      width: auto;
     }
 
-    body[data-theme="dark"] .project-logo {
+    body[data-theme="dark"] .project-logo-wordmark {
       filter: brightness(0) invert(1);
     }
 
@@ -922,6 +965,7 @@ export function renderBacklogHtml(options = {}) {
       display: flex;
       font: inherit;
       font-size: var(--text-base);
+      font-weight: 600;
       gap: 10px;
       justify-content: flex-start;
       line-height: var(--text-base-line-height, 1.5rem);
@@ -942,9 +986,13 @@ export function renderBacklogHtml(options = {}) {
       font-weight: 600;
     }
 
+    body[data-theme="dark"] .nav-tab:hover {
+      background: rgb(var(--ui-control-bg-rgb, 45 45 48));
+    }
+
     body[data-theme="dark"] .nav-tab[aria-selected="true"] {
-      background: #092957;
-      color: #85b8ff;
+      background: rgb(var(--ui-control-bg-hover-rgb, 60 60 60));
+      color: var(--text);
     }
 
     .nav-tab[disabled] {
@@ -1012,37 +1060,54 @@ export function renderBacklogHtml(options = {}) {
       visibility: visible;
     }
 
-    .wg-page-loader-panel {
-      align-items: center;
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      box-shadow: var(--shadow-card);
-      display: grid;
-      gap: 12px;
-      justify-items: center;
-      min-width: 220px;
-      padding: 18px 22px;
+    .wg-page-loader-spinner {
+      display: block;
+      height: 52px;
+      width: 52px;
     }
 
-    .wg-page-loader-spinner {
-      animation: wg-page-loader-spin 0.8s linear infinite;
-      border: 3px solid var(--border);
-      border-radius: 50%;
-      border-top-color: var(--accent);
-      height: 32px;
-      width: 32px;
+    .wg-page-loader-svg {
+      display: block;
+      height: 52px;
+      width: 52px;
+    }
+
+    .wg-page-loader-track {
+      fill: none;
+      stroke: rgb(var(--ui-border-rgb, 226 232 240));
+      stroke-width: 4;
+    }
+
+    .wg-page-loader-ring {
+      animation:
+        wg-page-loader-spin 1.1s linear infinite,
+        wg-page-loader-dash 1.35s ease-in-out infinite;
+      fill: none;
+      stroke: var(--accent);
+      stroke-linecap: round;
+      stroke-width: 4;
+      transform-origin: 24px 24px;
     }
 
     @keyframes wg-page-loader-spin {
-      to { transform: rotate(360deg); }
+      to {
+        transform: rotate(360deg);
+      }
     }
 
-    .wg-page-loader-message {
-      color: var(--muted);
-      font-size: var(--text-sm);
-      margin: 0;
-      text-align: center;
+    @keyframes wg-page-loader-dash {
+      0% {
+        stroke-dasharray: 34 79;
+        stroke-dashoffset: 0;
+      }
+      50% {
+        stroke-dasharray: 90 23;
+        stroke-dashoffset: -28;
+      }
+      100% {
+        stroke-dasharray: 34 79;
+        stroke-dashoffset: -113;
+      }
     }
 
     .content.is-graph-workspace {
@@ -1287,6 +1352,10 @@ export function renderBacklogHtml(options = {}) {
     }
 
     .toolbar {
+      --wg-toolbar-control-height: 40px;
+      --wg-toolbar-control-min-width: 160px;
+      --wg-toolbar-control-font-size: var(--text-sm, 0.8125rem);
+      --wg-toolbar-control-padding-x: 14px;
       align-items: center;
       display: flex;
       flex-wrap: nowrap;
@@ -1296,6 +1365,89 @@ export function renderBacklogHtml(options = {}) {
 
     .toolbar[hidden] {
       display: none !important;
+    }
+
+    .toolbar .wg-search-field {
+      flex: 1 1 var(--wg-toolbar-control-min-width);
+      max-width: 240px;
+      min-width: var(--wg-toolbar-control-min-width);
+      position: relative;
+    }
+
+    .toolbar .wg-search-field .wg-input--toolbar {
+      font-size: var(--wg-toolbar-control-font-size);
+      height: var(--wg-toolbar-control-height);
+      max-width: none;
+      min-height: var(--wg-toolbar-control-height);
+      padding: 0 36px 0 var(--wg-toolbar-control-padding-x);
+      width: 100%;
+    }
+
+    .wg-search-field__input::-webkit-search-cancel-button,
+    .wg-search-field__input::-webkit-search-decoration {
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    .wg-search-field__clear {
+      align-items: center;
+      background: transparent;
+      border: 0;
+      border-radius: 999px;
+      color: rgb(var(--ui-muted-rgb, 100 116 139));
+      cursor: pointer;
+      display: inline-flex;
+      height: 28px;
+      justify-content: center;
+      position: absolute;
+      right: 6px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 28px;
+    }
+
+    .wg-search-field__clear:hover {
+      background: rgb(var(--ui-control-bg-hover-rgb, 226 232 240));
+      color: rgb(var(--ui-text-rgb, 15 23 42));
+    }
+
+    .wg-search-field__clear[hidden] {
+      display: none !important;
+    }
+
+    .wg-search-field__clear-icon {
+      display: block;
+    }
+
+    .toolbar .wg-select-combobox {
+      flex: 0 0 auto;
+      max-width: none;
+      min-width: 0;
+      width: fit-content;
+    }
+
+    .toolbar .wg-select-combobox .wg-select-trigger {
+      font-size: var(--wg-toolbar-control-font-size);
+      gap: 6px;
+      height: var(--wg-toolbar-control-height);
+      max-width: 240px;
+      min-height: var(--wg-toolbar-control-height);
+      min-width: 0;
+      padding: 0 10px 0 var(--wg-toolbar-control-padding-x);
+      width: max-content;
+    }
+
+    .toolbar .filter-chip {
+      border-radius: var(--ui-radius-control, 0.75rem);
+      box-sizing: border-box;
+      font-size: var(--wg-toolbar-control-font-size);
+      font-weight: 600;
+      height: var(--wg-toolbar-control-height);
+      justify-content: center;
+      min-height: var(--wg-toolbar-control-height);
+      min-width: var(--wg-toolbar-control-min-width);
+      padding: 0 var(--wg-toolbar-control-padding-x);
+      width: var(--wg-toolbar-control-min-width);
     }
 
     #board-view .board-columns-scroll {
@@ -1315,7 +1467,8 @@ export function renderBacklogHtml(options = {}) {
       margin-left: auto;
     }
 
-    .board-column-mode-select[hidden] {
+    .board-column-mode-select[hidden],
+    .wg-select-combobox.board-column-mode-select[hidden] {
       display: none !important;
     }
 
@@ -1351,8 +1504,8 @@ export function renderBacklogHtml(options = {}) {
 
     .header-theme-toggle {
       align-items: center;
-      background: var(--panel);
-      border: 1px solid var(--border);
+      background: transparent;
+      border: 0;
       border-radius: 8px;
       color: var(--text);
       cursor: pointer;
@@ -1364,7 +1517,7 @@ export function renderBacklogHtml(options = {}) {
     }
 
     .header-theme-toggle:hover {
-      border-color: var(--accent);
+      background: rgb(var(--ui-control-bg-hover-rgb, 226 232 240));
       color: var(--accent);
     }
 
@@ -1379,6 +1532,7 @@ export function renderBacklogHtml(options = {}) {
 
     .settings-panel {
       display: grid;
+      font-size: 1rem;
       gap: 12px;
       max-width: 720px;
     }
@@ -1387,7 +1541,6 @@ export function renderBacklogHtml(options = {}) {
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: 8px;
-      box-shadow: var(--shadow-card);
       display: grid;
       gap: 12px;
       padding: 14px 16px;
@@ -1409,7 +1562,7 @@ export function renderBacklogHtml(options = {}) {
     .settings-row label,
     .settings-row > span:first-child {
       color: var(--text);
-      font-size: var(--text-sm);
+      font-size: 1rem;
       font-weight: 500;
     }
 
@@ -1432,41 +1585,14 @@ export function renderBacklogHtml(options = {}) {
       display: block;
     }
 
-    .settings-font-scale {
-      align-items: stretch;
-      display: grid;
-      gap: 8px;
-      min-width: min(100%, 320px);
-    }
-
-    .settings-font-scale-value {
-      color: var(--muted);
-      font-size: var(--text-sm);
-      text-align: right;
-    }
-
-    .settings-font-scale-slider {
-      accent-color: rgb(var(--ui-control-checked-rgb, 0 0 0));
-      accent-color: var(--accent);
-      cursor: pointer;
-      width: 100%;
-    }
-
-    .settings-font-scale-ticks {
-      color: var(--muted);
-      display: flex;
-      font-size: var(--text-sm);
-      justify-content: space-between;
-    }
-
     .settings-version-value {
       font-family: var(--brand-font-mono, monospace);
-      font-size: var(--text-sm);
+      font-size: 1rem;
     }
 
     .settings-update-status {
       color: var(--muted);
-      font-size: var(--text-sm);
+      font-size: 1rem;
       margin: 0;
     }
 
@@ -1478,7 +1604,7 @@ export function renderBacklogHtml(options = {}) {
 
     .settings-install-command-hint {
       color: var(--muted);
-      font-size: var(--text-sm);
+      font-size: 1rem;
       margin: 0;
     }
 
@@ -1540,7 +1666,7 @@ export function renderBacklogHtml(options = {}) {
 
     .settings-git-snapshot-note {
       color: var(--muted);
-      font-size: var(--text-sm);
+      font-size: 1rem;
       margin: 0 0 12px;
     }
 
@@ -1552,10 +1678,26 @@ export function renderBacklogHtml(options = {}) {
       padding: 0;
     }
 
+    .settings-git-snapshot-events legend {
+      color: var(--text);
+      font-size: 1rem;
+      font-weight: 500;
+      padding: 0;
+    }
+
     .settings-git-snapshot-events label {
       align-items: center;
       display: inline-flex;
+      font-size: 1rem;
       gap: 8px;
+    }
+
+    .settings-panel .filter-chip {
+      font-size: 1rem;
+    }
+
+    .settings-panel .ui-swagger-label-text {
+      font-size: 1rem;
     }
 
     .wg-notice-stack {
@@ -2384,14 +2526,13 @@ export function renderBacklogHtml(options = {}) {
 
     .detail-toolbar .wg-btn--secondary {
       background: rgb(var(--ui-control-bg-rgb, 45 45 48));
+      border: 0;
       color: rgb(var(--ui-text-rgb, 212 212 212));
-      border-color: rgb(var(--brand-border-rgb, 60 60 60));
     }
 
     body:not([data-theme="dark"]) .detail-toolbar .wg-btn--secondary {
       background: var(--panel-2);
       color: var(--text);
-      border-color: var(--border);
     }
 
     .atom-inspector-form {
@@ -3186,20 +3327,35 @@ export function renderBacklogHtml(options = {}) {
       margin: 0 0 6px;
     }
 
-    .detail-close {
-      align-self: flex-start;
+    .detail-icon-button {
+      align-items: center;
       background: transparent;
-      border: 1px solid transparent;
-      border-radius: 6px;
-      color: var(--muted);
+      border: 0;
+      border-radius: var(--ui-radius-control-sm, 6px);
+      color: var(--text);
       cursor: pointer;
+      display: inline-flex;
       font: inherit;
-      padding: 5px 8px;
+      justify-content: center;
+      transition: background-color 0.15s ease, color 0.15s ease;
     }
 
-    .detail-close:hover {
-      background: var(--panel-2);
-      color: var(--text);
+    .detail-icon-button:hover {
+      background: rgb(var(--ui-control-bg-hover-rgb, 226 232 240));
+      color: var(--accent);
+    }
+
+    .detail-close {
+      align-self: flex-start;
+      flex-shrink: 0;
+      height: 32px;
+      padding: 0;
+      width: 32px;
+    }
+
+    .detail-button-icon {
+      display: block;
+      flex-shrink: 0;
     }
 
     .detail-body {
@@ -4243,18 +4399,16 @@ export function renderBacklogHtml(options = {}) {
     }
 
     .detail-back-button {
-      background: var(--panel-2);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      color: var(--text);
-      cursor: pointer;
-      font: inherit;
-      padding: 6px 10px;
+      background: rgb(var(--ui-control-bg-rgb, 242 242 242));
+      gap: 6px;
+      min-height: 32px;
+      padding: 6px 12px 6px 10px;
     }
 
-    .detail-back-button:hover {
-      border-color: var(--accent);
-      color: var(--accent);
+    .detail-back-button-text {
+      font-size: var(--text-base);
+      font-weight: 500;
+      line-height: 1.25;
     }
 
     .block-l2-wrap {
@@ -4449,18 +4603,17 @@ export function renderBacklogHtml(options = {}) {
     ${UI_BUTTON_CSS}
     body:not([data-theme="dark"]) .wg-btn--secondary {
       background: var(--panel-2);
+      border: 0;
       color: var(--text);
-      border-color: var(--border);
     }
     body:not([data-theme="dark"]) .wg-btn--secondary:hover:not(:disabled) {
       background: #ebecf0;
       color: var(--text);
-      border-color: #c1c7d0;
     }
     body:not([data-theme="dark"]) .wg-btn--inverse {
       background: var(--panel);
+      border: 0;
       color: var(--text);
-      border-color: var(--border);
     }
     ${UI_BADGE_CSS}
     ${UI_INPUT_CSS}
@@ -4544,23 +4697,36 @@ export function renderBacklogHtml(options = {}) {
       min-width: 1.5em;
       text-align: center;
     }
-    #workflow-display-mode { max-width: 140px; }
+    #workflow-display-mode-trigger,
+    .wg-select-combobox:has(#workflow-display-mode) {
+      max-width: 140px;
+    }
   </style>
 </head>
 <body>
   <div class="app-shell layout-root" id="layout-root">
     <aside class="sidebar" aria-label="Навигация Work Graph">
       <div class="project-title">
+        <div class="project-logo-lockup project-logo-full" aria-label="Work Graph">
+          <img
+            class="project-logo-emblem-mark"
+            src="/assets/workgraph-emblem.svg"
+            height="24"
+            width="41"
+            alt=""
+            aria-hidden="true"
+          >
+          <img
+            class="project-logo-wordmark"
+            src="/assets/workgraph-wordmark.svg"
+            height="24"
+            width="146"
+            alt="Work Graph"
+            data-testid="workgraph-logo"
+          >
+        </div>
         <img
-          class="project-logo project-logo-full"
-          src="/assets/workgraph-logo.svg"
-          height="24"
-          width="146"
-          alt="Work Graph"
-          data-testid="workgraph-logo"
-        >
-        <img
-          class="project-logo project-logo-emblem"
+          class="project-logo-emblem"
           src="/assets/workgraph-emblem.svg"
           height="22"
           width="38"
@@ -4604,18 +4770,18 @@ export function renderBacklogHtml(options = {}) {
         </div>
       </header>
       <div id="wg-page-loader" class="wg-page-loader is-visible" data-testid="wg-page-loader" aria-live="polite" aria-busy="true">
-        <div class="wg-page-loader-panel" role="status">
-          <div class="wg-page-loader-spinner" aria-hidden="true"></div>
-          <p id="wg-page-loader-message" class="wg-page-loader-message">${t('loader.bootstrap')}</p>
+        <div class="wg-page-loader-spinner" role="status" aria-label="${t('loader.default')}">
+          <svg class="wg-page-loader-svg" viewBox="0 0 48 48" aria-hidden="true">
+            <circle class="wg-page-loader-track" cx="24" cy="24" r="18"></circle>
+            <circle class="wg-page-loader-ring" cx="24" cy="24" r="18"></circle>
+          </svg>
         </div>
       </div>
       <section id="view-toolbar" class="toolbar" hidden>
         ${shellToolbarSearchInput}
         ${shellSearchModeSelect}
         <div id="workflow-filters" class="workflow-filters" aria-label="Фильтры потока">
-          ${shellCycleFilterSelect}
           ${shellIntentDomainFilterSelect}
-          ${shellIntentDomainClear}
           ${shellWorkflowDisplayModeSelect}
         </div>
         ${shellBoardColumnModeSelect}
@@ -4744,17 +4910,8 @@ export function renderBacklogHtml(options = {}) {
               ${shellSettingsThemeOptions}
             </div>
             <div class="settings-row">
-              <label for="settings-font-scale">${t('settings.appearance.fontSize')}</label>
-              <div class="settings-font-scale" data-testid="settings-font-scale-control">
-                <span id="settings-font-scale-value" class="settings-font-scale-value" aria-live="polite">${t('settings.appearance.fontSizeNormal')}</span>
-                <input type="range" min="0" max="3" step="1" value="1" class="settings-font-scale-slider" id="settings-font-scale" data-testid="settings-font-scale-slider" aria-describedby="settings-font-scale-value" aria-label="${t('settings.appearance.fontSize')}">
-                <div class="settings-font-scale-ticks" aria-hidden="true">
-                  <span>${t('settings.appearance.fontSizeSmall')}</span>
-                  <span>${t('settings.appearance.fontSizeNormal')}</span>
-                  <span>${t('settings.appearance.fontSizeLarge')}</span>
-                  <span>${t('settings.appearance.fontSizeXLarge')}</span>
-                </div>
-              </div>
+              <span id="settings-font-scale-label">${t('settings.appearance.fontSize')}</span>
+              ${shellSettingsFontScaleOptions}
             </div>
           </article>
           <article class="settings-section" aria-labelledby="settings-language-title">
@@ -4785,7 +4942,7 @@ export function renderBacklogHtml(options = {}) {
             </div>
             <div class="settings-row">
               <div class="settings-about-actions">
-                <button type="button" class="wg-btn wg-btn--secondary wg-btn--sm" id="settings-check-update" data-testid="settings-check-update">${t('settings.about.checkUpdate')}</button>
+                ${shellSettingsCheckUpdateButton}
               </div>
             </div>
             <p id="settings-update-status" class="settings-update-status" data-testid="settings-update-status" hidden></p>
@@ -4879,6 +5036,7 @@ export function renderBacklogHtml(options = {}) {
   <script src="/assets/graph-canvas-lit-flow.js" defer></script>
   <script id="workgraph-app">
     ${uiButtonClientSource}
+    ${selectComboboxClientSource}
     ${uiBadgeClientSource}
     ${workItemStatusToneSource}
     ${kanbanBoardDeltaSource}
@@ -4892,6 +5050,7 @@ export function renderBacklogHtml(options = {}) {
     ${liveSyncCoordinatorSource}
     ${analyticsRecordSortSource}
     ${liveSyncSseAdapterSource}
+    const DETAIL_BACK_ICON_HTML = ${JSON.stringify(DETAIL_BACK_ICON_HTML)};
     const detailStack = createDetailDrawerStack();
     const BVC_DIALECT_SECTION_TITLES = ${JSON.stringify(bvcDialectSectionTitles)};
     function resolveAtomInspectorLang(draft) {
@@ -4942,12 +5101,6 @@ export function renderBacklogHtml(options = {}) {
       }
       return text;
     }
-    const fontScaleLabels = {
-      'font-s': t('settings.appearance.fontSizeSmall'),
-      'font-m': t('settings.appearance.fontSizeNormal'),
-      'font-l': t('settings.appearance.fontSizeLarge'),
-      'font-xl': t('settings.appearance.fontSizeXLarge'),
-    };
     function localizedKanbanColumnTitle(columnId, fallback) {
       const key = 'kanban.col.' + columnId;
       const value = t(key);
@@ -4969,7 +5122,6 @@ export function renderBacklogHtml(options = {}) {
     const promptsPageStorageKey = 'workGraphPromptsPage';
     const memoryPageStorageKey = 'workGraphMemoryPage';
     const analyticsPageStorageKey = 'workGraphAnalyticsPage';
-    const cycleFilterStorageKey = 'workGraphCycleFilter';
     const intentDomainFilterStorageKey = 'workGraphIntentDomainFilter';
     const detailDrawerWidthStorageKey = 'workGraphDetailDrawerWidth';
     const detailSubDrawerWidthStorageKey = 'workGraphDetailSubDrawerWidth';
@@ -5000,7 +5152,6 @@ export function renderBacklogHtml(options = {}) {
     let focusedBlockId = null;
     let highlightTaskId = null;
     let intentDomainFilter = localStorage.getItem(intentDomainFilterStorageKey) || '';
-    let cycleFilter = localStorage.getItem(cycleFilterStorageKey) || 'all';
     let detailContext = null;
     let detailInspectorState = { workId: null, draft: null, mode: 'view' };
     let promptsProjection = null;
@@ -5059,7 +5210,6 @@ export function renderBacklogHtml(options = {}) {
     const intentRoadmapBody = document.querySelector('#intent-roadmap-body');
     const contentRoot = document.querySelector('.content');
     const wgPageLoader = document.querySelector('#wg-page-loader');
-    const wgPageLoaderMessage = document.querySelector('#wg-page-loader-message');
     let pageLoaderDepth = 0;
     const schematicCanvas = document.querySelector('#schematic-canvas');
     const schematicPanelCount = document.querySelector('#schematic-panel-count');
@@ -5112,6 +5262,7 @@ export function renderBacklogHtml(options = {}) {
     const navTabs = [...document.querySelectorAll('.nav-tab[data-view]')];
     const promptsNavTab = document.querySelector('.nav-tab[data-view="prompts"]');
     const search = document.querySelector('#search');
+    const searchClear = document.querySelector('#search-clear');
     const searchMode = document.querySelector('#search-mode');
     const themeToggle = document.querySelector('#theme-toggle');
     const verificationEvidenceList = document.querySelector('#verification-evidence-list');
@@ -5130,8 +5281,7 @@ export function renderBacklogHtml(options = {}) {
     const settingsView = document.querySelector('#settings-view');
     const settingsThemeLight = document.querySelector('#settings-theme-light');
     const settingsThemeDark = document.querySelector('#settings-theme-dark');
-    const settingsFontScale = document.querySelector('#settings-font-scale');
-    const settingsFontScaleValue = document.querySelector('#settings-font-scale-value');
+    const settingsFontScaleButtons = [...document.querySelectorAll('[data-settings-font-scale]')];
     const settingsLocaleButtons = [...document.querySelectorAll('[data-settings-locale]')];
     const settingsVersionValue = document.querySelector('#settings-version-value');
     const settingsCheckUpdate = document.querySelector('#settings-check-update');
@@ -5206,9 +5356,20 @@ export function renderBacklogHtml(options = {}) {
     const analyticsSubtabs = [...document.querySelectorAll('[data-analytics-tab]')];
     const analyticsSortButtons = [...document.querySelectorAll('[data-analytics-sort]')];
     const viewTitle = document.querySelector('#view-title');
-    const cycleFilterSelect = document.querySelector('#cycle-filter');
     const intentDomainFilterSelect = document.querySelector('#intent-domain-filter');
-    const intentDomainClear = document.querySelector('#intent-domain-clear');
+
+    function setWgSelectVisibility(selectEl, hidden) {
+      const wrap = selectEl?.closest?.('[data-wg-select-combobox]');
+      if (wrap) {
+        wrap.hidden = hidden;
+        return;
+      }
+      if (selectEl) {
+        selectEl.hidden = hidden;
+      }
+    }
+
+    initWgSelectComboboxes(document);
 
     applyTheme(readStoredTheme());
     applyFontScale(readStoredFontScale());
@@ -5266,17 +5427,8 @@ export function renderBacklogHtml(options = {}) {
       checkAppVersionAndMaybeNotify().catch(() => undefined);
     }, appVersionCheckDelayMs);
 
-    function setPageLoaderMessage(message) {
-      if (wgPageLoaderMessage && message) {
-        wgPageLoaderMessage.textContent = message;
-      }
-    }
-
-    function showPageLoader(message) {
+    function showPageLoader() {
       pageLoaderDepth += 1;
-      if (message) {
-        setPageLoaderMessage(message);
-      }
       if (wgPageLoader) {
         wgPageLoader.classList.add('is-visible');
         wgPageLoader.setAttribute('aria-busy', 'true');
@@ -5291,8 +5443,8 @@ export function renderBacklogHtml(options = {}) {
       }
     }
 
-    function runWithPageLoader(task, message) {
-      showPageLoader(message || t('loader.default'));
+    function runWithPageLoader(task) {
+      showPageLoader();
       return Promise.resolve().then(task).finally(() => hidePageLoader());
     }
 
@@ -5327,7 +5479,7 @@ export function renderBacklogHtml(options = {}) {
       return work;
     }
 
-    showPageLoader(t('loader.bootstrap'));
+    showPageLoader();
 
     fetch('/api/snapshot')
       .then((response) => {
@@ -5350,7 +5502,6 @@ export function renderBacklogHtml(options = {}) {
       })
       .then((data) => {
         operatorShellSnapshot = data;
-        populateCycleFilterOptions();
         return fetch('/api/backlog-revision').then((response) => {
           if (!response.ok) return null;
           return response.json();
@@ -5376,11 +5527,30 @@ export function renderBacklogHtml(options = {}) {
       })
       .finally(() => hidePageLoader());
 
+    function syncSearchClearVisibility() {
+      if (!searchClear || !search) {
+        return;
+      }
+      searchClear.hidden = search.value.length === 0;
+    }
+
     search.addEventListener('input', () => {
+      syncSearchClearVisibility();
       resetListPages();
       scheduleSemanticSearchRefresh();
       render();
     });
+    if (searchClear) {
+      searchClear.addEventListener('click', () => {
+        search.value = '';
+        syncSearchClearVisibility();
+        resetListPages();
+        scheduleSemanticSearchRefresh();
+        render();
+        search.focus();
+      });
+    }
+    syncSearchClearVisibility();
     if (searchMode) {
       searchMode.addEventListener('change', () => {
         resetListPages();
@@ -5388,23 +5558,10 @@ export function renderBacklogHtml(options = {}) {
         render();
       });
     }
-    cycleFilterSelect.addEventListener('change', () => {
-      cycleFilter = cycleFilterSelect.value;
-      localStorage.setItem(cycleFilterStorageKey, cycleFilter);
-      resetListPages();
-      render();
-    });
     intentDomainFilterSelect.addEventListener('change', () => {
       intentDomainFilter = intentDomainFilterSelect.value;
       if (intentDomainFilter) localStorage.setItem(intentDomainFilterStorageKey, intentDomainFilter);
       else localStorage.removeItem(intentDomainFilterStorageKey);
-      resetListPages();
-      render();
-    });
-    intentDomainClear.addEventListener('click', () => {
-      intentDomainFilter = '';
-      intentDomainFilterSelect.value = '';
-      localStorage.removeItem(intentDomainFilterStorageKey);
       resetListPages();
       render();
     });
@@ -5550,11 +5707,14 @@ export function renderBacklogHtml(options = {}) {
         localStorage.setItem(themeStorageKey, 'dark');
       });
     }
-    if (settingsFontScale) {
-      settingsFontScale.addEventListener('input', () => {
-        const mode = fontScaleModes[Number(settingsFontScale.value)] || 'font-m';
-        applyFontScale(mode);
-        localStorage.setItem(fontScaleStorageKey, mode);
+    if (settingsFontScaleButtons.length) {
+      settingsFontScaleButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+          const mode = button.dataset.settingsFontScale;
+          if (!fontScaleModes.includes(mode)) return;
+          applyFontScale(mode);
+          localStorage.setItem(fontScaleStorageKey, mode);
+        });
       });
     }
     if (settingsLocaleButtons.length) {
@@ -5789,7 +5949,6 @@ export function renderBacklogHtml(options = {}) {
         items = items.filter((item) => semanticSearchWorkIds.has(item.id));
       }
       items = applyIntentDomainFilter(items);
-      items = applyCycleWorkflowFilter(items);
       return items;
     }
 
@@ -6054,12 +6213,10 @@ export function renderBacklogHtml(options = {}) {
         document.documentElement.classList.toggle(candidate, candidate === nextMode);
       });
       document.documentElement.style.setProperty('--text-scale', fontScaleValues[nextMode] || '1');
-      if (settingsFontScale) {
-        settingsFontScale.value = String(Math.max(0, fontScaleModes.indexOf(nextMode)));
-      }
-      if (settingsFontScaleValue) {
-        settingsFontScaleValue.textContent = fontScaleLabels[nextMode] || nextMode;
-      }
+      settingsFontScaleButtons.forEach((button) => {
+        const isActive = button.dataset.settingsFontScale === nextMode;
+        button.setAttribute('aria-pressed', String(isActive));
+      });
     }
 
     async function loadGitSnapshotSettings() {
@@ -6566,10 +6723,10 @@ export function renderBacklogHtml(options = {}) {
       }
       workflowFilters.hidden = !(view === 'board' || isWorkflow);
       if (workflowDisplayModeSelect) {
-        workflowDisplayModeSelect.hidden = !isWorkflow;
+        setWgSelectVisibility(workflowDisplayModeSelect, !isWorkflow);
       }
       if (boardColumnModeSelect) {
-        boardColumnModeSelect.hidden = view !== 'board';
+        setWgSelectVisibility(boardColumnModeSelect, view !== 'board');
       }
       if (view === 'board') {
         applyBoardColumnModeClass();
@@ -6803,36 +6960,6 @@ export function renderBacklogHtml(options = {}) {
       return Promise.resolve();
     }
 
-    function populateCycleFilterOptions() {
-      const cycles = operatorShellSnapshot?.cycleSlice?.cycles ?? [];
-      const existing = new Set([...cycleFilterSelect.options].map((option) => option.value));
-      cycles.forEach((cycle) => {
-        if (existing.has(cycle.id)) return;
-        const option = document.createElement('option');
-        option.value = cycle.id;
-        option.textContent = cycle.label + ' (' + cycle.active + ' active / ' + cycle.done + ' done)';
-        cycleFilterSelect.appendChild(option);
-      });
-      cycleFilterSelect.value = cycleFilter;
-    }
-
-    function applyCycleWorkflowFilter(items) {
-      if (activeView !== 'board' && activeView !== 'workflow') {
-        return items;
-      }
-
-      const derivedByWorkId = operatorShellSnapshot?.cycleSlice?.derivedByWorkId ?? {};
-      const resolvedCycle = cycleFilter === 'current'
-        ? (operatorShellSnapshot?.cycleSlice?.currentCycle ?? 'uncategorized')
-        : cycleFilter;
-
-      if (resolvedCycle === 'all') {
-        return items;
-      }
-
-      return items.filter((item) => derivedByWorkId[item.id] === resolvedCycle);
-    }
-
     function applyIntentDomainFilter(items) {
       if ((activeView !== 'board' && activeView !== 'workflow') || !intentDomainFilter || !operatorShellSnapshot?.intentSidebar?.nodes) {
         return items;
@@ -6862,7 +6989,7 @@ export function renderBacklogHtml(options = {}) {
           '<option value="' + escapeHtml(current) + '" selected>' + escapeHtml(current) + '</option>';
       }
       intentDomainFilterSelect.disabled = domains.length === 0;
-      intentDomainClear.hidden = !current;
+      syncWgSelectComboboxForNative(intentDomainFilterSelect);
     }
 
     function crossHighlightTargets(taskId) {
@@ -7714,8 +7841,8 @@ export function renderBacklogHtml(options = {}) {
       const bodySectionTitle = isClosing ? 'Итоги эпика' : 'Ответ';
       const copyMdButton = renderClientUiButton({
         label: 'Копировать MD',
-        variant: 'secondary',
-        size: 'xs',
+        variant: 'soft',
+        size: 'sm',
         testId: 'analytics-copy-md',
         attrs: {
           'data-action': 'copy-analytics-md',
@@ -9716,12 +9843,22 @@ export function renderBacklogHtml(options = {}) {
       document.body.classList.add('detail-drawer-open');
     }
 
+    function normalizeDetailBackLabel(label) {
+      return String(label).replace(/^\\u2190\\s*/u, '').trim();
+    }
+
     function renderDetailBackButton(label) {
-      return '<div class="detail-back-row"><button class="detail-back-button" type="button" id="detail-nav-back">' + escapeHtml(label) + '</button></div>';
+      const text = normalizeDetailBackLabel(label);
+      return '<div class="detail-back-row"><button class="detail-back-button detail-icon-button" type="button" id="detail-nav-back">' +
+        DETAIL_BACK_ICON_HTML +
+        '<span class="detail-back-button-text">' + escapeHtml(text) + '</span></button></div>';
     }
 
     function renderDetailSubBackButton(label) {
-      return '<div class="detail-back-row"><button class="detail-back-button" type="button" id="detail-sub-nav-back">' + escapeHtml(label) + '</button></div>';
+      const text = normalizeDetailBackLabel(label);
+      return '<div class="detail-back-row"><button class="detail-back-button detail-icon-button" type="button" id="detail-sub-nav-back">' +
+        DETAIL_BACK_ICON_HTML +
+        '<span class="detail-back-button-text">' + escapeHtml(text) + '</span></button></div>';
     }
 
     function bindDetailNavBack(handler) {
@@ -10415,6 +10552,7 @@ export function renderBacklogHtml(options = {}) {
       activeView = 'memory';
       localStorage.setItem(viewStorageKey, activeView);
       search.value = 'work:' + normalizedWorkId;
+      syncSearchClearVisibility();
       applyView(activeView);
       ensureLazyViewData('memory').then(() => {
         render();
@@ -12217,6 +12355,20 @@ export function createBacklogUiServer(options = {}) {
         response.end(source);
       } catch (error) {
         sendText(response, 500, 'failed_to_load_workgraph_emblem');
+      }
+      return;
+    }
+
+    if (url.pathname === '/assets/workgraph-wordmark.svg' && method === 'GET') {
+      try {
+        const source = readFileSync(WORKGRAPH_WORDMARK_SVG_PATH);
+        response.writeHead(200, {
+          'content-type': 'image/svg+xml; charset=utf-8',
+          'cache-control': 'public, max-age=3600',
+        });
+        response.end(source);
+      } catch (error) {
+        sendText(response, 500, 'failed_to_load_workgraph_wordmark');
       }
       return;
     }

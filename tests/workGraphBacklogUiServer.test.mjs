@@ -116,7 +116,9 @@ describe('renderBacklogHtml', () => {
     assert.match(html, /--bg: rgb\(var\(--brand-bg-rgb/);
     assert.match(html, /design-tokens-gripe-dark-default\.css/);
     assert.match(html, /data-iohasc-theme="gripe-dark-default"/);
-    assert.match(html, /class="wg-input wg-input--toolbar"/);
+    assert.match(html, /class="wg-input wg-input--toolbar wg-search-field__input"/);
+    assert.match(html, /wg-search-field__clear/);
+    assert.match(html, /workgraph-wordmark\.svg/);
     assert.match(html, /class="wg-textarea"/);
     assert.match(html, /class="filter-chip"/);
     assert.match(html, /class="ui-swagger-label"/);
@@ -124,8 +126,15 @@ describe('renderBacklogHtml', () => {
     assert.match(html, /class="wg-input wg-input--search"/);
     assert.match(html, /form-native-checkable/);
     assert.match(html, /wg-select/);
+    assert.match(html, /data-wg-select-combobox/);
+    assert.match(html, /ui-drop-list/);
+    assert.match(html, /initWgSelectComboboxes/);
+    assert.match(html, /wg-select-panel--above/);
+    assert.match(html, /function positionPanel\(/);
     assert.match(html, /id="search-mode"/);
     assert.match(html, /\/assets\/fonts\/GraphikLCG\/stylesheet\.css/);
+    assert.match(html, /--brand-font-sans: 'Graphik LCG'/);
+    assert.match(html, /body\[data-theme="dark"\][\s\S]*--ui-accent-rgb: 29 122 252/);
     assert.match(html, /font-family: var\(--brand-font-sans/);
     assert.match(html, /font-size: var\(--text-base/);
     assert.match(html, /font-size: var\(--text-sm\)/);
@@ -146,8 +155,9 @@ describe('renderBacklogHtml', () => {
     assert.match(html, /registerScope\('app-version'/);
     assert.match(html, /checkAppVersionAndMaybeNotify/);
     assert.match(html, /data-testid="settings-locale-options"/);
-    assert.match(html, /data-testid="settings-font-scale-control"/);
-    assert.match(html, /data-testid="settings-font-scale-slider"/);
+    assert.match(html, /data-testid="settings-font-scale-options"/);
+    assert.match(html, /data-settings-font-scale="font-m"/);
+    assert.doesNotMatch(html, /settings-font-scale-slider/);
     assert.match(html, /applyFontScale\(readStoredFontScale\(\)\)/);
     assert.match(html, /data-settings-locale="ru"/);
     assert.match(html, /data-settings-locale="en"/);
@@ -177,6 +187,8 @@ describe('renderBacklogHtml', () => {
     assert.match(html, /data-testid="analytics-sort-options"/);
     assert.match(html, /rel="icon" href="\/assets\/favicon\.svg" type="image\/svg\+xml"/);
     assert.match(html, /data-testid="wg-page-loader"/);
+    assert.match(html, /wg-page-loader-ring/);
+    assert.doesNotMatch(html, /wg-page-loader-message/);
     assert.match(html, /function showPageLoader/);
     assert.match(html, /data-analytics-sort="key-desc"/);
     assert.match(html, /data-testid="workflow-subtabs"/);
@@ -187,8 +199,9 @@ describe('renderBacklogHtml', () => {
     assert.match(html, /class="page-header"/);
     assert.match(html, /id="view-toolbar" class="toolbar" hidden/);
     assert.match(html, /\.toolbar\[hidden\]/);
+    assert.match(html, /--wg-toolbar-control-height: 40px/);
     assert.match(html, /--column-bg: #f4f5f7/);
-    assert.match(html, /--column-bg: rgb\(22 26 29\)/);
+    assert.match(html, /--column-bg: rgb\(22 22 22\)/);
     assert.match(html, /id="workflow-filters"/);
     assert.match(html, /data-testid="kanban-board-panel"/);
     assert.match(html, /data-testid="board-columns-scroll"/);
@@ -208,11 +221,11 @@ describe('renderBacklogHtml', () => {
     assert.match(html, /data-testid="prompt-rule-editor"/);
     assert.match(html, /id="board-view" class="view"[^>]*>\s*<div class="board-columns-scroll"/);
     assert.match(html, /id="intent-domain-filter"/);
-    assert.match(html, /id="cycle-filter"/);
+    assert.doesNotMatch(html, /id="cycle-filter"/);
     assert.match(html, /id="intent-domain-filter"/);
     assert.doesNotMatch(html, /class="board-filter-select"/);
     assert.match(html, /aria-label="Домен"/);
-    assert.match(html, /id="intent-domain-clear"/);
+    assert.doesNotMatch(html, /id="intent-domain-clear"/);
     assert.doesNotMatch(html, /eyebrow/);
     assert.match(html, /class="issue-footer"/);
     assert.match(html, /\.owner-avatar \{/);
@@ -287,6 +300,7 @@ describe('renderBacklogHtml', () => {
     assert.match(html, /class="app-shell layout-root"/);
     assert.match(html, /aria-label="Навигация Work Graph"/);
     assert.match(html, /data-testid="workgraph-logo"/);
+    assert.match(html, /\/assets\/workgraph-wordmark\.svg/);
     assert.match(html, /data-testid="workgraph-emblem"/);
     assert.doesNotMatch(html, /data-testid="workspace-switcher"/);
     assert.doesNotMatch(html, /id="workspace-select"/);
@@ -515,8 +529,13 @@ describe('renderBacklogHtml', () => {
     assert.match(html, /data-testid="analytics-panel"/);
     assert.match(html, /data-testid="analytics-list"/);
     assert.match(html, /data-testid="analytics-subtabs"/);
+    assert.match(html, /data-testid="analytics-sort-options"/);
+    assert.match(html, /data-analytics-sort="created-desc"/);
+    assert.match(html, /data-analytics-sort="key-desc"/);
     assert.match(html, /data-analytics-tab="intake"/);
     assert.match(html, /data-analytics-tab="closing"/);
+    assert.match(html, /analyticsSortButtons\.forEach/);
+    assert.match(html, /applyAnalyticsSortUi\(activeAnalyticsSort\)/);
     assert.match(html, /function renderAnalyticsPanel\(\)/);
     assert.match(html, /function readAnalyticsRecordKind\(record\)/);
     assert.match(html, /function applyAnalyticsTab\(tab\)/);
@@ -652,7 +671,7 @@ describe('renderBacklogHtml', () => {
     assert.match(html, /function crossHighlightTargets\(taskId\)/);
     assert.match(html, /task-atom\.is-highlighted/);
     assert.match(html, /applyCrossHighlight\(item\.id\);[\s\S]*?const fromAnalyticsRelated[\s\S]*?const fromDrawer[\s\S]*?\n\s*render\(\);/);
-    assert.match(html, /id="cycle-filter"/);
+    assert.doesNotMatch(html, /id="cycle-filter"/);
     assert.match(html, /id="workflow-filters"/);
     assert.match(html, /data-testid="kanban-board-panel"/);
     assert.match(html, /data-testid="board-columns-scroll"/);
@@ -816,6 +835,10 @@ describe('createBacklogUiServer', () => {
       const emblemSvg = await fetch(`${baseUrl}/assets/workgraph-emblem.svg`);
       assert.equal(emblemSvg.status, 200);
       assert.match(emblemSvg.headers.get('content-type') || '', /image\/svg\+xml/);
+
+      const wordmarkSvg = await fetch(`${baseUrl}/assets/workgraph-wordmark.svg`);
+      assert.equal(wordmarkSvg.status, 200);
+      assert.match(wordmarkSvg.headers.get('content-type') || '', /image\/svg\+xml/);
 
       const fontCss = await fetch(`${baseUrl}/assets/fonts/GraphikLCG/stylesheet.css`);
       assert.equal(fontCss.status, 200);

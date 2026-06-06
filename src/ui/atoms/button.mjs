@@ -100,14 +100,14 @@ export const UI_BUTTON_CSS = `
 .wg-btn--primary:hover:not(:disabled),
 .wg-btn:not([class*="wg-btn--"]):hover:not(:disabled) { background: rgb(var(--ui-accent-hover-rgb, 0 90 230)); }
 .wg-btn:disabled { opacity: 0.55; cursor: not-allowed; }
-.wg-btn--secondary { background: rgb(var(--ui-control-bg-rgb, 45 45 48)); color: rgb(var(--ui-text-rgb, 212 212 212)); border-color: rgb(var(--brand-border-rgb, 60 60 60)); }
+.wg-btn--secondary { background: rgb(var(--ui-control-bg-rgb, 45 45 48)); border: 0; color: rgb(var(--ui-text-rgb, 212 212 212)); }
 .wg-btn--secondary:hover:not(:disabled) { background: rgb(var(--ui-control-bg-hover-rgb, 60 60 60)); color: rgb(var(--ui-text-rgb, 212 212 212)); }
 .wg-btn--flat { background: transparent; color: rgb(var(--ui-link-rgb, 0 102 255)); }
 .wg-btn--flat:hover:not(:disabled) { background: rgba(var(--ui-accent-rgb, 0 102 255), 0.12); color: rgb(var(--ui-link-hover-rgb, 0 90 230)); }
 .wg-btn--soft { background: rgba(var(--ui-accent-rgb, 0 102 255), 0.16); color: rgb(var(--ui-accent-rgb, 0 102 255)); }
 .wg-btn--soft:hover:not(:disabled) { background: rgba(var(--ui-accent-rgb, 0 102 255), 0.24); color: rgb(var(--ui-accent-rgb, 0 102 255)); }
 .wg-btn--black { background: rgb(var(--ui-cta-rgb, 0 0 0)); color: rgb(var(--ui-cta-foreground-rgb, 255 255 255)); }
-.wg-btn--inverse { background: rgb(var(--ui-surface-rgb, 37 37 38)); color: rgb(var(--ui-text-rgb, 212 212 212)); border-color: rgb(var(--brand-border-rgb, 60 60 60)); }
+.wg-btn--inverse { background: rgb(var(--ui-surface-rgb, 37 37 38)); border: 0; color: rgb(var(--ui-text-rgb, 212 212 212)); }
 .wg-btn--sm { padding: 4px 10px; font-size: 13px; }
 .wg-btn--xs { padding: 2px 8px; font-size: 12px; }
 .wg-btn--lg { padding: 10px 18px; font-size: 15px; }

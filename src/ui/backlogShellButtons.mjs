@@ -5,7 +5,17 @@ import { renderUiTextInput } from './atoms/input.mjs';
 import { renderUiTextarea } from './atoms/textarea.mjs';
 import { renderUiFilterChip, renderUiFilterChipGroup } from './atoms/filterChip.mjs';
 import { renderUiToggle } from './atoms/toggle.mjs';
-import { renderNavViewIcon, renderThemeIcon } from './iconAssets.mjs';
+import { renderInlineIcon, renderNavViewIcon, renderThemeIcon } from './iconAssets.mjs';
+
+export const DETAIL_CLOSE_ICON_HTML = renderInlineIcon('x-bold.svg', {
+  className: 'detail-button-icon',
+  size: 16,
+});
+
+export const DETAIL_BACK_ICON_HTML = renderInlineIcon('arrow-left-bold.svg', {
+  className: 'detail-button-icon',
+  size: 16,
+});
 import { renderUiTabsGroup } from './molecules/tabs.mjs';
 
 function renderNavTabLabelHtml(view, label) {
@@ -93,15 +103,49 @@ export function renderSettingsThemeOptions({ theme = 'light', t }) {
   });
 }
 
+/**
+ * @param {{ fontMode?: string, t: (key: string) => string }} props
+ */
+export function renderSettingsFontScaleOptions({ fontMode = 'font-m', t }) {
+  const modes = [
+    { id: 'font-s', label: t('settings.appearance.fontSizeSmall') },
+    { id: 'font-m', label: t('settings.appearance.fontSizeNormal') },
+    { id: 'font-l', label: t('settings.appearance.fontSizeLarge') },
+    { id: 'font-xl', label: t('settings.appearance.fontSizeXLarge') },
+  ];
+  return renderUiFilterChipGroup({
+    className: 'settings-font-scale-options',
+    testId: 'settings-font-scale-options',
+    ariaLabel: t('settings.appearance.fontSize'),
+    chips: modes.map((mode) => ({
+      id: `settings-font-scale-${mode.id}`,
+      label: mode.label,
+      pressed: fontMode === mode.id,
+      testId: `settings-font-scale-${mode.id}`,
+      attrs: { 'data-settings-font-scale': mode.id },
+    })),
+  });
+}
+
 export function renderToolbarSearchInput({ placeholder, t }) {
-  return renderUiTextInput({
+  const input = renderUiTextInput({
     id: 'search',
     type: 'search',
-    className: 'wg-input--toolbar',
+    className: 'wg-input--toolbar wg-search-field__input',
     placeholder: placeholder ?? t('search.placeholder'),
     testId: 'semantic-search-input',
     autocomplete: 'off',
   });
+  const clearButton = renderUiButton({
+    unstyled: true,
+    id: 'search-clear',
+    className: 'wg-search-field__clear',
+    testId: 'search-clear',
+    ariaLabel: t('search.clear'),
+    hidden: true,
+    labelHtml: renderInlineIcon('x-bold.svg', { className: 'wg-search-field__clear-icon', size: 16 }),
+  });
+  return `<div class="wg-search-field">${input}${clearButton}</div>`;
 }
 
 export function renderIntentComposerTextarea() {
@@ -116,6 +160,14 @@ export function renderIntentComposerTextarea() {
 /**
  * @param {{ t: (key: string) => string }} props
  */
+export function renderSettingsCheckUpdateButton({ t }) {
+  return renderUiFilterChip({
+    id: 'settings-check-update',
+    label: t('settings.about.checkUpdate'),
+    testId: 'settings-check-update',
+  });
+}
+
 export function renderGitSnapshotSettingsToggles({ t }) {
   const enabled = renderUiToggle({
     id: 'settings-git-snapshot-enabled',
@@ -137,9 +189,9 @@ export function renderDetailCloseButton() {
   return renderUiButton({
     unstyled: true,
     id: 'detail-close',
-    className: 'detail-close',
-    label: 'Закрыть',
+    className: 'detail-close detail-icon-button',
     ariaLabel: 'Закрыть подробности',
+    labelHtml: DETAIL_CLOSE_ICON_HTML,
   });
 }
 
@@ -147,9 +199,9 @@ export function renderDetailSubCloseButton() {
   return renderUiButton({
     unstyled: true,
     id: 'detail-sub-close',
-    className: 'detail-close',
-    label: 'Закрыть',
+    className: 'detail-close detail-icon-button',
     ariaLabel: 'Закрыть описание узла L2',
+    labelHtml: DETAIL_CLOSE_ICON_HTML,
   });
 }
 
@@ -207,38 +259,19 @@ export function renderIntentComposerActionButtons() {
   ].join('\n            ');
 }
 
-export function renderIntentDomainClearButton() {
-  return renderUiFilterChip({
-    id: 'intent-domain-clear',
-    label: 'Сброс домена',
-    pressed: false,
-    hidden: true,
-    attrs: { 'data-intent-domain-clear': 'true' },
-  });
-}
-
-export function renderSearchModeSelect() {
+/**
+ * @param {{ t: (key: string) => string }} props
+ */
+export function renderSearchModeSelect({ t }) {
   return renderUiSelect({
     id: 'search-mode',
     className: 'wg-select--search-mode',
     testId: 'semantic-search-mode',
-    ariaLabel: 'Semantic search mode',
+    ariaLabel: t('search.mode.label'),
     options: [
-      { value: 'local', label: 'local filter', selected: true },
-      { value: 'lexical-v1', label: 'semantic lexical' },
-      { value: 'hybrid-lexical-bm25-v1', label: 'semantic hybrid BM25' },
-    ],
-  });
-}
-
-export function renderCycleFilterSelect() {
-  return renderUiSelect({
-    id: 'cycle-filter',
-    className: 'wg-select--compact',
-    ariaLabel: 'Цикл',
-    options: [
-      { value: 'current', label: 'Текущий цикл', selected: true },
-      { value: 'all', label: 'Все циклы' },
+      { value: 'local', label: t('search.mode.local'), selected: true },
+      { value: 'lexical-v1', label: t('search.mode.lexical') },
+      { value: 'hybrid-lexical-bm25-v1', label: t('search.mode.hybrid') },
     ],
   });
 }
