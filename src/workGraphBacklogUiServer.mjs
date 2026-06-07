@@ -47,7 +47,6 @@ import {
   renderSettingsThemeOptions,
   renderToolbarSearchInput,
   renderIntentComposerTextarea,
-  renderGitSnapshotSettingsToggles,
   renderSettingsCheckUpdateButton,
   DETAIL_BACK_ICON_HTML,
 } from './ui/backlogShellButtons.mjs';
@@ -602,7 +601,6 @@ export function renderBacklogHtml(options = {}) {
   const shellSettingsFontScaleOptions = renderSettingsFontScaleOptions({ fontMode: 'font-m', t });
   const shellToolbarSearchInput = renderToolbarSearchInput({ t });
   const shellIntentComposerTextarea = renderIntentComposerTextarea();
-  const shellGitSnapshotSettingsToggles = renderGitSnapshotSettingsToggles({ t });
   const shellSettingsCheckUpdateButton = renderSettingsCheckUpdateButton({ t });
   const shellDetailClose = renderDetailCloseButton();
   const shellDetailSubClose = renderDetailSubCloseButton();
@@ -1658,34 +1656,6 @@ export function renderBacklogHtml(options = {}) {
     .settings-install-copy-icon polyline,
     .settings-install-copy-icon rect {
       stroke: currentColor;
-    }
-
-    .settings-git-snapshot-note {
-      color: var(--muted);
-      font-size: 1rem;
-      margin: 0 0 12px;
-    }
-
-    .settings-git-snapshot-events {
-      border: 0;
-      display: grid;
-      gap: 8px;
-      margin: 0;
-      padding: 0;
-    }
-
-    .settings-git-snapshot-events legend {
-      color: var(--text);
-      font-size: 1rem;
-      font-weight: 500;
-      padding: 0;
-    }
-
-    .settings-git-snapshot-events label {
-      align-items: center;
-      display: inline-flex;
-      font-size: 1rem;
-      gap: 8px;
     }
 
     .settings-panel .filter-chip {
@@ -4906,19 +4876,6 @@ export function renderBacklogHtml(options = {}) {
               ${shellSettingsLocaleOptions}
             </div>
           </article>
-          <article class="settings-section" aria-labelledby="settings-git-snapshot-title">
-            <h2 id="settings-git-snapshot-title">${t('settings.gitSnapshot.title')}</h2>
-            <p class="settings-git-snapshot-note">${t('settings.gitSnapshot.noPushNote')}</p>
-            ${shellGitSnapshotSettingsToggles}
-            <fieldset class="settings-row settings-git-snapshot-events">
-              <legend>${t('settings.gitSnapshot.events')}</legend>
-              <label class="ui-checkable-label"><input type="checkbox" class="form-native-checkable" value="work_item.done" data-settings-git-event> done</label>
-              <label class="ui-checkable-label"><input type="checkbox" class="form-native-checkable" value="work_item.status" data-settings-git-event> status</label>
-              <label class="ui-checkable-label"><input type="checkbox" class="form-native-checkable" value="work_item.created" data-settings-git-event> created</label>
-              <label class="ui-checkable-label"><input type="checkbox" class="form-native-checkable" value="analytics.created" data-settings-git-event> analytics</label>
-            </fieldset>
-            <p id="settings-git-snapshot-status" class="settings-update-status" data-testid="settings-git-snapshot-status" hidden></p>
-          </article>
           <article class="settings-section" aria-labelledby="settings-about-title">
             <h2 id="settings-about-title">${t('settings.about.title')}</h2>
             <div class="settings-row">
@@ -5274,10 +5231,6 @@ export function renderBacklogHtml(options = {}) {
     const settingsInstallCommand = document.querySelector('#settings-install-command');
     const settingsInstallCommandText = document.querySelector('#settings-install-command-text');
     const settingsInstallCopyBtn = document.querySelector('#settings-install-copy-btn');
-    const settingsGitSnapshotEnabled = document.querySelector('#settings-git-snapshot-enabled');
-    const settingsGitSnapshotRecordSha = document.querySelector('#settings-git-snapshot-record-sha');
-    const settingsGitSnapshotEvents = [...document.querySelectorAll('[data-settings-git-event]')];
-    const settingsGitSnapshotStatus = document.querySelector('#settings-git-snapshot-status');
     const wgNoticeStack = document.querySelector('#wg-notice-stack');
     const codeGapSummary = document.querySelector('#code-gap-summary');
     const codeGapList = document.querySelector('#code-gap-list');
@@ -5769,13 +5722,6 @@ export function renderBacklogHtml(options = {}) {
         }).catch(() => undefined);
       });
     }
-    [settingsGitSnapshotEnabled, settingsGitSnapshotRecordSha, ...settingsGitSnapshotEvents].forEach((node) => {
-      if (!node) return;
-      node.addEventListener('change', () => {
-        persistGitSnapshotSettingsFromForm().catch(() => undefined);
-      });
-    });
-
     function readStoredTheme() {
       return localStorage.getItem(themeStorageKey) === 'dark' ? 'dark' : 'light';
     }
@@ -6204,57 +6150,6 @@ export function renderBacklogHtml(options = {}) {
       });
     }
 
-    async function loadGitSnapshotSettings() {
-      const response = await fetch('/api/git-snapshot-settings');
-      if (!response.ok) {
-        throw new Error('git-snapshot-settings ' + response.status);
-      }
-      return response.json();
-    }
-
-    async function saveGitSnapshotSettings(payload) {
-      const response = await fetch('/api/git-snapshot-settings', {
-        method: 'PUT',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-      if (!response.ok) {
-        throw new Error('git-snapshot-settings ' + response.status);
-      }
-      return response.json();
-    }
-
-    function applyGitSnapshotSettingsToForm(settings) {
-      if (settingsGitSnapshotEnabled) {
-        settingsGitSnapshotEnabled.checked = settings.enabled === true;
-      }
-      if (settingsGitSnapshotRecordSha) {
-        settingsGitSnapshotRecordSha.checked = settings.recordShaInEvidence !== false;
-      }
-      const enabledEvents = new Set(Array.isArray(settings.events) ? settings.events : []);
-      settingsGitSnapshotEvents.forEach((input) => {
-        input.checked = enabledEvents.has(input.value);
-      });
-    }
-
-    function readGitSnapshotSettingsFromForm() {
-      return {
-        enabled: settingsGitSnapshotEnabled?.checked === true,
-        recordShaInEvidence: settingsGitSnapshotRecordSha?.checked !== false,
-        events: settingsGitSnapshotEvents.filter((input) => input.checked).map((input) => input.value),
-        push: 'never',
-      };
-    }
-
-    async function persistGitSnapshotSettingsFromForm() {
-      const payload = readGitSnapshotSettingsFromForm();
-      await saveGitSnapshotSettings(payload);
-      if (settingsGitSnapshotStatus) {
-        settingsGitSnapshotStatus.hidden = false;
-        settingsGitSnapshotStatus.textContent = t('settings.gitSnapshot.saved');
-      }
-    }
-
     async function loadSettingsVersionInfo(checkUpdate, options = {}) {
       const params = new URLSearchParams();
       if (checkUpdate) {
@@ -6295,10 +6190,6 @@ export function renderBacklogHtml(options = {}) {
     async function renderSettingsPanel(options = {}) {
       if (!settingsView) return;
       try {
-        const gitSettings = await loadGitSnapshotSettings().catch(() => null);
-        if (gitSettings?.settings) {
-          applyGitSnapshotSettingsToForm(gitSettings.settings);
-        }
         const info = await loadSettingsVersionInfo(options.checkUpdate === true, {
           fresh: options.fresh === true,
         });

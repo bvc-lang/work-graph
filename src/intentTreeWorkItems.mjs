@@ -12,11 +12,7 @@ import {
   patchWorkItemInBacklogText,
 } from './workGraphBacklogPersist.mjs';
 
-import {
-  appendGitSnapshotEvidenceToWorkItem,
-  GIT_SNAPSHOT_EVENTS,
-  maybeRunGitSnapshotAfterPersist,
-} from './gitSnapshot.mjs';
+import { collectGitSnapshotTargetFiles, maybeRunGitSnapshotAfterPersist } from './gitSnapshot.mjs';
 
 const DEFAULT_INTENT_INDEX_PATH = 'intent/index.bvc';
 
@@ -143,6 +139,7 @@ export async function persistWorkItemUpdateToRepo(options = {}) {
         persistedResults: [result],
         workId: item.id,
         title: item.title,
+        targetFiles: item.targetFiles,
       });
     }
     return result;
@@ -168,6 +165,7 @@ export async function persistWorkItemUpdateToRepo(options = {}) {
       persistedResults: [result],
       workId: item.id,
       title: item.title,
+      targetFiles: item.targetFiles,
     });
   }
   return result;
@@ -189,6 +187,7 @@ export async function persistWorkItemUpdatesToRepo(items, options = {}) {
       persistedResults: results,
       workId: options.gitSnapshot?.workId ?? items[0]?.id,
       title: options.gitSnapshot?.title ?? items[0]?.title,
+      targetFiles: options.gitSnapshot?.targetFiles ?? collectGitSnapshotTargetFiles(items),
     });
     if (snapshot) {
       results.gitSnapshot = snapshot;
@@ -245,21 +244,6 @@ export async function appendWorkItemAtomToIntentTree(atomText, options = {}) {
     path,
     indexPath,
   };
-
-  if (options.skipGitSnapshot !== true) {
-    result.gitSnapshot = await maybeRunGitSnapshotAfterPersist({
-      ...options,
-      gitSnapshot: {
-        event: GIT_SNAPSHOT_EVENTS.WORK_ITEM_CREATED,
-        workId: item.id,
-        title: item.title,
-        paths: [path, 'intent/index.bvc'],
-      },
-      persistedResults: [{ path }, { path: 'intent/index.bvc' }],
-      workId: item.id,
-      title: item.title,
-    });
-  }
 
   return result;
 }

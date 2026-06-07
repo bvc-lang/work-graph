@@ -94,6 +94,7 @@ WorkItems:
   - design-draft-store-backlog-intake: intent/system/runtime/work/design-draft-store-backlog-intake.work.bvc
   - design-evidence-model-v1: intent/memory/work/design-evidence-model-v1.work.bvc
   - design-gfs-overlay-project-passport: intent/system/storage/work/design-gfs-overlay-project-passport.work.bvc
+  - design-git-snapshot-target-files-policy-an84: intent/system/runtime/work/design-git-snapshot-target-files-policy-an84.work.bvc
   - design-graph-canvas-layout-profile-v1: intent/ui/dashboard/work/design-graph-canvas-layout-profile-v1.work.bvc
   - design-graph-canvas-lit-flow-v1: intent/ui/dashboard/work/design-graph-canvas-lit-flow-v1.work.bvc
   - design-home-mission-control-view: intent/ui/dashboard/work/design-home-mission-control-view.work.bvc
@@ -172,6 +173,8 @@ WorkItems:
   - epic-decision-pipeline-canonization: intent/system/runtime/work/epic-decision-pipeline-canonization.work.bvc
   - epic-detail-drawer-stack-v1: intent/ui/dashboard/work/epic-detail-drawer-stack-v1.work.bvc
   - epic-drawer-repo-file-preview-v1: intent/ui/dashboard/work/epic-drawer-repo-file-preview-v1.work.bvc
+  - epic-git-snapshot-done-target-files-an84: intent/system/runtime/work/epic-git-snapshot-done-target-files-an84.work.bvc
+  - epic-git-snapshot-ux-simplify-an83: intent/ui/dashboard/work/epic-git-snapshot-ux-simplify-an83.work.bvc
   - epic-gripe-ds-adoption-phase2: intent/system/runtime/work/epic-gripe-ds-adoption-phase2.work.bvc
   - epic-gripe-ds-controls-parity-wave4: intent/ui/dashboard/work/epic-gripe-ds-controls-parity-wave4.work.bvc
   - epic-gripe-ds-visual-default-wave3: intent/ui/dashboard/work/epic-gripe-ds-visual-default-wave3.work.bvc
@@ -270,6 +273,7 @@ WorkItems:
   - implement-get-context-slice-mcp-v1: intent/system/runtime/work/implement-get-context-slice-mcp-v1.work.bvc
   - implement-git-snapshot-core: intent/system/runtime/work/implement-git-snapshot-core.work.bvc
   - implement-git-snapshot-mcp-cli: intent/system/runtime/work/implement-git-snapshot-mcp-cli.work.bvc
+  - implement-git-snapshot-target-files-staging-an84: intent/system/runtime/work/implement-git-snapshot-target-files-staging-an84.work.bvc
   - implement-graph-canvas-dagre-to-flow-adapter: intent/ui/dashboard/work/implement-graph-canvas-dagre-to-flow-adapter.work.bvc
   - implement-graph-canvas-edge-router: intent/ui/dashboard/work/implement-graph-canvas-edge-router.work.bvc
   - implement-graph-canvas-layout-profile-v1: intent/ui/dashboard/work/implement-graph-canvas-layout-profile-v1.work.bvc
@@ -556,6 +560,7 @@ WorkItems:
   - wire-drawer-stack-uniform-back-esc: intent/ui/dashboard/work/wire-drawer-stack-uniform-back-esc.work.bvc
   - wire-eval-llm-usefulness-ci-gate: intent/system/runtime/work/wire-eval-llm-usefulness-ci-gate.work.bvc
   - wire-git-snapshot-analytics-created-hook: intent/system/runtime/work/wire-git-snapshot-analytics-created-hook.work.bvc
+  - wire-git-snapshot-done-target-files-hook-an84: intent/system/runtime/work/wire-git-snapshot-done-target-files-hook-an84.work.bvc
   - wire-git-snapshot-settings-ui: intent/ui/dashboard/work/wire-git-snapshot-settings-ui.work.bvc
   - wire-git-snapshot-workitem-persist-hook: intent/system/runtime/work/wire-git-snapshot-workitem-persist-hook.work.bvc
   - wire-graph-rag-memory-slice-fusion: intent/system/runtime/work/wire-graph-rag-memory-slice-fusion.work.bvc

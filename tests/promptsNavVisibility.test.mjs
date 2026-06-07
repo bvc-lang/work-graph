@@ -28,7 +28,7 @@ describe('prompts nav visibility data', () => {
     await ensureHostStateInitialized(hostState, { hostLabel: 'Product' });
     const ctx = resolveWorkGraphRequestContext(
       hostState,
-      new URL('http://localhost/api/prompt-rules-projection'),
+      new URL(`http://localhost/api/prompt-rules-projection?repoRoot=${encodeURIComponent(tempRoot)}`),
     );
     const hostProjection = await buildPromptRulesProjection({ cwd: ctx.repoRoot });
     assert.equal(hostProjection.summary.total, 0);

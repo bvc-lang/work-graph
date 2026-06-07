@@ -1,0 +1,62 @@
+#Задача_epic_git_snapshot_done_target_files_an84<[
+Базис:
+  AN-84: при done коммитятся только .bvc из persist; код из work.target_files остаётся в working tree.
+  Расширение модели AN-71: scoped commit канона + прикладной код, явно перечисленный в атоме задачи.
+Вектор:
+  На work_item.done объединять persist paths и work.target_files с расширенным allowlist и denylist секретов.
+  Сохранить requireCleanSubset, never push, snapshot failure не блокирует done.
+  Обновить протокол workgraph-git-snapshot-v1.
+Цель:
+  Закрытие задачи фиксирует в git и канон (.bvc), и файлы реализации из target_files — без git add -A и без коммита на status/created.
+Проверки:
+  temp git repo: done коммитит .bvc + src/ из target_files
+  dirty unrelated file не попадает в commit
+  .env / node_modules отклоняются denylist
+  missing target_files path → skip, остальные коммитятся
+  git failure → skipped evidence, done не откатывается
+Анализ:
+  Зачем:
+  Оператор ожидает, что «задача выполнена» = снимок репозитория с кодом, а не только атом BVC.
+  Контекст:
+  AN-71 ограничил snapshot каноном WG; target_files — связь задачи с кодом, но не участвует в staging.
+  Когда:
+  После AN-83 (defaults done+analytics, без UI-пульта).
+  Готово, когда:
+  complete_work_item коммитит union(persist, target_files) под новой path policy.
+Решение:
+  Вердикт:
+  полезно
+  Можно брать в работу после перевода в ready.
+  Ограничение:
+  только work_item.done; denylist обязателен; не расширять на analytics.created без отдельного решения.
+
+Метки:
+  work.closed_at: 2026-06-07T12:57:59.721Z
+  atom.profile: work_item
+  intake.analytics_key: AN-84
+  intake.source_kind: analytics-record
+  intake.source_ref: analytics:git-snapshot-done-target-files
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-07T12:55:44.342Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-07T12:55:44.342Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.id: epic-git-snapshot-done-target-files-an84
+  work.item_kind: epic
+  work.next_action: просмотреть эпик и перевести подзадачи в ready
+  work.owner_role: runtime_engineer
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: high
+  work.status: done
+  work.target_files: protocols/workgraph-git-snapshot-v1.bvc, src/gitSnapshot.mjs, packages/workgraph-mcp/src/handlers.mjs, src/intentTreeWorkItems.mjs, tests/gitSnapshot.test.mjs, work/analytics/git-snapshot-done-target-files.md
+  work.title: Git Snapshot: коммит target_files на done (AN-84)
+  work.updated_by: workgraph-mcp
+  work.write.at: 2026-06-07T12:57:59.721Z
+  work.write.operation: complete
+
+Свидетельства:
+  - AN-84: done коммитит union(.bvc, target_files); 3/3 subtasks done; tests/gitSnapshot.test.mjs green
+]>

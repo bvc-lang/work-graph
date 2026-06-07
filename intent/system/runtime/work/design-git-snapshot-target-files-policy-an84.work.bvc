@@ -1,0 +1,52 @@
+#Задача_design_git_snapshot_target_files_policy_an84<[
+Базис:
+  AN-84 P0: isGitSnapshotPathAllowed разрешает только intent/work/canon — нужна v2 policy для кодовых префиксов и denylist.
+Вектор:
+  Обновить protocols/workgraph-git-snapshot-v1.bvc: на done stage persist ∪ target_files; document allowlist prefixes (src/, tests/, docs/, …) и denylist (.env, node_modules/, dist/).
+Цель:
+  Контракт протокола описывает безопасное расширение scoped staging на прикладной код.
+Проверки:
+  протокол перечисляет allowlist/denylist
+  явно: только work_item.done, не analytics/status/created
+  requireCleanSubset и push=never сохранены
+Анализ:
+  Зачем:
+  Без формального контракта расширение allowlist в коде обойдёт review безопасности AN-71.
+  Готово, когда:
+  протокол v1 обновлён, trace.status verified.
+Решение:
+  Вердикт:
+  полезно
+
+Метки:
+  work.closed_at: 2026-06-07T12:57:59.449Z
+  atom.profile: work_item
+  intake.analytics_key: AN-84
+  intake.source_kind: analytics-record
+  intake.source_ref: analytics:git-snapshot-done-target-files
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-07T12:55:47.163Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-07T12:55:47.163Z
+  work.decision.verdict: useful
+  work.department: agent-platform
+  work.depends_on: epic-git-snapshot-ux-simplify-an83
+  work.id: design-git-snapshot-target-files-policy-an84
+  work.item_kind: subtask
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: runtime_engineer
+  work.parent_id: epic-git-snapshot-done-target-files-an84
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: high
+  work.status: done
+  work.target_files: protocols/workgraph-git-snapshot-v1.bvc, work/analytics/git-snapshot-done-target-files.md
+  work.title: Протокол Git Snapshot: allowlist/denylist для target_files на done
+  work.updated_by: workgraph-mcp
+  work.write.at: 2026-06-07T12:57:59.451Z
+  work.write.operation: complete
+
+Свидетельства:
+  - protocols/workgraph-git-snapshot-v1.bvc: allowlist/denylist для target_files на work_item.done; only done event stages code paths
+]>

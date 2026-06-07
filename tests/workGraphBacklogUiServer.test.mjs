@@ -121,7 +121,7 @@ describe('renderBacklogHtml', () => {
     assert.match(html, /workgraph-wordmark\.svg/);
     assert.match(html, /class="wg-textarea"/);
     assert.match(html, /class="filter-chip"/);
-    assert.match(html, /class="ui-swagger-label"/);
+    assert.doesNotMatch(html, /settings-git-snapshot/);
     assert.match(html, /id="settings-theme-light"/);
     assert.match(html, /class="wg-input wg-input--search"/);
     assert.match(html, /form-native-checkable/);
@@ -207,8 +207,8 @@ describe('renderBacklogHtml', () => {
     assert.match(html, /data-testid="board-columns-scroll"/);
     assert.match(html, /data-testid="board-column-mode"/);
     assert.match(html, /data-testid="semantic-search-mode"/);
-    assert.match(html, /data-testid="settings-git-snapshot-enabled"/);
-    assert.match(html, /settings\.gitSnapshot\.noPushNote/);
+    assert.doesNotMatch(html, /data-testid="settings-git-snapshot-enabled"/);
+    assert.doesNotMatch(html, /settings-git-snapshot-events/);
     assert.match(html, /function renderBoard\(/);
     assert.match(html, /function findEpicDependentsWithoutParent/);
     assert.match(html, /workflow-epic-hierarchy-warning/);
@@ -678,8 +678,8 @@ describe('renderBacklogHtml', () => {
     assert.match(html, /data-testid="board-columns-scroll"/);
     assert.match(html, /data-testid="board-column-mode"/);
     assert.match(html, /data-testid="semantic-search-mode"/);
-    assert.match(html, /data-testid="settings-git-snapshot-enabled"/);
-    assert.match(html, /settings\.gitSnapshot\.noPushNote/);
+    assert.doesNotMatch(html, /data-testid="settings-git-snapshot-enabled"/);
+    assert.doesNotMatch(html, /settings-git-snapshot-events/);
     assert.match(html, /function renderBoard\(/);
     assert.match(html, /function findEpicDependentsWithoutParent/);
     assert.match(html, /workflow-epic-hierarchy-warning/);

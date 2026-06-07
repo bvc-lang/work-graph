@@ -85,6 +85,7 @@ import { resolveCanonReadOptions } from '../../../src/canonPaths.mjs';
 import { validateWorkItemCreateHierarchy } from '../../../src/workItemHierarchy.mjs';
 import {
   appendGitSnapshotEvidenceToWorkItem,
+  collectGitSnapshotTargetFiles,
   GIT_SNAPSHOT_EVENTS,
   runGitSnapshot,
 } from '../../../src/gitSnapshot.mjs';
@@ -444,16 +445,19 @@ export async function updateWorkItemStatus(args = {}, options = {}) {
     blocker: args.reason,
     evidence: args.evidence,
   });
+  const closesWorkItem = status === 'done' || status === 'verified';
   const persisted = await persistUpdatedWorkItems(updated.updatedItems, options, {
     operation: 'status',
-    gitSnapshot: {
-      event: status === 'done' || status === 'verified'
-        ? GIT_SNAPSHOT_EVENTS.WORK_ITEM_DONE
-        : GIT_SNAPSHOT_EVENTS.WORK_ITEM_STATUS,
-      workId,
-      title: item.title,
-    },
-    evidenceWorkId: status === 'done' || status === 'verified' ? workId : null,
+    skipGitSnapshot: !closesWorkItem,
+    ...(closesWorkItem ? {
+      gitSnapshot: {
+        event: GIT_SNAPSHOT_EVENTS.WORK_ITEM_DONE,
+        workId,
+        title: item.title,
+        targetFiles: item.targetFiles,
+      },
+      evidenceWorkId: workId,
+    } : {}),
   });
   const primary = updated.updatedItems.find((entry) => entry.id === workId) ?? updated.updatedItems.at(-1);
   return {
@@ -542,11 +546,7 @@ export async function claimWorkItem(args = {}, options = {}) {
   const persisted = await persistUpdatedWorkItems([claimResult.item], options, {
     operation: 'claim',
     runId: claimResult.claimRunId,
-    gitSnapshot: {
-      event: GIT_SNAPSHOT_EVENTS.WORK_ITEM_STATUS,
-      workId: item.id,
-      title: item.title,
-    },
+    skipGitSnapshot: true,
   });
   return {
     ok: true,
@@ -636,6 +636,7 @@ export async function completeWorkItem(args = {}, options = {}) {
       event: GIT_SNAPSHOT_EVENTS.WORK_ITEM_DONE,
       workId,
       title: item.title,
+      targetFiles: collectGitSnapshotTargetFiles(updated.updatedItems),
     },
     evidenceWorkId: workId,
   });
@@ -997,6 +998,7 @@ export async function createWorkItem(args = {}, options = {}) {
   const persisted = await appendWorkItemAtomToIntentTree(atomText, {
     ...repoOptions,
     path: args.path,
+    skipGitSnapshot: true,
   });
 
   return {

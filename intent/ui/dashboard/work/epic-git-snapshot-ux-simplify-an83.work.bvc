@@ -1,0 +1,58 @@
+#Задача_epic_git_snapshot_ux_simplify_an83<[
+Базис:
+  AN-83: Git Snapshot в настройках непонятен обычному пользователю.
+  Оператор: коммиты только на done и запись разбора; статус — только UI.
+Вектор:
+  Убрать секцию Git Snapshot из Настроек.
+  Включить policy по умолчанию в git-репо: done + analytics.created.
+  Отрезать snapshot на status/created/claim.
+Цель:
+  Автокоммит работает без настройки UI; статусы не коммитят.
+Проверки:
+  Atom WorkItem проходит StepAtomDraft validation
+  Файл intent/**/*.work.bvc (новые items; legacy .work.bvc read-only)
+  intent/index.bvc актуален
+  Свидетельства записаны перед переводом в done
+Анализ:
+  Зачем:
+  AN-83: Git Snapshot в настройках непонятен обычному пользователю.
+  Контекст: Оператор: коммиты только на done и запись разбора; статус — только UI.
+  Когда:
+  Можно начинать, когда оператор перевёл задачу в ready.
+  Готово, когда:
+  Автокоммит работает без настройки UI; статусы не коммитят.
+Решение:
+  Вердикт:
+  полезно
+  Можно брать в работу после перевода в ready.
+
+Метки:
+  work.closed_at: 2026-06-07T12:50:09.581Z
+  atom.profile: work_item
+  intake.analytics_key: AN-83
+  intake.source_kind: analytics-record
+  intake.source_ref: analytics:git-snapshot-settings-ux-simplify
+  migration.strategy: rebuild
+  trace.status: pending
+  work.analysis.at: 2026-06-07T12:47:41.069Z
+  work.analysis.source: analytics-record
+  work.decision.at: 2026-06-07T12:47:41.069Z
+  work.decision.verdict: useful
+  work.department: frontend-ui
+  work.id: epic-git-snapshot-ux-simplify-an83
+  work.item_kind: epic
+  work.next_action: просмотреть и перевести в ready
+  work.owner_role: feature_engineer
+  work.pipeline_stage: decided
+  work.priority: high
+  work.risk: medium
+  work.status: done
+  work.target_files: src/gitSnapshot.mjs, src/workGraphBacklogUiServer.mjs, src/ui/backlogShellButtons.mjs, packages/workgraph-mcp/src/handlers.mjs, src/intentTreeWorkItems.mjs, protocols/workgraph-git-snapshot-v1.bvc, tests/gitSnapshot.test.mjs, tests/workGraphBacklogUiServer.test.mjs
+  work.title: Git Snapshot: убрать из настроек, defaults done+analytics (AN-83)
+  work.updated_by: workgraph-mcp
+  work.write.at: 2026-06-07T12:50:09.581Z
+  work.write.operation: complete
+
+Свидетельства:
+  - AN-83: убрана секция Git Snapshot из Настроек; defaults enabled=true (done+analytics) в git-репо; skip snapshot на status/created/claim; tests/gitSnapshot + workGraphBacklogUiServer green
+]>

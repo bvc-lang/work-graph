@@ -30,7 +30,7 @@ const EVENT_ALIASES = new Map([
 ]);
 
 export const DEFAULT_GIT_SNAPSHOT_POLICY = {
-  enabled: false,
+  enabled: true,
   events: [
     GIT_SNAPSHOT_EVENTS.WORK_ITEM_DONE,
     GIT_SNAPSHOT_EVENTS.ANALYTICS_CREATED,
@@ -140,14 +140,71 @@ export function resolveGitSnapshotPolicy(options = {}) {
   return merged;
 }
 
+export async function isGitRepository(cwd) {
+  const root = resolve(cwd ?? process.cwd());
+  try {
+    await access(join(root, '.git'));
+    return true;
+  } catch (error) {
+    if (error && typeof error === 'object' && error.code === 'ENOENT') {
+      return false;
+    }
+    throw error;
+  }
+}
+
 export async function loadGitSnapshotPolicy(options = {}) {
   const cwd = resolve(options.cwd ?? options.repoRoot ?? process.cwd());
   const { settings } = await readGitSnapshotSettingsFile(cwd, { cwd });
-  return resolveGitSnapshotPolicy({
+  const policy = resolveGitSnapshotPolicy({
     env: options.env,
     filePolicy: settings,
     overrides: options.overrides,
   });
+  if (policy.enabled && !(await isGitRepository(cwd))) {
+    return { ...policy, enabled: false };
+  }
+  return policy;
+}
+
+export const GIT_SNAPSHOT_CANON_PREFIXES = [
+  'intent/',
+  'work/',
+  '.work-graph/canon/',
+];
+
+export const GIT_SNAPSHOT_CODE_PREFIXES = [
+  'src/',
+  'tests/',
+  'e2e/',
+  'docs/',
+  'protocols/',
+  'schemas/',
+  'scripts/',
+  'packages/',
+  'public/',
+  'locales/',
+  'architecture/',
+  '.cursor/rules/',
+];
+
+export function isGitSnapshotPathDenied(relativePath) {
+  const normalized = String(relativePath ?? '').replace(/\\/g, '/').trim();
+  if (normalized === '' || normalized.startsWith('/')) {
+    return true;
+  }
+  const segments = normalized.split('/');
+  if (segments.some((segment) => segment === '.env' || segment.startsWith('.env.'))) {
+    return true;
+  }
+  if (segments.some((segment) => segment === 'node_modules' || segment === 'dist' || segment === 'build' || segment === '.git')) {
+    return true;
+  }
+  const baseName = segments.at(-1) ?? '';
+  if (/^credentials/i.test(baseName)) {
+    return true;
+  }
+  return false;
 }
 
 export function isGitSnapshotPathAllowed(relativePath) {
@@ -161,9 +218,53 @@ export function isGitSnapshotPathAllowed(relativePath) {
   if (normalized.split('/').includes('..')) {
     return false;
   }
-  return normalized.startsWith('intent/')
-    || normalized.startsWith('work/')
-    || normalized.startsWith('.work-graph/canon/');
+  if (isGitSnapshotPathDenied(normalized)) {
+    return false;
+  }
+  return GIT_SNAPSHOT_CANON_PREFIXES.some((prefix) => normalized.startsWith(prefix))
+    || GIT_SNAPSHOT_CODE_PREFIXES.some((prefix) => normalized.startsWith(prefix));
+}
+
+export function collectGitSnapshotTargetFiles(items) {
+  if (!Array.isArray(items)) {
+    return [];
+  }
+  const collected = [];
+  for (const item of items) {
+    if (!Array.isArray(item?.targetFiles)) {
+      continue;
+    }
+    for (const entry of item.targetFiles) {
+      const raw = String(entry ?? '').trim();
+      if (raw !== '') {
+        collected.push(raw);
+      }
+    }
+  }
+  return [...new Set(collected)].sort(compareText);
+}
+
+export function mergeGitSnapshotStagingPaths({
+  paths = [],
+  targetFiles = [],
+  event = '',
+} = {}) {
+  const merged = [];
+  for (const entry of paths) {
+    const raw = String(entry ?? '').trim();
+    if (raw !== '') {
+      merged.push(raw);
+    }
+  }
+  if (normalizeGitSnapshotEvent(event) === GIT_SNAPSHOT_EVENTS.WORK_ITEM_DONE) {
+    for (const entry of targetFiles) {
+      const raw = String(entry ?? '').trim();
+      if (raw !== '') {
+        merged.push(raw);
+      }
+    }
+  }
+  return merged;
 }
 
 export function normalizeGitSnapshotPaths(paths, cwd = process.cwd()) {
@@ -190,6 +291,34 @@ export function normalizeGitSnapshotPaths(paths, cwd = process.cwd()) {
     }
     if (!isGitSnapshotPathAllowed(relativePath)) {
       throw new Error(`git snapshot path not allowed by policy: ${relativePath}`);
+    }
+    normalized.push(normalize(relativePath).replace(/\\/g, '/'));
+  }
+
+  return [...new Set(normalized)].sort(compareText);
+}
+
+export function normalizeGitSnapshotPathsLenient(paths, cwd = process.cwd()) {
+  if (!Array.isArray(paths)) {
+    return [];
+  }
+
+  const repoRoot = resolve(cwd);
+  const normalized = [];
+
+  for (const entry of paths) {
+    const raw = String(entry ?? '').trim();
+    if (raw === '' || /[*?[\]]/u.test(raw)) {
+      continue;
+    }
+
+    const absolute = resolve(repoRoot, raw);
+    const relativePath = relative(repoRoot, absolute).replace(/\\/g, '/');
+    if (relativePath.startsWith('..') || relativePath === '') {
+      continue;
+    }
+    if (!isGitSnapshotPathAllowed(relativePath)) {
+      continue;
     }
     normalized.push(normalize(relativePath).replace(/\\/g, '/'));
   }
@@ -307,8 +436,11 @@ export async function runGitSnapshot(options = {}) {
   }
 
   let stagedPaths;
+  const pathNormalizer = options.lenientPaths === true
+    ? normalizeGitSnapshotPathsLenient
+    : normalizeGitSnapshotPaths;
   try {
-    stagedPaths = normalizeGitSnapshotPaths(options.paths ?? [], cwd);
+    stagedPaths = pathNormalizer(options.paths ?? [], cwd);
   } catch (error) {
     return {
       ok: false,
@@ -452,14 +584,20 @@ export async function maybeRunGitSnapshotAfterPersist(options = {}) {
 
   const gitSnapshot = options.gitSnapshot ?? {};
   const event = normalizeGitSnapshotEvent(gitSnapshot.event ?? inferGitSnapshotEventFromPersistOptions(options));
-  const paths = gitSnapshot.paths ?? options.paths ?? [];
+  const persistedPaths = [];
   if (Array.isArray(options.persistedResults)) {
     for (const entry of options.persistedResults) {
       if (entry?.path) {
-        paths.push(entry.path);
+        persistedPaths.push(entry.path);
       }
     }
   }
+  const targetFiles = gitSnapshot.targetFiles ?? options.targetFiles ?? [];
+  const paths = mergeGitSnapshotStagingPaths({
+    paths: [...(gitSnapshot.paths ?? options.paths ?? []), ...persistedPaths],
+    targetFiles,
+    event,
+  });
 
   try {
     return await runGitSnapshot({
@@ -467,6 +605,7 @@ export async function maybeRunGitSnapshotAfterPersist(options = {}) {
       env: options.env,
       event,
       paths,
+      lenientPaths: true,
       workId: gitSnapshot.workId ?? options.workId,
       analyticsKey: gitSnapshot.analyticsKey ?? options.analyticsKey,
       title: gitSnapshot.title ?? options.title,

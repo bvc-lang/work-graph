@@ -4,7 +4,6 @@ import { renderUiSelect } from './atoms/select.mjs';
 import { renderUiTextInput } from './atoms/input.mjs';
 import { renderUiTextarea } from './atoms/textarea.mjs';
 import { renderUiFilterChip, renderUiFilterChipGroup } from './atoms/filterChip.mjs';
-import { renderUiToggle } from './atoms/toggle.mjs';
 import { renderInlineIcon, renderNavViewIcon, renderThemeIcon } from './iconAssets.mjs';
 
 export const DETAIL_CLOSE_ICON_HTML = renderInlineIcon('x-bold.svg', {
@@ -166,23 +165,6 @@ export function renderSettingsCheckUpdateButton({ t }) {
     label: t('settings.about.checkUpdate'),
     testId: 'settings-check-update',
   });
-}
-
-export function renderGitSnapshotSettingsToggles({ t }) {
-  const enabled = renderUiToggle({
-    id: 'settings-git-snapshot-enabled',
-    label: t('settings.gitSnapshot.enabled'),
-    testId: 'settings-git-snapshot-enabled',
-  });
-  const recordSha = renderUiToggle({
-    id: 'settings-git-snapshot-record-sha',
-    label: t('settings.gitSnapshot.recordSha'),
-    testId: 'settings-git-snapshot-record-sha',
-  });
-  return [
-    `<div class="settings-row settings-row--toggle">${enabled}</div>`,
-    `<div class="settings-row settings-row--toggle">${recordSha}</div>`,
-  ].join('\n            ');
 }
 
 export function renderDetailCloseButton() {
