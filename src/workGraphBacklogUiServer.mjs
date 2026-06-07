@@ -898,13 +898,11 @@ export function renderBacklogHtml(options = {}) {
     }
 
     .sidebar-footer {
-      border-top: 1px solid var(--border);
       margin-top: auto;
       padding: 10px 12px 0;
     }
 
     .project-title {
-      border-bottom: 1px solid var(--border);
       margin: 0 12px;
       padding: 10px 4px 12px;
     }
@@ -913,12 +911,16 @@ export function renderBacklogHtml(options = {}) {
       align-items: center;
       display: flex;
       gap: 10px;
+      line-height: 0;
     }
 
     .project-logo-emblem-mark,
     .project-logo-wordmark,
     .project-logo-emblem {
       display: block;
+      flex: none;
+      object-fit: contain;
+      object-position: center center;
       width: auto;
     }
 
@@ -946,12 +948,6 @@ export function renderBacklogHtml(options = {}) {
       display: grid;
       gap: 2px;
       padding: 8px 8px 0;
-    }
-
-    .sidebar-nav-advanced {
-      border-top: 1px solid var(--border);
-      margin-top: 8px;
-      padding-top: 8px;
     }
 
     .nav-tab {
@@ -2502,10 +2498,16 @@ export function renderBacklogHtml(options = {}) {
       background: rgba(0, 102, 255, 0.12);
     }
 
-    .detail-promote-row {
+    .detail-promote-row,
+    .detail-agent-run-row {
       display: flex;
       gap: 8px;
       margin-top: 12px;
+    }
+
+    .detail-agent-run-row {
+      margin-top: 0;
+      margin-bottom: 12px;
     }
 
     .detail-promote-button {
@@ -4560,15 +4562,9 @@ export function renderBacklogHtml(options = {}) {
       display: block;
     }
 
-    html.is-sidebar-compact .sidebar-nav,
-    html.is-sidebar-compact .sidebar-nav-advanced {
+    html.is-sidebar-compact .sidebar-nav {
       grid-template-columns: 1fr;
       padding: 4px 6px 0;
-    }
-
-    html.is-sidebar-compact .sidebar-nav-advanced {
-      margin-top: 4px;
-      padding-top: 4px;
     }
 
     html.is-sidebar-compact .sidebar-footer {
@@ -4632,16 +4628,7 @@ export function renderBacklogHtml(options = {}) {
     .code-gap-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
     .workflow-page-controls { align-items: center; display: flex; gap: 8px; }
     .architecture-view-shell {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      min-height: 0;
-    }
-
-    #architecture-list-panel .backlog-list {
-      flex: none;
-      min-height: auto;
-      overflow: visible;
+      display: block;
     }
 
     .architecture-matrix-panel .architecture-matrix {
@@ -4712,7 +4699,7 @@ export function renderBacklogHtml(options = {}) {
             class="project-logo-emblem-mark"
             src="/assets/workgraph-emblem.svg"
             height="24"
-            width="41"
+            width="32"
             alt=""
             aria-hidden="true"
           >
@@ -4729,19 +4716,17 @@ export function renderBacklogHtml(options = {}) {
           class="project-logo-emblem"
           src="/assets/workgraph-emblem.svg"
           height="22"
-          width="38"
+          width="29"
           alt="Work Graph"
           data-testid="workgraph-emblem"
         >
       </div>
-      <nav class="sidebar-nav" aria-label="Канон Work Graph">
+      <nav class="sidebar-nav" aria-label="Навигация Work Graph">
         ${shellNavAnalytics}
         ${shellNavWorkflow}
         ${shellNavBoard}
         ${shellNavVerification}
         ${shellNavMemory}
-      </nav>
-      <nav class="sidebar-nav sidebar-nav-advanced" aria-label="Дополнительно">
         ${shellNavArchitecture}
         ${shellNavPrompts}
       </nav>
@@ -8159,6 +8144,85 @@ export function renderBacklogHtml(options = {}) {
       operatorShellSnapshot = await shellResponse.json();
     }
 
+    const DETAIL_AGENT_RUN_STATUSES = new Set(['ready', 'claimed', 'doing', 'in_progress']);
+
+    function evaluateDetailAgentRunEligibility(item) {
+      if (!item) {
+        return { allowed: false, reason: t('detail.assignAgent.failed') };
+      }
+
+      if (!DETAIL_AGENT_RUN_STATUSES.has(item.status)) {
+        return {
+          allowed: false,
+          reason: t('detail.assignAgent.statusBlocked', { status: item.status || '?' }),
+        };
+      }
+
+      if (!String(item.analysis ?? '').trim()) {
+        return { allowed: false, reason: t('detail.assignAgent.missingAnalysis') };
+      }
+
+      const verdict = String(item.labels?.['work.decision.verdict'] ?? '').trim();
+      if (!verdict) {
+        return { allowed: false, reason: t('detail.assignAgent.missingDecision') };
+      }
+      if (verdict === 'defer') {
+        return { allowed: false, reason: t('detail.assignAgent.verdictDefer') };
+      }
+      if (verdict === 'harmful') {
+        return { allowed: false, reason: t('detail.assignAgent.verdictHarmful') };
+      }
+      if (verdict !== 'useful') {
+        return { allowed: false, reason: t('detail.assignAgent.missingDecision') };
+      }
+
+      return { allowed: true, reason: '' };
+    }
+
+    async function submitAgentRunFromDetail(taskId) {
+      if (!taskId) return;
+
+      const button = detailBody?.querySelector('[data-agent-run-task-id="' + taskId + '"]');
+      if (button) button.disabled = true;
+
+      try {
+        setAgentDockOpen(true);
+        const response = await fetch('/api/agent-run', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ taskId, provider: 'local', persistBacklog: true }),
+        });
+        const payload = await response.json();
+        lastAgentRunTaskId = taskId;
+        await refreshAgentRunDock();
+
+        if (!response.ok || !payload.ok) {
+          const msg = payload.message || payload.error || ('HTTP ' + response.status);
+          throw new Error(msg);
+        }
+
+        await reloadOperatorSnapshots();
+        render();
+
+        const updated = snapshot?.items?.find((item) => item.id === taskId);
+        if (updated) {
+          openTaskDetails(updated, { parentContext: detailContext?.parent ?? null });
+        }
+      } catch (error) {
+        window.alert(t('detail.assignAgent.failed') + ': ' + error.message);
+      } finally {
+        const currentButton = detailBody?.querySelector('[data-agent-run-task-id="' + taskId + '"]');
+        if (currentButton) {
+          const updatedItem = snapshot?.items?.find((item) => item.id === taskId);
+          const gate = evaluateDetailAgentRunEligibility(updatedItem);
+          currentButton.disabled = !gate.allowed;
+          if (!gate.allowed) {
+            currentButton.title = gate.reason;
+          }
+        }
+      }
+    }
+
     async function submitPromoteReady(workId) {
       if (!workId) return;
 
@@ -10673,6 +10737,7 @@ export function renderBacklogHtml(options = {}) {
         detailInspectorState.draft = payload.draft;
         body.innerHTML = backRow +
           renderDetailToolbar('edit') +
+          (subDrawer ? '' : renderDetailAgentRunRow(item)) +
           renderAtomInspectorForm(payload) +
           '<pre id="atom-inspector-preview" class="atom-inspector-preview" data-testid="atom-inspector-preview"></pre>' +
           '<pre id="atom-inspector-errors" class="atom-inspector-errors" data-testid="atom-inspector-errors" hidden></pre>';
@@ -10699,6 +10764,7 @@ export function renderBacklogHtml(options = {}) {
 
         body.innerHTML = backRow +
           (subDrawer ? '' : renderDetailToolbar('view')) +
+          (subDrawer ? '' : renderDetailAgentRunRow(item)) +
           buildTaskDetailSections(item) +
           wrapDetailAccordion('UI-референсы', uiRefsSection, { testid: 'ui-refs-accordion' }) +
           wrapDetailAccordion('Evidence timeline', timelineSection, { testid: 'evidence-timeline-accordion' }) +
@@ -10759,6 +10825,37 @@ export function renderBacklogHtml(options = {}) {
       if (applyButton) {
         applyButton.addEventListener('click', () => submitAtomInspectorApply(item.id));
       }
+
+      const assignAgentButton = detailBody.querySelector('[data-agent-run-task-id]');
+      if (assignAgentButton) {
+        assignAgentButton.addEventListener('click', () => {
+          submitAgentRunFromDetail(assignAgentButton.dataset.agentRunTaskId);
+        });
+      }
+    }
+
+    function renderDetailAgentRunRow(item) {
+      if (!DETAIL_AGENT_RUN_STATUSES.has(item.status)) {
+        return '';
+      }
+
+      const gate = evaluateDetailAgentRunEligibility(item);
+      const buttonAttrs = { 'data-agent-run-task-id': item.id };
+      if (!gate.allowed && gate.reason) {
+        buttonAttrs.title = gate.reason;
+      }
+
+      return '<div class="detail-agent-run-row" data-testid="detail-agent-run-row">' +
+        renderClientUiButton({
+          label: t('detail.assignAgent'),
+          variant: 'primary',
+          size: 'sm',
+          disabled: !gate.allowed,
+          className: 'detail-assign-agent-button',
+          testId: 'detail-assign-agent',
+          attrs: buttonAttrs,
+        }) +
+        '</div>';
     }
 
     function renderAtomInspectorForm(payload) {

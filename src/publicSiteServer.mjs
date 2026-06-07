@@ -178,7 +178,7 @@ function renderSiteBrand(locale) {
   const label = 'Work Graph';
   return `<a class="site-brand" href="${escapeAttr(home)}" aria-label="${escapeAttr(label)}">
     <img class="site-brand-logo" src="/assets/workgraph-logo.svg" width="188" height="24" alt="${escapeAttr(label)}" decoding="async">
-    <img class="site-brand-emblem" src="/assets/workgraph-emblem.svg" width="41" height="24" alt="" aria-hidden="true" decoding="async">
+    <img class="site-brand-emblem" src="/assets/workgraph-emblem.svg" width="32" height="24" alt="" aria-hidden="true" decoding="async">
   </a>`;
 }
 
@@ -840,8 +840,12 @@ function renderDocArticleFooter(doc, locale, copy) {
   const tools = doc.relatedTools?.length
     ? `<p class="doc-article-tools">${escapeHtml(toolsLabel)}: ${doc.relatedTools.map((name) => `<code>${escapeHtml(name)}</code>`).join(', ')}</p>`
     : '';
+  const markdownIcon = renderInlineIcon('arrow-square-out-bold.svg', {
+    className: 'doc-article-markdown-link-icon',
+    size: 16,
+  });
   return `<footer class="doc-article-footer">
-    <p><a class="doc-article-markdown-link" href="${escapeAttr(markdownHref)}">${escapeHtml(markdownLabel)}</a></p>
+    <p><a class="doc-article-markdown-link" href="${escapeAttr(markdownHref)}" target="_blank" rel="noopener noreferrer"><span class="doc-article-markdown-link-text">${escapeHtml(markdownLabel)}</span>${markdownIcon}</a></p>
     ${tools}
   </footer>`;
 }
@@ -1180,7 +1184,12 @@ export function renderPublicSiteHtml(page, options = {}) {
     .doc-article .inline-term, .doc-article code { background: var(--code-surface); border-radius: 4px; color: var(--code-text); font-family: ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace; font-size: 0.9em; padding: 1px 5px; }
     .doc-article-footer { border-top: 1px solid var(--border); margin-top: clamp(40px, 5vw, 56px); padding-top: 24px; }
     .doc-article-footer p { color: var(--muted); font-size: 0.9375rem; line-height: 1.6; margin: 0 0 12px; }
-    .doc-article-markdown-link { font-weight: 600; }
+    .doc-article-markdown-link { align-items: center; display: inline-flex; font-weight: 600; gap: 6px; text-decoration: none; }
+    .doc-article-markdown-link:hover { text-decoration: none; }
+    .doc-article-markdown-link-icon { flex: none; opacity: 0.75; vertical-align: -0.15em; }
+    .doc-article-markdown-link-icon path,
+    .doc-article-markdown-link-icon line,
+    .doc-article-markdown-link-icon polyline { fill: none; stroke: currentColor; }
     .doc-article-tools code { margin-inline: 2px 6px; }
     .workflow-pipeline-steps { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); list-style: none; margin: 24px 0 0; padding: 0; }
     .workflow-pipeline-steps li { background: var(--card); border: 1px solid var(--border); border-radius: 8px; display: flex; flex-direction: column; gap: 8px; padding: 20px 18px; }

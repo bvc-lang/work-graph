@@ -143,5 +143,12 @@
   "verification.tierLabel.deterministic": "deterministic",
   "verification.tierLabel.optional-env": "optional (environment)",
   "verification.tierLabel.optional-llm": "optional (LLM)",
-  "task.closedAt": "Closed {date}"
+  "task.closedAt": "Closed {date}",
+  "detail.assignAgent": "Run it",
+  "detail.assignAgent.failed": "Failed to start agent run",
+  "detail.assignAgent.missingAnalysis": "Task atom has no analysis",
+  "detail.assignAgent.missingDecision": "No useful/harmful/defer decision recorded",
+  "detail.assignAgent.verdictDefer": "Task is deferred",
+  "detail.assignAgent.verdictHarmful": "Task is rejected (harmful)",
+  "detail.assignAgent.statusBlocked": "Status «{status}» cannot be assigned to agent"
 }

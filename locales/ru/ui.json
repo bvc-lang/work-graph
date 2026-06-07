@@ -143,5 +143,12 @@
   "verification.tierLabel.deterministic": "детерминированный",
   "verification.tierLabel.optional-env": "опционально (окружение)",
   "verification.tierLabel.optional-llm": "опционально (LLM)",
-  "task.closedAt": "Закрыто {date}"
+  "task.closedAt": "Закрыто {date}",
+  "detail.assignAgent": "Делаем",
+  "detail.assignAgent.failed": "Не удалось запустить агента",
+  "detail.assignAgent.missingAnalysis": "Нет анализа в атоме задачи",
+  "detail.assignAgent.missingDecision": "Нет утверждения useful/harmful/defer",
+  "detail.assignAgent.verdictDefer": "Задача отложена (defer)",
+  "detail.assignAgent.verdictHarmful": "Задача отклонена (harmful)",
+  "detail.assignAgent.statusBlocked": "Статус «{status}» не допускает запуск"
 }

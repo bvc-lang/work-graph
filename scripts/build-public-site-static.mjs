@@ -112,6 +112,15 @@ async function main() {
     }
   }
 
+  // Apache (and similar) default to ISO-8859-1 for text/* without charset — Cyrillic in .md breaks.
+  await writeStatic('.htaccess', [
+    'AddDefaultCharset UTF-8',
+    '<IfModule mod_mime.c>',
+    '  AddCharset UTF-8 .md .txt .json',
+    '</IfModule>',
+    '',
+  ].join('\n'));
+
   await writeStatic('README.txt', `Work Graph public site static export\n\nUpload the contents of this folder to any static hosting provider.\nNo database or server runtime is required.\n\nGenerated routes: ${PUBLIC_SITE_ROUTES.length}\n`);
   console.log(JSON.stringify({
     schema: 'workgraph.public-site-static-build.v1',

@@ -266,6 +266,7 @@ describe('public site HTTP routes', () => {
       assert.equal(bvcDoc.status, 200);
       const bvcDocHtml = await bvcDoc.text();
       assert.match(bvcDocHtml, /class="doc-article"/u);
+      assert.match(bvcDocHtml, /<a class="doc-article-markdown-link"[^>]*target="_blank"[^>]*rel="noopener noreferrer"[^>]*>[\s\S]*?Версия Markdown[\s\S]*?class="doc-article-markdown-link-icon"/u);
       assert.match(bvcDocHtml, /markdown-doc/u);
       assert.match(bvcDocHtml, /Что такое BVC-атом/u);
       assert.doesNotMatch(bvcDocHtml, /related_tools:/u);
@@ -372,6 +373,10 @@ describe('public site static export', () => {
     assert.equal(faqJson['@type'], 'FAQPage');
     await access(join(root, '.well-known', 'mcp.json'));
     await access(join(root, 'docs', 'bvc-spec.md'));
+    const verificationMatrixMd = await readFile(join(root, 'docs', 'verification-matrix.md'), 'utf8');
+    assert.match(verificationMatrixMd, /# Матрица проверок/u);
+    const htaccess = await readFile(join(root, '.htaccess'), 'utf8');
+    assert.match(htaccess, /AddDefaultCharset UTF-8/u);
     await access(join(root, 'api', 'docs', 'mcp-tools-context.json'));
     assert.match(await readFile(join(root, 'README.txt'), 'utf8'), /No database/u);
     await rm(root, { recursive: true, force: true });

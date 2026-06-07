@@ -316,8 +316,9 @@ describe('renderBacklogHtml', () => {
     assert.match(html, /data-view="board"[\s\S]*?nav-tab-label">Доска</);
     assert.match(html, /data-view="verification"[\s\S]*?nav-tab-label">Проверки</);
     assert.match(html, /data-view="memory"[\s\S]*?nav-tab-label">Память</);
-    assert.match(html, /sidebar-nav-advanced[\s\S]*data-view="architecture"/);
-    assert.match(html, /sidebar-nav-advanced[\s\S]*data-view="prompts"/);
+    assert.match(html, /class="sidebar-nav"[\s\S]*data-view="architecture"/);
+    assert.match(html, /class="sidebar-nav"[\s\S]*data-view="prompts"/);
+    assert.doesNotMatch(html, /sidebar-nav-advanced/);
     assert.doesNotMatch(html, /id="home-view"/);
     assert.doesNotMatch(html, /data-view="backlog"[^>]*>Бэклог/);
     assert.doesNotMatch(html, /data-view="archive"[^>]*>Архив/);
